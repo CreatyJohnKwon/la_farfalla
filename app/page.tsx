@@ -1,7 +1,7 @@
 "use client";
 
-import MainScreen from "./layouts/MainScreen";
-import Navbar from "./layouts/Navbar";
+import MainScreen from "./utils/layouts/MainScreen";
+import Navbar from "./utils/layouts/Navbar";
 
 export default function App() {
   return (
