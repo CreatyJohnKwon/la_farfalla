@@ -1,7 +1,9 @@
-import Navbar from "./layouts/Navbar";
-import MainScreen from "./components/MainScreen";
+"use client";
 
-export default function Home() {
+import MainScreen from "./layouts/MainScreen";
+import Navbar from "./layouts/Navbar";
+
+export default function App() {
   return (
     <div className="flex flex-col min-h-screen w-full">
       <Navbar />

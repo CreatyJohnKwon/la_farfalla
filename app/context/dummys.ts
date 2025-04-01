@@ -1,6 +1,12 @@
 const menus = [
-    { text: 'account' },
-    { text: 'menu' },
+    { 
+        text: 'purpose',
+        link: '/purpose'
+    },
+    { 
+        text: 'account',
+        link: '/account'
+    },
 ];
 
 export {

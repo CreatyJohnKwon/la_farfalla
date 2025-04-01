@@ -2,6 +2,7 @@
 
 import NavList from "./NavList";
 import { menus } from "../context/dummys";
+import Link from "next/link";
 
 const Navbar = () => {
 
@@ -10,9 +11,9 @@ const Navbar = () => {
             <div className="max-w-screen-w_max w-full flex items-center justify-between mx-auto p-4 font-serif c_sm:text-lg c_md:text-3xl">
                 {/* 네비게이션 바 로고 */}
                 <button>
-                    <a href="http://localhost:3000/" className="flex items-center space-x-3 rtl:space-x-reverse ps-8 ">
-                        home
-                    </a>
+                    <Link href="/menu" className="flex items-center space-x-3 rtl:space-x-reverse ps-8 ">
+                        menu
+                    </Link>
                 </button>
 
                 {/* 메뉴 */}
@@ -22,6 +23,7 @@ const Navbar = () => {
                             <NavList
                                 key={index}
                                 menuText={menuList.text}
+                                menuLink={menuList.link}
                             />
                         ))}
                     </ul>
