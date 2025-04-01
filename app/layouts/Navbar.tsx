@@ -1,12 +1,9 @@
 "use client";
 
 import NavList from "./NavList";
+import { menus } from "../context/dummys";
 
 const Navbar = () => {
-    const menus = [
-        { text: 'account' },
-        { text: 'menu' },
-    ];
 
     return (
         <nav className="sticky top-0 z-40 p-4 bg-white transition-all duration-300 ease-in-out w-full h-full shadow-none">
