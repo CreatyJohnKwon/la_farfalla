@@ -1,0 +1,42 @@
+import tailwindScrollbarHide from 'tailwind-scrollbar-hide';
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}"
+  ],
+  theme: {
+    extend: {
+      screens: {
+        "c_lg": "1271px",
+        "c_md": "1105px",
+        "c_sm": "360px"
+      },
+    },
+  },
+  darkMode: 'class',
+  plugins: [
+    tailwindScrollbarHide,
+    function ({ addComponents }) {
+      addComponents({
+        '.scrollbar-custom': {
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: '#f1f1f1',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#888',
+            borderRadius: '10px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#555',
+          },
+        }
+      })
+    },
+  ],
+}
