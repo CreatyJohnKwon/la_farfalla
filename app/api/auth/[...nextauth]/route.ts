@@ -1,8 +1,10 @@
 import NextAuth from "next-auth";
 import NaverProvider from "next-auth/providers/naver";
 import KakaoProvider from "next-auth/providers/kakao";
-import CredentialsProvider from "next-auth/providers/credentials";
+// import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthOptions } from "next-auth";
+
+export const dynamic = "force-static";
 
 // NextAuth 설정
 const authOptions: NextAuthOptions = {
