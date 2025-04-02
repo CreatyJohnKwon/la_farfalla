@@ -18,7 +18,7 @@ const Navbar = () => {
 
                 {/* 메뉴 */}
                 <div className="flex c_base:order-1 bg-transparent justify-center ml-auto c_base:me-5">
-                    <ul className="hover_effect flex p-4 c_base:p-0 border-gray-100 rounded-lg c_base:space-x-8 rtl:space-x-reverse c_base:flex-row c_base:mt-0 c_base:dark:bg-transparent transition-all duration-300 ease-in-out">
+                    <ul className="hover_effect flex border-gray-100 rounded-lg c_base:space-x-8 rtl:space-x-reverse c_base:flex-row c_base:mt-0 c_base:dark:bg-transparent transition-all duration-300 ease-in-out">
                         {menus.map((menuList, index) => (
                             <NavList
                                 key={index}
