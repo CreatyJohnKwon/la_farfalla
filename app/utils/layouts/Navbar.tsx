@@ -1,10 +1,20 @@
 "use client";
 
 import NavList from "./NavList";
-import { menus } from "../context/dummys";
+import { menus } from "../context/datas";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const Navbar = () => {
+    const { status } = useSession();
+    
+    if (status === "authenticated") {
+        menus[1].text = "profile";
+        menus[1].link = "/profile";
+    } else if (status === "unauthenticated" || status === "loading") {
+        menus[1].text = "account";
+        menus[1].link = "/account";
+    }
 
     return (
         <nav className="sticky top-0 z-40 ps-0 c_base:ps-4 p-4 bg-white transition-all duration-300 ease-in-out w-full h-full shadow-none">
@@ -20,17 +30,13 @@ const Navbar = () => {
                 <div className="flex c_base:order-1 bg-transparent justify-center ml-auto c_base:me-5">
                     <ul className="hover_effect flex border-gray-100 rounded-lg c_base:space-x-8 rtl:space-x-reverse c_base:flex-row c_base:mt-0 c_base:dark:bg-transparent transition-all duration-300 ease-in-out">
                         {menus.map((menuList, index) => (
-                            <NavList
-                                key={index}
-                                menuText={menuList.text}
-                                menuLink={menuList.link}
-                            />
+                            <NavList key={index} menuText={menuList.text} menuLink={menuList.link} />
                         ))}
                     </ul>
                 </div>
             </div>
         </nav>
-    )
-}
+    );
+};
 
 export default Navbar;

@@ -9,7 +9,7 @@ html {
 .hover_effect button {
     transition: 0.35s;
 }
-  
+
 .hover_effect button:hover {
     text-shadow: 0 0 20px #000000;
     -moz-transform: scale(1.02);
