@@ -35,6 +35,7 @@ const authOptions: NextAuthOptions = {
         //     },
         // }),
     ],
+    secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET!
 };
 
 // NextAuth 핸들러 적용
