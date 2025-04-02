@@ -3,7 +3,7 @@ import Link from "next/link";
 const Menu = () => {
     return (
         <div className="flex flex-col items-end justify-center h-screen w-5/6 text-end">
-            <div className="text-7xl font-serif">
+            <div className="font-serif -me-10 c_md:-me-0 text-4xl c_md:text-7xl transition-all duration-700 ease-in-out">
                 <Link href="/account" className="font-serif mt-5">ACCOUNT</Link><br/>
                 <Link href="/shop" className="mt-5">SHOP</Link><br/>
                 <Link href="/fun" className="mt-5">THIRD MENU</Link><br/>
