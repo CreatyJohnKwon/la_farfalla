@@ -6,6 +6,18 @@ import type { NextAuthOptions } from "next-auth";
 
 export const dynamic = "force-static";
 
+// 동적 경로를 위한 정적 매개변수 생성
+export function generateStaticParams() {
+    return [
+        { nextauth: ['signin'] },
+        { nextauth: ['callback'] },
+        { nextauth: ['signout'] },
+        { nextauth: ['session'] },
+        { nextauth: ['csrf'] },
+        { nextauth: ['providers'] }
+    ];
+}
+
 // NextAuth 설정
 const authOptions: NextAuthOptions = {
     providers: [
