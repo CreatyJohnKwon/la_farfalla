@@ -17,7 +17,6 @@ const authOptions: NextAuthOptions = {
             clientSecret: process.env.NEXT_PUBLIC_KAKAO_CLIENT_SECRET!,
         }),
 
-
         // ✅ 이메일 & 비밀번호 로그인 (선택적 추가) 
         // 추후 기능 개발때 추가 수정
         // CredentialsProvider({
@@ -35,7 +34,12 @@ const authOptions: NextAuthOptions = {
         //     },
         // }),
     ],
-    secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET!
+    callbacks: {
+        async signIn({ user, account, profile }) {
+            return true;
+        },
+    },
+    secret: process.env.NEXTAUTH_SECRET!,
 };
 
 // NextAuth 핸들러 적용
