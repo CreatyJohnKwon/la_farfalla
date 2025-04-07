@@ -1,7 +1,7 @@
 "use client";
 
 import NavList from "./NavList";
-import { menus } from "../context/datas";
+import { menus } from "../context/dummy";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 
