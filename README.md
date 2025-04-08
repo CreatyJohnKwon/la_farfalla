@@ -4,3 +4,6 @@
 #### 구현 후에 홈쇼핑 많이 애용해주세요~
 
 https://creatyjohnkwon.github.io/la_farfalla/
+
+MongoDB 
+비 관계형 DB 선택 이유: 대용량 트래픽을 예방하기 위해

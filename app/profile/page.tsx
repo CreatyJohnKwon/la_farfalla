@@ -11,7 +11,7 @@ const Profile = () => {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b">
             <div className="flex flex-col justify-center items-center bg-white c_base:shadow-lg rounded-2xl p-10 w-[90%] max-w-lg">
-                <h1 className="text-7xl font-serif mb-16">Profile</h1>
+                <h1 className="text-7xl font-sans mb-16">Profile</h1>
                 <h1 className="text-4xl md:text-5xl font-mono text-gray-800 mb-8">
                     {session?.user?.name || "Guest"}
                 </h1>

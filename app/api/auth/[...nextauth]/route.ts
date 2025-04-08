@@ -9,12 +9,12 @@ const authOptions: NextAuthOptions = {
     providers: [
         // ✅ 네이버 로그인
         NaverProvider({
-            clientId: process.env.NEXT_PUBLIC_NAVER_CLIENT_ID!,
-            clientSecret: process.env.NEXT_PUBLIC_NAVER_CLIENT_SECRET!,
+            clientId: process.env.NAVER_CLIENT_ID!,
+            clientSecret: process.env.NAVER_CLIENT_SECRET!,
         }),
         KakaoProvider({
-            clientId: process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID!,
-            clientSecret: process.env.NEXT_PUBLIC_KAKAO_CLIENT_SECRET!,
+            clientId: process.env.KAKAO_CLIENT_ID!,
+            clientSecret: process.env.KAKAO_CLIENT_SECRET!,
         }),
 
         // ✅ 이메일 & 비밀번호 로그인 (선택적 추가) 
