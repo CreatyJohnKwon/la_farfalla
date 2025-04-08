@@ -1,14 +1,20 @@
-interface NavListProps {
-    menuText: string;
-    menuLink: string;
+interface Post {
+    _id: string;
+    title: string;
+    description: string;
+    price: string;
+    discount: string;
+    tag: string[];
+    category: string;
+    image: string;
+    colors: string;
 }
 
-interface Window {
-    naver:any;
-    Kakao:any;
+interface NavListProps {
+    menuText: string;
 }
 
 export type {
-    NavListProps,
-    Window
+    Post,
+    NavListProps
 }
