@@ -1,14 +1,24 @@
-const menus = [
+const navData = [
+    { text: 'home'},
+    { text: ''}
+];
+
+const menuData = [
     { 
-        text: 'purpose',
-        link: '/purpose'
-    }, 
+        text: 'ACCOUNT',
+        link: '/account'
+    },
     {
-        text: '',
-        link: '/'
+        text: 'SHOP',
+        link: '/shop'
+    },
+    {
+        text: 'VISION',
+        link: '/vision'
     }
 ];
 
 export {
-    menus
+    navData,
+    menuData
 }
