@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["phinf.pstatic.net", "k.kakaocdn.net"], // 외부 이미지 도메인 추가
   },
+  experimental: {
+    turbo: {}, // Turbopack 비활성화
+  },
   async headers() {
     return [
       {
