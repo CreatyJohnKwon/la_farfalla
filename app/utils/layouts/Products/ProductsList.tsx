@@ -20,7 +20,7 @@ const ProductsList = ({ post }: { post: Post }) => {
                         alt={post.title}
                         width={500}
                         height={500}
-                        objectFit="contain"
+                        style={{ objectFit: "contain" }}
                         priority
                         className="w-full h-auto rounded"
                     />

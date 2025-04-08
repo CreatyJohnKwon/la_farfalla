@@ -31,7 +31,7 @@ const Products = async ({ params }: ProductsProps) => {
                     alt={result.title}
                     width={500}
                     height={500}
-                    objectFit="contain"
+                    style={{ objectFit: "contain" }}
                     className="w-full c_base:w-3/4 h-auto rounded place-self-end"
                     priority
                 />
@@ -65,7 +65,7 @@ const Products = async ({ params }: ProductsProps) => {
                     alt={"description Image"}
                     width={500}
                     height={500}
-                    objectFit="contain"
+                    style={{ objectFit: "contain" }}
                     className="w-full h-full rounded-lg"
                     priority
                 />
