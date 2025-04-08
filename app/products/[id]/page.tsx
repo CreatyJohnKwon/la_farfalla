@@ -25,18 +25,18 @@ const Products = async ({ params }: ProductsProps) => {
     return result && (
         <div className="flex flex-col items-center justify-center h-full w-full pb-24">
             <Navbar />
-            <div className="w-full grid grid-cols-1 c_md:grid-cols-2 gap-2 transition-all duration-300 ease-in-out">
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2 transition-all duration-300 ease-in-out">
                 <Image
                     src={result.image ? `${process.env.R2_FILE_DOMAIN}/${result.image}` : DefaultImage}
                     alt={result.title}
                     width={500}
                     height={500}
                     style={{ objectFit: "contain" }}
-                    className="w-full c_base:w-3/4 h-auto rounded place-self-end"
+                    className="w-full h-full md:w-3/4 rounded place-self-end"
                     priority
                 />
                 <div className="w-full h-full flex flex-col items-start justify-center p-5">
-                    <div className="text-sm c_sm:text-base c_base:text-2xl font-semibold c_base:mt-9 mb-1 transition-all duration-700 ease-in-out">
+                    <div className="text-sm c_sm:text-base md:text-2xl font-semibold c_base:mt-9 mb-1 transition-all duration-700 ease-in-out">
                         <span>{`[${result.category}]\t${result.title}`}</span>
                     </div>
                     {
@@ -44,9 +44,9 @@ const Products = async ({ params }: ProductsProps) => {
                             <span className="text-base c_base:text-4xl font-semibold">{`${priceResult()}원`}</span>
                         ) : (
                             <div>
-                                <span className="text-sm  c_sm:text-base c_base:text-4xl font-semibold transition-all duration-700 ease-in-out">{`${priceDiscount()}원`}</span>
-                                <span className="ms-1 c_base:ms-4 text-ms c_base:text-2xl font-sans text-gray-600 line-through transition-all duration-700 ease-in-out">{`${priceResult()}원`}</span>
-                                <span className="ms-2 c_base:ms-4 text-base c_base:text-4xl font-semibold text-red-600 transition-all duration-700 ease-in-out">{`${result.discount}%`}</span>
+                                <span className="text-sm c_sm:text-xl md:text-3xl font-semibold transition-all duration-700 ease-in-out">{`${priceDiscount()}원`}</span>
+                                <span className="ms-1 md:ms-4 text-ms c_sm:text-base md:text-xl font-sans text-gray-600 line-through transition-all duration-700 ease-in-out">{`${priceResult()}원`}</span>
+                                <span className="ms-2 md:ms-4 text-base c_sm:text-xl md:text-3xl font-semibold text-red-600 transition-all duration-700 ease-in-out">{`${result.discount}%`}</span>
                             </div>
                         )
                     }
@@ -59,7 +59,7 @@ const Products = async ({ params }: ProductsProps) => {
                     </div>
                 </div>
             </div>
-            <div className="w-full c_base:w-2/4 mt-10">
+            <div className="w-full md:w-2/4 mt-10">
                 <Image 
                     src={result.image ? `${process.env.R2_FILE_DOMAIN}/${result.description}` : DefaultImage}
                     alt={"description Image"}
