@@ -32,6 +32,6 @@ html {
 
 @layer utilities {
     .font-brand {
-        @apply font-sans font-medium tracking-tightest;
+        @apply font-pretendard font-medium tracking-tightest;
     }
 }

@@ -13,8 +13,7 @@ module.exports = {
         tightest: "-0.075em"
       },
       fontFamily: {
-        sans: ['var(--font-pretendard)', 'sans-serif'],
-        pretendard: ['Pretendard', 'sans-serif'],
+        pretendard: ['Pretendard Variable', 'sans-serif'],
       },
       screens: {
         "c_lg": "1271px",
