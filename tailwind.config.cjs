@@ -9,6 +9,13 @@ module.exports = {
   ],
   theme: {
     extend: {
+      letterSpacing: {
+        tightest: "-0.075em"
+      },
+      fontFamily: {
+        sans: ['var(--font-pretendard)', 'sans-serif'],
+        pretendard: ['Pretendard', 'sans-serif'],
+      },
       screens: {
         "c_lg": "1271px",
         "c_md": "1105px",

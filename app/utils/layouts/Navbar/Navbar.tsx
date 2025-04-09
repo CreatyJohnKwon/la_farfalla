@@ -7,11 +7,11 @@ import { useSession } from "next-auth/react";
 
 const Navbar = () => {
     const { status } = useSession();
-    status === "unauthenticated" || status === "loading" ? navData[1].text = "account" : navData[1].text = "profile";
+    status === "unauthenticated" || status === "loading" ? navData[1].text = "login" : navData[1].text = "profile";
 
     return (
         <nav className="sticky top-0 z-40 ps-0 c_base:ps-4 p-4 bg-transparent transition-all duration-300 ease-in-out w-full h-full shadow-none">
-            <div className="max-w-screen-w_max w-full flex items-center p-0 c_base:p-4 justify-between mx-auto font-sans c_base:text-lg c_md:text-2xl">
+            <div className="max-w-screen-w_max w-full flex items-center p-0 c_base:p-4 justify-between mx-auto font-brand c_base:text-lg c_md:text-2xl">
                 {/* 네비게이션 바 로고 */}
                 <button>
                     <Link href="/menu" className="flex items-center space-x-3 rtl:space-x-reverse ps-8 z-50">

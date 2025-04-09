@@ -20,9 +20,9 @@ const Home = () => {
                             className="absolute inset-0 -z-50 blur-md object-cover place-self-center"
                         />
 
-                        <div className="text-center text-black text-4xl c_base:text-6xl c_md:text-9xl transition-all duration-300 ease-in-out">
+                        <div className="font-brand text-center text-black text-4xl c_base:text-6xl c_md:text-9xl transition-all duration-300 ease-in-out">
                             <Link href="/menu">
-                                <p className="font-sans">La farfalla</p>
+                                La farfalla
                             </Link>
                         </div>
                     </div>

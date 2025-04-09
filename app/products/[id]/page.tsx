@@ -1,4 +1,4 @@
-import { connectDB } from "@/app/utils/database";
+import { connectDB } from "@/app/utils/context/database";
 import { Post } from "@/app/utils/types/interfaces";
 import { ObjectId } from "mongodb";
 import Image from "next/image";
