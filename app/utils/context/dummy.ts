@@ -15,6 +15,10 @@ const menuData = [
     {
         text: 'Introduce',
         link: '/introduce'
+    },
+    {
+        text: 'Notice',
+        link: '/notice'
     }
 ];
 
