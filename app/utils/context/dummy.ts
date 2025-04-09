@@ -5,16 +5,20 @@ const navData = [
 
 const menuData = [
     { 
-        text: 'ACCOUNT',
-        link: '/account'
+        text: 'Login',
+        link: '/login'
     },
     {
-        text: 'SHOP',
+        text: 'Shop',
         link: '/shop'
     },
     {
-        text: 'VISION',
-        link: '/vision'
+        text: 'Introduce',
+        link: '/introduce'
+    },
+    {
+        text: 'Notice',
+        link: '/notice'
     }
 ];
 
