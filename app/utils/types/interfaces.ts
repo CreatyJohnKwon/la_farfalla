@@ -14,7 +14,30 @@ interface NavListProps {
     menuText: string;
 }
 
-export type {
-    Post,
-    NavListProps
+interface NavbarProps {
+    children?: React.ReactNode;
 }
+
+interface ShopClientProps {
+    posts: Post[];
+}
+
+interface ChildItem {
+    text: string;
+    query: string;
+}
+
+interface MenuItem {
+    text: string;
+    link: string;
+    child?: ChildItem[];
+}
+
+export type {
+    ShopClientProps,
+    Post,
+    NavListProps,
+    NavbarProps,
+    MenuItem,
+    ChildItem,
+};
