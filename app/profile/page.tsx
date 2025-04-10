@@ -3,39 +3,39 @@
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import Chillguy from "@/public/chill.png";
+import Chillguy from "../../public/chill.png";
 
 const Profile = () => {
     const { data: session } = useSession();
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b">
-            <div className="flex flex-col justify-center items-center bg-white c_base:shadow-lg rounded-2xl p-10 w-[90%] max-w-lg">
-                <h1 className="text-7xl font-brand mb-16">Profile</h1>
-                <h1 className="text-4xl md:text-5xl font-mono text-gray-800 mb-8">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b">
+            <div className="flex w-[90%] max-w-lg flex-col items-center justify-center rounded-2xl bg-white p-10 c_base:shadow-lg">
+                <h1 className="font-brand mb-16 text-7xl">Profile</h1>
+                <h1 className="mb-8 font-mono text-4xl text-gray-800 md:text-5xl">
                     {session?.user?.name || "Guest"}
                 </h1>
-                <div className="relative rounded-full overflow-hidden shadow-lg shadow-slate-600 mb-6">
-                    <Image 
+                <div className="relative mb-6 overflow-hidden rounded-full shadow-lg shadow-slate-600">
+                    <Image
                         src={session?.user?.image || Chillguy}
                         width={150}
                         height={150}
                         alt="user profile"
-                        className="w-36 h-36 object-cover"
+                        className="h-36 w-36 object-cover"
                     />
                 </div>
-                <span className="text-lg md:text-xl text-gray-600 mb-6">
+                <span className="mb-6 text-lg text-gray-600 md:text-xl">
                     {session?.user?.email || ""}
                 </span>
                 <button
-                    className="px-6 py-3 bg-gray-300 text-black font-thin text-2xl rounded-lg shadow-md hover:bg-red-600 transition-all duration-300"
+                    className="rounded-lg bg-gray-300 px-6 py-3 text-2xl font-thin text-black shadow-md transition-all duration-300 hover:bg-red-600"
                     onClick={() => signOut({ callbackUrl: "/" })}
                 >
                     Logout
                 </button>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Profile;
