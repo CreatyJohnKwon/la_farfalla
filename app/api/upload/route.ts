@@ -1,7 +1,7 @@
 // app/api/upload/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
-import uploadImageToR2 from "@/lib/uploadToR2";
+import uploadImageToR2 from "@/src/shared/lib/uploadToR2";
 
 export async function POST(req: NextRequest) {
     try {

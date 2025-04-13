@@ -1,11 +1,11 @@
-import { connectDB } from "@/utils/context/database";
-import { Post } from "@/utils/types/interfaces";
+import { connectDB } from "@/src/entities/database";
+import { Post } from "@/src/entities/interfaces";
 import { ObjectId } from "mongodb";
 import Image from "next/image";
 import DefaultImage from "../../../public/chill.png";
-import useProduct from "@/utils/hooks/useProduct";
-import Tags from "@/utils/layouts/Products/Tags";
-import Navbar from "@/utils/layouts/Navbar/Navbar";
+import useProduct from "@/src/shared/hooks/useProduct";
+import Tags from "@/src/features/Products/Tags";
+import Navbar from "@/src/widgets/Navbar/Navbar";
 
 interface ProductsProps {
     params: Promise<{ id: string }>;

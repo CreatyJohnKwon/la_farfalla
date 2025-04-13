@@ -8,6 +8,7 @@ interface Post {
     category: string;
     image: string;
     colors: string;
+    key: number;
 }
 
 interface NavListProps {
@@ -24,7 +25,7 @@ interface ShopClientProps {
 
 interface ChildItem {
     text: string;
-    query: string;
+    query: number;
 }
 
 interface MenuItem {

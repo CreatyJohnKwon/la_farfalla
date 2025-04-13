@@ -1,8 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import DefaultImage from "../../../../public/chill.png";
-import { Post } from "@/utils/types/interfaces";
-import useProduct from "@/utils/hooks/useProduct";
+import { Post } from "@/src/entities/interfaces";
+import useProduct from "@/src/shared/hooks/useProduct";
 import Tags from "./Tags";
 
 const ProductsList = ({ post }: { post: Post }) => {
@@ -35,9 +37,9 @@ const ProductsList = ({ post }: { post: Post }) => {
                         <span className="text-base font-semibold c_base:text-2xl">{`${priceResult()}원`}</span>
                     ) : (
                         <div>
-                            <span className="text-sm font-semibold transition-all duration-700 ease-in-out c_sm:text-base c_base:text-2xl">{`${priceDiscount()}원`}</span>
-                            <span className="ms-1 font-sans text-xs text-gray-600 line-through transition-all duration-700 ease-in-out c_base:ms-4 c_base:text-xl">{`${priceResult()}원`}</span>
-                            <span className="ms-2 text-base font-semibold text-red-600 transition-all duration-700 ease-in-out c_base:ms-4 c_base:text-2xl">{`${post.discount}%`}</span>
+                            <span className="text-sm font-semibold transition-all duration-300 ease-in-out c_sm:text-base c_base:text-2xl">{`${priceDiscount()}원`}</span>
+                            <span className="font-sans text-xs text-gray-600 line-through transition-all duration-300 ease-in-out c_base:ms-4 c_base:text-xl">{`${priceResult()}원`}</span>
+                            <span className="ms-2 text-base font-semibold text-red-600 transition-all duration-300 ease-in-out c_base:ms-4 c_base:text-2xl">{`${post.discount}%`}</span>
                         </div>
                     )}
                 </Link>

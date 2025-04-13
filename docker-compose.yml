@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  nextjs:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs
+    restart: always
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    command: "npm run start"
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    depends_on:
+      - nextjs
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 6h & wait $${!}; certbot renew; done'"

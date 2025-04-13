@@ -1,6 +1,6 @@
-import { connectDB } from "@/utils/context/database";
-import { Post } from "@/utils/types/interfaces";
-import ShopClient from "@/utils/component/Shop/ShopClient";
+import { connectDB } from "@/src/entities/database";
+import { Post } from "@/src/entities/interfaces";
+import ShopClient from "@/src/features/Shop/ShopClient";
 import { Suspense } from "react";
 import Image from "next/image";
 import LoadingIcon from "../../public/chill.png";
@@ -11,11 +11,6 @@ const Shop = async () => {
         .collection("post")
         .find({})
         .toArray()) as unknown as Post[];
-
-    const cleanedResult = result.map((post) => ({
-        ...post,
-        _id: post._id.toString(),
-    })) as Post[];
 
     return (
         <div>
