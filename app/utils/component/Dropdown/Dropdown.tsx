@@ -22,11 +22,11 @@ const Dropdown = () => {
     }, []);
 
     return (
-        <div ref={ref} className="font-brand z-50 ms-7">
+        <div ref={ref} className="font-brand z-50 ms-8 me-7">
             <button onClick={() => setOpen((prev) => !prev)}>season</button>
             {open && (
                 <ul
-                    className={`font-brand-light absolute mt-2 w-48 overflow-hidden bg-transparent transition-all duration-700 ease-in-out ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
+                    className={`font-brand-light absolute mt-2 overflow-hidden bg-transparent transition-all duration-700 ease-in-out ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
                 >
                     {datas.child?.map((childList: ChildItem, i: number) => (
                         <li key={`child${i}`} className="py-1">

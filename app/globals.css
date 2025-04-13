@@ -38,4 +38,8 @@ html {
     .font-brand-light {
         @apply font-pretendard font-light tracking-tightest;
     }
+
+    .font-brand-thin {
+        @apply font-pretendard font-thin tracking-tightest;
+    }
 }

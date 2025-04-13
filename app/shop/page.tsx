@@ -12,11 +12,6 @@ const Shop = async () => {
         .find({})
         .toArray()) as unknown as Post[];
 
-    const cleanedResult = result.map((post) => ({
-        ...post,
-        _id: post._id.toString(),
-    })) as Post[];
-
     return (
         <div>
             {/* Client Component는 Suspense로 감싸야 함 */}

@@ -17,7 +17,7 @@ const Introduce = () => {
         </h1>
 
         <div className="font-light c_base:text-3xl">
-          <span className="font-brand mt-2">La fafalla </span>
+          <span className="font-brand-light mt-2">La fafalla </span>
           <span>는 미래지향적이고 모던한 감각을 지닌 여성 브랜드로</span>
           <p className="mt-2">
             일상적이면서도 세련된 디자인을 통해 현대 여성들의 다양한
@@ -36,8 +36,8 @@ const Introduce = () => {
           onClick={() => instagramHandler()}
         >
           <RxInstagramLogo className="h-7 w-auto" />
-          <span className="ms-2 border-black font-thin hover:border-b">
-            LA_FARALLA{" "}
+          <span className="ms-2 border-black font-brand-light hover:border-b">
+            @lafarfalla____
           </span>
         </button>
       </div>

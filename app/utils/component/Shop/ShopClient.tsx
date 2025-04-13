@@ -27,7 +27,7 @@ const ShopClient = ({ posts }: ShopClientProps) => {
     return (
         <div className="h-full w-screen pb-24">
             <Navbar children={<Dropdown />} />
-            <p className="font-brand fixed w-screen text-center text-4xl c_md:text-6xl">
+            <p className="font-brand fixed w-screen text-center text-2xl c_sm:text-4xl c_md:text-6xl">
                 {title} Product
             </p>
             <div className="container mx-auto mt-24 w-5/6 transition-all duration-300 ease-in-out c_base:px-4 c_base:py-8 c_md:w-4/6">

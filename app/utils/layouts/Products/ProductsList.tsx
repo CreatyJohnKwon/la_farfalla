@@ -36,7 +36,7 @@ const ProductsList = ({ post }: { post: Post }) => {
                     ) : (
                         <div>
                             <span className="text-sm font-semibold transition-all duration-700 ease-in-out c_sm:text-base c_base:text-2xl">{`${priceDiscount()}원`}</span>
-                            <span className="ms-1 font-sans text-xs text-gray-600 line-through transition-all duration-700 ease-in-out c_base:ms-4 c_base:text-xl">{`${priceResult()}원`}</span>
+                            <span className="font-sans text-xs text-gray-600 line-through transition-all duration-700 ease-in-out c_base:ms-4 c_base:text-xl">{`${priceResult()}원`}</span>
                             <span className="ms-2 text-base font-semibold text-red-600 transition-all duration-700 ease-in-out c_base:ms-4 c_base:text-2xl">{`${post.discount}%`}</span>
                         </div>
                     )}
