@@ -1,4 +1,4 @@
-import { Post } from "../types/interfaces";
+import { Post } from "../../entities/interfaces";
 
 const useProduct = (post: Post) => {
     const price: number = Number(post.price);
@@ -9,11 +9,11 @@ const useProduct = (post: Post) => {
             return price.toLocaleString();
         }
         return "0";
-    }
-    
+    };
+
     const priceDiscount = (): string => {
         if (post.price && post.discount) {
-            let discountPrice = price - (price * (discount / 100));
+            let discountPrice = price - price * (discount / 100);
             discountPrice = Math.floor(discountPrice / 10) * 10;
 
             return discountPrice.toLocaleString();
@@ -24,7 +24,7 @@ const useProduct = (post: Post) => {
     return {
         priceResult,
         priceDiscount,
-    }
-}
+    };
+};
 
 export default useProduct;

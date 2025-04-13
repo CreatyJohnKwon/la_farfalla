@@ -1,4 +1,4 @@
-import { Post } from "../../types/interfaces";
+import { Post } from "../../entities/interfaces";
 
 const Tags = ({ post }: { post: Post }) => {
     return (

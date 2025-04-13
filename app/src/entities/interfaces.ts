@@ -25,7 +25,7 @@ interface ShopClientProps {
 
 interface ChildItem {
     text: string;
-    query: string;
+    query: number;
 }
 
 interface MenuItem {

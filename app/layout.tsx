@@ -1,8 +1,9 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import Script from "next/script";
-import AuthProvider from "./utils/layouts/Login/AuthProvider";
+import { getAuthSession } from "./src/shared/lib/session";
+import AuthProvider from "./src/features/Login/AuthProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -19,17 +20,19 @@ export const metadata: Metadata = {
     description: "Developed by CreatyJohnKwon",
 };
 
-export default function RootLayout({
+const RootLayout = async ({
     children,
 }: Readonly<{
     children: React.ReactNode;
-}>) {
+}>) => {
+    const session = await getAuthSession();
+
     return (
         <html lang="en">
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
             >
-                <AuthProvider>{children}</AuthProvider>
+                <AuthProvider session={session}>{children}</AuthProvider>
                 <Script
                     src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"
                     strategy="beforeInteractive"
@@ -37,4 +40,6 @@ export default function RootLayout({
             </body>
         </html>
     );
-}
+};
+
+export default RootLayout;

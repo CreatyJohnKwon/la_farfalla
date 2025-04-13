@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { menuData } from "@/utils/context/dummy";
+import { menuData } from "@/src/entities/dummy";
 import { useEffect, useState, useRef } from "react";
-import { MenuItem, ChildItem } from "@/utils/types/interfaces";
+import { MenuItem, ChildItem } from "@/src/entities/interfaces";
+import useSection from "@/src/shared/hooks/useSection";
 
 const Menu = () => {
     const [openShop, setOpenShop] = useState(false);
     const [openNotice, setOpenNotice] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+    const { setSection } = useSection();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -37,7 +39,10 @@ const Menu = () => {
                                 (childList: ChildItem, i: number) => (
                                     <li key={`child${i}`} className="py-1">
                                         <Link
-                                            href={`${menuList.link}?session=${childList.query}`}
+                                            href={`${menuList.link}`}
+                                            onClick={() =>
+                                                setSection(childList.query)
+                                            }
                                         >
                                             {childList.text}
                                         </Link>

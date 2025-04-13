@@ -1,6 +1,6 @@
-import { connectDB } from "@/utils/context/database";
-import { Post } from "@/utils/types/interfaces";
-import ShopClient from "@/utils/component/Shop/ShopClient";
+import { connectDB } from "@/src/entities/database";
+import { Post } from "@/src/entities/interfaces";
+import ShopClient from "@/src/features/Shop/ShopClient";
 import { Suspense } from "react";
 import Image from "next/image";
 import LoadingIcon from "../../public/chill.png";

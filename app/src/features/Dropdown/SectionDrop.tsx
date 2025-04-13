@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { menuData } from "@/utils/context/dummy";
-import { ChildItem } from "@/utils/types/interfaces";
+import { menuData } from "@/src/entities/dummy";
+import { ChildItem } from "@/src/entities/interfaces";
 import Link from "next/link";
+import useSection from "@/src/shared/hooks/useSection";
 
-const Dropdown = () => {
+const SectionDrop = () => {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const datas = menuData[1];
+    const { setSection } = useSection();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -22,7 +24,10 @@ const Dropdown = () => {
     }, []);
 
     return (
-        <div ref={ref} className="font-brand z-50 ms-8 me-7">
+        <div
+            ref={ref}
+            className="font-brand z-50 ms-8 transition-all duration-300 ease-in-out c_base:me-7"
+        >
             <button onClick={() => setOpen((prev) => !prev)}>season</button>
             {open && (
                 <ul
@@ -31,7 +36,8 @@ const Dropdown = () => {
                     {datas.child?.map((childList: ChildItem, i: number) => (
                         <li key={`child${i}`} className="py-1">
                             <Link
-                                href={`${datas.link}?session=${childList.query}`}
+                                href={`${datas.link}`}
+                                onClick={() => setSection(childList.query)}
                             >
                                 {childList.text}
                             </Link>
@@ -43,4 +49,4 @@ const Dropdown = () => {
     );
 };
 
-export default Dropdown;
+export default SectionDrop;
