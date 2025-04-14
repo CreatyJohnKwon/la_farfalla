@@ -13,7 +13,8 @@ const ShopClient = ({ posts }: ShopClientProps) => {
     const [title, setTitle] = useState("");
 
     useEffect(() => {
-        console.log("asdasd");
+        window.scrollTo({ top: 0, behavior: "auto" });
+
         if (section)
             category?.map(
                 (val) =>
@@ -25,7 +26,7 @@ const ShopClient = ({ posts }: ShopClientProps) => {
     }, [section]);
 
     return loading ? (
-        <div className="h-full w-full">
+        <div className="min-h-[2000px] w-full">
             <Navbar children={<SectionDrop />} />
             <div className="container mx-auto mt-24 w-5/6 transition-all duration-300 ease-in-out c_base:px-4 c_base:py-8 c_md:w-4/6">
                 <p className="font-brand w-full p-10 text-center text-2xl c_sm:text-4xl c_md:text-6xl">
