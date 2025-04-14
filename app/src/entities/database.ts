@@ -1,5 +1,6 @@
 import { MongoClient } from "mongodb";
-const url = "mongodb+srv://admin:john1125@laf-cluster.julhaoc.mongodb.net/?retryWrites=true&w=majority&appName=laf-cluster"
+const url =
+    "mongodb+srv://admin:john1125@laf-cluster.julhaoc.mongodb.net/forum?retryWrites=true&w=majority&appName=laf-cluster";
 let connectDB: Promise<MongoClient>;
 
 declare global {
@@ -15,6 +16,4 @@ if (process.env.NODE_ENV === "development") {
     connectDB = new MongoClient(url).connect();
 }
 
-export {
-    connectDB
-}
+export { connectDB };

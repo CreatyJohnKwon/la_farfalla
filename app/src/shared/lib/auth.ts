@@ -1,9 +1,10 @@
-// lib/auth.ts
 import NaverProvider from "next-auth/providers/naver";
 import KakaoProvider from "next-auth/providers/kakao";
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import { connectDB } from "@/src/entities/database";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -25,6 +26,7 @@ export const authOptions: NextAuthOptions = {
         },
     },
     secret: process.env.NEXTAUTH_SECRET!,
+    adapter: MongoDBAdapter(connectDB),
 };
 
 export async function redirectIfNeeded(type: "login" | "profile") {

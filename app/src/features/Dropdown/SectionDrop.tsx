@@ -1,16 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { menuData } from "@/src/entities/dummy";
-import { ChildItem } from "@/src/entities/interfaces";
-import Link from "next/link";
+import { Shop } from "@/src/entities/interfaces";
 import useSection from "@/src/shared/hooks/useSection";
 
 const SectionDrop = () => {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
-    const datas = menuData[1];
-    const { setSection } = useSection();
+    const { setSection, category } = useSection();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -33,14 +30,11 @@ const SectionDrop = () => {
                 <ul
                     className={`font-brand-light absolute mt-2 overflow-hidden bg-transparent transition-all duration-700 ease-in-out ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
                 >
-                    {datas.child?.map((childList: ChildItem, i: number) => (
-                        <li key={`child${i}`} className="py-1">
-                            <Link
-                                href={`${datas.link}`}
-                                onClick={() => setSection(childList.query)}
-                            >
-                                {childList.text}
-                            </Link>
+                    {category?.map((list: Shop) => (
+                        <li key={list._id} className="py-1">
+                            <button onClick={() => setSection(list.key)}>
+                                {list.title}
+                            </button>
                         </li>
                     ))}
                 </ul>

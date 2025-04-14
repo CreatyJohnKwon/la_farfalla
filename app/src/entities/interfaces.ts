@@ -4,11 +4,17 @@ interface Post {
     description: string;
     price: string;
     discount: string;
-    tag: string[];
     category: string;
     image: string;
     colors: string;
     key: number;
+}
+
+interface Shop {
+    _id: string;
+    title: string;
+    key: number;
+    year: string;
 }
 
 interface NavListProps {
@@ -23,27 +29,26 @@ interface ShopClientProps {
     posts: Post[];
 }
 
-interface ProductsProps {
-    params: Promise<{ id: string }>;
+interface HomeClientProps {
+    shops: Shop[];
 }
 
-interface ChildItem {
-    text: string;
-    query: number;
+interface ProductsProps {
+    params: Promise<{ id: string }>;
 }
 
 interface MenuItem {
     text: string;
     link: string;
-    child?: ChildItem[];
 }
 
 export type {
     ShopClientProps,
+    HomeClientProps,
     ProductsProps,
     NavListProps,
     NavbarProps,
     Post,
+    Shop,
     MenuItem,
-    ChildItem
 };

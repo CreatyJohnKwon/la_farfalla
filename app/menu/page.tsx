@@ -1,16 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { menuData } from "@/src/entities/dummy";
+import { menuData } from "@/src/entities/menuDatas";
 import { useEffect, useState, useRef } from "react";
-import { MenuItem, ChildItem } from "@/src/entities/interfaces";
+import { MenuItem, Shop } from "@/src/entities/interfaces";
 import useSection from "@/src/shared/hooks/useSection";
 
 const Menu = () => {
     const [openShop, setOpenShop] = useState(false);
     const [openNotice, setOpenNotice] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
-    const { setSection } = useSection();
+    const { setSection, category } = useSection();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -35,20 +35,16 @@ const Menu = () => {
                         <ul
                             className={`font-brand mb-5 mt-2 bg-transparent text-xl transition-all duration-700 ease-in-out c_md:text-5xl ${openShop ? "opacity-100" : "opacity-0"} `}
                         >
-                            {menuList.child?.map(
-                                (childList: ChildItem, i: number) => (
-                                    <li key={`child${i}`} className="py-1">
-                                        <Link
-                                            href={`${menuList.link}`}
-                                            onClick={() =>
-                                                setSection(childList.query)
-                                            }
-                                        >
-                                            {childList.text}
-                                        </Link>
-                                    </li>
-                                ),
-                            )}
+                            {category?.map((list: Shop) => (
+                                <li key={list._id} className="py-1">
+                                    <Link
+                                        href={`${menuList.link}`}
+                                        onClick={() => setSection(list.key)}
+                                    >
+                                        {list.title}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     )}
                 </li>
