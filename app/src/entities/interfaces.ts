@@ -23,6 +23,10 @@ interface ShopClientProps {
     posts: Post[];
 }
 
+interface ProductsProps {
+    params: Promise<{ id: string }>;
+}
+
 interface ChildItem {
     text: string;
     query: number;
@@ -36,9 +40,10 @@ interface MenuItem {
 
 export type {
     ShopClientProps,
-    Post,
+    ProductsProps,
     NavListProps,
     NavbarProps,
+    Post,
     MenuItem,
-    ChildItem,
+    ChildItem
 };

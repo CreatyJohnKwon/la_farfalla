@@ -12,7 +12,7 @@ const ProductsList = ({ post }: { post: Post }) => {
 
     return (
         <>
-            <li className="mb-24 h-full w-full" key={`${post._id}`}>
+            <li className="mb-24 h-full w-full font-brand" key={`${post._id}`}>
                 <Link href={`/products/${post._id}`}>
                     <Image
                         src={
@@ -38,8 +38,8 @@ const ProductsList = ({ post }: { post: Post }) => {
                     ) : (
                         <div>
                             <span className="text-sm font-semibold transition-all duration-300 ease-in-out c_sm:text-base c_base:text-2xl">{`${priceDiscount()}원`}</span>
-                            <span className="font-sans text-xs text-gray-600 line-through transition-all duration-300 ease-in-out c_base:ms-4 c_base:text-xl">{`${priceResult()}원`}</span>
-                            <span className="ms-2 text-base font-semibold text-red-600 transition-all duration-300 ease-in-out c_base:ms-4 c_base:text-2xl">{`${post.discount}%`}</span>
+                            <span className="ms-1 md:ms-2 font-sans text-xs text-gray-600 line-through transition-all duration-300 ease-in-out c_base:ms-4 c_base:text-xl">{`${priceResult()}원`}</span>
+                            <span className="ms-2 text-base font-semibold text-red-700 transition-all duration-300 ease-in-out c_base:ms-4 c_base:text-2xl">{`${post.discount}%`}</span>
                         </div>
                     )}
                 </Link>
