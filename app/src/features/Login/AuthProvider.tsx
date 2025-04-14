@@ -6,13 +6,13 @@ import { useSetAtom } from "jotai";
 import { sessionAtom } from "@/src/shared/lib/atom";
 import { SessionProvider } from "next-auth/react";
 
-export default function AuthProvider({
+const AuthProvider = ({
     children,
     session,
 }: {
     children: ReactNode;
     session: Session | null;
-}) {
+}) => {
     const setSession = useSetAtom(sessionAtom);
 
     useEffect(() => {
@@ -25,3 +25,5 @@ export default function AuthProvider({
         </SessionProvider>
     );
 }
+
+export default AuthProvider;

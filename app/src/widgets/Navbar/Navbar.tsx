@@ -1,7 +1,7 @@
 "use client";
 
 import NavList from "./NavList";
-import { navData } from "@/src/entities/dummy";
+import { navData } from "@/src/entities/menuDatas";
 import Link from "next/link";
 import { NavbarProps } from "../../entities/interfaces";
 import useUsers from "@/src/shared/hooks/useUsers";
@@ -11,7 +11,7 @@ const Navbar = ({ children }: NavbarProps) => {
     sessionCheck(navData);
 
     return (
-        <nav className="sticky top-0 z-50 h-full w-full bg-transparent p-4 ps-0 shadow-none transition-all duration-300 ease-in-out c_base:ps-4">
+        <nav className="sticky top-0 z-50 h-full w-full bg-white p-4 ps-0 shadow-none transition-all duration-300 ease-in-out c_base:ps-4">
             <div className="max-w-screen-w_max font-brand mx-auto flex w-full items-center justify-between p-0 transition-all duration-300 ease-in-out c_base:p-4 c_base:text-lg c_md:text-2xl">
                 {/* children 추가 */}
                 <div>{children}</div>
