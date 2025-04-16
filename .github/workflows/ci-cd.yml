@@ -29,11 +29,6 @@ jobs:
                     git pull origin main
 
                     docker-compose build
-
-                    docker-compose up -d --remove-orphans
-
-                    docker image prune -f
-                    docker volume prune -f
                   EOF
               env:
                   EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
