@@ -1,11 +1,11 @@
 # 베이스 이미지 설정
-FROM node:18-alpine
+FROM node:20-alpine
 
 # 작업 디렉토리 설정
 WORKDIR /app
 
 # 패키지 복사 및 설치
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm install
 
 # Next.js 프로젝트 복사
