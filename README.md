@@ -5,8 +5,8 @@
 
 https://creatyjohnkwon.github.io/la_farfalla/
 
-프로젝트 : 풀스택 (NextJS)
-CI/CD 파이프라인 .yml : GitHub Actions
-서버 : AWS EC2 프리티어 micro2 
-DB : MongoDB + Cloudflare R2
-SSH : AWS Linux + NginX
+프로젝트 : 풀스택 (NextJS)</br>
+CI/CD 파이프라인 .yml : GitHub Actions</br>
+서버 : AWS EC2 프리티어 micro2 </br>
+DB : MongoDB + Cloudflare R2</br>
+SSH : AWS Linux + NginX</br>
