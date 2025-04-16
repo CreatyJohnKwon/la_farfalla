@@ -30,6 +30,9 @@ services:
             - ./nginx.conf:/etc/nginx/nginx.conf
         depends_on:
             - nextjs
+        environment:
+            - NGINX_HOST=twcommunity-server.store
+            - NGINX_EMAIL=vmfodzl1125@naver.com
 
     certbot:
         image: certbot/certbot
