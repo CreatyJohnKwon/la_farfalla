@@ -34,6 +34,8 @@ jobs:
           mkdir -p ~/.ssh
           echo "$AWS_SSH_KEY" > ~/.ssh/id_rsa_new
           chmod 600 ~/.ssh/id_rsa_new
+          chmod 600 ~/.ssh/id_rsa_new
+          chmod 600 ~/.ssh/authorized_keys
 
       - name: Deploy to EC2 server
         run: |
