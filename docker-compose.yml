@@ -25,9 +25,8 @@ services:
             - "80:80"
             - "443:443"
         volumes:
-            - ./certbot/conf:/etc/letsencrypt
+            - ./certbot/conf:/etc/letsencrypt # 하나만 남기고 수정
             - ./certbot/www:/var/www/certbot
-            - /etc/letsencrypt:/etc/letsencrypt
         depends_on:
             - nextjs
 
