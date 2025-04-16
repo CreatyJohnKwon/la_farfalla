@@ -1,29 +1,39 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+    deploy:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
 
-      - name: Set up SSH keys
-        run: |
-          mkdir -p ~/.ssh
-          echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-        env:
-          AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+            - name: Set up SSH key
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+              env:
+                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
-      - name: Deploy to EC2 server
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_PUBLIC_IP }} "cd /home/ec2-user/la_farfalla && git pull origin main && docker-compose down && docker-compose up -d"
-        env:
-          AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
-          EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+            - name: Deploy to EC2 server
+              run: |
+                  ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+                    cd /home/ec2-user/la_farfalla
+
+                    git pull origin main
+
+                    docker-compose build
+
+                    docker-compose up -d --remove-orphans
+
+                    docker image prune -f
+                    docker volume prune -f
+                  EOF
+              env:
+                  EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
