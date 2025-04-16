@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # GitHub Actions가 사용할 runner 환경
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
