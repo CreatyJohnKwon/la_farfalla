@@ -27,6 +27,7 @@ services:
         volumes:
             - ./certbot/conf:/etc/letsencrypt # 하나만 남기고 수정
             - ./certbot/www:/var/www/certbot
+            - ./nginx.conf:/etc/nginx/nginx.conf
         depends_on:
             - nextjs
 
