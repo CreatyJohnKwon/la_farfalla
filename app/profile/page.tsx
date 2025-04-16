@@ -4,7 +4,11 @@ import ProfileClient from "./ProfileClient";
 const Profile = async () => {
     await redirectIfNeeded("profile");
 
-    return <ProfileClient />;
+    return (
+        <>
+            <ProfileClient />
+        </>
+    );
 };
 
 export default Profile;
