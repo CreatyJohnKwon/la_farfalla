@@ -14,7 +14,7 @@ const OAuth = () => {
                     className="relative mt-10 rounded-lg bg-green-100 p-2 transition-all duration-300 hover:bg-green-300"
                     onClick={() => loginHandler("naver")}
                 >
-                    네이버로 로그인하기
+                    네이버 로그인
                 </button>
             </div>
             <div>
@@ -22,7 +22,7 @@ const OAuth = () => {
                     className="relative mt-10 rounded-lg bg-yellow-100 p-2 transition-all duration-300 hover:bg-yellow-300"
                     onClick={() => loginHandler("kakao")}
                 >
-                    카카오로 로그인하기
+                    카카오 로그인
                 </button>
             </div>
         </div>
