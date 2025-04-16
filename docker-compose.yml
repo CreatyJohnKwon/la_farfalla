@@ -27,8 +27,7 @@ services:
         volumes:
             - ./certbot/conf:/etc/letsencrypt
             - ./certbot/www:/var/www/certbot
-            - /etc/letsencrypt/archive/twcommunity-server.store/fullchain1.pem:/etc/ssl/fullchain.pem
-            - /etc/letsencrypt/archive/twcommunity-server.store/privkey1.pem:/etc/ssl/privkey.pem
+            - /etc/letsencrypt:/etc/letsencrypt
         depends_on:
             - nextjs
 
