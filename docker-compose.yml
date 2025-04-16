@@ -25,8 +25,7 @@ services:
             - "80:80"
             - "443:443"
         volumes:
-            - ./nginx/nginx.conf:/etc/nginx/nginx.conf # 여기서 nginx.conf가 파일이어야 한다
-            - ./nginx/conf.d:/etc/nginx/conf.d # conf.d 디렉토리도 올바르게 마운트
+            - ./nginx:/etc/nginx/conf.d
             - ./certbot/www:/var/www/certbot
             - ./certbot/conf:/etc/letsencrypt
         depends_on:
