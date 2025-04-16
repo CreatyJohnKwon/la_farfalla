@@ -5,5 +5,8 @@
 
 https://creatyjohnkwon.github.io/la_farfalla/
 
-MongoDB 
-비 관계형 DB 선택 이유: 대용량 트래픽을 예방하기 위해
+프로젝트 : 풀스택 (NextJS)
+CI/CD 파이프라인 .yml : GitHub Actions
+서버 : AWS EC2 프리티어 micro2 
+DB : MongoDB + Cloudflare R2
+SSH : AWS Linux + NginX
