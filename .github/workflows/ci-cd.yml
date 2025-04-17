@@ -36,7 +36,7 @@ jobs:
                     npm install
 
                     echo "⚙️ Building Next.js app..."
-                    npm run build
+                    # npm run build
 
                     echo "🛠️ Docker 이미지 빌드..."
                     docker-compose build
