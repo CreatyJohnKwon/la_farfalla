@@ -26,19 +26,22 @@ jobs:
                   ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
                     set -e  # 에러 발생 시 즉시 중단
 
-                    cd /home/ec2-user/la_farfalla
-
-                    echo "📥 Pulling latest code..."
                     git pull origin main
 
-                    echo "🛠️ Building updated services..."
+                    echo "📦 Installing dependencies..."
+                    npm install
+
+                    echo "⚙️ Building Next.js app..."
+                    npm run build
+
+                    echo "🛠️ Docker 이미지 빌드..."
                     docker-compose build
 
-                    echo "🧼 Pruning unused resources..."
+                    echo "🧼 캐시 정리 중..."
                     docker image prune -f
                     docker volume prune -f
 
-                    echo "🚀 Restarting services..."
+                    echo "🔁 서비스 재시작..."
                     docker-compose down
                     docker-compose up -d --remove-orphans
 
