@@ -10,6 +10,11 @@ interface Post {
     key: number;
 }
 
+interface MenuItem {
+    text: string;
+    link: string;
+}
+
 interface Shop {
     _id: string;
     title: string;
@@ -37,12 +42,14 @@ interface ProductsProps {
     params: Promise<{ id: string }>;
 }
 
-interface MenuItem {
-    text: string;
-    link: string;
+interface LoginButtonProps {
+    btnTitle: string;
+    btnFunc: () => void;
+    btnColor?: string;
 }
 
 export type {
+    LoginButtonProps,
     ShopClientProps,
     HomeClientProps,
     ProductsProps,

@@ -10,7 +10,7 @@ const ProfileClient = () => {
 
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b">
-            <div className="flex w-[90%] max-w-lg flex-col items-center justify-center rounded-2xl bg-white p-10 c_base:shadow-lg">
+            <div className="flex w-[90%] max-w-lg flex-col items-center justify-center rounded-2xl bg-white p-10 sm:shadow-lg">
                 <h1 className="font-brand mb-16 text-7xl">Profile</h1>
                 <h1 className="mb-8 font-mono text-4xl text-gray-800 md:text-5xl">
                     {session?.user?.name || "Guest"}

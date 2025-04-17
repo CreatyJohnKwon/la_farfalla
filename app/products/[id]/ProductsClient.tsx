@@ -28,11 +28,11 @@ const ProductsClient = ({ post }: { post: Post }) => {
                         priority
                     />
                     <div className="flex h-full w-full flex-col items-start justify-center p-5">
-                        <div className="mb-1 text-sm font-semibold transition-all duration-700 ease-in-out c_sm:text-base c_base:mt-9 md:text-2xl">
+                        <div className="mb-1 text-sm font-semibold transition-all duration-700 ease-in-out c_sm:text-base sm:mt-9 md:text-2xl">
                             <span>{`[${post.category}]\t${post.title}`}</span>
                         </div>
                         {post.discount === "0" || !post.discount ? (
-                            <span className="text-base font-semibold c_base:text-4xl">{`${priceResult(post)}원`}</span>
+                            <span className="text-base font-semibold sm:text-4xl">{`${priceResult(post)}원`}</span>
                         ) : (
                             <div>
                                 <span className="text-sm font-semibold transition-all duration-700 ease-in-out c_sm:text-xl md:text-3xl">{`${priceDiscount(post)}원`}</span>
@@ -40,12 +40,12 @@ const ProductsClient = ({ post }: { post: Post }) => {
                                 <span className="ms-2 text-base font-semibold text-red-700 transition-all duration-700 ease-in-out c_sm:text-xl md:ms-4 md:text-3xl">{`${post.discount}%`}</span>
                             </div>
                         )}
-                        <p className="my-1 text-gray-700 c_base:text-lg">
+                        <p className="my-1 text-gray-700 sm:text-lg">
                             {`colors-${post.colors}`}
                         </p>
 
                         {/* 결제 */}
-                        <div className="flex h-[100px] w-full items-center justify-center bg-red-50 hover:bg-red-200 c_base:h-full c_base:w-3/5">
+                        <div className="flex h-[100px] w-full items-center justify-center bg-red-50 hover:bg-red-200 sm:h-full sm:w-3/5">
                             대충 여기다가 결제관련
                         </div>
                     </div>

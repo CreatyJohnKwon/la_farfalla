@@ -26,16 +26,16 @@ const ProductsList = ({ post }: { post: Post }) => {
                         priority
                         className="h-auto w-full"
                     />
-                    <div className="mb-1 mt-4 text-sm font-semibold transition-all duration-700 ease-in-out c_sm:text-base c_base:mt-9 c_base:text-2xl">
+                    <div className="mb-1 mt-4 text-sm font-semibold transition-all duration-700 ease-in-out c_sm:text-base sm:mt-9 sm:text-2xl">
                         <span>{`[${post.category}]\t${post.title}\t${post.colors} colors`}</span>
                     </div>
                     {post.discount === "0" || !post.discount ? (
-                        <span className="text-base font-semibold c_base:text-2xl">{`${priceResult(post)}원`}</span>
+                        <span className="text-base font-semibold sm:text-2xl">{`${priceResult(post)}원`}</span>
                     ) : (
                         <div>
-                            <span className="text-sm font-semibold transition-all duration-300 ease-in-out c_sm:text-base c_base:text-2xl">{`${priceDiscount(post)}원`}</span>
-                            <span className="ms-1 font-sans text-xs text-gray-600 line-through transition-all duration-300 ease-in-out c_base:ms-4 c_base:text-xl md:ms-2">{`${priceResult(post)}원`}</span>
-                            <span className="ms-2 text-base font-semibold text-red-700 transition-all duration-300 ease-in-out c_base:ms-4 c_base:text-2xl">{`${post.discount}%`}</span>
+                            <span className="text-sm font-semibold transition-all duration-300 ease-in-out c_sm:text-base sm:text-2xl">{`${priceDiscount(post)}원`}</span>
+                            <span className="ms-1 font-sans text-xs text-gray-600 line-through transition-all duration-300 ease-in-out sm:ms-4 sm:text-xl md:ms-2">{`${priceResult(post)}원`}</span>
+                            <span className="ms-2 text-base font-semibold text-red-700 transition-all duration-300 ease-in-out sm:ms-4 sm:text-2xl">{`${post.discount}%`}</span>
                         </div>
                     )}
                 </Link>

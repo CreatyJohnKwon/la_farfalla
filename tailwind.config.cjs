@@ -15,7 +15,8 @@ module.exports = {
                 pretendard: ["Pretendard Variable", "sans-serif"],
             },
             screens: {
-                c_lg: "1271px",
+                c_xl: "1850px",
+                c_lg: "1610px",
                 c_md: "1105px",
                 c_base: "500px",
                 c_sm: "360px",

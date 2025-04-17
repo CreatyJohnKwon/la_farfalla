@@ -21,7 +21,7 @@ const HomeClient = ({ shops }: HomeClientProps) => {
                 <div className="relative z-50 mb-64 h-full w-auto">
                     <Link
                         href="/menu"
-                        className="font-brand text-center text-6xl text-black transition-all duration-300 ease-in-out c_base:text-7xl c_md:text-9xl"
+                        className="font-brand text-center text-6xl text-black transition-all duration-300 ease-in-out sm:text-7xl c_md:text-9xl"
                     >
                         La farfalla
                     </Link>

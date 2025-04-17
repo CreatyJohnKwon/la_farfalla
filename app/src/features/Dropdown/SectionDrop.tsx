@@ -23,7 +23,7 @@ const SectionDrop = () => {
     return (
         <div
             ref={ref}
-            className="font-brand z-50 ms-8 transition-all duration-300 ease-in-out c_base:me-7"
+            className="font-brand z-50 ms-8 transition-all duration-300 ease-in-out sm:me-7"
         >
             <button onClick={() => setOpen((prev) => !prev)}>season</button>
             {open && (
