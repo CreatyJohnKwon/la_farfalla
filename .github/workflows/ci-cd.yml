@@ -24,16 +24,26 @@ jobs:
             - name: Deploy to EC2 server
               run: |
                   ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+                    set -e  # 에러 발생 시 즉시 중단
+
                     cd /home/ec2-user/la_farfalla
 
+                    echo "📥 Pulling latest code..."
                     git pull origin main
 
+                    echo "🛠️ Building updated services..."
                     docker-compose build
 
-                    docker-compose up -d --remove-orphans
-
+                    echo "🧼 Pruning unused resources..."
                     docker image prune -f
                     docker volume prune -f
+
+                    echo "🚀 Restarting services..."
+                    docker-compose down
+                    docker-compose up -d --remove-orphans
+
+                    echo "✅ Deployment completed successfully."
                   EOF
               env:
+                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
                   EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
