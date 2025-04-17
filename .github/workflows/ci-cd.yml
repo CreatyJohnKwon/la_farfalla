@@ -26,6 +26,10 @@ jobs:
                   ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
                     set -e  # 에러 발생 시 즉시 중단
 
+                    echo "프로젝트 디렉토리 접속..."
+                    cd /home/ec2-user/la_farfalla
+
+                    echo "프로젝트 main 브랜치 pull..."
                     git pull origin main
 
                     echo "📦 Installing dependencies..."
