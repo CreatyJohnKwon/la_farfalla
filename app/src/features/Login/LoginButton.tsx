@@ -1,7 +1,6 @@
 "use client";
 
 import { LoginButtonProps } from "@/src/entities/interfaces";
-import clsx from "clsx";
 
 const LoginButton = ({ btnTitle, btnFunc, btnColor }: LoginButtonProps) => {
     return (
