@@ -1,0 +1,18 @@
+# Dockerfile.full
+FROM node:18
+
+WORKDIR /app
+
+COPY . .
+
+# ✅ 환경변수 파일 복사
+COPY .env.production .env.production
+
+# ✅ 빌드 타임에 환경변수 설정
+ENV NODE_ENV=production
+
+RUN npm ci && npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]

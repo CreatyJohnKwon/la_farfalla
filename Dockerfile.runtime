@@ -3,10 +3,15 @@ FROM node:18
 
 WORKDIR /app
 
+# ✅ 복사
 COPY .next .next
 COPY public public
 COPY package*.json ./
 COPY next.config.js ./
+COPY .env.production .env.production
+
+# ✅ 실행 환경변수 설정
+ENV NODE_ENV=production
 
 RUN npm ci --omit=dev
 
