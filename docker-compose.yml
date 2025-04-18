@@ -1,47 +1,41 @@
 version: "3.8"
 
 services:
-    nextjs:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        container_name: nextjs
-        restart: always
-        volumes:
-            - .:/app
-            - /app/node_modules
-        working_dir: /app
-        ports:
-            - "3000:3000"
-        environment:
-            - NODE_ENV=production
-        command: "npm run start"
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs
+    restart: always
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    command: "npm run start"
 
-    nginx:
-        image: nginx:latest
-        container_name: nginx
-        restart: always
-        ports:
-            - "80:80"
-            - "443:443"
-        volumes:
-            # 호스트의 실제 letsencrypt 디렉토리를 읽기 전용으로 마운트하여 인증서 로드
-            - /etc/letsencrypt:/etc/letsencrypt:ro
-            # certbot 웹루트
-            - ./certbot/www:/var/www/certbot
-            # 커스텀 nginx 설정
-            - ./nginx.conf:/etc/nginx/nginx.conf:ro
-        depends_on:
-            - nextjs
-        environment:
-            - NGINX_HOST=twcommunity-server.store
-            - NGINX_EMAIL=vmfodzl1125@naver.com
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - nextjs
+    environment:
+      - NGINX_HOST=twcommunity-server.store
+      - NGINX_EMAIL=vmfodzl1125@naver.com
 
-    certbot:
-        image: certbot/certbot
-        container_name: certbot
-        volumes:
-            - ./certbot/www:/var/www/certbot
-            - ./certbot/conf:/etc/letsencrypt
-        entrypoint: >
-            /bin/sh -c "trap exit TERM; while :; do sleep 6h & wait $${!}; certbot renew --webroot -w /var/www/certbot; done"
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: >
+      /bin/sh -c "trap exit TERM; while :; do sleep 6h & wait $${!}; certbot renew --webroot -w /var/www/certbot; done"
