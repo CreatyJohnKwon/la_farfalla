@@ -21,6 +21,21 @@ jobs:
         env:
           AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
+      - name: Create .env.production
+        run: |
+          echo "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> .env.production
+          echo "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}" >> .env.production
+          echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env.production
+          echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env.production
+          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.production
+          echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
+          echo "R2_TOKEN=${{ secrets.R2_TOKEN }}" >> .env.production
+          echo "R2_ACOUNT_ID=${{ secrets.R2_ACOUNT_ID }}" >> .env.production
+          echo "R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}" >> .env.production
+          echo "R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}" >> .env.production
+          echo "R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}" >> .env.production
+          echo "R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}" >> .env.production
+
       - name: Archive app source (exclude node_modules)
         run: |
           zip -r build-artifact.zip . -x "node_modules/*" -x ".git/*"
