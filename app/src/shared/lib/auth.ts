@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
             return baseUrl;
         },
     },
-    secret: process.env.NEXTAUTH_SECRET!,
+    secret: "fdYxkPSX01ULu0pPbHHhNb49UxqaFQwWsEibm6L5i9s",
     adapter: MongoDBAdapter(connectDB),
 };
 
