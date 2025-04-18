@@ -1,0 +1,14 @@
+# Dockerfile.build
+FROM node:18
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps
+
+COPY . .
+
+RUN npm run build
+
+# 빌드된 결과물만 따로 복사할 수 있게 준비
+CMD ["tar", "czf", "output.tar.gz", ".next", "public", "package.json", "package-lock.json", "next.config.js"]

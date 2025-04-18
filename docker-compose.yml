@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   nextjs:
+    mem_limit: 2g
     build:
       context: .
       dockerfile: Dockerfile
