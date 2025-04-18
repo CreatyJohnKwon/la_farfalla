@@ -28,15 +28,16 @@ jobs:
 
             - name: Archive build artifacts
               run: |
+                  # zip에 node_modules 포함하지 않기
                   zip -r build-artifact.zip \
                     .next \
                     public \
                     package.json \
                     package-lock.json \
-                    node_modules \
                     next.config.js \
                     docker-compose.yml \
-                    Dockerfile
+                    Dockerfile \
+                    .env.local
 
             - name: Upload artifact to EC2
               run: |
@@ -50,6 +51,10 @@ jobs:
                     echo "📦 Unpacking build artifact..."
                     cd /home/ec2-user/la_farfalla
                     unzip -o build-artifact.zip
+
+                    # node_modules는 EC2에서 설치
+                    echo "📦 Installing dependencies..."
+                    sudo npm ci --legacy-peer-deps
 
                     echo "🧹 Docker 리소스 정리..."
                     docker container prune -f
