@@ -26,7 +26,7 @@ const useUsers = () => {
 
     const loginHandler = (provider: string | "") => {
         setIsOpenOAuth(false);
-        signIn(provider, { redirect: true, callbackUrl: "/" });
+        signIn(provider, { redirect: true, callbackUrl: process.env.NEXTAUTH_URL || "/" });
     };
 
     return {
