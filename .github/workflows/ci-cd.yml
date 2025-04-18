@@ -1,63 +1,71 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+    deploy:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
 
-      - name: Set up SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-        env:
-          AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+            - name: Set up SSH key
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+              env:
+                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
-      - name: Deploy to EC2 server
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-            set -e
+            - name: Deploy to EC2 server
+              run: |
+                  ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+                    set -e
 
-            echo "🧹 메모리 및 CPU 관련 캐시 정리 중..."
-            sudo sync; sudo sysctl -w vm.drop_caches=3
-            sudo swapoff -a && sudo swapon -a
-            echo "✅ 시스템 캐시 초기화 완료"
+                    echo "🧹 메모리 및 CPU 관련 캐시 정리 중..."
+                    sudo sync; sudo sysctl -w vm.drop_caches=3
+                    sudo swapoff -a && sudo swapon -a
+                    echo "✅ 시스템 캐시 초기화 완료"
 
-            echo "🧼 Docker 불필요한 리소스 정리 중..."
-            docker container prune -f
-            docker image prune -f
-            docker volume prune -f
-            docker network prune -f
+                    echo "🧼 Docker 불필요한 리소스 정리 중..."
+                    docker container prune -f
+                    docker image prune -f
+                    docker volume prune -f
+                    docker network prune -f
 
-            echo "프로젝트 디렉토리 접속..."
-            cd /home/ec2-user/la_farfalla
+                    echo "🧹 .next/ 디렉토리 캐시 삭제 중..."
+                    sudo rm -rf /home/ec2-user/la_farfalla/.next
 
-            echo "프로젝트 main 브랜치 pull..."
-            git pull origin main
+                    echo "🧹 프로젝트 관련 임시 파일 및 로그 삭제 중..."
+                    sudo rm -rf /home/ec2-user/la_farfalla/node_modules
+                    sudo rm -rf /home/ec2-user/la_farfalla/.npmrc
+                    sudo rm -rf /home/ec2-user/la_farfalla/logs
 
-            echo "📦 Installing dependencies..."
-            npm install
+                    echo "프로젝트 디렉토리 접속..."
+                    cd /home/ec2-user/la_farfalla
 
-            echo "⚙️ Building Next.js app..."
-            npm run build
+                    echo "프로젝트 main 브랜치 pull..."
+                    git pull origin main
 
-            echo "🛠️ Docker 이미지 빌드..."
-            docker-compose build
+                    echo "📦 Installing dependencies..."
+                    sudo npm install --legacy-peer-deps
 
-            echo "🔁 서비스 재시작..."
-            docker-compose down
-            docker-compose up -d --remove-orphans
+                    echo "⚙️ Building Next.js app..."
+                    sudo npm run build
 
-            echo "✅ Deployment completed successfully."
-          EOF
-        env:
-          AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
-          EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+                    echo "🛠️ Docker 이미지 빌드..."
+                    docker-compose build
+
+                    echo "🔁 서비스 재시작..."
+                    docker-compose down
+                    docker-compose up -d --remove-orphans
+
+                    echo "✅ Deployment completed successfully."
+                  EOF
+              env:
+                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+                  EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}

@@ -1,28 +1,41 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
+const js = require("@eslint/js");
+const globals = require("globals");
+const reactHooks = require("eslint-plugin-react-hooks");
+const reactRefresh = require("eslint-plugin-react-refresh");
+const nextPlugin = require("eslint-plugin-next");
 
-export default tseslint.config(
-  { ignores: ['dist'] },
-  {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+module.exports = [
+    {
+        files: ["**/*.{ts,tsx}"],
+        parser: "@typescript-eslint/parser",
+        parserOptions: {
+            ecmaVersion: 2020,
+            sourceType: "module",
+            ecmaFeatures: {
+                jsx: true,
+            },
+        },
+        extends: [
+            js.configs.recommended,
+            "plugin:@typescript-eslint/recommended",
+            "plugin:react/recommended",
+            "plugin:next/recommended", // next 플러그인 설정
+        ],
+        plugins: [
+            "react-hooks",
+            "react-refresh",
+            "@typescript-eslint",
+            "next", // next 플러그인 추가
+        ],
+        rules: {
+            ...reactHooks.configs.recommended.rules,
+            "react-refresh/only-export-components": [
+                "warn",
+                { allowConstantExport: true },
+            ],
+        },
+        globals: {
+            ...globals.browser,
+        },
     },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-    },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
-    },
-  },
-)
+];
