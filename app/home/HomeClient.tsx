@@ -15,18 +15,20 @@ const HomeClient = ({ shops }: HomeClientProps) => {
     }, [shops]);
 
     return (
-        <div className="flex h-screen w-full flex-col items-center justify-center">
+        <div className="flex min-h-screen w-full flex-col">
             <Navbar />
-            <div className="flex h-screen w-screen items-center justify-center">
-                <div className="relative z-50 mb-64 h-full w-auto">
+
+            <div className="flex flex-grow items-center justify-center">
+                <div className="flex items-center justify-center relative z-50 mb-64">
                     <Link
                         href="/menu"
-                        className="font-brand text-center text-6xl text-black transition-all duration-300 ease-in-out sm:text-7xl c_md:text-9xl"
+                        className="font-brand text-center text-6xl leading-none antialiased text-black transition-all duration-300 ease-in-out sm:text-7xl c_md:text-9xl"
                     >
                         La farfalla
                     </Link>
                 </div>
             </div>
+
             <Footer />
         </div>
     );
