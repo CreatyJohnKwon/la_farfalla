@@ -4,4 +4,3 @@ node_modules
 Dockerfile.build
 Dockerfile.runtime
 output.tar.gz
-.env*
