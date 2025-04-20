@@ -17,16 +17,30 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.KAKAO_CLIENT_SECRET!,
         }),
     ],
+    adapter: MongoDBAdapter(connectDB),
     callbacks: {
-        async signIn({ user, account, profile }) {
-            return true;
+        async signIn({ user }) {
+            const db = (await connectDB).db();
+            const existingUser = await db
+                .collection("users")
+                .findOne({ email: user.email });
+
+            if (!existingUser) {
+                // 오류 처리: 사용자가 존재하지 않음
+                return "/login";
+            }
+
+            if (!existingUser.nickname || !existingUser.agreeToTerms) {
+                return "/login"; // 아직 등록된 사용자 아님 → 온보딩으로
+            }
+
+            return true; // 이미 가입된 사용자 → 정상 로그인
         },
-        async redirect({ url, baseUrl }) {
-            return baseUrl;
+        async redirect({ baseUrl }) {
+            return baseUrl; // 로그인 성공 시 홈으로 보내기 (필요하면 커스터마이즈 가능)
         },
     },
     secret: "fdYxkPSX01ULu0pPbHHhNb49UxqaFQwWsEibm6L5i9s",
-    adapter: MongoDBAdapter(connectDB),
 };
 
 export async function redirectIfNeeded(type: "login" | "profile") {
