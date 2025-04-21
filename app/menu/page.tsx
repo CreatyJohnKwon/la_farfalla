@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { menuData } from "@/src/entities/dummy/menuDatas";
 import { useEffect, useState, useRef } from "react";
-import { MenuItem, Shop } from "@/src/entities/type/interfaces";
+import { MenuItem, Products } from "@/src/entities/type/interfaces";
 import useSection from "@/src/shared/hooks/useSection";
 
 const Menu = () => {
@@ -35,7 +35,7 @@ const Menu = () => {
                         <ul
                             className={`font-brand mb-5 mt-2 bg-transparent text-xl transition-all duration-700 ease-in-out c_md:text-5xl ${openShop ? "opacity-100" : "opacity-0"} `}
                         >
-                            {category?.map((list: Shop) => (
+                            {category?.map((list: Products) => (
                                 <li key={list._id} className="py-1">
                                     <Link
                                         href={`${menuList.link}`}

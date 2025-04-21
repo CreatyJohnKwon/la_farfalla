@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Shop } from "@/src/entities/type/interfaces";
+import { Products } from "@/src/entities/type/interfaces";
 import useSection from "@/src/shared/hooks/useSection";
 
 const SectionDrop = () => {
@@ -30,7 +30,7 @@ const SectionDrop = () => {
                 <ul
                     className={`font-brand-light absolute mt-2 overflow-hidden bg-transparent transition-all duration-700 ease-in-out ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
                 >
-                    {category?.map((list: Shop) => (
+                    {category?.map((list: Products) => (
                         <li key={list._id} className="py-1">
                             <button onClick={() => setSection(list.key)}>
                                 {list.title}

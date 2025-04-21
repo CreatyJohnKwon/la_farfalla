@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 
 export const shareMeal = async (formData: FormData) => {
-    const email = formData.get("email")?.toString();
-    const password = formData.get("password")?.toString();
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
     if (!email) {
         alert("이메일을 입력해주세요");
@@ -28,6 +28,8 @@ export const shareMeal = async (formData: FormData) => {
         return;
     }
 
-    alert("로그인 성공!");
-    redirect("/");
+    if (res.ok) {
+        alert("로그인 성공!");
+        redirect("/home");
+    }
 };

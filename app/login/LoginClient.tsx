@@ -5,7 +5,6 @@ import LoginButton from "../src/components/button/LoginButton";
 import OAuth from "@/src/components/button/OAuth";
 import useUsers from "@/src/shared/hooks/useUsers";
 import { useEffect } from "react";
-import { redirect } from "next/navigation";
 import { shareMeal } from "@/api/auth/post";
 import Link from "next/link";
 
