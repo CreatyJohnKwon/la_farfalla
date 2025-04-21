@@ -1,3 +1,4 @@
+// for server and datas
 interface Posts {
     _id: string;
     title: string;
@@ -22,41 +23,47 @@ interface Products {
     year: string;
 }
 
-interface NavListProps {
+// on client (props)
+type NavListProps = {
     menuText: string;
-}
+};
 
-interface NavbarProps {
+type NavbarProps = {
     children?: React.ReactNode;
-}
+};
 
-interface ShopClientProps {
+type ShopClientProps = {
     posts: Posts[];
-}
+};
 
-interface HomeClientProps {
+type HomeClientProps = {
     products: Products[];
-}
+};
 
-interface ProductsProps {
+type ProductsProps = {
     params: Promise<{ id: string }>;
-}
+};
 
-interface LoginButtonProps {
+type RegisterProps = {
+    registUser: any;
+};
+
+type LoginButtonProps = {
     btnTitle: string;
     btnFunc?: () => void;
     btnColor?: string;
     btnDisabled?: boolean;
-    btnType?: "button" | "submit" | "reset" | undefined;
-}
+    btnType?: "button" | "submit" | "reset";
+};
 
 export type {
-    LoginButtonProps,
+    NavListProps,
+    NavbarProps,
     ShopClientProps,
     HomeClientProps,
     ProductsProps,
-    NavListProps,
-    NavbarProps,
+    LoginButtonProps,
+    RegisterProps,
     Posts,
     Products,
     MenuItem,

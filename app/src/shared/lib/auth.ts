@@ -1,10 +1,9 @@
 import NaverProvider from "next-auth/providers/naver";
 import KakaoProvider from "next-auth/providers/kakao";
-import type { NextAuthOptions } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import { connectDB } from "@/src/entities/db/database";
+import User from "@/src/entities/models/User";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -17,27 +16,25 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.KAKAO_CLIENT_SECRET!,
         }),
     ],
-    adapter: MongoDBAdapter(connectDB),
     callbacks: {
         async signIn({ user }) {
-            const db = (await connectDB).db();
-            const existingUser = await db
-                .collection("users")
-                .findOne({ email: user.email });
+            // mongoose를 사용하여 데이터베이스에서 유저 정보 조회
+            const existingUser = await User.findOne({ email: user.email });
 
             if (!existingUser) {
-                // 오류 처리: 사용자가 존재하지 않음
+                // 아직 회원가입 안 된 사용자
                 return "/login";
             }
 
             if (!existingUser.nickname || !existingUser.agreeToTerms) {
-                return "/login"; // 아직 등록된 사용자 아님 → 온보딩으로
+                // 온보딩 미완료
+                return "/login";
             }
 
-            return true; // 이미 가입된 사용자 → 정상 로그인
+            return true; // 정상 로그인
         },
         async redirect({ baseUrl }) {
-            return baseUrl; // 로그인 성공 시 홈으로 보내기 (필요하면 커스터마이즈 가능)
+            return baseUrl;
         },
     },
     secret: "fdYxkPSX01ULu0pPbHHhNb49UxqaFQwWsEibm6L5i9s",

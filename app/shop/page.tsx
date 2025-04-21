@@ -1,15 +1,13 @@
-import { connectDB } from "@/src/entities/db/database";
 import ShopClient from "./ShopClient";
 import { serialize } from "@/src/features/calculate";
 import { Posts } from "@/src/entities/type/interfaces";
+import { getShopProducts } from "@/src/shared/lib/get";
 
 const Shop = async () => {
-    const db = (await connectDB).db("forum");
-    const postRaw = await db.collection("post").find({}).toArray();
+    const shopData = await getShopProducts();
+    const shopRaw: Posts[] = serialize(shopData) as Posts[];
 
-    const posts: Posts[] = serialize(postRaw) as Posts[];
-
-    return <ShopClient posts={posts} />;
+    return <ShopClient posts={shopRaw} />;
 };
 
 export default Shop;

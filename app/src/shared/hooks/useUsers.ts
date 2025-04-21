@@ -1,21 +1,16 @@
-import {
-    disabledAtom,
-    emailAtom,
-    isLoggedInAtom,
-    isOAuthOpenAtom,
-    passwordAtom,
-} from "@/src/shared/lib/atom";
+import { isLoggedInAtom, isOpenOAuthAtom } from "@/src/shared/lib/atom";
 import { useAtom } from "jotai";
 import { useAtomValue } from "jotai";
 import { sessionAtom } from "@/src/shared/lib/atom";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 const useUsers = () => {
     const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
-    const [isOpenOAuth, setIsOpenOAuth] = useAtom(isOAuthOpenAtom);
-    const [email, setEmail] = useAtom(emailAtom);
-    const [password, setPassword] = useAtom(passwordAtom);
-    const [isDisabled, setIsDisabled] = useAtom(disabledAtom);
+    const [isOpenOAuth, setIsOpenOAuth] = useAtom(isOpenOAuthAtom);
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
     const loginHandler = (provider: string | "") => {
         setIsOpenOAuth(false);

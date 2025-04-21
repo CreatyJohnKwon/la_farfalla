@@ -1,22 +1,18 @@
-import { connectDB } from "@/src/entities/db/database";
 import { Posts, ProductsProps } from "@/src/entities/type/interfaces";
-import { ObjectId } from "mongodb";
 import ProductsClient from "./ProductsClient";
 import { serializeFindOne } from "@/src/features/calculate";
+import { getProducts } from "@/src/shared/lib/get";
 
 const Products = async ({ params }: ProductsProps) => {
     const { id } = await params;
+    if (!id) return null;
 
-    const db = (await connectDB).db("forum");
-    const rawPost = await db
-        .collection("post")
-        .findOne({ _id: new ObjectId(id) });
+    const productData = await getProducts(id);
+    if (!productData) return null;
 
-    if (!rawPost) return null;
+    const productRaw = serializeFindOne(productData as unknown as Posts);
 
-    const post = serializeFindOne(rawPost) as Posts;
-
-    return <ProductsClient posts={post} />;
+    return <ProductsClient posts={productRaw} />;
 };
 
 export default Products;

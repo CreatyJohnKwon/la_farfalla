@@ -5,16 +5,15 @@ import LoginButton from "../src/components/button/LoginButton";
 import OAuth from "@/src/components/button/OAuth";
 import useUsers from "@/src/shared/hooks/useUsers";
 import { useEffect } from "react";
-import { shareMeal } from "@/api/auth/post";
+import { getLogin } from "@/src/shared/lib/get";
 import Link from "next/link";
 
 const LoginClient = () => {
     const {
-        isOpenOAuth,
         email,
         password,
         isDisabled,
-
+        isOpenOAuth,
         setEmail,
         setPassword,
         setIsDisabled,
@@ -34,7 +33,7 @@ const LoginClient = () => {
                 </span>
                 <form
                     className="flex w-5/6 flex-col items-center justify-center gap-6 sm:w-3/6"
-                    action={shareMeal}
+                    action={getLogin}
                 >
                     <div className="flex w-full flex-col gap-4 text-base md:text-lg">
                         <input
@@ -70,7 +69,7 @@ const LoginClient = () => {
                     </div>
                     <p className="m-2 w-full border-b" />
                     <Link
-                        href={"/regist"}
+                        href={"/register"}
                         className="flex w-full justify-center rounded-md bg-black/10 px-6 py-3 text-base text-black transition-colors duration-300 ease-in-out hover:bg-black/30 sm:text-lg md:text-xl"
                     >
                         회원가입

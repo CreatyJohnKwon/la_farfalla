@@ -1,14 +1,12 @@
-import { connectDB } from "@/src/entities/db/database";
 import { NextRequest, NextResponse } from "next/server";
+import { connectDB } from "@/src/entities/db/mongoose";
+import User from "@/src/entities/models/User";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
+    await connectDB();
     const { email, password } = await req.json();
-
-    const db = (await connectDB).db("forum");
-    const user = await db.collection("users").findOne({ email });
-
-    console.log("user", user);
-    console.log("email", email);
+    const user = await User.findOne({ email });
 
     if (!user) {
         return NextResponse.json(
@@ -24,7 +22,8 @@ export async function POST(req: NextRequest) {
         );
     }
 
-    if (user.password !== password) {
+    const isPasswordValid = await bcrypt.compare(password, user.password || "");
+    if (!isPasswordValid) {
         return NextResponse.json(
             { error: "비밀번호가 틀렸습니다" },
             { status: 401 },

@@ -21,6 +21,7 @@ const OAuth = () => {
                     <button
                         className="absolute right-4 top-4 text-2xl text-gray-400 transition hover:text-gray-600"
                         onClick={() => setIsOpenOAuth(false)}
+                        type="button"
                     >
                         <IoClose />
                     </button>
@@ -30,6 +31,7 @@ const OAuth = () => {
                     <button
                         onClick={() => loginHandler("naver")}
                         className="rounded-md bg-green-500/20 px-6 py-3 text-green-500 transition-all duration-300 hover:bg-green-500/40"
+                        type="button"
                     >
                         <div className="flex w-full justify-between">
                             <SiNaver className="me-3 mt-[3px] sm:me-5" />
@@ -40,6 +42,7 @@ const OAuth = () => {
                     <button
                         onClick={() => loginHandler("kakao")}
                         className="rounded-md bg-[#FEE500]/40 px-6 py-3 text-[#381E1F] transition-all duration-300 hover:bg-[#FEE500]/70"
+                        type="button"
                     >
                         <div className="flex w-full justify-between">
                             <RiKakaoTalkFill className="me-3 mt-[3px] sm:me-5" />
