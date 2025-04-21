@@ -1,6 +1,6 @@
 "use client";
 
-import { NavListProps } from "@/src/entities/interfaces";
+import { NavListProps } from "@/src/entities/type/interfaces";
 import Link from "next/link";
 
 const NavList = ({ menuText }: NavListProps) => {

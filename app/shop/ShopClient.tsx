@@ -1,9 +1,9 @@
 "use client";
 
-import ProductsList from "@/src/features/Products/ProductsList";
-import SectionDrop from "@/src/features/Dropdown/SectionDrop";
-import Navbar from "@/src/widgets/Navbar/Navbar";
-import { ShopClientProps } from "@/src/entities/interfaces";
+import ProductsList from "@/src/components/list/ProductsList";
+import SectionDrop from "@/src/components/drop/SectionDrop";
+import Navbar from "@/src/widgets/navbar/Navbar";
+import { ShopClientProps } from "@/src/entities/type/interfaces";
 import { useEffect, useState } from "react";
 import useSection from "@/src/shared/hooks/useSection";
 
@@ -52,9 +52,9 @@ const ShopClient = ({ posts }: ShopClientProps) => {
                 <ul className="grid grid-cols-2 gap-2 transition-all duration-300 ease-in-out c_sm:gap-4 sm:gap-12 c_md:grid-cols-3">
                     {posts.map((post) => {
                         if (post.key === +section) {
-                            return <ProductsList key={post._id} post={post} />;
+                            return <ProductsList key={post._id} posts={post} />;
                         } else if (+section === 0) {
-                            return <ProductsList key={post._id} post={post} />;
+                            return <ProductsList key={post._id} posts={post} />;
                         }
                     })}
                 </ul>

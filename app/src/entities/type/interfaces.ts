@@ -1,4 +1,4 @@
-interface Post {
+interface Posts {
     _id: string;
     title: string;
     description: string;
@@ -15,7 +15,7 @@ interface MenuItem {
     link: string;
 }
 
-interface Shop {
+interface Products {
     _id: string;
     title: string;
     key: number;
@@ -31,11 +31,11 @@ interface NavbarProps {
 }
 
 interface ShopClientProps {
-    posts: Post[];
+    posts: Posts[];
 }
 
 interface HomeClientProps {
-    shops: Shop[];
+    products: Products[];
 }
 
 interface ProductsProps {
@@ -44,8 +44,10 @@ interface ProductsProps {
 
 interface LoginButtonProps {
     btnTitle: string;
-    btnFunc: () => void;
+    btnFunc?: () => void;
     btnColor?: string;
+    btnDisabled?: boolean;
+    btnType?: "button" | "submit" | "reset" | undefined;
 }
 
 export type {
@@ -55,7 +57,7 @@ export type {
     ProductsProps,
     NavListProps,
     NavbarProps,
-    Post,
-    Shop,
+    Posts,
+    Products,
     MenuItem,
 };

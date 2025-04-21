@@ -1,17 +1,15 @@
-import useProduct from "@/src/shared/hooks/useProduct";
+import { serialize } from "@/src/features/calculate";
 import HomeClient from "./HomeClient";
-import { Shop } from "@/src/entities/interfaces";
-import { connectDB } from "@/src/entities/database";
+import { Products } from "@/src/entities/type/interfaces";
+import { connectDB } from "@/src/entities/db/database";
 
 const Home = async () => {
-    const { serialize } = useProduct();
-
     const db = (await connectDB).db("forum");
-    const shopRaw = await db.collection("shop").find({}).toArray();
+    const productsRaw = await db.collection("shop").find({}).toArray();
 
-    const shops: Shop[] = serialize(shopRaw) as Shop[];
+    const products: Products[] = serialize(productsRaw) as Products[];
 
-    return <HomeClient shops={shops} />;
+    return <HomeClient products={products} />;
 };
 
 export default Home;

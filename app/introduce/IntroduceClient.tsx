@@ -1,7 +1,7 @@
 "use client";
 
-import Footer from "@/src/widgets/Footer/Footer";
-import Navbar from "@/src/widgets/Navbar/Navbar";
+import Footer from "@/src/widgets/footer/Footer";
+import Navbar from "@/src/widgets/navbar/Navbar";
 import { RxInstagramLogo } from "react-icons/rx";
 
 const IntroduceClient = () => {

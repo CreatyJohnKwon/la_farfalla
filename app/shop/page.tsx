@@ -1,15 +1,13 @@
-import { connectDB } from "@/src/entities/database";
+import { connectDB } from "@/src/entities/db/database";
 import ShopClient from "./ShopClient";
-import useProduct from "@/src/shared/hooks/useProduct";
-import { Post } from "@/src/entities/interfaces";
+import { serialize } from "@/src/features/calculate";
+import { Posts } from "@/src/entities/type/interfaces";
 
 const Shop = async () => {
-    const { serialize } = useProduct();
-
     const db = (await connectDB).db("forum");
     const postRaw = await db.collection("post").find({}).toArray();
 
-    const posts: Post[] = serialize(postRaw) as Post[];
+    const posts: Posts[] = serialize(postRaw) as Posts[];
 
     return <ShopClient posts={posts} />;
 };

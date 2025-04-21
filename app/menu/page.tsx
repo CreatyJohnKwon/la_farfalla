@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { menuData } from "@/src/entities/menuDatas";
+import { menuData } from "@/src/entities/dummy/menuDatas";
 import { useEffect, useState, useRef } from "react";
-import { MenuItem, Shop } from "@/src/entities/interfaces";
+import { MenuItem, Shop } from "@/src/entities/type/interfaces";
 import useSection from "@/src/shared/hooks/useSection";
 
 const Menu = () => {

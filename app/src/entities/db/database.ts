@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+
 const url =
     "mongodb+srv://admin:john1125@laf-cluster.julhaoc.mongodb.net/forum?retryWrites=true&w=majority&appName=laf-cluster";
 let connectDB: Promise<MongoClient>;

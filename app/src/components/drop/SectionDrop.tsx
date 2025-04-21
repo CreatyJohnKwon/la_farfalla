@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Shop } from "@/src/entities/interfaces";
+import { Shop } from "@/src/entities/type/interfaces";
 import useSection from "@/src/shared/hooks/useSection";
 
 const SectionDrop = () => {

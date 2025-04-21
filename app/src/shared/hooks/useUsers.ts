@@ -1,4 +1,10 @@
-import { isLoggedInAtom, isOAuthOpenAtom } from "@/src/shared/lib/atom";
+import {
+    disabledAtom,
+    emailAtom,
+    isLoggedInAtom,
+    isOAuthOpenAtom,
+    passwordAtom,
+} from "@/src/shared/lib/atom";
 import { useAtom } from "jotai";
 import { useAtomValue } from "jotai";
 import { sessionAtom } from "@/src/shared/lib/atom";
@@ -7,6 +13,14 @@ import { signIn } from "next-auth/react";
 const useUsers = () => {
     const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
     const [isOpenOAuth, setIsOpenOAuth] = useAtom(isOAuthOpenAtom);
+    const [email, setEmail] = useAtom(emailAtom);
+    const [password, setPassword] = useAtom(passwordAtom);
+    const [isDisabled, setIsDisabled] = useAtom(disabledAtom);
+
+    const loginHandler = (provider: string | "") => {
+        setIsOpenOAuth(false);
+        signIn(provider, { redirect: true, callbackUrl: "/" });
+    };
 
     const sessionCheck = (navData: any) => {
         const session = useAtomValue(sessionAtom);
@@ -20,24 +34,19 @@ const useUsers = () => {
         }
     };
 
-    const handleAccountBtn = (title: string) => {
-        alert(`${title} 기능 개발중입니다`);
-    };
-
-    const loginHandler = (provider: string | "") => {
-        setIsOpenOAuth(false);
-        signIn(provider, { redirect: true, callbackUrl: "/" });
-    };
-
     return {
+        email,
+        password,
+        isDisabled,
         isLoggedIn,
         isOpenOAuth,
+        setEmail,
+        setPassword,
+        setIsDisabled,
         sessionCheck,
         setIsLoggedIn,
         setIsOpenOAuth,
-
         loginHandler,
-        handleAccountBtn,
     };
 };
 

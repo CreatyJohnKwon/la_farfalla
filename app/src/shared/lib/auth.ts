@@ -4,7 +4,7 @@ import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import { connectDB } from "@/src/entities/database";
+import { connectDB } from "@/src/entities/db/database";
 
 export const authOptions: NextAuthOptions = {
     providers: [

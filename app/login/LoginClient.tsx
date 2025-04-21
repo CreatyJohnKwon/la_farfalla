@@ -1,12 +1,30 @@
 "use client";
 
-import Navbar from "@/src/widgets/Navbar/Navbar";
-import LoginButton from "../src/features/Login/LoginButton";
-import OAuth from "@/src/features/Login/OAuth";
+import Navbar from "@/src/widgets/navbar/Navbar";
+import LoginButton from "../src/components/button/LoginButton";
+import OAuth from "@/src/components/button/OAuth";
 import useUsers from "@/src/shared/hooks/useUsers";
+import { useEffect } from "react";
+import { redirect } from "next/navigation";
+import { shareMeal } from "@/api/auth/post";
+import Link from "next/link";
 
 const LoginClient = () => {
-    const { handleAccountBtn, isOpenOAuth, setIsOpenOAuth } = useUsers();
+    const {
+        isOpenOAuth,
+        email,
+        password,
+        isDisabled,
+
+        setEmail,
+        setPassword,
+        setIsDisabled,
+        setIsOpenOAuth,
+    } = useUsers();
+
+    useEffect(() => {
+        setIsDisabled(email.trim() === "" || password.trim() === "");
+    }, [email, password]);
 
     return (
         <>
@@ -15,15 +33,24 @@ const LoginClient = () => {
                 <span className="font-brand mb-20 text-6xl transition-all duration-700 ease-in-out sm:text-8xl">
                     Login
                 </span>
-                <div className="flex w-5/6 flex-col items-center justify-center gap-6 sm:w-3/6">
+                <form
+                    className="flex w-5/6 flex-col items-center justify-center gap-6 sm:w-3/6"
+                    action={shareMeal}
+                >
                     <div className="flex w-full flex-col gap-4 text-base md:text-lg">
                         <input
                             type="email"
+                            name="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             placeholder="이메일을 입력하세요"
                             className="h-16 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
                         <input
-                            type="text"
+                            type="password"
+                            name="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="비밀번호를 입력하세요"
                             className="h-16 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
@@ -31,24 +58,26 @@ const LoginClient = () => {
                     <div className="font-brand flex w-full justify-center gap-4">
                         <LoginButton
                             btnTitle="로그인"
-                            btnFunc={() => handleAccountBtn("로그인")}
-                            btnColor="bg-black hover:bg-black/50 text-white transition-colors"
+                            btnColor={`${isDisabled ? "bg-black/50" : "bg-black hover:bg-black/50"}  text-white transition-colors`}
+                            btnDisabled={isDisabled}
+                            btnType="submit"
                         />
                         <LoginButton
                             btnTitle="간편 로그인"
                             btnFunc={() => setIsOpenOAuth(true)}
                             btnColor="bg-[#F9F5EB] hover:bg-[#EADDC8] transition-colors"
+                            btnType="button"
                         />
                     </div>
-
                     <p className="m-2 w-full border-b" />
-                    <LoginButton
-                        btnTitle="회원가입"
-                        btnFunc={() => handleAccountBtn("회원가입")}
-                        btnColor="bg-black/10 hover:bg-black/30 transition-colors"
-                    />
+                    <Link
+                        href={"/regist"}
+                        className="flex w-full justify-center rounded-md bg-black/10 px-6 py-3 text-base text-black transition-colors duration-300 ease-in-out hover:bg-black/30 sm:text-lg md:text-xl"
+                    >
+                        회원가입
+                    </Link>
                     {isOpenOAuth && <OAuth />}
-                </div>
+                </form>
             </div>
         </>
     );

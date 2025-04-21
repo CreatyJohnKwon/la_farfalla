@@ -1,9 +1,9 @@
 "use client";
 
 import NavList from "./NavList";
-import { navData } from "@/src/entities/menuDatas";
+import { navData } from "@/src/entities/dummy/menuDatas";
 import Link from "next/link";
-import { NavbarProps } from "../../entities/interfaces";
+import { NavbarProps } from "../../entities/type/interfaces";
 import useUsers from "@/src/shared/hooks/useUsers";
 
 const Navbar = ({ children }: NavbarProps) => {
