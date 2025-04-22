@@ -3,6 +3,7 @@ import KakaoProvider from "next-auth/providers/kakao";
 import { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { connectDB } from "@/src/entities/db/mongoose";
 import User from "@/src/entities/models/User";
 
 export const authOptions: NextAuthOptions = {
@@ -19,16 +20,14 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async signIn({ user }) {
             // mongoose를 사용하여 데이터베이스에서 유저 정보 조회
-            const existingUser = await User.findOne({ email: user.email });
+            await connectDB();
+            const existingUser = await User.findOne({
+                email: user.email,
+            }).lean();
 
             if (!existingUser) {
                 // 아직 회원가입 안 된 사용자
-                return "/login";
-            }
-
-            if (!existingUser.nickname || !existingUser.agreeToTerms) {
-                // 온보딩 미완료
-                return "/login";
+                return "/login?error=signup-required";
             }
 
             return true; // 정상 로그인

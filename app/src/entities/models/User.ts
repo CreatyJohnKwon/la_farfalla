@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
         providerId: {
             type: String,
             unique: true,
-            sparse: true, // OAuth 제공자 고유 ID
+            sparse: true, // OAuth 제공자 고유 ID : 고유한 값
             default: null,
         },
         email: {

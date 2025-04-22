@@ -3,10 +3,7 @@ import mongoose from "mongoose";
 let isConnected = false;
 
 export const connectDB = async () => {
-    if (isConnected) {
-        console.log("Already connected to MongoDB");
-        return;
-    }
+    if (isConnected) return; // 연결되었으면 그냥 얼리리턴
 
     try {
         // mongoose로 MongoDB에 연결
