@@ -1,7 +1,7 @@
 "use client";
 
 import Navbar from "@/src/widgets/navbar/Navbar";
-import LoginButton from "../src/components/button/LoginButton";
+import LoginButton from "@/src/components/button/LoginButton";
 import OAuth from "@/src/components/button/OAuth";
 import useUsers from "@/src/shared/hooks/useUsers";
 import { useEffect } from "react";
