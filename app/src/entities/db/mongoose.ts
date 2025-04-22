@@ -13,13 +13,6 @@ export const connectDB = async () => {
 
         // 연결이 성공적으로 이루어졌을 때 상태 업데이트
         isConnected = true;
-        console.log("MongoDB connected with Mongoose");
-
-        // 연결 상태를 출력하여 확인
-        console.log(
-            "Mongoose connection state:",
-            mongoose.connection.readyState,
-        );
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
         throw new Error("MongoDB connection failed");
