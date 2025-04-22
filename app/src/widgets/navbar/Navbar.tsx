@@ -7,7 +7,7 @@ import { NavbarProps } from "../../entities/type/interfaces";
 import useUsers from "@/src/shared/hooks/useUsers";
 
 const Navbar = ({ children }: NavbarProps) => {
-    const { sessionCheck } = useUsers();
+    const { sessionCheck } = useUsers(); //
     sessionCheck(navData);
 
     return (
