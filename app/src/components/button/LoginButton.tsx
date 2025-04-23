@@ -13,7 +13,7 @@ const LoginButton = ({
         <>
             <button
                 onClick={() => btnFunc && btnFunc()}
-                className={`w-full rounded-md px-6 py-3 text-black ${btnColor}`}
+                className={`w-full px-6 py-3 text-black ${btnColor}`}
                 disabled={btnDisabled}
                 type={btnType}
             >

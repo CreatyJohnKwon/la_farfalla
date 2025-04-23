@@ -16,7 +16,7 @@ const OAuth = ({ where }: OAuthProps) => {
                 onClick={() => setIsOpenOAuth(false)}
             >
                 <div
-                    className="relative flex w-4/6 max-w-md flex-col items-center justify-center gap-5 rounded-2xl bg-white p-8 text-base shadow-xl sm:p-10 sm:text-xl"
+                    className="relative flex w-4/6 max-w-md flex-col items-center justify-center gap-5 bg-white p-8 text-base shadow-xl sm:p-10 sm:text-xl"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <button
@@ -27,33 +27,39 @@ const OAuth = ({ where }: OAuthProps) => {
                         <IoClose />
                     </button>
                     <h2 className="mb-8 mt-5 text-lg font-semibold text-gray-800 sm:mt-1 sm:text-2xl">
-                        {where === "login"
-                            ? "SNS로 간편 로그인"
-                            : "SNS로 간편 가입"}
+                        {where === "login" ? "간편 로그인" : "간편 가입"}
                     </h2>
                     <button
-                        onClick={() => {where === "login" ? loginHandler("naver") : registHandler("naver") }}
-                        className="rounded-md bg-green-500/20 px-6 py-3 text-green-500 transition-all duration-300 hover:bg-green-500/40"
+                        onClick={() => {
+                            where === "login"
+                                ? loginHandler("naver")
+                                : registHandler("naver");
+                        }}
+                        className="bg-green-500/20 px-6 py-3 text-green-500 transition-all duration-300 hover:bg-green-500/40"
                         type="button"
                     >
                         <div className="flex w-full justify-between">
                             <SiNaver className="me-3 mt-[3px] sm:me-5" />
                             {where === "login"
-                                ? "네이버 로그인"
-                                : "네이버로 간편 가입"}
+                                ? "Login with Naver"
+                                : "Register with Naver"}
                         </div>
                     </button>
 
                     <button
-                        onClick={() => {where === "login" ? loginHandler("kakao") : registHandler("kakao") }}
-                        className="rounded-md bg-[#FEE500]/40 px-6 py-3 text-[#381E1F] transition-all duration-300 hover:bg-[#FEE500]/70"
+                        onClick={() => {
+                            where === "login"
+                                ? loginHandler("kakao")
+                                : registHandler("kakao");
+                        }}
+                        className="bg-[#FEE500]/40 px-6 py-3 text-black transition-all duration-300 hover:bg-[#FEE500]/70"
                         type="button"
                     >
                         <div className="flex w-full justify-between">
                             <RiKakaoTalkFill className="me-3 mt-[3px] sm:me-5" />
                             {where === "login"
-                                ? "카카오 로그인"
-                                : "카카오로 간편 가입"}
+                                ? "Login with Kakao"
+                                : "Register with Kakao"}
                         </div>
                     </button>
                 </div>

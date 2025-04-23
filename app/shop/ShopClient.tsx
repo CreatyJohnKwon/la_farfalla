@@ -45,11 +45,11 @@ const ShopClient = ({ posts }: ShopClientProps) => {
     ) : (
         <div className="h-full w-full">
             <Navbar children={<SectionDrop />} />
-            <div className="container mx-auto w-5/6 transition-all duration-300 ease-in-out sm:px-4 sm:py-8 c_md:w-4/6">
-                <p className="font-brand w-full p-10 text-center text-2xl c_sm:text-4xl c_md:text-6xl">
+            <div className="container mx-auto w-5/6 transition-all duration-300 ease-in-out c_md:w-full">
+                <p className="w-full text-center font-serif text-2xl tracking-tighter c_sm:text-4xl c_md:text-6xl">
                     {`${title} Products`}
                 </p>
-                <ul className="grid grid-cols-2 gap-2 transition-all duration-300 ease-in-out c_sm:gap-4 sm:gap-12 c_md:grid-cols-3">
+                <ul className="grid w-full grid-cols-2 gap-2 transition-all duration-300 ease-in-out c_sm:gap-4 sm:gap-0 c_md:grid-cols-3">
                     {posts.map((post) => {
                         if (post.key === +section) {
                             return <ProductsList key={post._id} posts={post} />;

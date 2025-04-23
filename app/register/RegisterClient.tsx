@@ -7,13 +7,16 @@ import Link from "next/link";
 import LoginButton from "../src/components/button/LoginButton";
 import OAuth from "@/src/components/button/OAuth";
 import useUsers from "@/src/shared/hooks/useUsers";
-import { RegisterProps } from "@/src/entities/type/interfaces";
+import registUser from "./actions";
 
-const RegisterClient = ({ registUser }: RegisterProps) => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+const RegisterClient = () => {
+    const [name, setName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [confirmPassword, setConfirmPassword] = useState<string>("");
+    const [phoneNumber, setPhoneNumber] = useState<string>("");
+    const [address, setAddress] = useState<string>("");
+
     const [isDisabled, setIsDisabled] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isPending, startTransition] = useTransition();
@@ -32,6 +35,14 @@ const RegisterClient = ({ registUser }: RegisterProps) => {
     const isPasswordMatch = useMemo(() => {
         return password === confirmPassword && confirmPassword.length > 0;
     }, [password, confirmPassword]);
+
+    const formatPhoneNumber = (value: string) => {
+        const numbers = value.replace(/\D/g, "").slice(0, 11);
+
+        if (numbers.length < 4) return numbers;
+        if (numbers.length < 8) return numbers.replace(/(\d{3})(\d+)/, "$1-$2");
+        return numbers.replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
+    };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -53,16 +64,18 @@ const RegisterClient = ({ registUser }: RegisterProps) => {
         const isValid =
             name.trim() !== "" &&
             email.trim() !== "" &&
-            password.length >= 6 &&
-            password === confirmPassword;
+            password.length >= 8 &&
+            password === confirmPassword &&
+            phoneNumber.trim().length >= 11 &&
+            address.trim() !== "";
 
         setIsDisabled(!isValid);
-    }, [name, email, password, confirmPassword]);
+    }, [name, email, password, confirmPassword, phoneNumber, address]);
 
     return (
         <>
             <Navbar />
-            <div className="flex min-h-[calc(100vh-240px)] flex-col items-center justify-center bg-white px-4 text-center">
+            <div className="flex h-screen flex-col items-center justify-center bg-white px-4 text-center">
                 <span className="font-brand mb-10 mt-10 text-5xl transition-all duration-700 ease-in-out sm:mb-16 sm:mt-0 sm:text-8xl">
                     Register
                 </span>
@@ -78,7 +91,7 @@ const RegisterClient = ({ registUser }: RegisterProps) => {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="이름을 입력하세요"
-                            className="h-16 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            className="h-16 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
                         {/* 이메일 */}
                         <input
@@ -87,7 +100,7 @@ const RegisterClient = ({ registUser }: RegisterProps) => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="이메일을 입력하세요"
-                            className="h-16 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            className="h-16 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
                         {/* 비밀번호 */}
                         <input
@@ -96,7 +109,7 @@ const RegisterClient = ({ registUser }: RegisterProps) => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="비밀번호를 입력하세요 (8자 이상)"
-                            className="h-16 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            className="h-16 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
                         {/* 비밀번호 안전도 메시지 */}
                         {password.length > 0 && (
@@ -115,7 +128,7 @@ const RegisterClient = ({ registUser }: RegisterProps) => {
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             placeholder="비밀번호 확인"
-                            className="h-16 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            className="h-16 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
                         {/* 비밀번호 일치 여부 */}
                         {confirmPassword.length > 0 && (
@@ -127,6 +140,27 @@ const RegisterClient = ({ registUser }: RegisterProps) => {
                                     : "비밀번호가 일치하지 않습니다."}
                             </p>
                         )}
+                        {/* 휴대폰 번호 */}
+                        <input
+                            type="text"
+                            name="phoneNumber"
+                            value={phoneNumber}
+                            onChange={(e) =>
+                                setPhoneNumber(
+                                    formatPhoneNumber(e.target.value),
+                                )
+                            }
+                            placeholder="휴대폰 번호"
+                            className="h-16 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                        />
+                        <input
+                            type="text"
+                            name="address"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            placeholder="주소"
+                            className="h-16 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                        />
                     </div>
 
                     {/* 버튼 */}

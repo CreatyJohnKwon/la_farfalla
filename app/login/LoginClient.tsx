@@ -7,11 +7,7 @@ import useUsers from "@/src/shared/hooks/useUsers";
 import { useEffect } from "react";
 import { loginAction } from "./actions";
 import Link from "next/link";
-import {
-    useRouter,
-    usePathname,
-    useSearchParams,
-} from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 const LoginClient = () => {
     const {
@@ -60,7 +56,7 @@ const LoginClient = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="이메일을 입력하세요"
-                            className="h-16 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            className="h-16 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
                         <input
                             type="password"
@@ -68,7 +64,7 @@ const LoginClient = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="비밀번호를 입력하세요"
-                            className="h-16 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            className="h-16 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
                     </div>
                     <div className="font-brand flex w-full justify-center gap-4">
@@ -88,7 +84,7 @@ const LoginClient = () => {
                     <p className="m-2 w-full border-b" />
                     <Link
                         href={"/register"}
-                        className="flex w-full justify-center rounded-md bg-black/10 px-6 py-3 text-base text-black transition-colors duration-300 ease-in-out hover:bg-black/30 sm:text-lg md:text-xl"
+                        className="flex w-full justify-center bg-black/10 px-6 py-3 text-base text-black transition-colors duration-300 ease-in-out hover:bg-black/30 sm:text-lg md:text-xl"
                     >
                         회원가입
                     </Link>

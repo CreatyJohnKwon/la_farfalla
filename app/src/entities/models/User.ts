@@ -25,9 +25,9 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true, // 이름은 필수 값
         },
-        nickname: {
+        address: {
             type: String,
-            default: null, // OAuth 닉네임
+            required: true,
         },
         image: {
             type: String,
@@ -35,11 +35,12 @@ const userSchema = new mongoose.Schema(
         },
         phoneNumber: {
             type: String,
-            default: null, // 휴대전화 번호
+            required: true,
         },
         password: {
             type: String,
-            default: null, // 로컬 회원가입 비밀번호
+            required: true,
+            default: null,
         },
     },
     {

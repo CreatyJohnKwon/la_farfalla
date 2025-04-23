@@ -9,7 +9,10 @@ import { priceResult, priceDiscount } from "@/src/features/calculate";
 const ProductsList = ({ posts }: { posts: Posts }) => {
     return (
         <>
-            <li className="font-brand mb-24 h-full w-full" key={`${posts._id}`}>
+            <li
+                className="h-screen w-auto text-center font-serif tracking-tighter"
+                key={`${posts._id}`}
+            >
                 <Link href={`/products/${posts._id}`}>
                     <Image
                         src={
@@ -18,22 +21,23 @@ const ProductsList = ({ posts }: { posts: Posts }) => {
                                 : DefaultImage
                         }
                         alt={posts.title}
-                        width={500}
-                        height={500}
+                        width={1000}
+                        height={1000}
                         style={{ objectFit: "contain" }}
                         priority
-                        className="h-auto w-full"
+                        className="-mb-14 h-3/4 w-auto p-2"
                     />
-                    <div className="mb-1 mt-4 text-sm font-semibold transition-all duration-700 ease-in-out c_sm:text-base sm:mt-9 sm:text-2xl">
-                        <span>{`[${posts.category}]\t${posts.title}\t${posts.colors} colors`}</span>
+                    <div className="mb-1 mt-4 text-sm transition-all duration-700 ease-in-out c_sm:text-base sm:mt-9 sm:text-2xl">
+                        <p>{`[${posts.category}]\t${posts.title}`}</p>
+                        <p>{`${posts.colors} colors`}</p>
                     </div>
                     {posts.discount === "0" || !posts.discount ? (
-                        <span className="text-base font-semibold sm:text-2xl">{`${priceResult(posts)}원`}</span>
+                        <span className="text-base sm:text-2xl">{`KRW ${priceResult(posts)}`}</span>
                     ) : (
                         <div>
-                            <span className="text-sm font-semibold transition-all duration-300 ease-in-out c_sm:text-base sm:text-2xl">{`${priceDiscount(posts)}원`}</span>
-                            <span className="ms-1 font-sans text-xs text-gray-600 line-through transition-all duration-300 ease-in-out sm:ms-4 sm:text-xl md:ms-2">{`${priceResult(posts)}원`}</span>
-                            <span className="ms-2 text-base font-semibold text-red-700 transition-all duration-300 ease-in-out sm:ms-4 sm:text-2xl">{`${posts.discount}%`}</span>
+                            <p className="ms-1 text-xs text-gray-600 line-through transition-all duration-300 ease-in-out sm:ms-4 sm:text-xl md:ms-2">{`KRW ${priceResult(posts)}`}</p>
+                            <span className="text-base text-black transition-all duration-300 ease-in-out sm:me-2 sm:text-2xl">{`${posts.discount}%`}</span>
+                            <span className="text-sm transition-all duration-300 ease-in-out c_sm:text-base sm:text-2xl">{`KRW ${priceDiscount(posts)}`}</span>
                         </div>
                     )}
                 </Link>

@@ -44,10 +44,6 @@ type ProductsProps = {
     params: Promise<{ id: string }>;
 };
 
-type RegisterProps = {
-    registUser: any;
-};
-
 type OAuthProps = {
     where: "login" | "register";
 };
@@ -61,15 +57,14 @@ type LoginButtonProps = {
 };
 
 export type {
-    NavListProps,
-    NavbarProps,
+    LoginButtonProps,
     ShopClientProps,
     HomeClientProps,
     ProductsProps,
-    LoginButtonProps,
-    RegisterProps,
+    NavListProps,
+    NavbarProps,
     OAuthProps,
-    Posts,
     Products,
     MenuItem,
+    Posts,
 };
