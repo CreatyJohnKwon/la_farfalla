@@ -26,7 +26,7 @@ const ShopClient = ({ posts }: ShopClientProps) => {
     }, [section]);
 
     return loading ? (
-        <div className="min-h-[2000px] w-full">
+        <div className="h-full w-full pb-52">
             <Navbar children={<SectionDrop />} />
             <div className="container mx-auto mt-24 w-5/6 transition-all duration-300 ease-in-out sm:px-4 sm:py-8 c_md:w-4/6">
                 <p className="font-brand w-full p-10 text-center text-2xl c_sm:text-4xl c_md:text-6xl">
@@ -43,7 +43,7 @@ const ShopClient = ({ posts }: ShopClientProps) => {
             </div>
         </div>
     ) : (
-        <div className="h-full w-full">
+        <div className="h-full w-full pb-52">
             <Navbar children={<SectionDrop />} />
             <div className="mx-auto c_md:w-full">
                 <p className="w-full pb-10 text-center font-serif text-2xl tracking-tighter c_sm:text-4xl c_md:text-6xl">
