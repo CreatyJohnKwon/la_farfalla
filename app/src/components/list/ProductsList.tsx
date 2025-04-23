@@ -10,7 +10,7 @@ const ProductsList = ({ posts }: { posts: Posts }) => {
     return (
         <>
             <li
-                className="h-screen w-auto text-center font-serif tracking-tighter"
+                className="h-full w-full pt-10 text-center font-serif tracking-tighter"
                 key={`${posts._id}`}
             >
                 <Link href={`/products/${posts._id}`}>
@@ -23,21 +23,21 @@ const ProductsList = ({ posts }: { posts: Posts }) => {
                         alt={posts.title}
                         width={1000}
                         height={1000}
-                        style={{ objectFit: "contain" }}
+                        style={{ objectFit: "cover" }}
                         priority
-                        className="-mb-14 h-3/4 w-auto p-2"
+                        className="h-2/3 w-full"
                     />
-                    <div className="mb-1 mt-4 text-sm transition-all duration-700 ease-in-out c_sm:text-base sm:mt-9 sm:text-2xl">
+                    <div className="pt-2 text-[0.60rem] transition-all duration-700 ease-in-out sm:pt-6 sm:text-[1.05rem] c_xl:text-xl">
                         <p>{`[${posts.category}]\t${posts.title}`}</p>
                         <p>{`${posts.colors} colors`}</p>
                     </div>
                     {posts.discount === "0" || !posts.discount ? (
-                        <span className="text-base sm:text-2xl">{`KRW ${priceResult(posts)}`}</span>
+                        <span className="text-base c_xl:text-xl">{`KRW ${priceResult(posts)}`}</span>
                     ) : (
                         <div>
-                            <p className="ms-1 text-xs text-gray-600 line-through transition-all duration-300 ease-in-out sm:ms-4 sm:text-xl md:ms-2">{`KRW ${priceResult(posts)}`}</p>
-                            <span className="text-base text-black transition-all duration-300 ease-in-out sm:me-2 sm:text-2xl">{`${posts.discount}%`}</span>
-                            <span className="text-sm transition-all duration-300 ease-in-out c_sm:text-base sm:text-2xl">{`KRW ${priceDiscount(posts)}`}</span>
+                            <p className="ms-1 text-[0.60rem] text-gray-600 line-through transition-all duration-300 ease-in-out sm:ms-4 sm:text-lg c_xl:ms-2">{`KRW ${priceResult(posts)}`}</p>
+                            <span className="me-1 text-[0.60rem] text-black transition-all duration-300 ease-in-out sm:me-2 sm:text-base c_xl:text-xl">{`${posts.discount}%`}</span>
+                            <span className="text-[0.60rem] transition-all duration-300 ease-in-out sm:text-base c_xl:text-xl">{`KRW ${priceDiscount(posts)}`}</span>
                         </div>
                     )}
                 </Link>
