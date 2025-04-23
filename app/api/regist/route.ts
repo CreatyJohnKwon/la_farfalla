@@ -8,7 +8,7 @@ export async function POST(req: Request) {
         await connectDB(); // 여기는 mongoose 기반이니까 꼭 필요
 
         const body = await req.json();
-        const { name, email, password, confirmPassword } = body;
+        const { name, email, password, confirmPassword, image, provider } = body;
 
         if (!name || !email || !password || password !== confirmPassword) {
             return NextResponse.json(
@@ -30,14 +30,15 @@ export async function POST(req: Request) {
         const newUser = new User({
             name,
             email,
+            image,
             password: hashedPassword,
-            provider: "credentials",
+            provider: provider || "local"
         });
 
         await newUser.save();
 
         return NextResponse.json(
-            { message: "회원가입 완료!" },
+            { message: "회원가입 완료" },
             { status: 201 },
         );
     } catch (err) {

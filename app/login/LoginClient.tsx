@@ -5,13 +5,12 @@ import LoginButton from "@/src/components/button/LoginButton";
 import OAuth from "@/src/components/button/OAuth";
 import useUsers from "@/src/shared/hooks/useUsers";
 import { useEffect } from "react";
-import { getLogin } from "@/src/shared/lib/get";
+import { loginAction } from "./actions";
 import Link from "next/link";
 import {
     useRouter,
     usePathname,
     useSearchParams,
-    redirect,
 } from "next/navigation";
 
 const LoginClient = () => {
@@ -31,20 +30,17 @@ const LoginClient = () => {
     const pathname = usePathname();
 
     useEffect(() => {
-        const error = searchParams.get("error");
-
-        if (error === "not_registered") {
+        if (searchParams.get("error") === "not_registered") {
             queueMicrotask(() => {
-                let result = confirm(
-                    "회원가입이 필요한 계정입니다\n회원가입 페이지로 이동할까요?",
-                );
-                result && redirect("/register");
+                alert("회원정보가 없습니다\n회원가입을 진행해주세요");
                 router.replace(pathname);
             });
         }
+    }, []);
 
+    useEffect(() => {
         setIsDisabled(email.trim() === "" || password.trim() === "");
-    }, [searchParams, email, password]);
+    }, [email, password]);
 
     return (
         <>
@@ -55,7 +51,7 @@ const LoginClient = () => {
                 </span>
                 <form
                     className="flex w-5/6 flex-col items-center justify-center gap-6 sm:w-3/6"
-                    action={getLogin}
+                    action={loginAction}
                 >
                     <div className="flex w-full flex-col gap-4 text-base md:text-lg">
                         <input

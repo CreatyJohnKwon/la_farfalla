@@ -12,10 +12,15 @@ const useUsers = () => {
     const [password, setPassword] = useState<string>("");
     const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
-    const loginHandler = (provider: string | "") => {
+    const loginHandler = async (provider: "kakao" | "naver") => {
         setIsOpenOAuth(false);
-        signIn(provider, { redirect: true, callbackUrl: "/" });
+        await signIn(provider, { redirect: true, callbackUrl: "/login" });
     };
+
+    const registHandler = async (provider: "kakao" | "naver") => {
+        setIsOpenOAuth(false);
+        await signIn(provider, { redirect: true, callbackUrl: "/register" });
+    }
 
     const sessionCheck = (navData: any) => {
         const session = useAtomValue(sessionAtom);
@@ -42,6 +47,7 @@ const useUsers = () => {
         setIsLoggedIn,
         setIsOpenOAuth,
         loginHandler,
+        registHandler
     };
 };
 

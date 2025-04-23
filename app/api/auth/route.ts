@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
     if (!user) {
         return NextResponse.json(
-            { error: "사용자를 찾을 수 없습니다" },
+            { error: "회원정보가 없습니다\n회원가입을 진행해주세요" },
             { status: 404 },
         );
     }

@@ -7,7 +7,7 @@ import { IoClose } from "react-icons/io5";
 import { OAuthProps } from "@/src/entities/type/interfaces";
 
 const OAuth = ({ where }: OAuthProps) => {
-    const { loginHandler, setIsOpenOAuth } = useUsers();
+    const { loginHandler, registHandler, setIsOpenOAuth } = useUsers();
 
     return (
         <>
@@ -32,7 +32,7 @@ const OAuth = ({ where }: OAuthProps) => {
                             : "SNS로 간편 가입"}
                     </h2>
                     <button
-                        onClick={() => loginHandler("naver")}
+                        onClick={() => {where === "login" ? loginHandler("naver") : registHandler("naver") }}
                         className="rounded-md bg-green-500/20 px-6 py-3 text-green-500 transition-all duration-300 hover:bg-green-500/40"
                         type="button"
                     >
@@ -45,7 +45,7 @@ const OAuth = ({ where }: OAuthProps) => {
                     </button>
 
                     <button
-                        onClick={() => loginHandler("kakao")}
+                        onClick={() => {where === "login" ? loginHandler("kakao") : registHandler("kakao") }}
                         className="rounded-md bg-[#FEE500]/40 px-6 py-3 text-[#381E1F] transition-all duration-300 hover:bg-[#FEE500]/70"
                         type="button"
                     >
