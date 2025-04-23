@@ -26,8 +26,7 @@ export const authOptions: NextAuthOptions = {
             }).lean();
 
             if (!existingUser) {
-                // 아직 회원가입 안 된 사용자
-                return "/login?error=signup-required";
+                return "/login?error=not_registered";
             }
 
             return true; // 정상 로그인
@@ -39,10 +38,14 @@ export const authOptions: NextAuthOptions = {
     secret: "fdYxkPSX01ULu0pPbHHhNb49UxqaFQwWsEibm6L5i9s",
 };
 
-export async function redirectIfNeeded(type: "login" | "profile") {
+export async function redirectIfNeeded(type: "login" | "profile" | "register") {
     const session = await getServerSession(authOptions);
 
     if (type === "login" && session) {
+        redirect("/profile");
+    }
+
+    if (type === "register" && session) {
         redirect("/profile");
     }
 

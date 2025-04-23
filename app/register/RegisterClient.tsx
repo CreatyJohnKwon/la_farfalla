@@ -153,9 +153,8 @@ const RegisterClient = ({ registUser }: RegisterProps) => {
                     >
                         로그인으로 돌아가기
                     </Link>
-                    {isOpenOAuth && <OAuth />}
+                    {isOpenOAuth && <OAuth where="register" />}
                 </form>
-                {/* {isPending && <p>로딩 중...</p>} */}
             </div>
         </>
     );

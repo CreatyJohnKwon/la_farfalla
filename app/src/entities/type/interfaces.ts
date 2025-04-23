@@ -48,6 +48,10 @@ type RegisterProps = {
     registUser: any;
 };
 
+type OAuthProps = {
+    where: "login" | "register";
+};
+
 type LoginButtonProps = {
     btnTitle: string;
     btnFunc?: () => void;
@@ -64,6 +68,7 @@ export type {
     ProductsProps,
     LoginButtonProps,
     RegisterProps,
+    OAuthProps,
     Posts,
     Products,
     MenuItem,

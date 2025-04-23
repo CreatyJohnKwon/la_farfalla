@@ -8,12 +8,6 @@ const userSchema = new mongoose.Schema(
             enum: ["local", "kakao", "naver", "apple"], // 로그인 방식 구분
             default: "local",
         },
-        providerId: {
-            type: String,
-            unique: true,
-            sparse: true, // OAuth 제공자 고유 ID : 고유한 값
-            default: null,
-        },
         email: {
             type: String,
             required: true, // 이메일은 필수 값
@@ -35,7 +29,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: null, // OAuth 닉네임
         },
-        avatarUrl: {
+        image: {
             type: String,
             default: null, // 프로필 이미지 URL
         },

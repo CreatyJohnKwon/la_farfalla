@@ -7,6 +7,12 @@ import useUsers from "@/src/shared/hooks/useUsers";
 import { useEffect } from "react";
 import { getLogin } from "@/src/shared/lib/get";
 import Link from "next/link";
+import {
+    useRouter,
+    usePathname,
+    useSearchParams,
+    redirect,
+} from "next/navigation";
 
 const LoginClient = () => {
     const {
@@ -20,9 +26,25 @@ const LoginClient = () => {
         setIsOpenOAuth,
     } = useUsers();
 
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+
     useEffect(() => {
+        const error = searchParams.get("error");
+
+        if (error === "not_registered") {
+            queueMicrotask(() => {
+                let result = confirm(
+                    "회원가입이 필요한 계정입니다\n회원가입 페이지로 이동할까요?",
+                );
+                result && redirect("/register");
+                router.replace(pathname);
+            });
+        }
+
         setIsDisabled(email.trim() === "" || password.trim() === "");
-    }, [email, password]);
+    }, [searchParams, email, password]);
 
     return (
         <>
@@ -74,7 +96,7 @@ const LoginClient = () => {
                     >
                         회원가입
                     </Link>
-                    {isOpenOAuth && <OAuth />}
+                    {isOpenOAuth && <OAuth where="login" />}
                 </form>
             </div>
         </>

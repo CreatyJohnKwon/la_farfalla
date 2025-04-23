@@ -4,8 +4,9 @@ import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import useUsers from "@/src/shared/hooks/useUsers";
 import { IoClose } from "react-icons/io5";
+import { OAuthProps } from "@/src/entities/type/interfaces";
 
-const OAuth = () => {
+const OAuth = ({ where }: OAuthProps) => {
     const { loginHandler, setIsOpenOAuth } = useUsers();
 
     return (
@@ -26,7 +27,9 @@ const OAuth = () => {
                         <IoClose />
                     </button>
                     <h2 className="mb-8 mt-5 text-lg font-semibold text-gray-800 sm:mt-1 sm:text-2xl">
-                        SNS로 간편 로그인
+                        {where === "login"
+                            ? "SNS로 간편 로그인"
+                            : "SNS로 간편 가입"}
                     </h2>
                     <button
                         onClick={() => loginHandler("naver")}
@@ -35,7 +38,9 @@ const OAuth = () => {
                     >
                         <div className="flex w-full justify-between">
                             <SiNaver className="me-3 mt-[3px] sm:me-5" />
-                            네이버 로그인
+                            {where === "login"
+                                ? "네이버 로그인"
+                                : "네이버로 간편 가입"}
                         </div>
                     </button>
 
@@ -46,7 +51,9 @@ const OAuth = () => {
                     >
                         <div className="flex w-full justify-between">
                             <RiKakaoTalkFill className="me-3 mt-[3px] sm:me-5" />
-                            카카오 로그인
+                            {where === "login"
+                                ? "카카오 로그인"
+                                : "카카오로 간편 가입"}
                         </div>
                     </button>
                 </div>
