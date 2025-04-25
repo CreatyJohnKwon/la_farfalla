@@ -5,7 +5,7 @@ import { LoginButtonProps } from "@/src/entities/type/interfaces";
 const LoginButton = ({
     btnTitle,
     btnFunc,
-    btnColor,
+    btnStyle,
     btnDisabled,
     btnType,
 }: LoginButtonProps) => {
@@ -13,7 +13,7 @@ const LoginButton = ({
         <>
             <button
                 onClick={() => btnFunc && btnFunc()}
-                className={`w-full px-6 py-3 text-black ${btnColor}`}
+                className={`w-full px-6 py-3 text-black ${btnStyle}`}
                 disabled={btnDisabled}
                 type={btnType}
             >

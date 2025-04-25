@@ -27,15 +27,19 @@ const userSchema = new mongoose.Schema(
         },
         address: {
             type: String,
-            required: true,
+            required: false,
+            default: null, // 주소는 선택 사항
         },
         image: {
             type: String,
             default: null, // 프로필 이미지 URL
+            readonly: true, // 프로필 이미지 URL은 읽기 전용
+            required: true,
         },
         phoneNumber: {
             type: String,
-            required: true,
+            required: false,
+            default: null, // 전화번호는 선택 사항
         },
         password: {
             type: String,

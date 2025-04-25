@@ -1,4 +1,4 @@
-import { isLoggedInAtom, isOpenOAuthAtom } from "@/src/shared/lib/atom";
+import { isLoggedInAtom } from "@/src/shared/lib/atom";
 import { useAtom } from "jotai";
 import { useAtomValue } from "jotai";
 import { sessionAtom } from "@/src/shared/lib/atom";
@@ -7,20 +7,13 @@ import { useState } from "react";
 
 const useUsers = () => {
     const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
-    const [isOpenOAuth, setIsOpenOAuth] = useAtom(isOpenOAuthAtom);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
     const loginHandler = async (provider: "kakao" | "naver") => {
-        setIsOpenOAuth(false);
         await signIn(provider, { redirect: true, callbackUrl: "/login" });
     };
-
-    const registHandler = async (provider: "kakao" | "naver") => {
-        setIsOpenOAuth(false);
-        await signIn(provider, { redirect: true, callbackUrl: "/register" });
-    }
 
     const sessionCheck = (navData: any) => {
         const session = useAtomValue(sessionAtom);
@@ -39,15 +32,12 @@ const useUsers = () => {
         password,
         isDisabled,
         isLoggedIn,
-        isOpenOAuth,
         setEmail,
         setPassword,
         setIsDisabled,
         sessionCheck,
         setIsLoggedIn,
-        setIsOpenOAuth,
         loginHandler,
-        registHandler
     };
 };
 

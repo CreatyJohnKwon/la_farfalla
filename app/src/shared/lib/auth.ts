@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { connectDB } from "@/src/entities/db/mongoose";
 import User from "@/src/entities/models/User";
 import bcrypt from "bcryptjs";
+import registUser from "@/src/shared/lib/server/registUser";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -52,11 +53,32 @@ export const authOptions: NextAuthOptions = {
             await connectDB();
 
             const existingUser = await User.findOne({
-                email: user.email,
+                email: user.email as string,
             }).lean();
 
+            if (!user.email) {
+                console.error(`303 | oauth_failure on ${account?.provider}: 이메일을 불러올 수 없습니다`);
+                return "/login?error=noemail";
+            }
+
             if (!existingUser) {
-                return "/login?error=not_registered";
+                const result = await registUser({
+                    name: user.name || "Unknown" as string,
+                    email: user.email as string,
+                    password: "" as string,
+                    phoneNumber: "" as string,
+                    address: "" as string,
+                    image: user.image || "" as string,
+                    provider: account!.provider as string,
+                });
+
+
+                if (result.success) return true;
+
+                if (result.error) {
+                    console.error(`404 | oauth_failure on ${account?.provider}: ${result.error}`);
+                    return "/login?error=notfound";
+                }
             }
 
             return true;
@@ -65,9 +87,7 @@ export const authOptions: NextAuthOptions = {
             return baseUrl;
         },
     },
-    session: {
-        strategy: "jwt",
-    },
+    session: { strategy: "jwt" },
     secret: "fdYxkPSX01ULu0pPbHHhNb49UxqaFQwWsEibm6L5i9s" as string,
 };
 

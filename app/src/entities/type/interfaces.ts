@@ -23,7 +23,8 @@ interface Products {
     year: string;
 }
 
-// on client (props)
+type RegistReqData = FormData | { [key: string]: any };
+
 type NavListProps = {
     menuText: string;
 };
@@ -44,26 +45,22 @@ type ProductsProps = {
     params: Promise<{ id: string }>;
 };
 
-type OAuthProps = {
-    where: "login" | "register";
-};
-
 type LoginButtonProps = {
     btnTitle: string;
     btnFunc?: () => void;
-    btnColor?: string;
+    btnStyle?: string;
     btnDisabled?: boolean;
     btnType?: "button" | "submit" | "reset";
 };
 
 export type {
+    RegistReqData,
     LoginButtonProps,
     ShopClientProps,
     HomeClientProps,
     ProductsProps,
     NavListProps,
     NavbarProps,
-    OAuthProps,
     Products,
     MenuItem,
     Posts,

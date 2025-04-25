@@ -5,9 +5,7 @@ import { useEffect, useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LoginButton from "../src/components/button/LoginButton";
-import OAuth from "@/src/components/button/OAuth";
-import useUsers from "@/src/shared/hooks/useUsers";
-import registUser from "./actions";
+import registUser from "@/src/shared/lib/server/registUser";
 
 const RegisterClient = () => {
     const [name, setName] = useState<string>("");
@@ -20,7 +18,6 @@ const RegisterClient = () => {
     const [isDisabled, setIsDisabled] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isPending, startTransition] = useTransition();
-    const { isOpenOAuth, setIsOpenOAuth } = useUsers();
 
     const router = useRouter();
 
@@ -147,7 +144,7 @@ const RegisterClient = () => {
                             value={phoneNumber}
                             onChange={(e) =>
                                 setPhoneNumber(
-                                    formatPhoneNumber(e.target.value),
+                                    formatPhoneNumber(e.target.value)
                                 )
                             }
                             placeholder="휴대폰 번호"
@@ -167,15 +164,9 @@ const RegisterClient = () => {
                     <div className="font-brand flex w-full justify-center gap-4">
                         <LoginButton
                             btnTitle="회원가입"
-                            btnColor={`${isDisabled ? "bg-black/50" : "bg-black hover:bg-black/50"} text-white transition-colors`}
+                            btnStyle={`${isDisabled ? "bg-[#F9F5EB] text-gray-400" : "bg-[#F9F5EB] hover:bg-[#EADDC8] text-black"} transition-colors w-full px-6 py-3`}
                             btnDisabled={isDisabled}
                             btnType="submit"
-                        />
-                        <LoginButton
-                            btnTitle="간편 가입"
-                            btnFunc={() => setIsOpenOAuth(true)}
-                            btnColor="bg-[#F9F5EB] hover:bg-[#EADDC8] transition-colors"
-                            btnType="button"
                         />
                     </div>
                     {error && <p className="text-red-500">{error}</p>}
@@ -187,7 +178,6 @@ const RegisterClient = () => {
                     >
                         로그인으로 돌아가기
                     </Link>
-                    {isOpenOAuth && <OAuth where="register" />}
                 </form>
             </div>
         </>
