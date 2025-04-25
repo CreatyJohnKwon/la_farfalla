@@ -5,7 +5,7 @@ import { useEffect, useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LoginButton from "../src/components/button/LoginButton";
-import registUser from "@/src/shared/lib/server/registUser";
+import { registUserAction } from "./actions";
 
 const RegisterClient = () => {
     const [name, setName] = useState<string>("");
@@ -46,7 +46,7 @@ const RegisterClient = () => {
         const formData = new FormData(e.currentTarget);
 
         startTransition(() => {
-            registUser(formData).then((res: any) => {
+            registUserAction(formData).then((res: any) => {
                 if (!res.success) {
                     setError(res.error);
                 } else {

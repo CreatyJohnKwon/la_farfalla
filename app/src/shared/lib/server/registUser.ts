@@ -7,7 +7,7 @@ import { RegistReqData } from "@/src/entities/type/interfaces";
 const registUser = async (formData: RegistReqData) => {
     try {
         let name: string, email: string, pw: string, image: string, phoneNumber: string, address: string, provider: string;
-
+        
         if (formData instanceof FormData) {
             name = formData.get("name") as string;
             email = formData.get("email") as string;
@@ -27,6 +27,7 @@ const registUser = async (formData: RegistReqData) => {
         }
 
         await connectDB();
+
         if (await getUserExist(email))
             return { success: false, error: "이미 등록된 이메일입니다" };
 

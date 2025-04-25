@@ -7,14 +7,17 @@ export const connectDB = async () => {
 
     try {
         // mongoose로 MongoDB에 연결
-        await mongoose.connect(
-            "mongodb+srv://admin:john1125@laf-cluster.julhaoc.mongodb.net/forum?retryWrites=true&w=majority&appName=laf-cluster",
-        );
+        await mongoose.connect(process.env.MONGODB_URI!,{
+            bufferCommands: false
+        });
 
         // 연결이 성공적으로 이루어졌을 때 상태 업데이트
         isConnected = true;
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
-        throw new Error("MongoDB connection failed");
+    } catch (error: any) {
+        console.error("MongoDB 연결 실패");
+        console.error("에러 메시지:", error.message);
+        console.error("에러 코드:", error.code);
+        console.error("에러 스택:", error.stack);
+        throw new Error(`MongoDB connection failed: ${error.message}`);
     }
 };
