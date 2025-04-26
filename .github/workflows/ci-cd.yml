@@ -1,63 +1,64 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+    build-and-deploy:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
 
-      - name: Set up SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-        env:
-          AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+            - name: Set up SSH key
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+              env:
+                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
-      - name: Create .env.production
-        run: |
-          echo "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> .env.production
-          echo "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}" >> .env.production
-          echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env.production
-          echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env.production
-          echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
-          echo "R2_TOKEN=${{ secrets.R2_TOKEN }}" >> .env.production
-          echo "R2_ACOUNT_ID=${{ secrets.R2_ACOUNT_ID }}" >> .env.production
-          echo "R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}" >> .env.production
-          echo "R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}" >> .env.production
-          echo "R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}" >> .env.production
-          echo "R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}" >> .env.production
+            - name: Create .env.production
+              run: |
+                  echo "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> .env.production
+                  echo "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}" >> .env.production
+                  echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env.production
+                  echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env.production
+                  echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
+                  echo "R2_TOKEN=${{ secrets.R2_TOKEN }}" >> .env.production
+                  echo "R2_ACOUNT_ID=${{ secrets.R2_ACOUNT_ID }}" >> .env.production
+                  echo "R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}" >> .env.production
+                  echo "R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}" >> .env.production
+                  echo "R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}" >> .env.production
+                  echo "R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}" >> .env.production
+                  echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.production
 
-      - name: Archive app source (exclude node_modules)
-        run: |
-          zip -r build-artifact.zip . -x "node_modules/*" -x ".git/*"
+            - name: Archive app source (exclude node_modules)
+              run: |
+                  zip -r build-artifact.zip . -x "node_modules/*" -x ".git/*"
 
-      - name: Upload artifact to EC2
-        run: |
-          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa build-artifact.zip ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/home/ec2-user/la_farfalla/
+            - name: Upload artifact to EC2
+              run: |
+                  scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa build-artifact.zip ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/home/ec2-user/la_farfalla/
 
-      - name: Remote Deploy
-        run: |
-          ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-            set -e
-            cd /home/ec2-user/la_farfalla
+            - name: Remote Deploy
+              run: |
+                  ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+                    set -e
+                    cd /home/ec2-user/la_farfalla
 
-            echo "📦 Unpacking build artifact..."
-            unzip -o build-artifact.zip
+                    echo "📦 Unpacking build artifact..."
+                    unzip -o build-artifact.zip
 
-            echo "🔁 Restarting docker..."
-            docker-compose down
-            docker-compose up -d --build --remove-orphans
+                    echo "🔁 Restarting docker..."
+                    docker-compose down
+                    docker-compose up -d --build --remove-orphans
 
-            echo "✅ Deployment complete"
-          EOF
-        env:
-          AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
-          EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+                    echo "✅ Deployment complete"
+                  EOF
+              env:
+                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+                  EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
