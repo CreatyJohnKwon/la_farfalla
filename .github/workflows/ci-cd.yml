@@ -27,6 +27,7 @@ jobs:
                   echo "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}" >> .env.production
                   echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env.production
                   echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env.production
+                  echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.production
                   echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
                   echo "R2_TOKEN=${{ secrets.R2_TOKEN }}" >> .env.production
                   echo "R2_ACOUNT_ID=${{ secrets.R2_ACOUNT_ID }}" >> .env.production
