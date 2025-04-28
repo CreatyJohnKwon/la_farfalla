@@ -30,7 +30,9 @@ export const authOptions: NextAuthOptions = {
                 const user = await User.findOne({ email: email });
 
                 if (!user) {
-                    throw new Error("회원정보가 없습니다\n회원가입을 진행해주세요");
+                    throw new Error(
+                        "회원정보가 없습니다\n회원가입을 진행해주세요",
+                    );
                 }
 
                 const isMatch = await bcrypt.compare(password, user.password);
@@ -47,7 +49,7 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
-        async signIn({ user, account }) {
+        async signIn({ user, account, email }) {
             if (account?.provider === "credentials") return true;
 
             await connectDB();
@@ -57,38 +59,45 @@ export const authOptions: NextAuthOptions = {
             }).lean();
 
             if (!user.email) {
-                console.error(`303 | oauth_failure on ${account?.provider}: 이메일을 불러올 수 없습니다`);
+                console.error(
+                    `303 | oauth_failure on ${account?.provider}: 이메일을 불러올 수 없습니다`,
+                );
                 return "/login?error=noemail";
             }
 
             if (!existingUser) {
                 const result = await registUser({
-                    name: user.name || "Unknown" as string,
+                    name: user.name || ("Unknown" as string),
                     email: user.email as string,
                     password: "" as string,
                     phoneNumber: "" as string,
                     address: "" as string,
-                    image: user.image || "" as string,
+                    image: user.image || ("" as string),
                     provider: account!.provider as string,
                 });
 
-
-                if (result.success) return true;
+                if (result.success) {
+                    console.log("로그인 성공 : " + result.message);
+                    return true;
+                }
 
                 if (result.error) {
-                    console.error(`404 | oauth_failure on ${account?.provider}: ${result.error}`);
-                    return "/login?error=notfound";
+                    console.error(
+                        `404 | oauth_failure on ${account?.provider}: ${result.error}`,
+                    );
+                    return false;
                 }
             }
 
             return true;
         },
-        async redirect({ baseUrl }) {
-            return baseUrl;
+        async redirect({ url, baseUrl }) {
+            if (!url) return baseUrl;
+            return url.startsWith("/") ? `${baseUrl}${url}` : url;
         },
     },
     session: { strategy: "jwt" },
-    secret: "fdYxkPSX01ULu0pPbHHhNb49UxqaFQwWsEibm6L5i9s" as string,
+    secret: process.env.NEXTAUTH_SECRET,
 };
 
 export async function redirectIfNeeded(type: "login" | "profile" | "register") {

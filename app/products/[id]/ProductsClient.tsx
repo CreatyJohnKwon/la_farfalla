@@ -44,7 +44,7 @@ const ProductsClient = ({ posts }: { posts: Posts }) => {
 
                         {/* 결제 */}
                         <div className="flex h-[100px] w-full items-center justify-center bg-red-50 hover:bg-red-200 sm:h-full sm:w-3/5">
-                            대충 여기다가 결제관련
+                            Payments Items
                         </div>
                     </div>
                 </div>

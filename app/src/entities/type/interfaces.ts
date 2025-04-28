@@ -50,6 +50,15 @@ type profNavDataProps = {
     link: "e" | "o" | "q";
 }[];
 
+type menuDataProps = {
+    text: string;
+    link: string;
+}[];
+
+type navDataProps = {
+    text: string;
+}[];
+
 type LoginButtonProps = {
     btnTitle: string;
     btnFunc?: () => void;
@@ -64,7 +73,9 @@ export type {
     LoginButtonProps,
     ShopClientProps,
     HomeClientProps,
+    menuDataProps,
     ProductsProps,
+    navDataProps,
     NavListProps,
     NavbarProps,
     Products,

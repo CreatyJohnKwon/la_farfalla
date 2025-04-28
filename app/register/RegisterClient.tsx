@@ -144,7 +144,7 @@ const RegisterClient = () => {
                             value={phoneNumber}
                             onChange={(e) =>
                                 setPhoneNumber(
-                                    formatPhoneNumber(e.target.value)
+                                    formatPhoneNumber(e.target.value),
                                 )
                             }
                             placeholder="휴대폰 번호"

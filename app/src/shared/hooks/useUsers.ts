@@ -1,30 +1,24 @@
 import { isLoggedInAtom } from "@/src/shared/lib/atom";
 import { useAtom } from "jotai";
-import { useAtomValue } from "jotai";
-import { sessionAtom } from "@/src/shared/lib/atom";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { signOut } from "next-auth/react";
 
 const useUsers = () => {
-    const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
+    const [isLoggedIn, setIsLoggedIn] = useAtom<boolean>(isLoggedInAtom);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
     const loginHandler = async (provider: "kakao" | "naver") => {
-        await signIn(provider, { redirect: true, callbackUrl: "/login" });
+        await signIn(provider, {
+            redirect: true,
+            callbackUrl: "/home",
+        });
     };
 
-    const sessionCheck = (navData: any) => {
-        // const session = useAtomValue(sessionAtom);
-
-        // if (session === null) {
-        //     setIsLoggedIn(true);
-        //     navData[1].text = "login";
-        // } else {
-        //     setIsLoggedIn(false);
-        //     navData[1].text = "profile";
-        // }
+    const logoutHandler = () => {
+        signOut({ callbackUrl: "/" });
     };
 
     return {
@@ -32,12 +26,14 @@ const useUsers = () => {
         password,
         isDisabled,
         isLoggedIn,
+
         setEmail,
         setPassword,
         setIsDisabled,
-        sessionCheck,
         setIsLoggedIn,
+
         loginHandler,
+        logoutHandler,
     };
 };
 

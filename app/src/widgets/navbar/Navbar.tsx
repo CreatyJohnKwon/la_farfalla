@@ -1,14 +1,16 @@
 "use client";
 
 import NavList from "./NavList";
-import { navData } from "@/src/entities/db/menuDatas";
 import Link from "next/link";
 import { NavbarProps } from "../../entities/type/interfaces";
-import useUsers from "@/src/shared/hooks/useUsers";
+import { useSession } from "next-auth/react";
 
 const Navbar = ({ children }: NavbarProps) => {
-    const { sessionCheck } = useUsers();
-    sessionCheck(navData);
+    const { data: session } = useSession();
+
+    const navData = session
+        ? [{ text: "home" }, { text: "profile" }]
+        : [{ text: "home" }, { text: "login" }];
 
     return (
         <nav className="sticky top-0 z-50 h-full w-full bg-white p-4 ps-0 shadow-none transition-all duration-300 ease-in-out sm:ps-4">

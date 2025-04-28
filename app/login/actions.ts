@@ -1,5 +1,4 @@
 import { signIn } from "next-auth/react";
-import { navData, menuData } from "@/src/entities/db/menuDatas";
 
 const loginAction = async (formData: FormData) => {
     const email = formData.get("email") as string;
@@ -17,17 +16,17 @@ const loginAction = async (formData: FormData) => {
         callbackUrl: "/home",
     });
 
-    if (!res?.ok) {
+    if (res?.ok) {
+        if (res.url) {
+            window.location.href = res.url;
+        } else {
+            window.location.href = "/home";
+        }
+        return;
+    } else {
         alert(res?.error || "로그인 실패");
         return;
     }
-
-    menuData[1].text = "Profile";
-    menuData[1].link = "/profile";
-    navData[1].text = "profile";
-    window.location.href = res.url ?? "/home";
 };
 
-export { 
-    loginAction
-};
+export default loginAction;
