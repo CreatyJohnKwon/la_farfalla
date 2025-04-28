@@ -1,13 +1,13 @@
 "use client";
 
 import NavList from "./NavList";
-import { navData } from "@/src/entities/dummy/menuDatas";
+import { navData } from "@/src/entities/db/menuDatas";
 import Link from "next/link";
 import { NavbarProps } from "../../entities/type/interfaces";
 import useUsers from "@/src/shared/hooks/useUsers";
 
 const Navbar = ({ children }: NavbarProps) => {
-    const { sessionCheck } = useUsers(); //
+    const { sessionCheck } = useUsers();
     sessionCheck(navData);
 
     return (

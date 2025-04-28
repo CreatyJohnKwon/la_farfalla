@@ -45,6 +45,11 @@ type ProductsProps = {
     params: Promise<{ id: string }>;
 };
 
+type profNavDataProps = {
+    text: string;
+    link: "e" | "o" | "q";
+}[];
+
 type LoginButtonProps = {
     btnTitle: string;
     btnFunc?: () => void;
@@ -55,6 +60,7 @@ type LoginButtonProps = {
 
 export type {
     RegistReqData,
+    profNavDataProps,
     LoginButtonProps,
     ShopClientProps,
     HomeClientProps,

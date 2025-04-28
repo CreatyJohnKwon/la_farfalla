@@ -16,15 +16,15 @@ const useUsers = () => {
     };
 
     const sessionCheck = (navData: any) => {
-        const session = useAtomValue(sessionAtom);
+        // const session = useAtomValue(sessionAtom);
 
-        if (session === null) {
-            setIsLoggedIn(true);
-            navData[1].text = "login";
-        } else {
-            setIsLoggedIn(false);
-            navData[1].text = "profile";
-        }
+        // if (session === null) {
+        //     setIsLoggedIn(true);
+        //     navData[1].text = "login";
+        // } else {
+        //     setIsLoggedIn(false);
+        //     navData[1].text = "profile";
+        // }
     };
 
     return {

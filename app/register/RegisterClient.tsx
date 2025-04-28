@@ -17,7 +17,7 @@ const RegisterClient = () => {
 
     const [isDisabled, setIsDisabled] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [isPending, startTransition] = useTransition();
+    const [isPending, startTransition] = useTransition(); // 로딩바 (isPending: 로딩중일 때 true)
 
     const router = useRouter();
 
