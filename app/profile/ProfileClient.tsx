@@ -3,6 +3,7 @@
 import ProfileNavbar from "@/src/widgets/navbar/ProfileNav";
 import EditProfile from "./EditProfile";
 import useProfile from "@/src/shared/hooks/useProfile";
+import ProfileInfo from "./ProfileInfo";
 
 const ProfileClient = () => {
     const { pages } = useProfile();
@@ -13,19 +14,19 @@ const ProfileClient = () => {
                 return <EditProfile />;
             case "o":
                 return (
-                    <div className="font-brand-thin text-5xl text-black">
+                    <div className="">
                         주문조회
                     </div>
                 );
             case "q":
                 return (
-                    <div className="font-brand-thin text-5xl text-black">
+                    <div className="">
                         1:1 문의
                     </div>
                 );
             default:
                 return (
-                    <div className="font-brand-thin text-5xl text-black">
+                    <div className="">
                         404 서버 점검중입니다
                     </div>
                 );
@@ -33,10 +34,18 @@ const ProfileClient = () => {
     };
 
     return (
-        <div className="grid h-screen w-screen grid-cols-8 items-center justify-center">
+        <div className="grid h-screen w-screen grid-cols-6 items-center justify-center">
             <ProfileNavbar />
-            <div className="col-span-6 flex h-full w-full items-center justify-center">
-                {handlePages()}
+            
+            <div className="col-span-5 flex h-full w-full items-center justify-center">
+                <div className="grid h-full w-full grid-rows-5">
+                    <div className="row-span-2">
+                        <ProfileInfo />
+                    </div>
+                    <div className="row-span-3 font-brand-thin text-5xl text-black flex items-center justify-center">
+                        {handlePages()}
+                    </div>
+                </div>
             </div>
         </div>
     );

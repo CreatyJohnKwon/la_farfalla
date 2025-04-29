@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: null, // 프로필 이미지 URL
             readonly: true, // 프로필 이미지 URL은 읽기 전용
-            required: true,
+            required: false,
         },
         phoneNumber: {
             type: String,
@@ -45,6 +45,11 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             default: null,
+        },
+        reward: {
+            type: Number,
+            required: false,
+            default: 0,
         },
     },
     {

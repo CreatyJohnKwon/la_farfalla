@@ -2,22 +2,22 @@
 
 import { profileNavData } from "@/src/entities/db/menuDatas";
 import useProfile from "@/src/shared/hooks/useProfile";
+import Link from "next/link";
 
 const ProfileNavbar = () => {
-    const { setPages } = useProfile();
+    const { pages, setPages } = useProfile();
 
     return (
-        <nav className="h-full w-full bg-white ps-4 transition-all duration-300 ease-in-out col-span-2">
-            <div className="w-full font-brand flex items-center justify-between p-0 transition-all duration-300 ease-in-out sm:p-4 sm:text-base c_md:text-xl">
-                <ul className="flex flex-col rounded-lg border-gray-100 transition-all duration-300 ease-in-out ms-4 mt-10">
+        <nav className="h-[90vh] w-full bg-transparent transition-all duration-300 ease-in-out col-span-1">
+            <div className="w-full font-brand flex items-center justify-between p-0 transition-all duration-300 ease-in-out c_xl:p-4 text-base sm:text-lg c_xl:text-xl">
+                <div className="flex flex-col rounded-lg border-gray-100 transition-all duration-300 ease-in-out sm:m-10">
+                    <Link href={"/home"} className="fixed left-16 top-10">La farfalla</Link>
                     {profileNavData.map((navList, index) => (
-                        <div key={`navList-${index}`}>
-                            <li className="z-50 text-black p-5">
-                                <button onClick={() => setPages(navList.link)}>{navList.text}</button>
-                            </li>
+                        <div key={`profile_nav_${index}`} className="p-5">
+                            <button className={`z-50 text-black ${navList.link === pages ? "underline decoration-1" : ""}`} onClick={() => setPages(navList.link)}>{navList.text}</button>
                         </div>
                     ))}
-                </ul>
+                </div>
             </div>
         </nav>
     );

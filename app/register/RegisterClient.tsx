@@ -5,7 +5,7 @@ import { useEffect, useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LoginButton from "../src/components/button/LoginButton";
-import { registUserAction } from "./actions";
+import { registUserAction, formatPhoneNumber } from "./actions";
 
 const RegisterClient = () => {
     const [name, setName] = useState<string>("");
@@ -32,14 +32,6 @@ const RegisterClient = () => {
     const isPasswordMatch = useMemo(() => {
         return password === confirmPassword && confirmPassword.length > 0;
     }, [password, confirmPassword]);
-
-    const formatPhoneNumber = (value: string) => {
-        const numbers = value.replace(/\D/g, "").slice(0, 11);
-
-        if (numbers.length < 4) return numbers;
-        if (numbers.length < 8) return numbers.replace(/(\d{3})(\d+)/, "$1-$2");
-        return numbers.replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
-    };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
