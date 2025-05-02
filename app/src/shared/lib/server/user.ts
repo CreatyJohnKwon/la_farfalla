@@ -51,7 +51,7 @@ const registUser = async (formData: RegistReqData) => {
 
 const fetchUser = async () => {
     try {
-        const res = await fetch("/api/user/get");
+        const res = await fetch("/api/user/me");
         if (!res.ok) throw new Error("유저 정보를 불러오지 못했습니다");
         return res.json();
     } catch (error) {
@@ -66,8 +66,8 @@ const updateUser = async (form: {
     password?: string;
     image?: string;
 }) => {
-    const res = await fetch("/api/user/get", {
-        method: "FETCH",
+    const res = await fetch("/api/user/me", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
     });
