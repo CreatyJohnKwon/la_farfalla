@@ -49,4 +49,34 @@ const registUser = async (formData: RegistReqData) => {
     }
 };
 
-export default registUser;
+const fetchUser = async () => {
+    try {
+        const res = await fetch("/api/user/get");
+        if (!res.ok) throw new Error("유저 정보를 불러오지 못했습니다");
+        return res.json();
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        return { success: false, error: "사용자 조회에 실패했습니다" };
+    }
+};
+  
+const updateUser = async (form: {
+    name?: string;
+    address?: string;
+    password?: string;
+    image?: string;
+}) => {
+    const res = await fetch("/api/user/get", {
+        method: "FETCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+    });
+    if (!res.ok) throw new Error("업데이트 실패");
+    return res.json();
+};
+  
+export {
+    registUser,
+    fetchUser,
+    updateUser
+};

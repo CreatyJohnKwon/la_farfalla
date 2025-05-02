@@ -2,11 +2,11 @@
 
 import ProfileNavbar from "@/src/widgets/navbar/ProfileNav";
 import EditProfile from "./EditProfile";
-import useProfile from "@/src/shared/hooks/useProfile";
+import usePage from "@/src/shared/hooks/usePage";
 import ProfileInfo from "./ProfileInfo";
 
 const ProfileClient = () => {
-    const { pages } = useProfile();
+    const { pages } = usePage();
 
     const handlePages = () => {
         switch (pages) {
@@ -18,16 +18,16 @@ const ProfileClient = () => {
                         주문조회
                     </div>
                 );
-            case "q":
-                return (
-                    <div className="">
-                        1:1 문의
-                    </div>
-                );
+            // case "q":
+            //     return (
+            //         <div className="">
+            //             1:1 문의
+            //         </div>
+            //     );
             default:
                 return (
                     <div className="">
-                        404 서버 점검중입니다
+                        500 : 서버 점검중입니다
                     </div>
                 );
         }

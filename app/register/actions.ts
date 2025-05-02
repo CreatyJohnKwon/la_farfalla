@@ -1,6 +1,6 @@
 "use server";
 
-import registUser from "@/src/shared/lib/server/registUser";
+import { registUser } from "@/src/shared/lib/server/user";
 import { RegistReqData } from "@/src/entities/type/interfaces";
 
 async function registUserAction(formData: RegistReqData) {

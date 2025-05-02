@@ -1,11 +1,11 @@
 "use client";
 
 import { profileNavData } from "@/src/entities/db/menuDatas";
-import useProfile from "@/src/shared/hooks/useProfile";
+import usePage from "@/src/shared/hooks/usePage";
 import Link from "next/link";
 
 const ProfileNavbar = () => {
-    const { pages, setPages } = useProfile();
+    const { pages, setPages } = usePage();
 
     return (
         <nav className="h-[90vh] w-full bg-transparent transition-all duration-300 ease-in-out col-span-1">

@@ -4,28 +4,15 @@ import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { MenuItem, Products } from "@/src/entities/type/interfaces";
 import useSection from "@/src/shared/hooks/useSection";
-import { useSession } from "next-auth/react";
+import useUsers from "@/src/shared/hooks/useUsers";
 
 const Menu = () => {
     const [openShop, setOpenShop] = useState(false);
     const [openNotice, setOpenNotice] = useState(false);
     const { setSection, category } = useSection();
-    const { data: session } = useSession();
-    const ref = useRef<HTMLDivElement>(null);
+    const { menusData } = useUsers();
 
-    const menusData = session
-        ? [
-              { text: "Profile", link: "/profile" },
-              { text: "Shop", link: "/shop" },
-              { text: "Introduce", link: "/introduce" },
-              { text: "Notice", link: "/notice" },
-          ]
-        : [
-              { text: "Login", link: "/login" },
-              { text: "Shop", link: "/shop" },
-              { text: "Introduce", link: "/introduce" },
-              { text: "Notice", link: "/notice" },
-          ];
+    const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

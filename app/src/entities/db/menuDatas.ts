@@ -4,7 +4,7 @@ const navData: navDataProps = [{ text: "home" }, { text: "" }];
 
 const profileNavData: profNavDataProps = [
     { text: "주문조회", link: "o" },
-    { text: "1:1 문의", link: "q" },
+    // { text: "1:1 문의", link: "q" },
     { text: "정보수정", link: "e" },
 ];
 

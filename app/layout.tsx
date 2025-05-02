@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { getAuthSession } from "./src/shared/lib/session";
-import AuthProvider from "./src/features/auth/AuthProvider";
+import AuthProvider from "@/src/features/providers/AuthProvider";
+import RQProvider from "@/src/features/providers/RQProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -32,7 +33,11 @@ const RootLayout = async ({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
             >
-                <AuthProvider session={session}>{children}</AuthProvider>
+                <RQProvider>
+                    <AuthProvider session={session}>
+                        {children}
+                    </AuthProvider>
+                </RQProvider>
                 <Script
                     src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"
                     strategy="beforeInteractive"

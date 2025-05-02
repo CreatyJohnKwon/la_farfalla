@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { connectDB } from "@/src/entities/db/mongoose";
 import User from "@/src/entities/models/User";
 import bcrypt from "bcryptjs";
-import registUser from "@/src/shared/lib/server/registUser";
+import { registUser } from "@/src/shared/lib/server/user";
 
 export const authOptions: NextAuthOptions = {
     providers: [
