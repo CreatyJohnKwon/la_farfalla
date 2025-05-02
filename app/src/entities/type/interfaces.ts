@@ -30,7 +30,7 @@ type NavListProps = {
 };
 
 type NavbarProps = {
-    children?: React.ReactNode;
+    textColor? : string;
 };
 
 type ShopClientProps = {
@@ -59,6 +59,10 @@ type navDataProps = {
     text: string;
 }[];
 
+type SectionDropProps = {
+    title: string;
+}
+
 type LoginButtonProps = {
     btnTitle: string;
     btnFunc?: () => void;
@@ -71,6 +75,7 @@ export type {
     RegistReqData,
     profNavDataProps,
     LoginButtonProps,
+    SectionDropProps,
     ShopClientProps,
     HomeClientProps,
     menuDataProps,

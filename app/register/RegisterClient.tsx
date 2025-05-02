@@ -65,7 +65,7 @@ const RegisterClient = () => {
         <>
             <Navbar />
             <div className="flex h-screen flex-col items-center justify-center bg-white px-4 text-center">
-                <span className="font-brand mb-10 mt-10 text-5xl transition-all duration-700 ease-in-out sm:mb-16 sm:mt-0 sm:text-8xl">
+                <span className="font-brand  mb-10 mt-10 text-5xl transition-all duration-700 ease-in-out sm:mb-16 sm:mt-0 sm:text-8xl">
                     Register
                 </span>
                 <form
@@ -153,7 +153,7 @@ const RegisterClient = () => {
                     </div>
 
                     {/* 버튼 */}
-                    <div className="font-brand flex w-full justify-center gap-4">
+                    <div className="font-brand  flex w-full justify-center gap-4">
                         <LoginButton
                             btnTitle="회원가입"
                             btnStyle={`${isDisabled ? "bg-[#F9F5EB] text-gray-400" : "bg-[#F9F5EB] hover:bg-[#EADDC8] text-black"} transition-colors w-full px-6 py-3`}

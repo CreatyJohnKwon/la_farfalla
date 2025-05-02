@@ -9,7 +9,7 @@ import { priceResult, priceDiscount } from "@/src/features/calculate";
 const ProductsList = ({ posts }: { posts: Posts }) => {
     return (
         <li
-            className="pt-10 text-center font-serif tracking-tighter"
+            className="pt-10 text-center font-brand"
             key={posts._id}
         >
             <Link href={`/products/${posts._id}`}>

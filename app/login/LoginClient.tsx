@@ -46,22 +46,19 @@ const LoginClient = () => {
     return (
         <>
             <Navbar />
-            <div className="flex min-h-[calc(100vh-240px)] w-screen flex-col items-center justify-center bg-white px-4 text-center">
-                <span className="font-brand mb-20 text-6xl transition-all duration-700 ease-in-out sm:text-8xl">
-                    Login
-                </span>
+            <div className="flex min-h-[calc(100vh-240px)] w-screen flex-col items-center justify-center text-center font-brand">
                 <form
-                    className="flex w-5/6 flex-col items-center justify-center gap-6 sm:w-3/6"
+                    className="flex w-5/6 flex-col items-center justify-center gap-6 sm:w-2/6"
                     action={loginAction}
                 >
-                    <div className="font-brand grid w-full grid-cols-1 gap-4 sm:grid-cols-6">
+                    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-6">
                         <div className="flex w-full flex-col gap-4 text-sm sm:col-span-4 md:text-lg">
                             <input
                                 type="email"
                                 name="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="이메일을 입력하세요"
+                                placeholder="Insert Email"
                                 className="h-14 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:h-16"
                             />
                             <input
@@ -69,12 +66,12 @@ const LoginClient = () => {
                                 name="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="비밀번호를 입력하세요"
+                                placeholder="Insert Password"
                                 className="h-14 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:h-16"
                             />
                         </div>
                         <LoginButton
-                            btnTitle="로그인"
+                            btnTitle="Login"
                             btnStyle={`w-full ${
                                 isDisabled
                                     ? "bg-black/50"
@@ -87,11 +84,11 @@ const LoginClient = () => {
                     <p className="m-2 w-full border-b" />
                     <Link
                         href={"/register"}
-                        className="flex w-full justify-center bg-[#F9F5EB] px-6 py-3 text-base text-black transition-colors duration-300 ease-in-out hover:bg-[#EADDC8] sm:text-lg md:text-xl"
+                        className="flex w-full justify-center bg-black px-6 py-3 text-base text-white transition-colors duration-300 ease-in-out hover:bg-black/50 sm:text-lg md:text-xl"
                     >
-                        회원가입
+                        Join us
                     </Link>
-                    <div className="font-brand grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
                         <button
                             onClick={() => loginHandler("naver")}
                             className="col-span-1 bg-[#03C75A] px-6 py-3 text-white transition-all duration-300 hover:bg-[#03C75A]/40"

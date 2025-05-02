@@ -11,7 +11,7 @@ const ProductsClient = ({ posts }: { posts: Posts }) => {
         posts && (
             <div className="flex h-full w-full flex-col items-center justify-center pb-24">
                 <Navbar />
-                <div className="font-brand grid w-full grid-cols-1 gap-2 transition-all duration-300 ease-in-out md:grid-cols-2">
+                <div className="font-brand  grid w-full grid-cols-1 gap-2 transition-all duration-300 ease-in-out md:grid-cols-2">
                     <Image
                         src={
                             posts.image

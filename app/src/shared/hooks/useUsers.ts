@@ -37,6 +37,10 @@ const useUsers = () => {
             { text: "Notice", link: "/notice" },
         ];
 
+    const navStartData = session
+        ? [{ text: "cart" }, { text: "profile" }]
+        : [{ text: "cart" }, { text: "login" }];
+
     return {
         email,
         password,
@@ -52,7 +56,8 @@ const useUsers = () => {
         logoutHandler,
 
         menusData,
-        session
+        session,
+        navStartData
     };
 };
 

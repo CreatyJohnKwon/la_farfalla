@@ -2,10 +2,12 @@
 
 import Navbar from "@/src/widgets/navbar/Navbar";
 import Footer from "@/src/widgets/footer/Footer";
-import Link from "next/link";
 import { HomeClientProps } from "@/src/entities/type/interfaces";
 import { useEffect } from "react";
 import useSection from "@/src/shared/hooks/useSection";
+import Image from "next/image";
+import BackgroundImg from "../../public/sample_file.jpeg";
+import Link from "next/link";
 
 const HomeClient = ({ products }: HomeClientProps) => {
     const { setCategory } = useSection();
@@ -15,20 +17,19 @@ const HomeClient = ({ products }: HomeClientProps) => {
     }, [products]);
 
     return (
-        <div className="flex min-h-screen w-full flex-col">
-            <Navbar />
+        <div className="flex min-h-screen w-full flex-col text-white">
+            <Navbar textColor="text-white" />
 
-            <div className="flex flex-grow items-center justify-center">
-                <div className="relative z-50 mb-64 flex items-center justify-center">
-                    <Link
-                        href="/menu"
-                        className="font-brand text-center text-6xl leading-none text-black antialiased transition-all duration-300 ease-in-out sm:text-7xl c_md:text-9xl"
-                    >
-                        La farfalla
-                    </Link>
-                </div>
+            <div className="absolute inset-0 -z-10">
+                <Image
+                    src={BackgroundImg}
+                    alt="background"
+                    height={1000}
+                    width={1000}
+                    className="h-full w-full "
+                />
             </div>
-
+            
             <Footer />
         </div>
     );

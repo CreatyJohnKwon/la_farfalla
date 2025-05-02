@@ -9,9 +9,8 @@ const ProfileNavbar = () => {
 
     return (
         <nav className="h-[90vh] w-full bg-transparent transition-all duration-300 ease-in-out col-span-1">
-            <div className="w-full font-brand flex items-center justify-between p-0 transition-all duration-300 ease-in-out c_xl:p-4 text-base sm:text-lg c_xl:text-xl">
+            <div className="w-full font-brand  flex items-center justify-between p-0 transition-all duration-300 ease-in-out c_xl:p-4 text-base sm:text-lg c_xl:text-xl">
                 <div className="flex flex-col rounded-lg border-gray-100 transition-all duration-300 ease-in-out sm:m-10">
-                    <Link href={"/home"} className="fixed left-16 top-10">La farfalla</Link>
                     {profileNavData.map((navList, index) => (
                         <div key={`profile_nav_${index}`} className="p-5">
                             <button className={`z-50 text-black ${navList.link === pages ? "underline decoration-1" : ""}`} onClick={() => setPages(navList.link)}>{navList.text}</button>

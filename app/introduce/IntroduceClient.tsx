@@ -16,12 +16,12 @@ const IntroduceClient = () => {
             <Navbar />
             <main className="flex h-full flex-col items-center justify-center p-5 text-center">
                 <div className="flex min-h-[70vh] flex-col items-center justify-center">
-                    <h1 className="font-brand mb-10 text-5xl transition-all duration-300 ease-in-out sm:text-7xl">
+                    <h1 className="font-brand  mb-10 text-5xl transition-all duration-300 ease-in-out sm:text-7xl">
                         Introduce
                     </h1>
 
                     <div className="font-brand-thin max-w-5xl space-y-4 text-lg transition-all duration-300 ease-in-out sm:text-xl c_md:text-3xl">
-                        <span className="font-brand-light mt-2">
+                        <span className="font-brand font-light mt-2">
                             La fafalla{" "}
                         </span>
                         <span>
@@ -45,7 +45,7 @@ const IntroduceClient = () => {
                         onClick={() => instagramHandler()}
                     >
                         <RxInstagramLogo className="h-7 w-auto" />
-                        <span className="font-brand-light ms-2 border-black hover:border-b">
+                        <span className="font-brand font-light ms-2 border-black hover:border-b">
                             @lafarfalla____
                         </span>
                     </button>

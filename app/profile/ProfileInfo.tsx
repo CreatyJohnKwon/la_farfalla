@@ -9,7 +9,7 @@ const ProfileInfo = () => {
     const { logoutHandler } = useUsers();
 
     return (
-        <div className="grid grid-cols-6 h-full w-full items-center justify-center font-serif tracking-tightest">
+        <div className="grid grid-cols-6 h-full w-full items-center justify-center font-brand">
             <div className="flex flex-row col-span-4 h-full w-full items-center justify-center">
                 <div className="relative sm:me-10 overflow-hidden rounded-full">
                     <Image
@@ -21,17 +21,17 @@ const ProfileInfo = () => {
                     />
                 </div>
                 <div className="flex flex-col h-1/4 justify-between items-start">
-                    <span className="font-brand-light text-3xl text-gray-800 md:text-4xl">
+                    <span className="font-brand font-light text-3xl text-gray-800 md:text-4xl">
                         {`${session?.user?.name || "Guest"}\t님`}
                     </span>
-                    <span className="font-brand-light sm:text-2xl">
-                        누적 구매금액: <span className="font-serif">KRW </span>
+                    <span className="font-brand font-light sm:text-2xl">
+                        누적 구매금액: <span className="font-brand">KRW </span>
                     </span>
                     <span className="text-lg text-gray-600 sm:text-2xl">
                         {session?.user?.email || "이메일 정보 없음"}
                     </span>
                 </div>
-                <div className="flex ms-10 font-brand-light h-1/4 w-auto">
+                <div className="flex ms-10 font-brand font-light h-1/4 w-auto">
                     <LoginButton
                         btnTitle="로그아웃"
                         btnStyle={`w-full bg-black/80 hover:bg-black/50 text-white transition-colors text-base font-semibold sm:col-span-2`}

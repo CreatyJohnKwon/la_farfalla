@@ -32,14 +32,14 @@ html {
 
 @layer utilities {
     .font-brand {
-        @apply font-pretendard font-medium tracking-tightest;
+        @apply font-serif font-medium tracking-tightest;
     }
 
     .font-brand-light {
-        @apply font-pretendard font-light tracking-tightest;
+        @apply font-serif font-light tracking-tightest;
     }
 
     .font-brand-thin {
-        @apply font-pretendard font-thin tracking-tightest;
+        @apply font-serif font-thin tracking-tightest;
     }
 }
