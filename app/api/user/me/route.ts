@@ -28,7 +28,7 @@ export async function GET() {
   return NextResponse.json(result);
 }
 
-export async function FETCH(req: Request) {
+export async function PATCH(req: Request) {
   const session = await getAuthSession();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
