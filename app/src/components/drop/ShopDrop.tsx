@@ -4,10 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import { Products } from "@/src/entities/type/interfaces";
 import useSection from "@/src/shared/hooks/useSection";
 
-const SectionDrop = () => {
+const ShopDrop = () => {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
-    const { setSection, category } = useSection();
+    const { category, moveToShop } = useSection();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -24,14 +24,14 @@ const SectionDrop = () => {
             ref={ref}
             className="font-brand z-50 ms-8 transition-all duration-300 ease-in-out"
         >
-            <button onClick={() => setOpen((prev) => !prev)}>Season</button>
+            <button onClick={() => setOpen((prev) => !prev)}>shop</button>
             {open && (
                 <ul
                     className={`font-brand font-light absolute mt-2 overflow-hidden bg-transparent transition-all duration-700 ease-in-out ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
                 >
                     {category?.map((list: Products) => (
                         <li key={list._id} className="py-1">
-                            <button onClick={() => setSection(list.key)}>
+                            <button onClick={() => moveToShop(list.key)}>
                                 {list.title}
                             </button>
                         </li>
@@ -42,4 +42,4 @@ const SectionDrop = () => {
     );
 };
 
-export default SectionDrop;
+export default ShopDrop;

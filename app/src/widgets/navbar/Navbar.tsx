@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { NavbarProps } from "../../entities/type/interfaces";
 import useUsers from "@/src/shared/hooks/useUsers";
-import SectionDrop from "@/src/components/drop/SectionDrop";
 
-const Navbar = ({ textColor }: NavbarProps) => {
+const Navbar = ({ children, textColor }: NavbarProps) => {
     const { navStartData } = useUsers();
 
     return (
@@ -13,10 +12,8 @@ const Navbar = ({ textColor }: NavbarProps) => {
             <div className={`relative max-w-screen-w_max font-brand mx-auto flex items-center justify-between p-0 transition-all duration-300 ease-in-out sm:p-4 sm:text-lg c_md:text-2xl ${textColor}`}>
                 {/* 왼쪽 메뉴 */}
                 <div className="flex transition-all duration-300 ease-in-out sm:space-x-8">
-                    <SectionDrop title="shop" />
-                    {/* <Link href="/shop" className="flex items-center ps-6">
-                        
-                    </Link> */}
+                    {children}
+                    
                     <Link href="/introduce" className="flex items-center ps-3 sm:ps-6">
                         about
                     </Link>

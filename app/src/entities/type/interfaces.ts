@@ -30,6 +30,7 @@ type NavListProps = {
 };
 
 type NavbarProps = {
+    children? : any;
     textColor? : string;
 };
 
@@ -59,10 +60,6 @@ type navDataProps = {
     text: string;
 }[];
 
-type SectionDropProps = {
-    title: string;
-}
-
 type LoginButtonProps = {
     btnTitle: string;
     btnFunc?: () => void;
@@ -75,7 +72,6 @@ export type {
     RegistReqData,
     profNavDataProps,
     LoginButtonProps,
-    SectionDropProps,
     ShopClientProps,
     HomeClientProps,
     menuDataProps,

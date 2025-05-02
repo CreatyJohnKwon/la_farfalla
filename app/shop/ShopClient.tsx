@@ -27,7 +27,7 @@ const ShopClient = ({ posts }: ShopClientProps) => {
 
     return (
         <div className="h-full w-full pb-52">
-            <Navbar />
+            <Navbar children={<SectionDrop />} />
             <div className="mx-auto c_md:w-full">
                 <p className="w-full pt-14 pb-10 text-center font-brand text-2xl c_sm:text-4xl c_md:text-6xl">
                     {`${title} Products`}

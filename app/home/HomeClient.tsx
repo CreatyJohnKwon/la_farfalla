@@ -8,6 +8,7 @@ import useSection from "@/src/shared/hooks/useSection";
 import Image from "next/image";
 import BackgroundImg from "../../public/sample_file.jpeg";
 import Link from "next/link";
+import ShopDrop from "@/src/components/drop/ShopDrop";
 
 const HomeClient = ({ products }: HomeClientProps) => {
     const { setCategory } = useSection();
@@ -18,7 +19,7 @@ const HomeClient = ({ products }: HomeClientProps) => {
 
     return (
         <div className="flex min-h-screen w-full flex-col text-white">
-            <Navbar textColor="text-white" />
+            <Navbar textColor="text-white" children={<ShopDrop />}/>
 
             <div className="absolute inset-0 -z-10">
                 <Image
@@ -26,7 +27,7 @@ const HomeClient = ({ products }: HomeClientProps) => {
                     alt="background"
                     height={1000}
                     width={1000}
-                    className="h-full w-full "
+                    className="h-full w-full object-cover"
                 />
             </div>
             
