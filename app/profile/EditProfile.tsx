@@ -34,7 +34,7 @@ const EditProfile = () => {
   if (isLoading) return <p>Loading...</p>;
 
   return (
-    <div className="flex flex-col gap-6 w-4/5 h-full items-center justify-center">
+    <div className="flex flex-col gap-6 w-4/5 h-full items-center justify-center font-pretendard">
       <input
         type="text"
         name="name"

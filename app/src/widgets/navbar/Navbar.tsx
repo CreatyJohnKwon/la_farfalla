@@ -8,7 +8,7 @@ const Navbar = ({ children, textColor }: NavbarProps) => {
     const { navStartData } = useUsers();
 
     return (
-        <nav className="sticky top-0 z-50 h-full w-full bg-transparent pt-5 ps-0 shadow-none transition-all duration-300 ease-in-out sm:ps-4">
+        <nav className="sticky top-0 z-50 h-0 w-full bg-transparent pt-5 ps-0 shadow-none transition-all duration-300 ease-in-out sm:ps-4">
             <div className={`relative max-w-screen-w_max font-brand mx-auto flex items-center justify-between p-0 transition-all duration-300 ease-in-out sm:p-4 sm:text-lg c_md:text-2xl ${textColor}`}>
                 {/* 왼쪽 메뉴 */}
                 <div className="flex transition-all duration-300 ease-in-out sm:space-x-8">

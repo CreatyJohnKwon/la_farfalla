@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/src/entities/db/mongoose";
 import User from "@/src/entities/models/User";
 import { UserProfile } from "@/src/entities/type/api/get";
+import bcrypt from "bcryptjs";
 
 // GET: 유저 정보 조회
 export async function GET() {
@@ -47,7 +48,7 @@ export async function PATCH(req: Request) {
   if (name) user.name = name;
   if (address) user.address = address;
   if (image) user.image = image;
-  if (password) user.password = password; // 💡 여기서 bcrypt로 해싱 처리 필요!
+  if (password) user.password = await bcrypt.hash(password, 10);;
 
   await user.save();
 

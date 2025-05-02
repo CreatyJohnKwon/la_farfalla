@@ -12,47 +12,40 @@ const IntroduceClient = () => {
         );
 
     return (
-        <>
+        <div className="flex flex-col h-screen">
             <Navbar />
-            <main className="flex h-full flex-col items-center justify-center p-5 text-center">
-                <div className="flex min-h-[70vh] flex-col items-center justify-center">
-                    <h1 className="font-brand  mb-10 text-5xl transition-all duration-300 ease-in-out sm:text-7xl">
-                        Introduce
-                    </h1>
+            <main className="flex flex-col h-full w-full items-center justify-center p-5 text-center">
+                {/* <h1 className="font-pretendard tracking-tightest mb-10 transition-all duration-300 ease-in-out text-3xl sm:text-5xl">
+                    Introduce
+                </h1> */}
 
-                    <div className="font-brand-thin max-w-5xl space-y-4 text-lg transition-all duration-300 ease-in-out sm:text-xl c_md:text-3xl">
-                        <span className="font-brand font-light mt-2">
-                            La fafalla{" "}
-                        </span>
-                        <span>
-                            는 미래지향적이고 모던한 감각을 지닌 여성 브랜드로
-                        </span>
-                        <p className="mt-2">
-                            일상적이면서도 세련된 디자인을 통해 현대 여성들의
-                            다양한 라이프스타일을 반영합니다
-                        </p>
-                        <p className="mt-2">
-                            이 브랜드는 기능성과 미적 요소를 조화롭게 결합하여
-                        </p>
-                        <p className="mt-2">
-                            착용자에게 편안함과 자신감을 동시에 선사하는 것을
-                            목표로 합니다
-                        </p>
-                    </div>
-
-                    <button
-                        className="mt-20 flex h-auto w-auto items-center justify-start hover:opacity-80"
-                        onClick={() => instagramHandler()}
-                    >
-                        <RxInstagramLogo className="h-7 w-auto" />
-                        <span className="font-brand font-light ms-2 border-black hover:border-b">
-                            @lafarfalla____
-                        </span>
-                    </button>
+                <div className="font-pretendard tracking-tightest space-y-3 text-base transition-all duration-300 ease-in-out sm:text-lg c_md:text-2xl">
+                    <p>사이의 여유, 선택의 아름다움</p>
+                    <p>복잡한 기준과 정해진 취향 속에서, 나만의 방향을 찾고자 하는 당신에게.</p>
+                    <p>La Farfalla 는 무게 없이 가볍고, 정제된 감각으로</p>
+                    <p>선택의 폭이 좁을수록 더 선명해지는 취향을 이야기합니다.</p>
+                    <p>우리는 묻지 않습니다. 대신 제안합니다.</p>
+                    <p>흘러가는 유행이 아닌, 나를 중심에 두는 옷.</p>
+                    <p>쉽게 흘려보내기엔 아쉬운 디테일, 그리고 담백한 해방감.</p>
+                    <p>La Farfalla 는</p>
+                    <p>단조로운 선택에 지친 이들이</p>
+                    <p>조금 더 나은 기준을 발견하길 바랍니다.</p>
+                    <p>조용하지만 분명하게.</p>
+                    <p>당신의 감각은 이미 충분하니까.</p>
                 </div>
+
+                <button
+                    className="mt-10 flex h-auto w-auto items-center justify-start hover:opacity-80"
+                    onClick={() => instagramHandler()}
+                >
+                    <RxInstagramLogo className="h-7 w-auto" />
+                    <span className="font-brand font-light ms-2 border-black hover:border-b">
+                        @lafarfalla____
+                    </span>
+                </button>
             </main>
             <Footer />
-        </>
+        </div>
     );
 };
 
