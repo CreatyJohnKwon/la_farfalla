@@ -26,33 +26,37 @@ const ShopClient = ({ posts }: ShopClientProps) => {
     }, [section]);
 
     return (
-        <div className="h-full w-full pb-52">
+        <div className="h-screen w-screen">
             <Navbar children={<SectionDrop />} />
-            <div className="mx-auto c_md:w-full">
-                <p className="w-full pt-14 pb-10 text-center font-brand text-2xl c_sm:text-4xl c_md:text-6xl">
-                    {`${title} Products`}
-                </p>
+            <main className="font-brand flex h-full w-full flex-col items-center justify-center">
+                <span className="text-6xl">{`${title} Products`}</span>
                 <ul className="grid w-full grid-cols-2 gap-2 transition-all sm:gap-2 c_md:grid-cols-4">
-                    {
-                        loading ? (
-                            Array.from({ length: 4 }).map((_, i) => 
-                                <li
-                                    key={i}
-                                    className="mt-10 aspect-square animate-pulse bg-neutral-100"
-                                />
-                            )
-                        ) : (
-                            posts.map((post) => {
-                                if (post.key === +section) {
-                                    return <ProductsList key={post._id} posts={post} />;
-                                } else if (+section === 0) {
-                                    return <ProductsList key={post._id} posts={post} />;
-                                }
-                            })
-                        )
-                    }
+                    {loading
+                        ? Array.from({ length: 4 }).map((_, i) => (
+                              <li
+                                  key={i}
+                                  className="aspect-square animate-pulse bg-neutral-100"
+                              />
+                          ))
+                        : posts.map((post) => {
+                              if (post.key === +section) {
+                                  return (
+                                      <ProductsList
+                                          key={post._id}
+                                          posts={post}
+                                      />
+                                  );
+                              } else if (+section === 0) {
+                                  return (
+                                      <ProductsList
+                                          key={post._id}
+                                          posts={post}
+                                      />
+                                  );
+                              }
+                          })}
                 </ul>
-            </div>
+            </main>
         </div>
     );
 };

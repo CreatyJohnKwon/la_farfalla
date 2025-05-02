@@ -9,47 +9,50 @@ const ProfileInfo = () => {
     const { logoutHandler } = useUsers();
 
     return (
-        <div className="grid grid-cols-6 h-full w-full items-center justify-center font-brand">
-            <div className="flex flex-row col-span-4 h-full w-full items-center justify-center">
-                <div className="relative sm:me-10 overflow-hidden rounded-full">
-                    <Image
-                        src={session?.user?.image || Chillguy}
-                        width={150}
-                        height={150}
-                        alt="user profile"
-                        className="h-36 w-36 object-cover"
-                    />
+        <div className="font-brand flex h-full w-full grid-cols-2 flex-col items-center justify-center sm:grid-cols-6">
+            <div className="col-span-1 flex h-full w-3/5 items-center justify-center sm:col-span-4">
+                <div className="font-brand mt-20 flex w-full flex-col items-center gap-6 sm:mt-0 sm:grid sm:grid-cols-6 sm:items-center sm:justify-center sm:gap-0">
+                    {/* 프로필 이미지 */}
+                    <div className="flex flex-col items-center justify-center sm:col-span-2 sm:flex sm:items-center">
+                        <div className="relative mb-4 overflow-hidden rounded-full sm:mb-0">
+                            <Image
+                                src={session?.user?.image || Chillguy}
+                                width={150}
+                                height={150}
+                                alt="user profile"
+                                className="h-36 w-36 object-cover"
+                            />
+                        </div>
+                    </div>
+
+                    {/* 프로필 텍스트 */}
+                    <div className="flex flex-col items-center justify-center gap-2 text-center sm:col-span-3 sm:items-start sm:text-left">
+                        <span className="font-pretendard text-2xl font-light text-gray-800 sm:text-3xl md:text-4xl">
+                            {`${session?.user?.name || "Guest"} 님`}
+                        </span>
+                        <span className="font-pretendard text-base font-light sm:text-xl">
+                            누적 구매금액:{" "}
+                            <span className="font-brand">KRW </span>
+                        </span>
+                        <span className="text-sm text-gray-600 sm:text-lg">
+                            {session?.user?.email || "이메일 정보 없음"}
+                        </span>
+                    </div>
+
+                    {/* 로그아웃 버튼 */}
+                    <div className="mt-4 flex items-center justify-center sm:col-span-1 sm:ms-10 sm:mt-0">
+                        <LoginButton
+                            btnTitle="Logout"
+                            btnStyle="aspect-square w-16 h-16 bg-black hover:bg-black/50 text-white transition-colors text-sm sm:w-full sm:text-base"
+                            btnDisabled={false}
+                            btnType="submit"
+                            btnFunc={logoutHandler}
+                        />
+                    </div>
+
+                    {/* PC에서만 보이는 세로 구분선 */}
+                    <div className="hidden h-1/3 border-l border-gray-300 sm:ms-32 sm:block" />
                 </div>
-                <div className="flex flex-col h-1/4 justify-between items-start">
-                    <span className="font-brand font-light text-3xl text-gray-800 md:text-4xl">
-                        {`${session?.user?.name || "Guest"}\t님`}
-                    </span>
-                    <span className="font-brand font-light sm:text-2xl">
-                        누적 구매금액: <span className="font-brand">KRW </span>
-                    </span>
-                    <span className="text-lg text-gray-600 sm:text-2xl">
-                        {session?.user?.email || "이메일 정보 없음"}
-                    </span>
-                </div>
-                <div className="flex ms-10 font-brand font-light h-1/4 w-auto">
-                    <LoginButton
-                        btnTitle="로그아웃"
-                        btnStyle={`w-full bg-black/80 hover:bg-black/50 text-white transition-colors text-base font-semibold sm:col-span-2`}
-                        btnDisabled={false}
-                        btnType="submit"
-                        btnFunc={logoutHandler}
-                    />
-                </div>
-                <div className="ms-32 border-l border-gray-300 h-1/3" />
-            </div>
-            <div className="flex flex-col col-span-2 h-full w-full items-start justify-center text-5xl">
-                <span className="font-brand-thin">회의 필요</span>
-                <span className="text-lg text-gray-600 md:text-2xl">
-                    {`name: ${session?.user?.name || "이름 없음"}`}
-                </span>
-                <span className="text-lg text-gray-600 md:text-2xl">
-                {`email: ${session?.user?.email || "이메일 없음"}`}
-                </span>
             </div>
         </div>
     );

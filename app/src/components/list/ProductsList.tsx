@@ -8,10 +8,7 @@ import { priceResult, priceDiscount } from "@/src/features/calculate";
 
 const ProductsList = ({ posts }: { posts: Posts }) => {
     return (
-        <li
-            className="pt-10 text-center font-brand"
-            key={posts._id}
-        >
+        <li className="pt-10 text-center" key={posts._id}>
             <Link href={`/products/${posts._id}`}>
                 <div className="relative w-full overflow-hidden">
                     <div className="pb-[100%]"></div> {/* 1:1 비율 확보 */}

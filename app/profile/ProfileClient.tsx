@@ -5,6 +5,7 @@ import EditProfile from "./EditProfile";
 import usePage from "@/src/shared/hooks/usePage";
 import ProfileInfo from "./ProfileInfo";
 import Navbar from "@/src/widgets/navbar/Navbar";
+import ShopDrop from "@/src/components/drop/ShopDrop";
 
 const ProfileClient = () => {
     const { pages } = usePage();
@@ -14,11 +15,7 @@ const ProfileClient = () => {
             case "e":
                 return <EditProfile />;
             case "o":
-                return (
-                    <div className="">
-                        주문조회
-                    </div>
-                );
+                return <div className="">주문조회</div>;
             // case "q":
             //     return (
             //         <div className="">
@@ -26,26 +23,22 @@ const ProfileClient = () => {
             //         </div>
             //     );
             default:
-                return (
-                    <div className="">
-                        500 : 서버 점검중입니다
-                    </div>
-                );
+                return <div className="">500 : 서버 점검중입니다</div>;
         }
     };
 
     return (
-        <div className="grid h-screen w-screen">
-            <Navbar />
-            <div className="grid h-full w-full grid-cols-6 items-center justify-center">
+        <div className="h-screen w-screen">
+            <Navbar children={<ShopDrop />} />
+            <div className="grid h-full w-full items-center justify-center sm:grid-cols-6">
                 <ProfileNavbar />
-                
+
                 <div className="col-span-5 flex h-full w-full items-center justify-center">
                     <div className="grid h-full w-full grid-rows-5">
                         <div className="row-span-2">
                             <ProfileInfo />
                         </div>
-                        <div className="row-span-3 font-brand-thin text-5xl text-black flex items-center justify-center">
+                        <div className="font-brand-thin row-span-3 flex items-center justify-center text-5xl text-black">
                             {handlePages()}
                         </div>
                     </div>

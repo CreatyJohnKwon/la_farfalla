@@ -9,6 +9,7 @@ import Link from "next/link";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import ShopDrop from "@/src/components/drop/ShopDrop";
 
 const LoginClient = () => {
     const {
@@ -44,11 +45,11 @@ const LoginClient = () => {
     }, [searchParams]);
 
     return (
-        <>
-            <Navbar />
-            <div className="flex min-h-[calc(100vh-240px)] w-screen flex-col items-center justify-center text-center font-brand">
+        <div className="h-screen w-screen">
+            <Navbar children={<ShopDrop />} />
+            <div className="flex h-full w-auto flex-col items-center justify-center text-center">
                 <form
-                    className="flex w-5/6 flex-col items-center justify-center gap-6 sm:w-2/6"
+                    className="font-brand flex w-5/6 flex-col items-center justify-center gap-6 sm:w-2/6"
                     action={loginAction}
                 >
                     <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-6">
@@ -113,7 +114,7 @@ const LoginClient = () => {
                     </div>
                 </form>
             </div>
-        </>
+        </div>
     );
 };
 

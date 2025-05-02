@@ -1,13 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Products } from "@/src/entities/type/interfaces";
-import useSection from "@/src/shared/hooks/useSection";
+import { redirect } from "next/navigation";
 
-const SectionDrop = () => {
+const AboutDrop = () => {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
-    const { setSection, category } = useSection();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -25,22 +23,25 @@ const SectionDrop = () => {
             ref={ref}
             className="font-brand z-50 transition-all duration-300 ease-in-out"
         >
-            <button onClick={() => setOpen((prev) => !prev)}>Season</button>
+            <button onClick={() => setOpen((prev) => !prev)}>about</button>
             {open && (
                 <ul
                     className={`font-brand absolute mt-2 overflow-hidden bg-transparent font-light transition-all duration-700 ease-in-out ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
                 >
-                    {category?.map((list: Products) => (
-                        <li key={list._id} className="py-1">
-                            <button onClick={() => setSection(list.key)}>
-                                {list.title}
-                            </button>
-                        </li>
-                    ))}
+                    <li key={"move-introduce"} className="py-1">
+                        <button onClick={() => redirect("/introduce")}>
+                            introduce
+                        </button>
+                    </li>
+                    {/* <li key={"move-project"} className="py-1">
+                        <button onClick={() => redirect("/project")}>
+                            project
+                        </button>
+                    </li> */}
                 </ul>
             )}
         </div>
     );
 };
 
-export default SectionDrop;
+export default AboutDrop;

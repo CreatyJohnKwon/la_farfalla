@@ -9,7 +9,7 @@ const useSection = () => {
     const moveToShop = (key: any) => {
         setSection(key);
         redirect("/shop");
-    }
+    };
 
     return {
         category,
@@ -17,7 +17,7 @@ const useSection = () => {
         setCategory,
         setSection,
 
-        moveToShop
+        moveToShop,
     };
 };
 
