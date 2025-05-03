@@ -29,7 +29,7 @@ const ShopClient = ({ posts }: ShopClientProps) => {
         <div className="h-screen w-screen">
             <Navbar children={<SeasonDrop />} />
             <main className="font-brand flex h-full w-full flex-col items-center justify-center">
-                <span className="text-6xl">{`${title}Products`}</span>
+                <span className="text-3xl sm:text-6xl">{`${title}Products`}</span>
                 <ul className="grid w-full grid-cols-2 gap-2 transition-all sm:gap-2 c_md:grid-cols-4">
                     {loading
                         ? Array.from({ length: 4 }).map((_, i) => (
