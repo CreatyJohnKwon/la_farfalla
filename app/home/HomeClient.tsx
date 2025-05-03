@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import useSection from "@/src/shared/hooks/useSection";
 import Image from "next/image";
 import BackgroundImg from "../../public/sample_file.jpeg";
-import Link from "next/link";
 import ShopDrop from "@/src/components/drop/ShopDrop";
 
 const HomeClient = ({ products }: HomeClientProps) => {

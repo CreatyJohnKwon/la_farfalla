@@ -10,7 +10,6 @@ import { useMemo, useState, useEffect } from "react";
 const EditProfile = () => {
     const { data: user, isLoading } = useUserQuery();
     const updateUser = useUpdateUserMutation();
-    const [password, setPassword] = useState<string>("");
     // 클라이언트 측 비번 확인 검증용
     const [confirmPassword, setConfirmPassword] = useState<string>("");
 

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Products } from "@/src/entities/type/interfaces";
 import useSection from "@/src/shared/hooks/useSection";
 
-const SectionDrop = () => {
+const SeasonDrop = () => {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const { setSection, category } = useSection();
@@ -43,4 +43,4 @@ const SectionDrop = () => {
     );
 };
 
-export default SectionDrop;
+export default SeasonDrop;

@@ -5,19 +5,16 @@ import DefaultImage from "../../../public/chill.png";
 import { priceResult, priceDiscount } from "@/src/features/calculate";
 import Navbar from "@/src/widgets/navbar/Navbar";
 import { Posts } from "@/src/entities/type/interfaces";
+import ShopDrop from "@/src/components/drop/ShopDrop";
 
-const ProductsClient = ({ posts }: { posts: Posts }) => {
+const ProductClient = ({ posts }: { posts: Posts }) => {
     return (
         posts && (
-            <div className="flex h-full w-full flex-col items-center justify-center pb-24">
-                <Navbar />
-                <div className="font-brand  grid w-full grid-cols-1 gap-2 transition-all duration-300 ease-in-out md:grid-cols-2">
+            <div className="flex h-full w-full flex-col items-center justify-center">
+                <Navbar children={<ShopDrop />} />
+                <div className="pt-32 font-brand grid h-full w-full grid-cols-1 gap-2 transition-all duration-300 ease-in-out md:grid-cols-2">
                     <Image
-                        src={
-                            posts.image
-                                ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${posts.image}`
-                                : DefaultImage
-                        }
+                        src={posts.image ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${posts.image}` : DefaultImage}
                         alt={posts.title}
                         width={500}
                         height={500}
@@ -44,7 +41,7 @@ const ProductsClient = ({ posts }: { posts: Posts }) => {
 
                         {/* 결제 */}
                         <div className="flex h-[100px] w-full items-center justify-center bg-red-50 hover:bg-red-200 sm:h-full sm:w-3/5">
-                            Payments Items
+                            Payments Information
                         </div>
                     </div>
                 </div>
@@ -68,4 +65,4 @@ const ProductsClient = ({ posts }: { posts: Posts }) => {
     );
 };
 
-export default ProductsClient;
+export default ProductClient;

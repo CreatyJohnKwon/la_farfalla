@@ -3,11 +3,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Products } from "@/src/entities/type/interfaces";
 import useSection from "@/src/shared/hooks/useSection";
+import { useRouter } from "next/navigation";
 
 const ShopDrop = () => {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
-    const { category, moveToShop } = useSection();
+    const { category, setSection } = useSection();
+    const router = useRouter();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -32,7 +34,10 @@ const ShopDrop = () => {
                 >
                     {category?.map((list: Products) => (
                         <li key={list._id} className="py-1">
-                            <button onClick={() => moveToShop(list.key)}>
+                            <button onClick={() => {
+                                setSection(list.key);
+                                router.push("/shop");
+                            }}>
                                 {list.title}
                             </button>
                         </li>

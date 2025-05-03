@@ -15,7 +15,7 @@ const ProfileClient = () => {
             case "e":
                 return <EditProfile />;
             case "o":
-                return <div className="">주문조회</div>;
+                return <div className="w-screen">주문조회</div>;
             // case "q":
             //     return (
             //         <div className="">
@@ -23,7 +23,7 @@ const ProfileClient = () => {
             //         </div>
             //     );
             default:
-                return <div className="">500 : 서버 점검중입니다</div>;
+                return <div className="flex">500 : 서버 점검중입니다</div>;
         }
     };
 

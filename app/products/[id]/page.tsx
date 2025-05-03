@@ -1,5 +1,5 @@
 import { Posts, ProductsProps } from "@/src/entities/type/interfaces";
-import ProductsClient from "./ProductsClient";
+import ProductClient from "./ProductClient";
 import { serializeFindOne } from "@/src/features/calculate";
 import { getProducts } from "@/src/shared/lib/get";
 
@@ -12,7 +12,7 @@ const Products = async ({ params }: ProductsProps) => {
 
     const productRaw = serializeFindOne(productData as unknown as Posts);
 
-    return <ProductsClient posts={productRaw} />;
+    return <ProductClient posts={productRaw} />;
 };
 
 export default Products;
