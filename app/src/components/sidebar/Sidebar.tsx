@@ -1,5 +1,6 @@
 "use client";
 
+import usePage from "@/src/shared/hooks/usePage";
 import useSection from "@/src/shared/hooks/useSection";
 import useUsers from "@/src/shared/hooks/useUsers";
 import Link from "next/link";
@@ -11,10 +12,12 @@ import { RxInstagramLogo } from "react-icons/rx";
 const Sidebar = () => {
     const { openSidebar, setOpenSidebar } = useSection();
     const [isVisible, setIsVisible] = useState(false); // 화면에 보이는 여부
-    const { session } = useUsers();
     const [animationClass, setAnimationClass] = useState(
         "animate-slide-in-left",
     );
+
+    const { session } = useUsers();
+    const { instagramHandler } = usePage();
 
     // openSidebar 바뀔 때 애니메이션 처리
     useEffect(() => {
@@ -46,7 +49,7 @@ const Sidebar = () => {
                     onClick={() => setOpenSidebar(false)}
                     className="font-brand absolute right-5 top-5 text-[1.2em] text-black"
                 >
-                    {session ? "Profile" : "Login"}
+                    {session ? "profile" : "login"}
                 </Link>
 
                 <ul className="font-brand -mt-20 space-y-6 text-center font-pretendard text-[2em] text-black">
@@ -55,31 +58,31 @@ const Sidebar = () => {
                             href="/shop"
                             onClick={() => setOpenSidebar(false)}
                         >
-                            Shop
+                            shop
                         </Link>
                     </li>
                     <li>
                         <Link
-                            href="/notice"
+                            href="/introduce"
                             onClick={() => setOpenSidebar(false)}
                         >
-                            About
+                            about
                         </Link>
                     </li>
                 </ul>
 
-                <div className="font-brand absolute top-5 text-[1.25em] transition-all duration-300 ease-in-out">
+                <div className="font-brand absolute top-5 text-[1.25em]">
                     <Link href="/home" onClick={() => setOpenSidebar(false)}>
                         La farfalla
                     </Link>
                 </div>
 
-                <Link
-                    href="/notice"
+                <button
+                    onClick={() => instagramHandler()}
                     className="absolute bottom-64 text-[2em] text-black"
                 >
                     <RxInstagramLogo />
-                </Link>
+                </button>
             </div>
         </div>
     );

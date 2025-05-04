@@ -16,9 +16,16 @@ const HomeClient = ({ products }: HomeClientProps) => {
         setCategory(products);
     }, [products]);
 
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, []);
+
     return (
         <div className="flex min-h-screen w-full flex-col text-white">
-            <Navbar textColor="text-white" children={<ShopDrop />}/>
+            <Navbar textColor="text-white" children={<ShopDrop />} />
 
             <div className="absolute inset-0 -z-10">
                 <Image
@@ -29,7 +36,7 @@ const HomeClient = ({ products }: HomeClientProps) => {
                     className="h-full w-full object-cover"
                 />
             </div>
-            
+
             <Footer />
         </div>
     );
