@@ -14,13 +14,13 @@ const ProfileInfo = () => {
                 <div className="font-brand mt-20 flex w-full flex-col items-center gap-6 sm:mt-0 sm:grid sm:grid-cols-6 sm:items-center sm:justify-center sm:gap-0">
                     {/* 프로필 이미지 */}
                     <div className="flex flex-col items-center justify-center sm:col-span-2 sm:flex sm:items-center">
-                        <div className="relative mb-4 overflow-hidden rounded-full sm:mb-0">
+                        <div className="relative m-5 overflow-hidden rounded-full sm:m-0">
                             <Image
                                 src={session?.user?.image || Chillguy}
                                 width={150}
                                 height={150}
                                 alt="user profile"
-                                className="h-36 w-36 object-cover"
+                                className="h-auto w-auto object-cover"
                             />
                         </div>
                     </div>

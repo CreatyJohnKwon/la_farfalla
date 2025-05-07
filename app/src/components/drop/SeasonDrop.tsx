@@ -25,7 +25,7 @@ const SeasonDrop = () => {
             ref={ref}
             className="font-brand z-40 transition-all duration-300 ease-in-out"
         >
-            <button onClick={() => setOpen((prev) => !prev)}>Season</button>
+            <button onClick={() => setOpen((prev) => !prev)}>season</button>
             {open && (
                 <ul
                     className={`font-brand absolute mt-2 overflow-hidden bg-transparent font-light transition-all duration-700 ease-in-out ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}

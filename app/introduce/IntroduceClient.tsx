@@ -14,7 +14,7 @@ const IntroduceClient = () => {
             <Navbar children={<ShopDrop />} />
             <main className="flex h-full w-full flex-col items-center justify-center p-5 text-center">
                 <h1 className="font-brand mb-10 text-[2em] tracking-tightest transition-all duration-300 ease-in-out sm:text-[3em]">
-                    Introduce
+                    introduce
                 </h1>
 
                 <div className="space-y-3 font-pretendard text-[0.75em] tracking-tightest transition-all duration-300 ease-in-out sm:text-[1.25em]">

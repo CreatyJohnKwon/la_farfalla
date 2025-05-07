@@ -1,13 +1,18 @@
 import bcrypt from "bcryptjs";
 import { connectDB } from "@/src/entities/db/mongoose";
 import User from "@/src/entities/models/User";
-import { getUserExist } from "@/src/shared/lib/get";
 import { RegistReqData } from "@/src/entities/type/interfaces";
 
 const registUser = async (formData: RegistReqData) => {
     try {
-        let name: string, email: string, pw: string, image: string, phoneNumber: string, address: string, provider: string;
-        
+        let name: string,
+            email: string,
+            pw: string,
+            image: string,
+            phoneNumber: string,
+            address: string,
+            provider: string;
+
         if (formData instanceof FormData) {
             name = formData.get("name") as string;
             email = formData.get("email") as string;
@@ -18,7 +23,7 @@ const registUser = async (formData: RegistReqData) => {
             provider = "local" as string;
         } else {
             name = formData.name as string;
-            email = formData.email as string; 
+            email = formData.email as string;
             pw = formData.password as string;
             phoneNumber = formData.phoneNumber as string;
             image = formData.image as string;
@@ -28,7 +33,7 @@ const registUser = async (formData: RegistReqData) => {
 
         await connectDB();
 
-        if (await getUserExist(email))
+        if (await getUser(email))
             return { success: false, error: "이미 등록된 이메일입니다" };
 
         const password = await bcrypt.hash(pw, 10);
@@ -59,7 +64,7 @@ const fetchUser = async () => {
         return { success: false, error: "사용자 조회에 실패했습니다" };
     }
 };
-  
+
 const updateUser = async (form: {
     name?: string;
     address?: string;
@@ -74,9 +79,15 @@ const updateUser = async (form: {
     if (!res.ok) throw new Error("업데이트 실패");
     return res.json();
 };
-  
-export {
-    registUser,
-    fetchUser,
-    updateUser
+
+export const getUser = async (email: string) => {
+    try {
+        await connectDB();
+        return await User.findOne({ email }).lean();
+    } catch (error) {
+        console.error("Error checking user existence:", error);
+        throw new Error("Failed to check user existence");
+    }
 };
+
+export { registUser, fetchUser, updateUser };

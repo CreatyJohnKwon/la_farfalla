@@ -6,6 +6,7 @@ import usePage from "@/src/shared/hooks/usePage";
 import ProfileInfo from "./ProfileInfo";
 import Navbar from "@/src/widgets/navbar/Navbar";
 import ShopDrop from "@/src/components/drop/ShopDrop";
+import OrderClient from "./OrderClient";
 
 const ProfileClient = () => {
     const { pages } = usePage();
@@ -15,13 +16,7 @@ const ProfileClient = () => {
             case "e":
                 return <EditProfile />;
             case "o":
-                return <div className="w-screen">주문조회</div>;
-            // case "q":
-            //     return (
-            //         <div className="">
-            //             1:1 문의
-            //         </div>
-            //     );
+                return <OrderClient />;
             default:
                 return <div className="flex">500 : 서버 점검중입니다</div>;
         }

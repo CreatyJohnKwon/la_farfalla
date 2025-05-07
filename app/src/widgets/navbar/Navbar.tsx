@@ -1,17 +1,21 @@
 "use client";
 
 import { NavbarProps } from "../../entities/type/interfaces";
-import AboutDrop from "@/src/components/drop/AboutDrop";
+// import AboutDrop from "@/src/components/drop/AboutDrop";
+import useSection from "@/src/shared/hooks/useSection";
 import useUsers from "@/src/shared/hooks/useUsers";
 
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { RxHamburgerMenu } from "react-icons/rx";
-import useSection from "@/src/shared/hooks/useSection";
+import { AiOutlineUser } from "react-icons/ai";
+
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const Navbar = ({ children, textColor }: NavbarProps) => {
     const { navStartData } = useUsers();
     const { setOpenSidebar } = useSection();
+    const router = useRouter();
 
     return (
         <>
@@ -23,7 +27,10 @@ const Navbar = ({ children, textColor }: NavbarProps) => {
                     <ul className="hidden border-gray-100 transition-all duration-300 ease-in-out sm:flex sm:space-x-8">
                         <li className="block ps-4 sm:ps-6">{children}</li>
                         <li className="block ps-4 sm:ps-6">
-                            <AboutDrop />
+                            {/* <AboutDrop /> */}
+                            <button onClick={() => router.push("/introduce")}>
+                                introduce
+                            </button>
                         </li>
                     </ul>
 
@@ -43,11 +50,19 @@ const Navbar = ({ children, textColor }: NavbarProps) => {
                         className={`me-2 ml-auto justify-center bg-transparent transition-all duration-300 ease-in-out sm:order-1 sm:me-4 ${textColor}`}
                     >
                         {/* 오른쪽 메뉴 : Mobile */}
-                        <Link href={"/cart"}>
-                            <HiOutlineShoppingBag
-                                className={`${textColor} me-4 block text-[1.5em] sm:hidden`}
-                            />
-                        </Link>
+                        <ul className="flex space-x-2 transition-all duration-300 ease-in-out sm:hidden">
+                            <Link href={"/profile"}>
+                                <AiOutlineUser
+                                    className={`${textColor} me-4 text-[1.5em]`}
+                                />
+                            </Link>
+
+                            <Link href={"/cart"}>
+                                <HiOutlineShoppingBag
+                                    className={`${textColor} me-4 text-[1.5em]`}
+                                />
+                            </Link>
+                        </ul>
 
                         {/* 오른쪽 메뉴 : PC */}
                         <ul className="hidden transition-all duration-300 ease-in-out sm:flex sm:space-x-8">
