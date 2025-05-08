@@ -3,9 +3,9 @@ import { profNavDataProps, navDataProps } from "@/src/entities/type/interfaces";
 const navData: navDataProps = [{ text: "home" }, { text: "" }];
 
 const profileNavData: profNavDataProps = [
-    { text: "주문조회", link: "o" },
+    { text: "Order", link: "o" },
     // { text: "1:1 문의", link: "q" },
-    { text: "정보수정", link: "e" },
+    { text: "Profile", link: "e" },
 ];
 
 const menuData = [

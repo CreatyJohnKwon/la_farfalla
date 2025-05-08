@@ -1,7 +1,6 @@
 "use client";
 
-import Navbar from "@/src/widgets/navbar/Navbar";
-import LoginButton from "@/src/widgets/button/LoginButton";
+import CustomButton from "@/src/widgets/button/CustomButton";
 import useUsers from "@/src/shared/hooks/useUsers";
 import { useEffect } from "react";
 import loginAction from "./actions";
@@ -9,7 +8,6 @@ import Link from "next/link";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import ShopDrop from "@/src/widgets/drop/ShopDrop";
 
 const LoginClient = () => {
     const {
@@ -46,7 +44,6 @@ const LoginClient = () => {
 
     return (
         <div className="h-screen w-screen">
-            <Navbar children={<ShopDrop />} />
             <div className="flex h-full w-auto flex-col items-center justify-center text-center">
                 <form
                     className="font-amstel flex w-5/6 flex-col items-center justify-center gap-6 sm:w-2/6"
@@ -71,11 +68,11 @@ const LoginClient = () => {
                                 className="h-14 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:h-16"
                             />
                         </div>
-                        <LoginButton
+                        <CustomButton
                             btnTitle="Login"
                             btnStyle={`w-full ${
                                 isDisabled
-                                    ? "bg-black/50"
+                                    ? "bg-black"
                                     : "bg-black hover:bg-black/50"
                             } text-white transition-colors text-base font-semibold sm:col-span-2`}
                             btnDisabled={isDisabled}

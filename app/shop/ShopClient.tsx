@@ -2,7 +2,6 @@
 
 import ProductsList from "@/src/widgets/list/ProductsList";
 import SeasonDrop from "@/src/widgets/drop/SeasonDrop";
-import Navbar from "@/src/widgets/navbar/Navbar";
 import { ShopClientProps } from "@/src/entities/type/interfaces";
 import { useEffect, useState } from "react";
 import useSection from "@/src/shared/hooks/useSection";
@@ -27,7 +26,6 @@ const ShopClient = ({ posts }: ShopClientProps) => {
 
     return (
         <div className="h-screen w-screen">
-            <Navbar children={<SeasonDrop />} />
             <main className="flex h-full w-full flex-col items-center justify-center">
                 {/* <span className="text-3xl sm:text-6xl text-center ms-0 sm:ms-1">{title}</span> */}
                 <ul className="grid w-full grid-cols-2 gap-2 transition-all sm:gap-2 c_md:grid-cols-4">

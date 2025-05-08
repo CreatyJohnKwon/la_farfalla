@@ -4,8 +4,6 @@ import ProfileNavbar from "@/src/widgets/navbar/ProfileNav";
 import EditProfile from "./EditProfile";
 import usePage from "@/src/shared/hooks/usePage";
 import ProfileInfo from "./ProfileInfo";
-import Navbar from "@/src/widgets/navbar/Navbar";
-import ShopDrop from "@/src/widgets/drop/ShopDrop";
 import OrderClient from "./OrderClient";
 
 const ProfileClient = () => {
@@ -24,18 +22,14 @@ const ProfileClient = () => {
 
     return (
         <div className="h-screen w-screen">
-            <Navbar children={<ShopDrop />} />
-            <div className="grid h-full w-full items-center justify-center sm:grid-cols-6">
+            <div className="grid h-full w-full items-center justify-center sm:grid-cols-8">
                 <ProfileNavbar />
 
-                <div className="col-span-5 flex h-full w-full items-center justify-center">
-                    <div className="grid h-full w-full grid-rows-5">
-                        <div className="row-span-2">
-                            <ProfileInfo />
-                        </div>
-                        <div className="font-amstel row-span-3 flex items-center justify-center text-5xl text-black">
-                            {handlePages()}
-                        </div>
+                <div className="col-span-6 flex h-full w-full flex-col items-center justify-center">
+                    <ProfileInfo />
+
+                    <div className="font-amstel h-full w-full items-center justify-center text-5xl">
+                        {handlePages()}
                     </div>
                 </div>
             </div>

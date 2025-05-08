@@ -62,7 +62,7 @@ const EditProfile = () => {
     if (isLoading) return <p>Loading...</p>;
 
     return (
-        <div className="flex h-full flex-col items-center justify-center gap-6 font-pretendard text-xl sm:w-4/5 sm:text-3xl">
+        <div className="flex h-full w-full flex-col items-center justify-center gap-6 font-pretendard text-xl sm:w-5/6 sm:text-3xl">
             {/* 이름 */}
             <input
                 type="text"

@@ -2,8 +2,8 @@
 
 const OrderClient = () => {
     return (
-        <div className="flex">
-            <span>주문조회</span>
+        <div className="flex font-pretendard">
+            <span>Order</span>
         </div>
     );
 };

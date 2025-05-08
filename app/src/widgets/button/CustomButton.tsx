@@ -1,14 +1,14 @@
 "use client";
 
-import { LoginButtonProps } from "@/src/entities/type/interfaces";
+import { CustomButtonProps } from "@/src/entities/type/interfaces";
 
-const LoginButton = ({
+const CustomButton = ({
     btnTitle,
     btnFunc,
     btnStyle,
     btnDisabled,
     btnType,
-}: LoginButtonProps) => {
+}: CustomButtonProps) => {
     return (
         <>
             <button
@@ -25,4 +25,4 @@ const LoginButton = ({
     );
 };
 
-export default LoginButton;
+export default CustomButton;

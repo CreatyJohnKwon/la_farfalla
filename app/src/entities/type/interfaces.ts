@@ -30,8 +30,8 @@ type NavListProps = {
 };
 
 type NavbarProps = {
-    children? : any;
-    textColor? : string;
+    children?: any;
+    textColor?: string;
 };
 
 type ShopClientProps = {
@@ -60,7 +60,7 @@ type navDataProps = {
     text: string;
 }[];
 
-type LoginButtonProps = {
+type CustomButtonProps = {
     btnTitle: string;
     btnFunc?: () => void;
     btnStyle?: string;
@@ -71,7 +71,7 @@ type LoginButtonProps = {
 export type {
     RegistReqData,
     profNavDataProps,
-    LoginButtonProps,
+    CustomButtonProps,
     ShopClientProps,
     HomeClientProps,
     menuDataProps,

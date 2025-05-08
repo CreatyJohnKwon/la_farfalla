@@ -10,10 +10,12 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { IoCloseOutline } from "react-icons/io5";
 import { RxInstagramLogo } from "react-icons/rx";
 import { AiOutlineUser } from "react-icons/ai";
+import ShopDrop from "../drop/ShopDrop";
+import AboutDrop from "../drop/AboutDrop";
 
 const Sidebar = () => {
     const { openSidebar, setOpenSidebar } = useSection();
-    const [isVisible, setIsVisible] = useState(false); // 화면에 보이는 여부
+    const [isVisible, setIsVisible] = useState(false);
     const [animationClass, setAnimationClass] = useState(
         "animate-slide-in-left",
     );
@@ -21,16 +23,15 @@ const Sidebar = () => {
     const { session } = useUsers();
     const { instagramHandler } = usePage();
 
-    // openSidebar 바뀔 때 애니메이션 처리
     useEffect(() => {
         if (openSidebar) {
-            setIsVisible(true); // 보여주기
+            setIsVisible(true);
             setAnimationClass("animate-slide-in-left");
         } else {
             setAnimationClass("animate-slide-out-left");
             setTimeout(() => {
-                setIsVisible(false); // 닫힘 끝난 후 사라지기
-            }, 300); // 애니메이션 시간과 맞춰야 함
+                setIsVisible(false);
+            }, 300);
         }
     }, [openSidebar]);
 
@@ -53,44 +54,43 @@ const Sidebar = () => {
                 </div>
 
                 <ul className="absolute right-5 top-5 flex space-x-2 transition-all duration-300 ease-in-out">
-                    <Link href={"/profile"}>
+                    <Link
+                        href={session ? "/profile" : "/login"}
+                        onClick={() => setOpenSidebar(false)}
+                    >
                         <AiOutlineUser
-                            className={`me-4 text-[1.5em] text-black`}
+                            className={`text-[1.5em] text-black ${session ? "me-4" : "me-0"}`}
                         />
                     </Link>
 
-                    <Link href={"/cart"}>
+                    <Link
+                        href={"/cart"}
+                        onClick={() => setOpenSidebar(false)}
+                        className={`${session ? "block" : "hidden"}`}
+                    >
                         <HiOutlineShoppingBag
                             className={`me-1 text-[1.5em] text-black`}
                         />
                     </Link>
                 </ul>
 
-                <ul className="font-amstel -mt-20 space-y-6 text-center font-pretendard text-[2em] text-black">
+                <ul className="font-amstel -mt-20 flex flex-col space-y-10 text-center text-[2em] text-black">
                     <li>
-                        <Link
-                            href="/shop"
-                            onClick={() => setOpenSidebar(false)}
-                        >
-                            shop
-                        </Link>
+                        <ShopDrop />
                     </li>
                     <li>
-                        <Link
-                            href="/introduce"
-                            onClick={() => setOpenSidebar(false)}
+                        <AboutDrop />
+                    </li>
+
+                    <li>
+                        <button
+                            onClick={() => instagramHandler()}
+                            className="mt-36 text-[1em] text-black"
                         >
-                            introduce
-                        </Link>
+                            <RxInstagramLogo />
+                        </button>
                     </li>
                 </ul>
-
-                <button
-                    onClick={() => instagramHandler()}
-                    className="absolute bottom-64 text-[2em] text-black"
-                >
-                    <RxInstagramLogo />
-                </button>
             </div>
         </div>
     );

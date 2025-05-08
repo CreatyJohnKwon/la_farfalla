@@ -3,18 +3,19 @@
 import Image from "next/image";
 import DefaultImage from "../../../public/images/chill.png";
 import { priceResult, priceDiscount } from "@/src/features/calculate";
-import Navbar from "@/src/widgets/navbar/Navbar";
 import { Posts } from "@/src/entities/type/interfaces";
-import ShopDrop from "@/src/widgets/drop/ShopDrop";
 
 const ProductClient = ({ posts }: { posts: Posts }) => {
     return (
         posts && (
             <div className="flex h-full w-full flex-col items-center justify-center">
-                <Navbar children={<ShopDrop />} />
-                <div className="pt-32 font-amstel grid h-full w-full grid-cols-1 gap-2 transition-all duration-300 ease-in-out md:grid-cols-2">
+                <div className="grid h-full w-full grid-cols-1 gap-2 pt-32 transition-all duration-300 ease-in-out md:grid-cols-2">
                     <Image
-                        src={posts.image ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${posts.image}` : DefaultImage}
+                        src={
+                            posts.image
+                                ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${posts.image}`
+                                : DefaultImage
+                        }
                         alt={posts.title}
                         width={500}
                         height={500}
@@ -24,15 +25,16 @@ const ProductClient = ({ posts }: { posts: Posts }) => {
                     />
                     <div className="flex h-full w-full flex-col items-start justify-center p-5">
                         <div className="mb-1 text-sm font-semibold transition-all duration-700 ease-in-out c_sm:text-base sm:mt-9 md:text-2xl">
-                            <span>{`[${posts.category}]\t${posts.title}`}</span>
+                            <p className="font-amstel">{posts.category}</p>
+                            <p className="font-pretendard">{posts.title}</p>
                         </div>
                         {posts.discount === "0" || !posts.discount ? (
-                            <span className="text-base font-semibold sm:text-4xl">{`${priceResult(posts)}원`}</span>
+                            <span className="text-base font-semibold sm:text-4xl">{`KRW ${priceResult(posts)}`}</span>
                         ) : (
                             <div>
-                                <span className="text-sm font-semibold transition-all duration-700 ease-in-out c_sm:text-xl md:text-3xl">{`${priceDiscount(posts)}원`}</span>
-                                <span className="text-ms ms-1 font-sans text-gray-600 line-through transition-all duration-700 ease-in-out c_sm:text-base md:ms-2 md:text-xl">{`${priceResult(posts)}원`}</span>
-                                <span className="ms-2 text-base font-semibold text-red-700 transition-all duration-700 ease-in-out c_sm:text-xl md:ms-4 md:text-3xl">{`${posts.discount}%`}</span>
+                                <p className="font-amstel text-sm transition-all duration-700 ease-in-out c_sm:text-xl md:text-3xl">{`KRW ${priceDiscount(posts)}`}</p>
+                                <p className="text-ms font-amstel text-gray-600 line-through transition-all duration-700 ease-in-out c_sm:text-base md:text-xl">{`KRW ${priceResult(posts)}`}</p>
+                                <p className="text-base font-semibold text-slate-400 transition-all duration-700 ease-in-out c_sm:text-xl md:text-3xl">{`${posts.discount}%`}</p>
                             </div>
                         )}
                         <p className="my-1 text-gray-700 sm:text-lg">

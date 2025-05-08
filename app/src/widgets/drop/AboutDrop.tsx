@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import useSection from "@/src/shared/hooks/useSection";
 
 const AboutDrop = () => {
+    const { setOpenSidebar } = useSection();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+    const router = useRouter();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -19,25 +22,34 @@ const AboutDrop = () => {
     }, []);
 
     return (
-        <div
-            ref={ref}
-            className="font-amstel z-40 transition-all duration-300 ease-in-out"
-        >
+        <div ref={ref} className="font-amstel z-40">
             <button onClick={() => setOpen((prev) => !prev)}>about</button>
             {open && (
                 <ul
-                    className={`font-amstel absolute mt-2 overflow-hidden bg-transparent font-light transition-all duration-700 ease-in-out ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
+                    className={`font-amstel mt-2 overflow-hidden bg-transparent text-[0.75em] font-light sm:absolute sm:text-[1em] ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
                 >
                     <li key={"move-introduce"} className="py-1">
-                        <button onClick={() => redirect("/introduce")}>
+                        <button
+                            onClick={() => {
+                                router.push("/introduce");
+                                setOpenSidebar(false);
+                                setOpen(false);
+                            }}
+                        >
                             introduce
                         </button>
                     </li>
-                    {/* <li key={"move-project"} className="py-1">
-                        <button onClick={() => redirect("/project")}>
+                    <li key={"move-project"} className="py-1">
+                        <button
+                            onClick={() => {
+                                router.push("/project");
+                                setOpenSidebar(false);
+                                setOpen(false);
+                            }}
+                        >
                             project
                         </button>
-                    </li> */}
+                    </li>
                 </ul>
             )}
         </div>
