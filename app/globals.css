@@ -1,4 +1,5 @@
-@import 'pretendard/dist/web/variable/pretendardvariable.css';
+@import "pretendard/dist/web/variable/pretendardvariable.css";
+@import "@fontsource/abhaya-libre";
 
 @tailwind base;
 @tailwind components;
@@ -32,14 +33,16 @@ html {
 
 @layer utilities {
     .font-brand {
-        @apply font-serif font-medium tracking-tightest;
-    }
-
-    .font-brand-light {
-        @apply font-serif font-light tracking-tightest;
-    }
-
-    .font-brand-thin {
-        @apply font-serif font-thin tracking-tightest;
+        font-family: "Amstelvar Alpha", serif;  
+        font-variation-settings: 'wght' 100 , 'wdth' 400, 'GRAD' 88;
+        letter-spacing: -0.07em;
     }
 }
+  
+@font-face {
+    font-family: "Amstelvar Alpha";
+    src: url("//fonts.gstatic.com/ea/amstelvaralpha/v2/AmstelvarAlpha-VF.woff2") format("woff2");
+    font-style: normal;
+    font-weight: normal;
+}
+  

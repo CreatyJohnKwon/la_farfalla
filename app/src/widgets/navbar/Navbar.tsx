@@ -21,7 +21,7 @@ const Navbar = ({ children, textColor }: NavbarProps) => {
         <>
             <nav className="fixed top-0 z-40 h-0 w-full bg-transparent ps-0 pt-5 text-[1em] shadow-none transition-all duration-300 ease-in-out sm:ps-4">
                 <div
-                    className={`max-w-screen-w_max font-brand relative mx-auto flex items-center justify-between p-0 transition-all duration-300 ease-in-out sm:p-4 sm:text-lg c_md:text-2xl ${textColor}`}
+                    className={`font-brand max-w-screen-w_max relative mx-auto flex items-center justify-between p-0 transition-all duration-300 ease-in-out sm:p-4 sm:text-lg c_md:text-2xl ${textColor}`}
                 >
                     {/* 왼쪽 메뉴 : PC */}
                     <ul className="hidden border-gray-100 transition-all duration-300 ease-in-out sm:flex sm:space-x-8">
@@ -42,7 +42,7 @@ const Navbar = ({ children, textColor }: NavbarProps) => {
                     </button>
 
                     {/* 가운데 중앙 로고 (절대 위치) */}
-                    <div className="font-brand absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[1.25em]">
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[1.25em] me-2">
                         <Link href="/home">La farfalla</Link>
                     </div>
 
@@ -65,7 +65,7 @@ const Navbar = ({ children, textColor }: NavbarProps) => {
                         </ul>
 
                         {/* 오른쪽 메뉴 : PC */}
-                        <ul className="hidden transition-all duration-300 ease-in-out sm:flex sm:space-x-8">
+                        <ul className=" hidden transition-all duration-300 ease-in-out sm:flex sm:space-x-8">
                             {navStartData.map((navList, index) => (
                                 <Link
                                     key={`nav_list_${index}`}

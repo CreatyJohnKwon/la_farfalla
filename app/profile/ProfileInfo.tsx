@@ -2,7 +2,7 @@ import Image from "next/image";
 import Chillguy from "../../public/chill.png";
 import { useSession } from "next-auth/react";
 import useUsers from "@/src/shared/hooks/useUsers";
-import LoginButton from "@/src/components/button/LoginButton";
+import LoginButton from "@/src/widgets/button/LoginButton";
 
 const ProfileInfo = () => {
     const { data: session } = useSession();

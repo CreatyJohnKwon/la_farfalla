@@ -5,7 +5,7 @@ import EditProfile from "./EditProfile";
 import usePage from "@/src/shared/hooks/usePage";
 import ProfileInfo from "./ProfileInfo";
 import Navbar from "@/src/widgets/navbar/Navbar";
-import ShopDrop from "@/src/components/drop/ShopDrop";
+import ShopDrop from "@/src/widgets/drop/ShopDrop";
 import OrderClient from "./OrderClient";
 
 const ProfileClient = () => {

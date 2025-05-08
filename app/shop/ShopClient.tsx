@@ -1,7 +1,7 @@
 "use client";
 
-import ProductsList from "@/src/components/list/ProductsList";
-import SeasonDrop from "@/src/components/drop/SeasonDrop";
+import ProductsList from "@/src/widgets/list/ProductsList";
+import SeasonDrop from "@/src/widgets/drop/SeasonDrop";
 import Navbar from "@/src/widgets/navbar/Navbar";
 import { ShopClientProps } from "@/src/entities/type/interfaces";
 import { useEffect, useState } from "react";
@@ -19,7 +19,7 @@ const ShopClient = ({ posts }: ShopClientProps) => {
             category?.map(
                 (val) =>
                     val.key === section &&
-                    setTitle(+val.key === 0 ? "" : `${val.title} `),
+                    setTitle(+val.key === 0 ? "Products" : `${val.title} `),
             );
 
         if (posts.length) setLoading(false);
@@ -29,7 +29,7 @@ const ShopClient = ({ posts }: ShopClientProps) => {
         <div className="h-screen w-screen">
             <Navbar children={<SeasonDrop />} />
             <main className="font-brand flex h-full w-full flex-col items-center justify-center">
-                <span className="text-3xl sm:text-6xl">{`${title}Products`}</span>
+                {/* <span className="text-3xl sm:text-6xl text-center ms-0 sm:ms-1">{title}</span> */}
                 <ul className="grid w-full grid-cols-2 gap-2 transition-all sm:gap-2 c_md:grid-cols-4">
                     {loading
                         ? Array.from({ length: 4 }).map((_, i) => (

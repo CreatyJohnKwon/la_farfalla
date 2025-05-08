@@ -6,8 +6,8 @@ import { HomeClientProps } from "@/src/entities/type/interfaces";
 import { useEffect } from "react";
 import useSection from "@/src/shared/hooks/useSection";
 import Image from "next/image";
-import BackgroundImg from "../../public/sample_file.jpeg";
-import ShopDrop from "@/src/components/drop/ShopDrop";
+import BackgroundImg from "../../public/images/sample_file.jpeg";
+import ShopDrop from "@/src/widgets/drop/ShopDrop";
 
 const HomeClient = ({ products }: HomeClientProps) => {
     const { setCategory } = useSection();

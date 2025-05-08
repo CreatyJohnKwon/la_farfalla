@@ -1,7 +1,7 @@
 "use client";
 
 import Navbar from "@/src/widgets/navbar/Navbar";
-import LoginButton from "@/src/components/button/LoginButton";
+import LoginButton from "@/src/widgets/button/LoginButton";
 import useUsers from "@/src/shared/hooks/useUsers";
 import { useEffect } from "react";
 import loginAction from "./actions";
@@ -9,7 +9,7 @@ import Link from "next/link";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import ShopDrop from "@/src/components/drop/ShopDrop";
+import ShopDrop from "@/src/widgets/drop/ShopDrop";
 
 const LoginClient = () => {
     const {

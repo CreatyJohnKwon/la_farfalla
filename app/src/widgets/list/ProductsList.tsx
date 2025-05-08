@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import DefaultImage from "../../../../public/chill.png";
+import DefaultImage from "../../../../public/images/chill.png";
 import { Posts } from "@/src/entities/type/interfaces";
 import { priceResult, priceDiscount } from "@/src/features/calculate";
 
@@ -28,7 +28,7 @@ const ProductsList = ({ posts }: { posts: Posts }) => {
 
                 <div className="pt-2 text-[0.60rem] transition-all duration-700 ease-in-out sm:pt-6 sm:text-[1.05rem] c_xl:text-xl">
                     <p>{`[${posts.category}]`}</p>
-                    <p>{`${posts.title}`}</p>
+                    <p className="font-pretendard">{`${posts.title}`}</p>
                     <p>{`${posts.colors} colors`}</p>
                 </div>
 

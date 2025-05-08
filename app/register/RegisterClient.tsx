@@ -4,7 +4,7 @@ import Navbar from "@/src/widgets/navbar/Navbar";
 import { useEffect, useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import LoginButton from "../src/components/button/LoginButton";
+import LoginButton from "../src/widgets/button/LoginButton";
 import { registUserAction, formatPhoneNumber } from "./actions";
 
 const RegisterClient = () => {

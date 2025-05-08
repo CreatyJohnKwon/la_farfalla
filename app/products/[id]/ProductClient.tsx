@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import DefaultImage from "../../../public/chill.png";
+import DefaultImage from "/images/chill.png";
 import { priceResult, priceDiscount } from "@/src/features/calculate";
 import Navbar from "@/src/widgets/navbar/Navbar";
 import { Posts } from "@/src/entities/type/interfaces";
-import ShopDrop from "@/src/components/drop/ShopDrop";
+import ShopDrop from "@/src/widgets/drop/ShopDrop";
 
 const ProductClient = ({ posts }: { posts: Posts }) => {
     return (
