@@ -21,7 +21,7 @@ const Navbar = ({ children, textColor }: NavbarProps) => {
         <>
             <nav className="fixed top-0 z-40 h-0 w-full bg-transparent ps-0 pt-5 text-[1em] shadow-none transition-all duration-300 ease-in-out sm:ps-4">
                 <div
-                    className={`font-brand max-w-screen-w_max relative mx-auto flex items-center justify-between p-0 transition-all duration-300 ease-in-out sm:p-4 sm:text-lg c_md:text-2xl ${textColor}`}
+                    className={`font-amstel max-w-screen-w_max relative mx-auto flex items-center justify-between p-0 transition-all duration-300 ease-in-out sm:p-4 sm:text-lg c_md:text-2xl ${textColor}`}
                 >
                     {/* 왼쪽 메뉴 : PC */}
                     <ul className="hidden border-gray-100 transition-all duration-300 ease-in-out sm:flex sm:space-x-8">

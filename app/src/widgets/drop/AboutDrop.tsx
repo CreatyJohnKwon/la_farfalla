@@ -21,12 +21,12 @@ const AboutDrop = () => {
     return (
         <div
             ref={ref}
-            className="font-brand z-40 transition-all duration-300 ease-in-out"
+            className="font-amstel z-40 transition-all duration-300 ease-in-out"
         >
             <button onClick={() => setOpen((prev) => !prev)}>about</button>
             {open && (
                 <ul
-                    className={`font-brand absolute mt-2 overflow-hidden bg-transparent font-light transition-all duration-700 ease-in-out ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
+                    className={`font-amstel absolute mt-2 overflow-hidden bg-transparent font-light transition-all duration-700 ease-in-out ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
                 >
                     <li key={"move-introduce"} className="py-1">
                         <button onClick={() => redirect("/introduce")}>

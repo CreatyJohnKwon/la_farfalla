@@ -46,7 +46,7 @@ const Sidebar = () => {
                     <IoCloseOutline />
                 </button>
 
-                <div className="font-brand absolute top-5 text-[1.25em]">
+                <div className="font-amstel absolute top-5 text-[1.25em]">
                     <Link href="/home" onClick={() => setOpenSidebar(false)}>
                         La farfalla
                     </Link>
@@ -66,7 +66,7 @@ const Sidebar = () => {
                     </Link>
                 </ul>
 
-                <ul className="font-brand -mt-20 space-y-6 text-center font-pretendard text-[2em] text-black">
+                <ul className="font-amstel -mt-20 space-y-6 text-center font-pretendard text-[2em] text-black">
                     <li>
                         <Link
                             href="/shop"

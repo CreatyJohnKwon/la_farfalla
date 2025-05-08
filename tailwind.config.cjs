@@ -26,7 +26,7 @@ module.exports = {
                 tightest: "-0.075em",
             },
             fontFamily: {
-                pretendard: ["Pretendard Variable", "serif"],
+                pretendard: ['"Pretendard Variable"', "serif"],
                 abhaya: ["Abahaya Libre", "serif"],
             },
             screens: {

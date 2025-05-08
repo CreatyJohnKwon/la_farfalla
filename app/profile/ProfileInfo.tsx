@@ -9,9 +9,9 @@ const ProfileInfo = () => {
     const { logoutHandler } = useUsers();
 
     return (
-        <div className="font-brand flex h-full w-full grid-cols-2 flex-col items-center justify-center sm:grid-cols-6">
+        <div className="font-amstel flex h-full w-full grid-cols-2 flex-col items-center justify-center sm:grid-cols-6">
             <div className="col-span-1 flex h-full w-3/5 items-center justify-center sm:col-span-4">
-                <div className="font-brand mt-20 flex w-full flex-col items-center gap-6 sm:mt-0 sm:grid sm:grid-cols-6 sm:items-center sm:justify-center sm:gap-0">
+                <div className="font-amstel mt-20 flex w-full flex-col items-center gap-6 sm:mt-0 sm:grid sm:grid-cols-6 sm:items-center sm:justify-center sm:gap-0">
                     {/* 프로필 이미지 */}
                     <div className="flex flex-col items-center justify-center sm:col-span-2 sm:flex sm:items-center">
                         <div className="relative m-5 overflow-hidden rounded-full sm:m-0">
@@ -32,7 +32,7 @@ const ProfileInfo = () => {
                         </span>
                         <span className="font-pretendard text-base font-light sm:text-xl">
                             누적 구매금액:{" "}
-                            <span className="font-brand">KRW </span>
+                            <span className="font-amstel">KRW </span>
                         </span>
                         <span className="text-sm text-gray-600 sm:text-lg">
                             {session?.user?.email || "이메일 정보 없음"}

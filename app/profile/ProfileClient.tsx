@@ -33,7 +33,7 @@ const ProfileClient = () => {
                         <div className="row-span-2">
                             <ProfileInfo />
                         </div>
-                        <div className="font-brand-thin row-span-3 flex items-center justify-center text-5xl text-black">
+                        <div className="font-amstel row-span-3 flex items-center justify-center text-5xl text-black">
                             {handlePages()}
                         </div>
                     </div>

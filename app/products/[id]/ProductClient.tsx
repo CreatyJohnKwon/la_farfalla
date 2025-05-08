@@ -12,7 +12,7 @@ const ProductClient = ({ posts }: { posts: Posts }) => {
         posts && (
             <div className="flex h-full w-full flex-col items-center justify-center">
                 <Navbar children={<ShopDrop />} />
-                <div className="pt-32 font-brand grid h-full w-full grid-cols-1 gap-2 transition-all duration-300 ease-in-out md:grid-cols-2">
+                <div className="pt-32 font-amstel grid h-full w-full grid-cols-1 gap-2 transition-all duration-300 ease-in-out md:grid-cols-2">
                     <Image
                         src={posts.image ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${posts.image}` : DefaultImage}
                         alt={posts.title}

@@ -27,18 +27,18 @@ const ProductsList = ({ posts }: { posts: Posts }) => {
                 </div>
 
                 <div className="pt-2 text-[0.60rem] transition-all duration-700 ease-in-out sm:pt-6 sm:text-[1.05rem] c_xl:text-xl">
-                    <p>{`[${posts.category}]`}</p>
-                    <p className="font-pretendard">{`${posts.title}`}</p>
-                    <p>{`${posts.colors} colors`}</p>
+                    <p className="font-amstel">{`[${posts.category}]`}</p>
+                    <p className="font-pretendard-bold">{`${posts.title}`}</p>
+                    <p className="font-amstel">{`${posts.colors} colors`}</p>
                 </div>
 
                 {posts.discount === "0" || !posts.discount ? (
-                    <span className="text-base c_xl:text-xl">
+                    <span className="text-base c_xl:text-xl font-amstel">
                         {`KRW ${priceResult(posts)}`}
                     </span>
                 ) : (
-                    <div>
-                        <p className="ms-1 text-[0.60rem] text-gray-600 line-through transition-all duration-300 ease-in-out sm:ms-4 sm:text-lg c_xl:ms-2">
+                    <div className="font-amstel">
+                        <p className="text-[0.60rem] text-gray-600 line-through transition-all duration-300 ease-in-out sm:text-lg c_xl:ms-2">
                             {`KRW ${priceResult(posts)}`}
                         </p>
                         <span className="me-1 text-[0.60rem] text-black transition-all duration-300 ease-in-out sm:me-2 sm:text-base c_xl:text-xl">

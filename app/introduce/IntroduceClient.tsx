@@ -20,8 +20,8 @@ const IntroduceClient = () => {
                     <p>단조로운 선택에 지친 이들이 더 자신다운 선택을 할 수 있길 바라는 마음으로..</p>
                 </div>
                 <br/>
-                <span className="font-abhaya sm:font-brand text-[0.5em] sm:text-base">© 2025. lafarfalla. All rights reserved</span>
-                <span className="absolute left-10 bottom-0 sm:-bottom-16 font-brand text-[6em] sm:text-[12.3em] transition-all duration-300 ease-in-out text-[#FAF6EB]">
+                <span className="font-abhaya sm:font-amstel text-[0.5em] sm:text-base">© 2025. lafarfalla. All rights reserved</span>
+                <span className="absolute left-10 bottom-0 sm:-bottom-16 font-amstel text-[6em] sm:text-[12.3em] transition-all duration-300 ease-in-out text-[#FAF6EB]">
                     introduce
                 </span>
             </main>

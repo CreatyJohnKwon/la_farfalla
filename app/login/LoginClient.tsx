@@ -49,7 +49,7 @@ const LoginClient = () => {
             <Navbar children={<ShopDrop />} />
             <div className="flex h-full w-auto flex-col items-center justify-center text-center">
                 <form
-                    className="font-brand flex w-5/6 flex-col items-center justify-center gap-6 sm:w-2/6"
+                    className="font-amstel flex w-5/6 flex-col items-center justify-center gap-6 sm:w-2/6"
                     action={loginAction}
                 >
                     <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-6">

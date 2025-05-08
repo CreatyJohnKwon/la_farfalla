@@ -32,17 +32,39 @@ html {
 }
 
 @layer utilities {
-    .font-brand {
+    .font-amstel {
         font-family: "Amstelvar Alpha", serif;  
         font-variation-settings: 'wght' 100 , 'wdth' 400, 'GRAD' 88;
         letter-spacing: -0.07em;
     }
 }
+
+@layer utilities {
+    .font-amstel-thin {
+        @apply font-amstel font-[100];
+    }
+
+    .font-amstel-regular {
+        @apply font-amstel font-[400];
+    }
+
+    .font-amstel-bold {
+        @apply font-amstel font-[700];
+    }
+
+    .font-amstel-thicc {
+        @apply font-amstel font-[880];
+    }
+
+    .font-pretendard-bold {
+        @apply font-pretendard font-semibold tracking-tighter;
+    }
+}  
   
 @font-face {
     font-family: "Amstelvar Alpha";
     src: url("//fonts.gstatic.com/ea/amstelvaralpha/v2/AmstelvarAlpha-VF.woff2") format("woff2");
-    font-style: normal;
-    font-weight: normal;
+    font-weight: 100 900;
+    font-display: swap;
 }
   
