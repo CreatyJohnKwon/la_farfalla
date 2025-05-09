@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import LoginButton from "../src/widgets/button/CustomButton";
+import CustomButton from "../src/widgets/button/CustomButton";
 import { registUserAction, formatPhoneNumber } from "./actions";
 
 const RegisterClient = () => {
@@ -149,7 +149,7 @@ const RegisterClient = () => {
 
                 {/* 버튼 */}
                 <div className="font-amstel flex w-full justify-center gap-4">
-                    <LoginButton
+                    <CustomButton
                         btnTitle="회원가입"
                         btnStyle={`${isDisabled ? "bg-[#F9F5EB] text-gray-400" : "bg-[#F9F5EB] hover:bg-[#EADDC8] text-black"} transition-colors w-full px-6 py-3`}
                         btnDisabled={isDisabled}

@@ -1,7 +1,6 @@
 "use client";
 
 import ProductsList from "@/src/widgets/list/ProductsList";
-import SeasonDrop from "@/src/widgets/drop/SeasonDrop";
 import { ShopClientProps } from "@/src/entities/type/interfaces";
 import { useEffect, useState } from "react";
 import useSection from "@/src/shared/hooks/useSection";

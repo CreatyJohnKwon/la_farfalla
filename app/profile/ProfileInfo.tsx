@@ -2,7 +2,7 @@ import Image from "next/image";
 import Chillguy from "../../public/images/chill.png";
 import { useSession } from "next-auth/react";
 import useUsers from "@/src/shared/hooks/useUsers";
-import LoginButton from "@/src/widgets/button/CustomButton";
+import CustomButton from "@/src/widgets/button/CustomButton";
 
 const ProfileInfo = () => {
     const { data: session } = useSession();
@@ -40,7 +40,7 @@ const ProfileInfo = () => {
 
                     {/* 로그아웃 버튼 */}
                     <div className="font-amstel mt-4 flex md:mt-0">
-                        <LoginButton
+                        <CustomButton
                             btnTitle="Logout"
                             btnStyle="w-16 h-16 bg-black hover:bg-black/50 text-white transition-colors text-sm h-full sm:text-base"
                             btnDisabled={false}
