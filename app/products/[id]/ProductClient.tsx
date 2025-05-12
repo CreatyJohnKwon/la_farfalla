@@ -9,14 +9,14 @@ const ProductClient = ({ posts }: { posts: Posts }) => {
     return (
         posts && (
             <div className="flex h-full w-full flex-col items-center justify-center">
-                <div className="grid h-full w-3/4 grid-cols-1 gap-2 pt-40 transition-all duration-300 ease-in-out md:grid-cols-2">
+                <div className="grid h-full w-full grid-cols-1 gap-2 pt-20 transition-all duration-300 ease-in-out md:w-3/4 md:grid-cols-2 md:pt-40">
                     <Image
                         src={
                             posts.image
                                 ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${posts.image}`
                                 : DefaultImage
                         }
-                        alt={posts.title}
+                        alt={posts.title.kr}
                         width={500}
                         height={500}
                         style={{ objectFit: "contain" }}

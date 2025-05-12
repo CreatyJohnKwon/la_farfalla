@@ -18,7 +18,7 @@ const ProductsList = ({ posts }: { posts: Posts }) => {
                                 ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${posts.image}`
                                 : DefaultImage
                         }
-                        alt={posts.title}
+                        alt={posts.title.eg}
                         fill
                         className="absolute left-0 top-0 h-full w-full object-cover"
                         priority
@@ -28,7 +28,7 @@ const ProductsList = ({ posts }: { posts: Posts }) => {
 
                 <div className="pt-2 text-[0.60rem] transition-all duration-700 ease-in-out sm:pt-6 sm:text-[1.05rem] c_xl:text-xl">
                     <p className="font-amstel-thin sm:font-amstel">{`[${posts.category}]`}</p>
-                    <p className="font-pretendard">{`${posts.title}`}</p>
+                    <p className="font-pretendard">{`${posts.title.kr}`}</p>
                     <p className="font-amstel-thin sm:font-amstel">{`${posts.colors} colors`}</p>
                 </div>
 

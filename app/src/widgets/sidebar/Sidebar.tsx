@@ -1,7 +1,7 @@
 "use client";
 
 import usePage from "@/src/shared/hooks/usePage";
-import useSection from "@/src/shared/hooks/useSection";
+import useProduct from "@/src/shared/hooks/useProduct";
 import useUsers from "@/src/shared/hooks/useUsers";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ import ShopDrop from "../drop/ShopDrop";
 import AboutDrop from "../drop/AboutDrop";
 
 const Sidebar = () => {
-    const { openSidebar, setOpenSidebar } = useSection();
+    const { openSidebar, setOpenSidebar } = useProduct();
     const [isVisible, setIsVisible] = useState(false);
     const [animationClass, setAnimationClass] = useState(
         "animate-slide-in-left",

@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import useSection from "@/src/shared/hooks/useSection";
+import useProduct from "@/src/shared/hooks/useProduct";
 
 const AboutDrop = () => {
-    const { setOpenSidebar } = useSection();
+    const { setOpenSidebar } = useProduct();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const router = useRouter();

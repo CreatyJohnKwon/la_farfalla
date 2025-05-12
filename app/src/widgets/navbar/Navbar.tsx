@@ -2,7 +2,7 @@
 
 import { NavbarProps } from "../../entities/type/interfaces";
 // import AboutDrop from "@/src/components/drop/AboutDrop";
-import useSection from "@/src/shared/hooks/useSection";
+import useProduct from "@/src/shared/hooks/useProduct";
 import useUsers from "@/src/shared/hooks/useUsers";
 
 import { HiOutlineShoppingBag } from "react-icons/hi2";
@@ -17,7 +17,7 @@ import AboutDrop from "../drop/AboutDrop";
 
 const Navbar = () => {
     const { navStartData, session } = useUsers();
-    const { setOpenSidebar } = useSection();
+    const { setOpenSidebar } = useProduct();
 
     const [textColor, setTextColor] = useState<string>("text-white");
     const [children, setChildren] = useState<any>(<ShopDrop />);

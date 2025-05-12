@@ -1,4 +1,5 @@
 import { Posts } from "@/src/entities/type/interfaces";
+import Post from "../entities/models/Post";
 
 const serialize = <T extends { _id: any }>(
     docs: T[],
@@ -37,4 +38,24 @@ const priceDiscount = (post: Posts): string => {
     return "0";
 };
 
-export { serialize, serializeFindOne, priceResult, priceDiscount };
+const justDiscount = (post: Posts): number => {
+    const price: number = Number(post.price);
+    const discount = Number(post.discount);
+
+    if (post.price && post.discount) {
+        let discountPrice = price - price * (discount / 100);
+        discountPrice = Math.floor(discountPrice / 10) * 10;
+
+        return discountPrice;
+    }
+
+    return 0;
+};
+
+export {
+    serialize,
+    serializeFindOne,
+    priceResult,
+    priceDiscount,
+    justDiscount,
+};

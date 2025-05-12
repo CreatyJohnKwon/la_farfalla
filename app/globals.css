@@ -35,7 +35,7 @@ html {
     .font-amstel {
         font-family: "Amstelvar Alpha", serif;
         font-variation-settings:
-            "wght" 100,
+            "wght" 70,
             "wdth" 400,
             "GRAD" 88;
         letter-spacing: -0.07em;
@@ -44,7 +44,7 @@ html {
     .font-amstel-thin {
         @apply font-amstel;
         font-variation-settings:
-            "wght" 50,
+            "wght" 55,
             "wdth" 400;
     }
 

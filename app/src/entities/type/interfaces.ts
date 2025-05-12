@@ -1,7 +1,7 @@
 // for server and datas
 interface Posts {
     _id: string;
-    title: string;
+    title: PostTitleLanguage;
     description: PostDescription;
     price: string;
     discount: string;
@@ -15,6 +15,11 @@ interface Posts {
 interface PostDescription {
     image: string;
     text: string;
+}
+
+interface PostTitleLanguage {
+    kr: string;
+    eg: string;
 }
 
 interface MenuItem {
@@ -77,6 +82,8 @@ type CustomButtonProps = {
     btnDisabled?: boolean;
     btnType?: "button" | "submit" | "reset";
 };
+
+type QuantityRowProps = {};
 
 export type {
     RegistReqData,

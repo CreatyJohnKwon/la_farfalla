@@ -2,13 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Products } from "@/src/entities/type/interfaces";
-import useSection from "@/src/shared/hooks/useSection";
+import useProduct from "@/src/shared/hooks/useProduct";
 import { useRouter } from "next/navigation";
 
 const ShopDrop = () => {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
-    const { category, setSection, setOpenSidebar } = useSection();
+    const { category, setSection, setOpenSidebar } = useProduct();
     const router = useRouter();
 
     useEffect(() => {
