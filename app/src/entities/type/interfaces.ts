@@ -2,13 +2,19 @@
 interface Posts {
     _id: string;
     title: string;
-    description: string;
+    description: PostDescription;
     price: string;
     discount: string;
     category: string;
     image: string;
     colors: string;
     key: number;
+    size: Array<string>;
+}
+
+interface PostDescription {
+    image: string;
+    text: string;
 }
 
 interface MenuItem {
@@ -27,6 +33,10 @@ type RegistReqData = FormData | { [key: string]: any };
 
 type NavListProps = {
     menuText: string;
+};
+
+type SizeDropProps = {
+    size: Array<string>;
 };
 
 type NavbarProps = {
@@ -74,6 +84,7 @@ export type {
     CustomButtonProps,
     ShopClientProps,
     HomeClientProps,
+    SizeDropProps,
     menuDataProps,
     ProductsProps,
     navDataProps,

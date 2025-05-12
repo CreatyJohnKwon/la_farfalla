@@ -7,7 +7,10 @@ const postSchema = new mongoose.Schema(
             required: true,
         },
         description: {
-            type: String, // 이미지 파일명
+            type: new mongoose.Schema({
+                image: { type: [String], default: [] },
+                text: { type: String, required: true },
+            }),
             required: true,
         },
         price: {
@@ -34,6 +37,11 @@ const postSchema = new mongoose.Schema(
             type: Number, // 상품 리스트용 키값
             unique: true,
             required: true,
+        },
+        size: {
+            type: [String],
+            required: true,
+            default: [],
         },
     },
     {
