@@ -1,30 +1,57 @@
-import { useState } from "react";
-import { SizeDropProps } from "@/src/entities/type/interfaces";
+import { useState, useEffect, useRef } from "react";
 import { IoChevronDown } from "react-icons/io5";
 
-const SizeDrop = ({ size }: SizeDropProps) => {
+const SizeDrop = ({ size }: { size: string[] }) => {
+    const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState("");
+    const dropRef = useRef<HTMLDivElement>(null);
+
+    const handleSelect = (value: string) => {
+        setSelected(value);
+        setOpen(false);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (
+                dropRef.current &&
+                !dropRef.current.contains(e.target as Node)
+            ) {
+                setOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () =>
+            document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     return (
-        <div className="font-amstel relative w-full">
+        <div ref={dropRef} className="font-amstel relative w-full">
             <label className="mb-1 block text-sm font-semibold text-black">
                 size <span className="text-gray-800">*</span>
             </label>
-            <select
-                value={selected}
-                onChange={(e) => setSelected(e.target.value)}
-                className="w-full appearance-none border border-gray-300 bg-white px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:border-black focus:outline-none"
-                required
+            <div
+                className="w-full cursor-pointer border border-gray-300 bg-white px-4 py-3 pr-10 text-sm text-gray-800"
+                onClick={() => setOpen(!open)}
             >
-                <option key={"default"} value="" disabled hidden>
-                    size (필수)
-                </option>
-                {size.map((item, index) => (
-                    <option key={`size ${index}`}>{item}</option>
-                ))}
-            </select>
+                {selected || "size (필수)"}
+                <IoChevronDown className="pointer-events-none absolute right-3 top-10 text-black" />
+            </div>
 
-            <IoChevronDown className="pointer-events-none absolute right-3 top-10 text-black" />
+            {open && (
+                <ul className="absolute z-10 mt-1 w-full border border-gray-200 bg-white shadow-md">
+                    {size.map((item, index) => (
+                        <li
+                            key={index}
+                            onClick={() => handleSelect(item)}
+                            className="cursor-pointer px-4 py-2 text-sm hover:bg-gray-100"
+                        >
+                            {item}
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };
