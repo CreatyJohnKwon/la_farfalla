@@ -10,11 +10,13 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { IoCloseOutline } from "react-icons/io5";
 import { RxInstagramLogo } from "react-icons/rx";
 import { AiOutlineUser } from "react-icons/ai";
-import ShopDrop from "../drop/ShopDrop";
-import AboutDrop from "../drop/AboutDrop";
+import ShopDrop from "@/src/widgets/drop/ShopDrop";
+import AboutDrop from "@/src/widgets/drop/AboutDrop";
+import useCart from "@/src/shared/hooks/useCart";
 
 const Sidebar = () => {
     const { openSidebar, setOpenSidebar } = useProduct();
+    const { setCartView } = useCart();
     const [isVisible, setIsVisible] = useState(false);
     const [animationClass, setAnimationClass] = useState(
         "animate-slide-in-left",
@@ -63,15 +65,17 @@ const Sidebar = () => {
                         />
                     </Link>
 
-                    <Link
-                        href={"/cart"}
-                        onClick={() => setOpenSidebar(false)}
+                    <button
+                        onClick={() => {
+                            setOpenSidebar(false);
+                            setCartView(true);
+                        }}
                         className={`${session ? "block" : "hidden"}`}
                     >
                         <HiOutlineShoppingBag
                             className={`me-1 text-[1.5em] text-black`}
                         />
-                    </Link>
+                    </button>
                 </ul>
 
                 <ul className="font-amstel -mt-20 flex flex-col space-y-10 text-center text-[2em] text-black">

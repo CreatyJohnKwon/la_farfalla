@@ -14,10 +14,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import ShopDrop from "../drop/ShopDrop";
 import AboutDrop from "../drop/AboutDrop";
+import useCart from "@/src/shared/hooks/useCart";
+import Cart from "@/src/features/cart/Cart";
 
 const Navbar = () => {
     const { navStartData, session } = useUsers();
     const { setOpenSidebar } = useProduct();
+    const { cartView, setCartView } = useCart();
 
     const [textColor, setTextColor] = useState<string>("text-white");
     const [children, setChildren] = useState<any>(<ShopDrop />);
@@ -73,27 +76,38 @@ const Navbar = () => {
                                 />
                             </Link>
 
-                            <Link href={"/cart"}>
+                            <button onClick={() => setCartView(true)}>
                                 <HiOutlineShoppingBag
                                     className={`${textColor} me-4 text-[1.5em] ${session ? "block" : "hidden"}`}
                                 />
-                            </Link>
+                            </button>
                         </ul>
 
                         {/* 오른쪽 메뉴 : PC */}
                         <ul className="hidden sm:flex sm:space-x-8">
-                            {navStartData.map((navList, index) => (
-                                <Link
-                                    key={`nav_list_${index}`}
-                                    href={`/${navList.text}`}
-                                    className="block pe-4 sm:pe-6"
-                                >
-                                    {navList.text}
-                                </Link>
-                            ))}
+                            {navStartData.map((navList, index) =>
+                                navList.text === "cart" ? (
+                                    <button
+                                        key={`nav_list_${index}`}
+                                        className="block pe-4 sm:pe-6"
+                                        onClick={() => setCartView(true)}
+                                    >
+                                        cart
+                                    </button>
+                                ) : (
+                                    <Link
+                                        key={`nav_list_${index}`}
+                                        href={`/${navList.text}`}
+                                        className="block pe-4 sm:pe-6"
+                                    >
+                                        {navList.text}
+                                    </Link>
+                                ),
+                            )}
                         </ul>
                     </div>
                 </div>
+                {cartView && <Cart />}
             </nav>
         </>
     );

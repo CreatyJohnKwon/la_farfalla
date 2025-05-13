@@ -5,12 +5,12 @@ import {
 } from "@/src/features/calculate";
 import { Posts } from "@/src/entities/type/interfaces";
 import SizeDrop from "@/src/widgets/drop/SizeDrop";
-import QuantityRow from "@/src/widgets/quantity/QuantityRow";
+import QuantityRow from "@/src/features/quantity/QuantityRow";
 import useProduct from "@/src/shared/hooks/useProduct";
 import { useEffect, useState } from "react";
 
 const ProductInfo = ({ posts }: { posts: Posts }) => {
-    const { count } = useProduct();
+    const [count, setCount] = useState<number>(1);
     const [result, setResult] = useState<string>(priceDiscount(posts));
 
     useEffect(() => {
@@ -21,11 +21,11 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
     return (
         <div className="mt-5 flex h-full w-full flex-col items-center justify-center gap-6 md:col-span-1 md:mt-0">
             {/* title */}
-            <div className="flex flex-row items-center">
-                <span className="font-amstel text-[1.7em]">
+            <div className="flex flex-col items-center">
+                <span className="font-amstel text-[1.3em] md:text-[1.7em]">
                     {posts.title.eg}
                 </span>
-                <span className="ms-10 font-pretendard text-[1em]">
+                <span className="-mt-1 font-pretendard text-[0.8em] md:text-[1em]">
                     {posts.title.kr}
                 </span>
             </div>
@@ -54,7 +54,7 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
             </div>
 
             {/* 상품 추가 */}
-            <QuantityRow posts={posts} />
+            <QuantityRow posts={posts} count={count} setCount={setCount} />
 
             <div className="flex w-3/4 items-center justify-end text-center text-black">
                 <span className="me-1 font-pretendard font-[300]">

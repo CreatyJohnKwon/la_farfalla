@@ -9,4 +9,4 @@ export const sectionAtom = atomWithStorage<number>("section", 0);
 export const categoryAtom = atomWithStorage<Products[] | []>("category", []);
 export const pagesAtom = atom<"e" | "o" | "q">("o");
 export const sidebarAtom = atom<boolean>(false);
-export const countProductAtom = atom<number>(1);
+export const cartViewAtom = atom<boolean>(false);
