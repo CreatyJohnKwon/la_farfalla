@@ -1,14 +1,10 @@
-"use client";
-
 import useCart from "@/src/shared/hooks/useCart";
+
 
 const Cart = () => {
     const { setCartView } = useCart();
 
-    const productPrice = 36000;
-    const shipping = 3000;
-    const discount = 3600;
-    const total = productPrice + shipping - discount;
+    const totalQuantity = 10;
 
     return (
         <div
@@ -16,62 +12,42 @@ const Cart = () => {
             onClick={() => setCartView(false)}
         >
             <div
-                className="relative h-3/4 w-3/4 bg-white p-6 shadow-xl"
+                className="relative h-3/4 w-5/6 bg-white shadow-xl"
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* 닫기 버튼 */}
-                <button
-                    onClick={() => setCartView(false)}
-                    className="absolute right-5 top-3 text-3xl font-thin text-black"
-                >
-                    &times;
-                </button>
+                <div className="relative top-5 w-full flex items-center justify-between px-6">
+                    <p className="text-sm text-gray-600">총 주문 상품 {totalQuantity}개</p>
 
-                <p className="mb-4 text-sm text-gray-600">총 주문 상품 1개</p>
+                    {/* Cart는 absolute로 가운데 정렬 */}
+                    <p className="absolute left-1/2 -translate-x-1/2 text-[2em] text-gray-600 font-amstel">
+                        Cart
+                    </p>
 
-                <div className="flex flex-wrap items-center justify-center text-center text-lg font-semibold">
-                    <div className="mx-2">
-                        <p className="text-black">
-                            KRW {productPrice.toLocaleString()}
-                        </p>
-                        <p className="mt-1 text-sm text-gray-500">상품금액</p>
-                    </div>
-                    <p className="mx-2">+</p>
-                    <div className="mx-2">
-                        <p className="text-black">
-                            KRW {shipping.toLocaleString()}
-                        </p>
-                        <p className="mt-1 text-sm text-gray-500">배송비</p>
-                    </div>
-                    <p className="mx-2">-</p>
-                    <div className="mx-2">
-                        <p className="text-rose-500">
-                            KRW {discount.toLocaleString()}
-                        </p>
-                        <p className="mt-1 text-sm text-gray-500">
-                            상품 할인금액
-                        </p>
-                    </div>
-                    <p className="mx-2">=</p>
-                    <div className="mx-2">
-                        <p className="text-xl font-bold text-black">
-                            KRW {total.toLocaleString()}
-                        </p>
-                        <p className="mt-1 text-sm text-gray-500">
-                            총 주문금액
-                        </p>
-                    </div>
+                    <button
+                        onClick={() => setCartView(false)}
+                        className="text-3xl font-thin text-black"
+                    >
+                        &times;
+                    </button>
                 </div>
 
-                <div className="mt-6 flex flex-col items-center justify-center space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0">
-                    <button className="w-full max-w-xs bg-black px-6 py-3 text-white">
-                        주문하기
+
+                <div className="flex flex-wrap items-center justify-center text-center text-lg font-semibold">
+                    
+                </div>
+
+                <div className="absolute bottom-10 w-full flex flex-col items-center justify-center space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0 font-amstel">
+                    {/* 요소에 따라 버튼 diabled 값 변동 */}
+                    <button className="w-full max-w-xs bg-black hover:bg-black/70 px-6 py-3 text-white"
+                        disabled={true}
+                    >
+                        buy now
                     </button>
                     <button
                         onClick={() => setCartView(false)}
-                        className="w-full max-w-xs border border-gray-300 px-6 py-3 text-gray-800"
+                        className="w-full max-w-xs border border-gray-300 px-6 py-3 text-gray-800 bg-white hover:bg-gray-100"
                     >
-                        계속 쇼핑하기
+                        cancel
                     </button>
                 </div>
             </div>

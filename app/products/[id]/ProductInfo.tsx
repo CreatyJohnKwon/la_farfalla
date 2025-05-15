@@ -5,68 +5,31 @@ import {
     priceDiscount,
     justDiscount,
 } from "@/src/features/calculate";
-import { Posts, SelectedItem } from "@/src/entities/type/interfaces";
+import { Posts } from "@/src/entities/type/interfaces";
 import ProductDrop from "@/src/widgets/drop/ProductDrop";
 import QuantityRow from "@/src/features/quantity/QuantityRow";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import useCart from "@/src/shared/hooks/useCart";
 
 const ProductInfo = ({ posts }: { posts: Posts }) => {
-    const [count, setCount] = useState<number>(1);
-    const [result, setResult] = useState<string>(priceDiscount(posts));
-    const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
-    const [selectedSize, setSelectedSize] = useState<string | "">("");
-    const [selectedColor, setSelectedColor] = useState<string | "">("");
-
-    const handleAddToCart = async () => {
-        try {
-            const res = await fetch("/api/cart", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(selectedItems),
-            });
-
-            if (!res.ok) throw new Error("저장 실패");
-
-            alert("장바구니에 담겼습니다.");
-            // 필요시 selectedItems 초기화
-            setSelectedItems([]);
-        } catch (err) {
-            console.error(err);
-            alert("장바구니 저장 중 오류가 발생했습니다.");
-        }
-    };
-
-    // 옵션 첫 선택
-    const handleSelect = (size: string, color: string) => {
-        const alreadyExists = selectedItems.find(
-            (item) => item.size === size && item.color === color,
-        );
-
-        if (alreadyExists) {
-            alert("이미 선택한 옵션입니다.");
-            return;
-        }
-
-        const newItem = {
-            cartItemId: crypto.randomUUID(),
-            productId: posts._id,
-            size,
-            color,
-            quantity: 1,
-            discountPrice: justDiscount(posts),
-            originalPrice: parseInt(posts.price),
-        };
-
-        setSelectedItems((prev) => [...prev, newItem]);
-
-        // 선택 initialization :  흐름 개선
-        setSelectedSize("");
-        setSelectedColor("");
-    };
+    const { 
+        count,
+        setCount,
+        result,
+        setResult,
+        selectedSize,
+        setSelectedSize,
+        selectedColor, 
+        setSelectedColor,
+        selectedItems,
+        setSelectedItems,
+        handleSelect, 
+        handleAddToCart,
+    } = useCart();
 
     useEffect(() => {
         if (selectedSize && selectedColor) {
-            handleSelect(selectedSize, selectedColor);
+            handleSelect(selectedSize, selectedColor, posts);
         }
     }, [selectedSize, selectedColor]);
 
@@ -76,9 +39,12 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
             0,
         );
         const tempCalc = justDiscount(posts) * temp;
+
         setCount(temp);
         setResult(tempCalc.toLocaleString());
     }, [selectedItems]);
+
+    console.log(selectedItems.length)
 
     return (
         <div className="mt-5 flex h-full w-full flex-col items-center justify-center gap-6 md:col-span-1 md:mt-0">
@@ -93,7 +59,7 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
             </div>
 
             {/* Description text */}
-            <span className="w-4/6 text-center font-pretendard text-[0.8em] font-[300]">
+            <span className="w-9/12 text-center font-pretendard text-[0.8em] font-[300]">
                 {posts.description.text}
             </span>
 
@@ -150,13 +116,13 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
 
             {selectedItems.length > 0 ? (
                 <div className="flex w-3/4 items-center justify-end text-center text-black">
-                    <span className="me-1 font-pretendard font-[300]">
+                    <span className="me-1 font-pretendard font-[300] text-[0.8em] md:text-[1em]">
                         총 상품금액(수량) :
                     </span>
-                    <span className="font-amstel mb-2 text-[2.2em]">
+                    <span className="font-amstel mb-2 text-[2em] md:text-[2.2em]">
                         {result}
                     </span>
-                    <span className="ms-2 font-pretendard font-[300]">
+                    <span className="ms-2 font-pretendard font-[300] text-[0.8em] md:text-[1em]">
                         {`(${count}개)`}
                     </span>
                 </div>
@@ -165,11 +131,13 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
             )}
 
             <div className="font-amstel flex w-3/4 justify-between gap-14">
-                <button className="w-1/2 bg-gray-200 py-5 text-center text-base text-black hover:bg-gray-300">
+                <button className="w-1/2 bg-gray-200 py-5 text-center text-base text-black hover:bg-gray-300"
+                    disabled={selectedItems.length === 0}>
                     buy now
                 </button>
                 <button
                     className="w-1/2 bg-gray-200 py-5 text-center text-base text-black hover:bg-gray-300"
+                    disabled={selectedItems.length === 0}
                     onClick={() => handleAddToCart()}
                 >
                     cart
