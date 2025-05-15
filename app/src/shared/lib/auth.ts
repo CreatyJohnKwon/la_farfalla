@@ -3,7 +3,7 @@ import KakaoProvider from "next-auth/providers/kakao";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions, getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { connectDB } from "@/src/entities/db/mongoose";
+import { connectDB } from "@/src/entities/models/db/mongoose";
 import User from "@/src/entities/models/User";
 import bcrypt from "bcryptjs";
 import { registUser } from "@/src/shared/lib/server/user";

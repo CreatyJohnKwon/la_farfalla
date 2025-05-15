@@ -15,11 +15,14 @@ const Cart = () => {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
             onClick={() => setCartView(false)}
         >
-            <div className="relative w-full max-w-3xl rounded-lg bg-white p-6 shadow-xl">
+            <div
+                className="relative h-3/4 w-3/4 bg-white p-6 shadow-xl"
+                onClick={(e) => e.stopPropagation()}
+            >
                 {/* 닫기 버튼 */}
                 <button
                     onClick={() => setCartView(false)}
-                    className="absolute right-4 top-4 text-2xl text-gray-500 hover:text-black"
+                    className="absolute right-5 top-3 text-3xl font-thin text-black"
                 >
                     &times;
                 </button>

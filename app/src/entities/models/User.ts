@@ -59,6 +59,4 @@ const userSchema = new mongoose.Schema(
 );
 
 // 모델이 이미 정의되어 있으면 기존 모델을 반환, 없으면 새로 생성
-const User = mongoose.models?.User || mongoose.model("User", userSchema);
-
-export default User;
+export default mongoose.models?.User || mongoose.model("User", userSchema);

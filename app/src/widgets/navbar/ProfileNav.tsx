@@ -1,6 +1,6 @@
 "use client";
 
-import { profileNavData } from "@/src/entities/db/menuDatas";
+import { profileNavData } from "@/src/entities/models/db/menuDatas";
 import usePage from "@/src/shared/hooks/usePage";
 
 const ProfileNavbar = () => {

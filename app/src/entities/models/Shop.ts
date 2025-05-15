@@ -9,5 +9,4 @@ const shopSchema = new mongoose.Schema(
     { timestamps: true, collection: "shop" },
 );
 
-const Shop = mongoose.models?.Shop || mongoose.model("Shop", shopSchema);
-export default Shop;
+export default mongoose.models?.Shop || mongoose.model("Shop", shopSchema);

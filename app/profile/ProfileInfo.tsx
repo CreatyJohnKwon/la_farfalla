@@ -51,7 +51,7 @@ const ProfileInfo = () => {
                 </div>
                 <span className="hidden h-1/2 w-auto border-l border-slate-400 md:block" />
             </div>
-            <div className="col-span-3 flex hidden h-full w-full flex-row md:block">
+            <div className="col-span-3 hidden h-full w-full flex-row md:flex">
                 <span className="w-full">사용자 세부정보</span>
             </div>
         </div>

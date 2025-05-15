@@ -1,29 +1,29 @@
-import { Posts } from "@/src/entities/type/interfaces";
-import { priceDiscount } from "@/src/features/calculate";
+"use client";
+
+import { SelectedItem } from "@/src/entities/type/interfaces";
 
 const QuantityRow = ({
-    posts,
-    count,
-    setCount,
+    item,
+    updateQuantity,
+    onDelete,
 }: {
-    posts: Posts;
-    count: number;
-    setCount: React.Dispatch<React.SetStateAction<number>>;
+    item: SelectedItem;
+    updateQuantity: (quantity: number) => void;
+    onDelete: (id: string) => void;
 }) => {
-    const increase = () => setCount((prev) => prev + 1);
-    const decrease = () => setCount((prev) => (prev > 1 ? prev - 1 : 1));
+    const increase = () => updateQuantity(item.quantity + 1);
+    const decrease = () =>
+        updateQuantity(item.quantity > 1 ? item.quantity - 1 : 1);
 
     return (
-        <div className="font-amstel grid w-3/4 grid-cols-4 items-center gap-4 text-black">
-            {/* 상품명 */}
-            <div className="col-span-2 truncate text-base">
-                {posts.title.eg}
-            </div>
+        <div className="font-amstel flex w-3/4 items-center justify-end gap-6 text-black">
+            {/* 상품명 + 옵션 표기 */}
+            <span className="text-base">{`${item.size} - ${item.color}`}</span>
 
             {/* 수량 */}
             <div className="flex items-center justify-center gap-2">
                 <div className="w-8 bg-gray-200 py-1 text-center text-sm">
-                    {count}
+                    {item.quantity}
                 </div>
                 <button
                     className="w-8 bg-gray-200 py-1 text-center text-sm"
@@ -39,10 +39,17 @@ const QuantityRow = ({
                 </button>
             </div>
 
-            {/* 가격 */}
+            {/* 개별 금액 */}
             <div className="text-right text-base">
-                KRW {priceDiscount(posts).toLocaleString()}
+                KRW {(item.quantity * item.discountPrice).toLocaleString()}
             </div>
+
+            <button
+                onClick={() => onDelete(item.cartItemId)}
+                className="right-5 top-3 text-xl font-thin text-black"
+            >
+                &times;
+            </button>
         </div>
     );
 };

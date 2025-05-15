@@ -7,7 +7,7 @@ interface Posts {
     discount: string;
     category: string;
     image: string;
-    colors: string;
+    colors: Array<string>;
     key: number;
     size: Array<string>;
 }
@@ -83,10 +83,17 @@ type CustomButtonProps = {
     btnType?: "button" | "submit" | "reset";
 };
 
-type QuantityRowProps = {};
+type SelectedItem = {
+    cartItemId: string;
+    productId: string;
+    size: string;
+    color: string;
+    quantity: number;
+    discountPrice: number;
+    originalPrice: number;
+};
 
 export type {
-    RegistReqData,
     profNavDataProps,
     CustomButtonProps,
     ShopClientProps,
@@ -97,6 +104,8 @@ export type {
     navDataProps,
     NavListProps,
     NavbarProps,
+    RegistReqData,
+    SelectedItem,
     Products,
     MenuItem,
     Posts,

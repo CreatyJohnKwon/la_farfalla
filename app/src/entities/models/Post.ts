@@ -30,7 +30,8 @@ const postSchema = new mongoose.Schema(
             required: true,
         },
         colors: {
-            type: Number, // 색상 수
+            type: [String], // 색상 수
+            required: true,
             default: 0,
         },
         key: {
@@ -50,5 +51,4 @@ const postSchema = new mongoose.Schema(
     },
 );
 
-const Post = mongoose.models?.Post || mongoose.model("Post", postSchema);
-export default Post;
+export default mongoose.models?.Post || mongoose.model("Post", postSchema);
