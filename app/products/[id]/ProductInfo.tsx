@@ -12,18 +12,18 @@ import { useEffect } from "react";
 import useCart from "@/src/shared/hooks/useCart";
 
 const ProductInfo = ({ posts }: { posts: Posts }) => {
-    const { 
+    const {
         count,
         setCount,
         result,
         setResult,
         selectedSize,
         setSelectedSize,
-        selectedColor, 
+        selectedColor,
         setSelectedColor,
         selectedItems,
         setSelectedItems,
-        handleSelect, 
+        handleSelect,
         handleAddToCart,
     } = useCart();
 
@@ -43,8 +43,6 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
         setCount(temp);
         setResult(tempCalc.toLocaleString());
     }, [selectedItems]);
-
-    console.log(selectedItems.length)
 
     return (
         <div className="mt-5 flex h-full w-full flex-col items-center justify-center gap-6 md:col-span-1 md:mt-0">
@@ -116,13 +114,13 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
 
             {selectedItems.length > 0 ? (
                 <div className="flex w-3/4 items-center justify-end text-center text-black">
-                    <span className="me-1 font-pretendard font-[300] text-[0.8em] md:text-[1em]">
+                    <span className="me-1 font-pretendard text-[0.8em] font-[300] md:text-[1em]">
                         총 상품금액(수량) :
                     </span>
                     <span className="font-amstel mb-2 text-[2em] md:text-[2.2em]">
                         {result}
                     </span>
-                    <span className="ms-2 font-pretendard font-[300] text-[0.8em] md:text-[1em]">
+                    <span className="ms-2 font-pretendard text-[0.8em] font-[300] md:text-[1em]">
                         {`(${count}개)`}
                     </span>
                 </div>
@@ -131,8 +129,10 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
             )}
 
             <div className="font-amstel flex w-3/4 justify-between gap-14">
-                <button className="w-1/2 bg-gray-200 py-5 text-center text-base text-black hover:bg-gray-300"
-                    disabled={selectedItems.length === 0}>
+                <button
+                    className="w-1/2 bg-gray-200 py-5 text-center text-base text-black hover:bg-gray-300"
+                    disabled={selectedItems.length === 0}
+                >
                     buy now
                 </button>
                 <button

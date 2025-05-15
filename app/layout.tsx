@@ -32,7 +32,7 @@ const RootLayout = async ({
     const session = await getAuthSession();
 
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
             >

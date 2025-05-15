@@ -1,7 +1,5 @@
 "use client";
 
-import { NavbarProps } from "../../entities/type/interfaces";
-// import AboutDrop from "@/src/components/drop/AboutDrop";
 import useProduct from "@/src/shared/hooks/useProduct";
 import useUsers from "@/src/shared/hooks/useUsers";
 
@@ -9,7 +7,7 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineUser } from "react-icons/ai";
 
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ShopDrop from "../drop/ShopDrop";
@@ -87,21 +85,27 @@ const Navbar = () => {
                         <ul className="hidden sm:flex sm:space-x-8">
                             {navStartData.map((navList, index) =>
                                 navList.text === "cart" ? (
-                                    <button
-                                        key={`nav_list_${index}`}
-                                        className="block pe-4 sm:pe-6"
-                                        onClick={() => setCartView(true)}
-                                    >
-                                        cart
-                                    </button>
+                                    session && (
+                                        <li key={`nav_list_${index}`}>
+                                            <button
+                                                className="block pe-4 sm:pe-6"
+                                                onClick={() =>
+                                                    setCartView(true)
+                                                }
+                                            >
+                                                cart
+                                            </button>
+                                        </li>
+                                    )
                                 ) : (
-                                    <Link
-                                        key={`nav_list_${index}`}
-                                        href={`/${navList.text}`}
-                                        className="block pe-4 sm:pe-6"
-                                    >
-                                        {navList.text}
-                                    </Link>
+                                    <li key={`nav_list_${index}`}>
+                                        <Link
+                                            href={`/${navList.text}`}
+                                            className="block pe-4 sm:pe-6"
+                                        >
+                                            {navList.text}
+                                        </Link>
+                                    </li>
                                 ),
                             )}
                         </ul>

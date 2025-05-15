@@ -2,7 +2,7 @@ import { connectDB } from "@/src/entities/models/db/mongoose";
 import Post from "@/src/entities/models/Post";
 import Shop from "@/src/entities/models/Shop";
 
-export const getProducts = async (id: string) => {
+const getProduct = async (id: string) => {
     try {
         await connectDB();
         return await Post.findById(id).lean();
@@ -12,7 +12,7 @@ export const getProducts = async (id: string) => {
     }
 };
 
-export const getShopProducts = async () => {
+const getShopProducts = async () => {
     try {
         await connectDB();
         return await Post.find({}).lean();
@@ -22,12 +22,15 @@ export const getShopProducts = async () => {
     }
 };
 
-export const getHome = async () => {
+const getSeason = async () => {
     try {
         await connectDB();
-        return await Shop.find({}).lean();
+        const products = await Shop.find({}).lean();
+        return products;
     } catch (error) {
         console.error("Error fetching home products:", error);
         throw new Error("Failed to fetch home products");
     }
 };
+
+export { getSeason, getProduct, getShopProducts };

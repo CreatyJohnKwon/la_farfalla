@@ -1,10 +1,10 @@
 import { serialize } from "@/src/features/calculate";
 import HomeClient from "./HomeClient";
 import { Products } from "@/src/entities/type/interfaces";
-import { getHome } from "@/src/shared/lib/server/get";
+import { getSeason } from "@/src/shared/lib/server/shop";
 
 const Home = async () => {
-    const productsRes = await getHome();
+    const productsRes = await getSeason();
     const productsRaw: Products[] = serialize(productsRes) as Products[];
 
     return <HomeClient products={productsRaw} />;

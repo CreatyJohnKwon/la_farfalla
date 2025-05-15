@@ -84,6 +84,7 @@ type CustomButtonProps = {
 };
 
 type SelectedItem = {
+    userId: string | null | undefined;
     cartItemId: string;
     productId: string;
     size: string;

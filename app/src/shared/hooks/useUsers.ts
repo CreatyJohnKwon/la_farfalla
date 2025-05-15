@@ -24,18 +24,19 @@ const useUsers = () => {
         if (result) signOut({ callbackUrl: "/" });
     };
 
-    const menusData = session ? 
-        [
-            { text: "Profile", link: "/profile" },
-            { text: "Shop", link: "/shop" },
-            { text: "Introduce", link: "/introduce" },
-            { text: "Notice", link: "/notice" }
-        ] : [
-            { text: "Login", link: "/login" },
-            { text: "Shop", link: "/shop" },
-            { text: "Introduce", link: "/introduce" },
-            { text: "Notice", link: "/notice" },
-        ];
+    const menusData = session
+        ? [
+              { text: "Profile", link: "/profile" },
+              { text: "Shop", link: "/shop" },
+              { text: "Introduce", link: "/introduce" },
+              { text: "Notice", link: "/notice" },
+          ]
+        : [
+              { text: "Login", link: "/login" },
+              { text: "Shop", link: "/shop" },
+              { text: "Introduce", link: "/introduce" },
+              { text: "Notice", link: "/notice" },
+          ];
 
     const navStartData = session
         ? [{ text: "cart" }, { text: "profile" }]
@@ -57,7 +58,7 @@ const useUsers = () => {
 
         menusData,
         session,
-        navStartData
+        navStartData,
     };
 };
 

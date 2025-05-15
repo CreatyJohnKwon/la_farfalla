@@ -46,6 +46,7 @@ const AboutDrop = () => {
                                 setOpenSidebar(false);
                                 setOpen(false);
                             }}
+                            disabled={true}
                         >
                             project
                         </button>

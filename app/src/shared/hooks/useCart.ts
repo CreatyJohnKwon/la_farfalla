@@ -2,29 +2,31 @@ import { useAtom } from "jotai";
 import { useState } from "react";
 import { cartViewAtom } from "@/src/shared/lib/atom";
 import { Posts, SelectedItem } from "@/src/entities/type/interfaces";
-import { justDiscount, priceDiscount } from "@/src/features/calculate"
+import { justDiscount } from "@/src/features/calculate";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { postCart } from "../lib/server/cart";
+import useUser from "@/src/shared/hooks/useUsers";
 
 const useCart = () => {
     const [cartView, setCartView] = useAtom(cartViewAtom);
 
-    const [count, setCount] = useState<number>(1);
-    const [result, setResult] = useState<string>("");
-    const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
+    const [count, setCount] = useState<number | 1>(1);
+    const [result, setResult] = useState<string | "">("");
+    const [selectedItems, setSelectedItems] = useState<SelectedItem[] | []>([]);
     const [selectedSize, setSelectedSize] = useState<string | "">("");
     const [selectedColor, setSelectedColor] = useState<string | "">("");
+    const { session } = useUser();
+    const router = useRouter();
 
     const handleAddToCart = async () => {
+        const userEmail = session?.user?.email;
+        if (!userEmail) return router.push("/login");
+
         try {
-            const res = await fetch("/api/cart", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(selectedItems),
-            });
-
-            if (!res.ok) throw new Error("저장 실패");
-
+            await postCart(selectedItems);
             alert("장바구니에 담겼습니다.");
-            // 필요시 selectedItems 초기화
+            // setSelectedItems initialization :  흐름 개선
             setSelectedItems([]);
         } catch (err) {
             console.error(err);
@@ -43,7 +45,8 @@ const useCart = () => {
             return;
         }
 
-        const newItem = {
+        const newItem: SelectedItem = {
+            userId: session?.user?.email,
             cartItemId: crypto.randomUUID(),
             productId: posts._id,
             size,
@@ -55,7 +58,7 @@ const useCart = () => {
 
         setSelectedItems((prev) => [...prev, newItem]);
 
-        // 선택 initialization :  흐름 개선
+        // size, color selected initialization :  흐름 개선
         setSelectedSize("");
         setSelectedColor("");
     };
@@ -74,7 +77,7 @@ const useCart = () => {
         selectedItems,
         setSelectedItems,
         handleAddToCart,
-        handleSelect
+        handleSelect,
     };
 };
 
