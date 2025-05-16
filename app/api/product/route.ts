@@ -7,11 +7,11 @@ const GET = async (req: NextRequest) => {
         await connectDB();
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
-
+        
         if (!id) {
             return NextResponse.json({ error: "Missing id" }, { status: 400 });
         }
-
+        
         const productItem = await Post.findById(id).lean();
 
         if (!productItem) {

@@ -53,7 +53,7 @@ const Cart = () => {
                     </button>
                 </div>
 
-                <ul className="mt-5 flex h-auto flex-wrap items-center justify-center bg-red-200 text-center text-lg font-semibold">
+                <ul className="mt-10 gap-10 flex h-auto flex-wrap items-center justify-center text-center text-lg font-semibold">
                     {cartDatas.map((item, index) => (
                         <li
                             key={`${item}_${index}`}
