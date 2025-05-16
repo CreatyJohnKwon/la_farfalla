@@ -84,19 +84,8 @@ type CustomButtonProps = {
 };
 
 type SelectedItem = {
-    userId: string | null | undefined;
-    cartItemId: string;
-    productId: string;
-    size: string;
-    color: string;
-    quantity: number;
-    discountPrice: number;
-    originalPrice: number;
-};
-
-type CartItems = {
-    _id: string;
-    image: string;
+    _id?: string;
+    image?: string;
     userId: string | null | undefined;
     cartItemId: string;
     productId: string;
@@ -122,6 +111,5 @@ export type {
     SelectedItem,
     Products,
     MenuItem,
-    CartItems,
     Posts,
 };

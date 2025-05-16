@@ -32,4 +32,24 @@ const getCart = async () => {
     }
 };
 
-export { getCart, postCart };
+const deleteCart = async (ids: string[]) => {
+    try {
+        const res = await fetch("/api/cart", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids }),
+        });
+
+        if (!res.ok) {
+            const msg = await res.text();
+            throw new Error(msg || "장바구니 삭제 실패");
+        }
+
+        return await res.json(); // { ok: true } 예상
+    } catch (error) {
+        console.error("Error deleting cart items:", error);
+        throw new Error("Failed to delete cart items");
+    }
+};
+
+export { getCart, postCart, deleteCart };

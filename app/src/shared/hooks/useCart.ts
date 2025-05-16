@@ -4,7 +4,7 @@ import { cartDatasAtom, cartViewAtom } from "@/src/shared/lib/atom";
 import { Posts, SelectedItem } from "@/src/entities/type/interfaces";
 import { justDiscount } from "@/src/features/calculate";
 import { useRouter } from "next/navigation";
-import { postCart } from "../lib/server/cart";
+import { postCart, deleteCart } from "../lib/server/cart";
 import useUser from "@/src/shared/hooks/useUsers";
 
 const useCart = () => {
@@ -28,6 +28,7 @@ const useCart = () => {
             alert("장바구니에 담겼습니다.");
             // setSelectedItems initialization :  흐름 개선
             setSelectedItems([]);
+            setCartDatas([]);
         } catch (err) {
             console.error(err);
             alert("장바구니 저장 중 오류가 발생했습니다.");
@@ -36,7 +37,9 @@ const useCart = () => {
 
     // 옵션 첫 선택
     const handleSelect = (size: string, color: string, posts: Posts) => {
-        const alreadyExists = selectedItems.find((item) => item.size === size && item.color === color);
+        const alreadyExists = selectedItems.find(
+            (item) => item.size === size && item.color === color,
+        );
 
         if (alreadyExists) return alert("이미 선택한 옵션입니다.");
 
@@ -58,6 +61,27 @@ const useCart = () => {
         setSelectedColor("");
     };
 
+    const handleRouteProduct = (productId: string) => {
+        router.push(`/products/${productId}`);
+        setCartView(false);
+    };
+
+    const handleDeleteProduct = (ids: string | string[] | undefined) => {
+        if (!ids) return;
+
+        if (!confirm("삭제하시겠습니까?")) return;
+
+        const idArray = Array.isArray(ids) ? ids : [ids];
+
+        setCartDatas((prev) =>
+            prev.filter(
+                (i) => typeof i._id === "string" && !idArray.includes(i._id!),
+            ),
+        );
+
+        deleteCart(idArray);
+    };
+
     return {
         cartView,
         setCartView,
@@ -75,6 +99,8 @@ const useCart = () => {
         setCartDatas,
         handleAddToCart,
         handleSelect,
+        handleDeleteProduct,
+        handleRouteProduct,
     };
 };
 

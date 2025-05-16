@@ -6,9 +6,19 @@ import DefaultImage from "../../../../public/images/chill.png";
 import { Posts } from "@/src/entities/type/interfaces";
 import { priceResult, priceDiscount } from "@/src/features/calculate";
 
-const ProductsList = ({ posts }: { posts: Posts }) => {
+const ProductsList = ({
+    posts,
+    index = 0,
+}: {
+    posts: Posts;
+    index?: number;
+}) => {
     return (
-        <li className="pt-10 text-center" key={posts._id}>
+        <li
+            key={posts._id}
+            className="animate-fade-in pt-10 text-center opacity-0"
+            style={{ animationDelay: `${index * 50}ms` }} // stagger 효과
+        >
             <Link href={`/products/${posts._id}`}>
                 <div className="relative w-full overflow-hidden">
                     <div className="pb-[100%]"></div> {/* 1:1 비율 확보 */}

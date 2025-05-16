@@ -11,6 +11,7 @@ module.exports = {
             animation: {
                 "slide-in-left": "slideInLeft 0.2s ease-out forwards",
                 "slide-out-left": "slideOutLeft 0.3s ease-in forwards",
+                "fade-in": "fade-in 0.5s ease-in-out forwards",
             },
             keyframes: {
                 slideInLeft: {
@@ -20,6 +21,10 @@ module.exports = {
                 slideOutLeft: {
                     "0%": { transform: "translateX(0)" },
                     "100%": { transform: "translateX(-100%)" },
+                },
+                "fade-in": {
+                    "0%": { opacity: "0" },
+                    "100%": { opacity: "1" },
                 },
             },
             letterSpacing: {

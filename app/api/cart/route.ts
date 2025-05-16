@@ -14,11 +14,28 @@ const POST = async (req: NextRequest) => {
     await connectDB();
 
     for (const item of body) {
-        await Cart.create({
-            ...item,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+        const { userId, productId, size, color, quantity } = item;
+
+        const existingItem = await Cart.findOne({
+            userId,
+            productId,
+            size,
+            color,
         });
+
+        if (existingItem) {
+            // 이미 있으면 수량만 업데이트
+            existingItem.quantity += quantity;
+            existingItem.updatedAt = new Date();
+            await existingItem.save();
+        } else {
+            // 없으면 새로 생성
+            await Cart.create({
+                ...item,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
+        }
     }
 
     return NextResponse.json({ ok: true });
@@ -36,4 +53,23 @@ const GET = async () => {
     return NextResponse.json(cartItems);
 };
 
-export { POST, GET };
+const DELETE = async (req: NextRequest) => {
+    const body = await req.json();
+    const ids = body?.ids; // 배열로 받음: 확장가능성 염두 (모두선택 삭제 대비)
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+        return NextResponse.json(
+            { error: "삭제할 id가 없습니다" },
+            { status: 400 },
+        );
+    }
+
+    await connectDB();
+
+    // 한 번에 삭제
+    await Cart.deleteMany({ _id: { $in: ids } });
+
+    return NextResponse.json({ ok: true });
+};
+
+export { POST, GET, DELETE };
