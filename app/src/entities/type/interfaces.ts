@@ -94,6 +94,19 @@ type SelectedItem = {
     originalPrice: number;
 };
 
+type CartItems = {
+    _id: string;
+    image: string;
+    userId: string | null | undefined;
+    cartItemId: string;
+    productId: string;
+    size: string;
+    color: string;
+    quantity: number;
+    discountPrice: number;
+    originalPrice: number;
+};
+
 export type {
     profNavDataProps,
     CustomButtonProps,
@@ -109,5 +122,6 @@ export type {
     SelectedItem,
     Products,
     MenuItem,
+    CartItems,
     Posts,
 };

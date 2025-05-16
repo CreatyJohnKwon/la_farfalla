@@ -1,15 +1,15 @@
 import { useAtom } from "jotai";
 import { useState } from "react";
-import { cartViewAtom } from "@/src/shared/lib/atom";
+import { cartDatasAtom, cartViewAtom } from "@/src/shared/lib/atom";
 import { Posts, SelectedItem } from "@/src/entities/type/interfaces";
 import { justDiscount } from "@/src/features/calculate";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { postCart } from "../lib/server/cart";
 import useUser from "@/src/shared/hooks/useUsers";
 
 const useCart = () => {
     const [cartView, setCartView] = useAtom(cartViewAtom);
+    const [cartDatas, setCartDatas] = useAtom(cartDatasAtom);
 
     const [count, setCount] = useState<number | 1>(1);
     const [result, setResult] = useState<string | "">("");
@@ -36,14 +36,9 @@ const useCart = () => {
 
     // 옵션 첫 선택
     const handleSelect = (size: string, color: string, posts: Posts) => {
-        const alreadyExists = selectedItems.find(
-            (item) => item.size === size && item.color === color,
-        );
+        const alreadyExists = selectedItems.find((item) => item.size === size && item.color === color);
 
-        if (alreadyExists) {
-            alert("이미 선택한 옵션입니다.");
-            return;
-        }
+        if (alreadyExists) return alert("이미 선택한 옵션입니다.");
 
         const newItem: SelectedItem = {
             userId: session?.user?.email,
@@ -76,6 +71,8 @@ const useCart = () => {
         setSelectedColor,
         selectedItems,
         setSelectedItems,
+        cartDatas,
+        setCartDatas,
         handleAddToCart,
         handleSelect,
     };

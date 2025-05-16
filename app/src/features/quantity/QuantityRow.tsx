@@ -12,8 +12,7 @@ const QuantityRow = ({
     onDelete: (id: string) => void;
 }) => {
     const increase = () => updateQuantity(item.quantity + 1);
-    const decrease = () =>
-        updateQuantity(item.quantity > 1 ? item.quantity - 1 : 1);
+    const decrease = () => updateQuantity(item.quantity > 1 ? item.quantity - 1 : 1);
 
     return (
         <div className="font-amstel flex w-3/4 items-center justify-end gap-6 text-black">

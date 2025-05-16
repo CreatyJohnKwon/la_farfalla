@@ -1,4 +1,3 @@
-import Cart from "@/src/entities/models/Cart";
 import { SelectedItem } from "@/src/entities/type/interfaces";
 
 const postCart = async (items: SelectedItem[]) => {
@@ -21,13 +20,15 @@ const postCart = async (items: SelectedItem[]) => {
     }
 };
 
-const getCart = async (userId: string): Promise<SelectedItem[]> => {
+const getCart = async () => {
     try {
-        const cart = await Cart.find({ userId }).lean();
-        return cart as unknown as SelectedItem[];
-    } catch (error) {
-        console.error("Error fetching cart:", error);
-        throw new Error("Failed to fetch cart");
+        const res = await fetch("/api/cart");
+        if (!res.ok) throw new Error("장바구니 요청 실패");
+        const data = await res.json();
+        return data;
+    } catch (err) {
+        console.error("장바구니 조회 실패:", err);
+        return null;
     }
 };
 

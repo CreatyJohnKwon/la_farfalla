@@ -1,28 +1,25 @@
 "use client";
 
-import { SelectedItem } from "@/src/entities/type/interfaces";
 import useCart from "@/src/shared/hooks/useCart";
 import { useState, useEffect } from "react";
+import CartItem from "./CartItem";
+import { getCart } from "@/src/shared/lib/server/cart";
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState<SelectedItem[]>([]);
-    const { setCartView } = useCart();
+    const [totalQuantity, setTotalQuantity] = useState<number>(0);
+    const { cartDatas, setCartDatas, setCartView } = useCart();
 
     useEffect(() => {
-        const fetchCart = async () => {
-            try {
-                const res = await fetch("/api/cart");
-                if (!res.ok) throw new Error("장바구니 요청 실패");
-                const data = await res.json();
-                setCartItems(data);
-            } catch (err) {
-                console.error("장바구니 조회 실패:", err);
+        const getCartItems = async () => {
+            const datas: any = await getCart();
+            if (datas) {
+                setCartDatas(datas);
+                setTotalQuantity(datas.reduce((sum: any, item: any) => sum + item.quantity, 0));
             }
-        };
-        fetchCart();
+            else if (datas === null) alert("장바구니 조회 중 오류가 발생했습니다\n고객센터에 문의해주세요");
+        }
+        getCartItems();
     }, []);
-
-    const totalQuantity = 10;
 
     return (
         <div
@@ -57,18 +54,12 @@ const Cart = () => {
                 </div>
 
                 <ul className="mt-5 flex h-auto flex-wrap items-center justify-center bg-red-200 text-center text-lg font-semibold">
-                    {cartItems.map((item, index) => (
+                    {cartDatas.map((item, index) => (
                         <li
                             key={`${item}_${index}`}
                             className="flex w-full items-center justify-center text-[1em] font-semibold sm:text-[2em]"
                         >
-                            <p className="me-2">
-                                {item.color}-{item.size}
-                            </p>
-                            <p className="me-2">{item.quantity} 개</p>
-                            <p className="text-gray-600">
-                                {item.discountPrice} 원
-                            </p>
+                            <CartItem item={item} />
                         </li>
                     ))}
                 </ul>

@@ -1,4 +1,4 @@
-import { Products } from "@/src/entities/type/interfaces";
+import { Products, CartItems } from "@/src/entities/type/interfaces";
 import { Session } from "next-auth";
 import { atomWithStorage } from "jotai/utils";
 import { atom } from "jotai";
@@ -10,3 +10,4 @@ export const categoryAtom = atomWithStorage<Products[] | []>("category", []);
 export const pagesAtom = atom<"e" | "o" | "q">("o");
 export const sidebarAtom = atom<boolean>(false);
 export const cartViewAtom = atom<boolean>(false);
+export const cartDatasAtom = atom<CartItems[]>([]);
