@@ -72,4 +72,32 @@ const DELETE = async (req: NextRequest) => {
     return NextResponse.json({ ok: true });
 };
 
-export { POST, GET, DELETE };
+const PATCH = async (req: NextRequest) => {
+    try {
+        const body = await req.json();
+
+        const { userId, productId, size, color, quantity } = body;
+
+        if (!userId || !productId || !size || !color || !quantity) {
+            return NextResponse.json({ error: "잘못된 요청" }, { status: 400 });
+        }
+
+        await connectDB();
+
+        const updated = await Cart.findOneAndUpdate(
+            { userId, productId, size, color },
+            {
+                $set: { quantity, updatedAt: new Date() },
+                $setOnInsert: { createdAt: new Date() },
+            },
+            { upsert: true, new: true },
+        );
+
+        return NextResponse.json({ ok: true, item: updated });
+    } catch (error) {
+        console.error("PATCH error:", error);
+        return NextResponse.json({ error: "서버 오류" }, { status: 500 });
+    }
+};
+
+export { POST, GET, DELETE, PATCH };

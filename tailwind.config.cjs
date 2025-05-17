@@ -37,7 +37,7 @@ module.exports = {
             screens: {
                 c_xl: "1850px",
                 c_lg: "1610px",
-                c_md: "1105px",
+                c_md: "1150px",
                 c_base: "500px",
                 c_sm: "360px",
             },

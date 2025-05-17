@@ -4,7 +4,7 @@ import { cartDatasAtom, cartViewAtom } from "@/src/shared/lib/atom";
 import { Posts, SelectedItem } from "@/src/entities/type/interfaces";
 import { justDiscount } from "@/src/features/calculate";
 import { useRouter } from "next/navigation";
-import { postCart, deleteCart } from "../lib/server/cart";
+import { postCart, deleteCart, updateQuantity } from "../lib/server/cart";
 import useUser from "@/src/shared/hooks/useUsers";
 
 const useCart = () => {
@@ -82,6 +82,19 @@ const useCart = () => {
         deleteCart(idArray);
     };
 
+    const handleUpdateProduct = (newQty: number, item: SelectedItem) => {
+        setCartDatas((prev) =>
+            prev.map((i) =>
+                i._id === item._id ? { ...i, quantity: newQty } : i,
+            ),
+        );
+
+        updateQuantity({
+            ...item,
+            quantity: newQty,
+        });
+    };
+
     return {
         cartView,
         setCartView,
@@ -101,6 +114,7 @@ const useCart = () => {
         handleSelect,
         handleDeleteProduct,
         handleRouteProduct,
+        handleUpdateProduct,
     };
 };
 

@@ -4,11 +4,13 @@ import {
     useUserQuery,
     useUpdateUserMutation,
 } from "@/src/shared/hooks/react-query/useUserQuery";
+import useUsers from "@/src/shared/hooks/useUsers";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useEffect } from "react";
 
 const EditProfile = () => {
     const { data: user, isLoading } = useUserQuery();
+    const { session } = useUsers();
     const updateUser = useUpdateUserMutation();
     // 클라이언트 측 비번 확인 검증용
     const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -62,26 +64,20 @@ const EditProfile = () => {
     if (isLoading) return <p>Loading...</p>;
 
     return (
-        <div className="flex h-full w-full flex-col items-center justify-center gap-6 font-pretendard text-xl sm:w-5/6 sm:text-3xl">
-            {/* 이름 */}
-            <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="이름"
-                className="w-full border p-2"
-            />
+        <div className="mb-10 flex h-full w-full flex-col items-start justify-start gap-6 text-xl sm:w-11/12 sm:text-3xl">
+            <span className="font-amstel-thin h-12 w-full border border-gray-200 bg-white px-4 py-2 text-gray-500 placeholder:text-gray-400 focus:outline-none">
+                {session?.user?.email}
+            </span>
 
             {/* 비밀번호 */}
-            <div className="relative w-full">
+            <div className="relative w-full font-pretendard">
                 <input
                     type="password"
                     name="password"
                     value={form.password}
                     onChange={handleChange}
                     placeholder="비밀번호 (8자 이상, 변경 시 입력)"
-                    className="h-16 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                    className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                 />
                 {form.password.length > 0 && (
                     <p
@@ -95,14 +91,14 @@ const EditProfile = () => {
             </div>
 
             {/* 비밀번호 확인 */}
-            <div className="relative w-full">
+            <div className="relative w-full font-pretendard">
                 <input
                     type="password"
                     name="confirmPassword"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="비밀번호 확인"
-                    className="h-16 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                    className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                 />
                 {confirmPassword.length > 0 && (
                     <p
@@ -117,17 +113,27 @@ const EditProfile = () => {
 
             <input
                 type="text"
+                name="postcode"
+                value={""}
+                onChange={handleChange}
+                placeholder="우편번호"
+                className="h-12 w-full border p-2 px-4 font-pretendard"
+            />
+
+            <input
+                type="text"
                 name="address"
                 value={form.address}
                 onChange={handleChange}
                 placeholder="주소"
-                className="w-full border p-2"
+                className="h-12 w-full border p-2 px-4 pt-2 font-pretendard"
             />
+
             <button
                 onClick={handleSubmit}
-                className="place-self-end bg-black px-4 py-2 text-white"
+                className="font-amstel place-self-end bg-black px-6 py-3 text-[0.8em] text-white"
             >
-                저장
+                Save
             </button>
         </div>
     );

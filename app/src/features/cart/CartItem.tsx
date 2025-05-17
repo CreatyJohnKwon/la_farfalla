@@ -1,14 +1,15 @@
 import { Posts, SelectedItem } from "@/src/entities/type/interfaces";
 import Image from "next/image";
 import DefaultImg from "../../../../public/images/chill.png";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import useCart from "@/src/shared/hooks/useCart";
 import QuantityModal from "@/src/widgets/modal/QuantityModal";
 
 const CartItem = ({ item }: { item: SelectedItem }) => {
     const [product, setProduct] = useState<Posts | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
-    const { setCartDatas, handleDeleteProduct, handleRouteProduct } = useCart();
+    const { handleUpdateProduct, handleDeleteProduct, handleRouteProduct } =
+        useCart();
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -28,8 +29,8 @@ const CartItem = ({ item }: { item: SelectedItem }) => {
     if (!isLoaded || !product) {
         return (
             <div className="flex w-[90%] animate-pulse items-center justify-between">
-                <div className="h-[5em] w-[3em] bg-gray-300 sm:w-[5em]" />
-                <div className="flex w-32 flex-col items-center sm:w-auto sm:gap-2">
+                <div className="h-[5em] w-[3em] bg-gray-300 c_md:w-[5em]" />
+                <div className="flex w-32 flex-col items-center c_md:w-auto c_md:gap-2">
                     <div className="mb-1 h-3 w-24 bg-gray-300" />
                     <div className="h-3 w-20 bg-gray-300" />
                 </div>
@@ -39,9 +40,9 @@ const CartItem = ({ item }: { item: SelectedItem }) => {
     }
 
     return (
-        <div className="animate-fade-in flex h-full w-[90%] items-center justify-between opacity-0 transition-opacity duration-500 ease-in-out">
+        <div className="flex h-full w-[92%] animate-fade-in items-center justify-between opacity-0 transition-opacity duration-500 ease-in-out">
             <Image
-                className="w-[3em] transition-all duration-300 hover:scale-105 sm:w-[5em]"
+                className="h-auto w-[4.5em] transition-all duration-300 hover:scale-105 sm:w-[5em]"
                 alt={`${product.title}_img`}
                 width={500}
                 height={500}
@@ -53,31 +54,25 @@ const CartItem = ({ item }: { item: SelectedItem }) => {
                 objectFit="cover"
                 onClick={() => handleRouteProduct(product._id)}
             />
-            <div
-                className="flex w-32 flex-col items-center sm:w-auto sm:gap-2"
-                onClick={() => handleRouteProduct(product._id)}
-            >
-                <span className="font-amstel w-full truncate text-[0.6em] font-[300] hover:underline">
-                    {product.title.eg}
-                </span>
-                <span className="w-full truncate font-pretendard text-[0.6em] font-[300] hover:underline">
-                    {product.title.kr}
-                </span>
-            </div>
-            <div>
+            <div className="ms-5 flex w-full flex-col items-start justify-center c_md:m-0 c_md:flex-row c_md:items-center">
+                <div
+                    className="flex flex-col items-center text-start c_md:m-0 c_md:w-full c_md:gap-2 c_md:text-center"
+                    onClick={() => handleRouteProduct(product._id)}
+                >
+                    <span className="font-amstel w-full text-[0.5em] font-[300] hover:underline c_md:text-[0.6em]">
+                        {product.title.eg}
+                    </span>
+                    <span className="w-full font-pretendard text-[0.5em] font-[300] hover:underline c_md:text-[0.6em]">
+                        {product.title.kr}
+                    </span>
+                </div>
                 <QuantityModal
                     id={item._id}
-                    custom="text-[0.6em] w-full"
+                    custom="text-[0.5em] w-full font-amstel flex items-center justify-start sm:justify-end gap-4 text-black c_md:gap-6"
                     item={item}
                     onDelete={handleDeleteProduct}
                     updateQuantity={(newQty) =>
-                        setCartDatas((prev) =>
-                            prev.map((i) =>
-                                i._id === item._id
-                                    ? { ...i, quantity: newQty }
-                                    : i,
-                            ),
-                        )
+                        handleUpdateProduct(newQty, item)
                     }
                 />
             </div>

@@ -1,10 +1,10 @@
 import { redirectIfNeeded } from "@/src/shared/lib/auth";
-import ProfileClient from "./ProfileClient";
+import ProfileGate from "./ProfileGate";
 
 const Profile = async () => {
     await redirectIfNeeded("profile");
 
-    return <ProfileClient />;
+    return <ProfileGate />;
 };
 
 export default Profile;

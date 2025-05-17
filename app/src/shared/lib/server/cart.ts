@@ -1,4 +1,5 @@
 import { SelectedItem } from "@/src/entities/type/interfaces";
+import debounce from "lodash.debounce";
 
 const postCart = async (items: SelectedItem[]) => {
     try {
@@ -52,4 +53,16 @@ const deleteCart = async (ids: string[]) => {
     }
 };
 
-export { getCart, postCart, deleteCart };
+const updateQuantity = debounce(async (item: SelectedItem) => {
+    try {
+        await fetch("/api/cart", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(item),
+        });
+    } catch (error) {
+        console.error("수량 업데이트 실패:", error);
+    }
+}, 500);
+
+export { getCart, postCart, deleteCart, updateQuantity };

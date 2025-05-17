@@ -68,17 +68,17 @@ const Navbar = () => {
                     >
                         {/* 오른쪽 메뉴 : Mobile */}
                         <ul className="flex space-x-2 sm:hidden">
-                            <Link href={"/profile"}>
-                                <AiOutlineUser
-                                    className={`${textColor} text-[1.5em] ${session ? "me-4" : "me-2"}`}
-                                />
-                            </Link>
-
                             <button onClick={() => setCartView(true)}>
                                 <HiOutlineShoppingBag
                                     className={`${textColor} me-4 text-[1.5em] ${session ? "block" : "hidden"}`}
                                 />
                             </button>
+
+                            <Link href={"/profile"}>
+                                <AiOutlineUser
+                                    className={`${textColor} text-[1.5em] ${session ? "me-4" : "me-2"}`}
+                                />
+                            </Link>
                         </ul>
 
                         {/* 오른쪽 메뉴 : PC */}

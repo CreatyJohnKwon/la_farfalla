@@ -8,7 +8,7 @@ const ProfileNavbar = () => {
 
     return (
         <nav className="col-span-2 hidden h-full w-full transition-all duration-300 ease-in-out sm:static sm:top-20 sm:block sm:h-full">
-            <div className="font-amstel w-full text-sm transition-all duration-300 ease-in-out sm:ps-16 sm:pt-40 sm:text-xl">
+            <div className="font-amstel w-full text-sm transition-all duration-300 ease-in-out sm:ps-10 sm:pt-40 sm:text-xl">
                 {profileNavData.map((navList, index) => (
                     <div key={`profile_nav_${index}`} className="p-5">
                         <button

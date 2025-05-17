@@ -99,7 +99,6 @@ const Cart = () => {
                         </span>
                     </div>
 
-                    {/* Cart는 absolute로 가운데 정렬 */}
                     <p className="font-amstel absolute left-1/2 -translate-x-1/2 text-[1.5em] text-gray-600 sm:text-[2em]">
                         Cart
                     </p>
@@ -121,18 +120,17 @@ const Cart = () => {
                         {`Total' KRW ${totalPrice.toLocaleString()}`}
                     </span>
                     <div className="font-amstel flex flex-col items-center justify-center space-y-3 text-[1em] sm:flex-row sm:space-x-4 sm:space-y-0 sm:text-[1.2em]">
-                        {/* 요소에 따라 버튼 diabled 값 변동 */}
                         <button
-                            className="w-full max-w-xs bg-black px-6 py-3 text-white hover:bg-black/70"
+                            className="w-full max-w-[80vw] bg-black px-6 py-3 text-white hover:bg-black/70 sm:max-w-xs"
+                            onClick={() => {
+                                if (confirm("구매 하시겠습니까?")) {
+                                    // 구매 로직
+                                    alert("구매 기능이 아직 없어요...");
+                                }
+                            }}
                             disabled={true}
                         >
                             buy now
-                        </button>
-                        <button
-                            onClick={() => setCartView(false)}
-                            className="w-full max-w-xs border border-gray-300 bg-white px-6 py-3 text-gray-800 hover:bg-gray-100"
-                        >
-                            cancel
                         </button>
                     </div>
                 </div>

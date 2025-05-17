@@ -94,7 +94,7 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
             {selectedItems.map((item) => (
                 <QuantityModal
                     id={item.cartItemId}
-                    custom="w-3/4 text-[0.8em] md:text-[1em]"
+                    custom="w-3/4 text-[0.8em] md:text-[1em] font-amstel flex items-center justify-end gap-4 text-black c_md:gap-6"
                     key={item.cartItemId}
                     item={item}
                     onDelete={(id) => {
