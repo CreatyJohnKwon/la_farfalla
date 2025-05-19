@@ -4,8 +4,9 @@ const navData: navDataProps = [{ text: "home" }, { text: "" }];
 
 const profileNavData: profNavDataProps = [
     { text: "Order", link: "o" },
-    // { text: "1:1 문의", link: "q" },
     { text: "Profile", link: "e" },
+    { text: "Mileage", link: "m" },
+    { text: "Coupon", link: "c" },
 ];
 
 const menuData = [
@@ -27,4 +28,11 @@ const menuData = [
     },
 ];
 
-export { navData, menuData, profileNavData };
+const folderData = [
+    { id: "o", title: "Order" },
+    { id: "e", title: "Edit" },
+    { id: "m", title: "Mileage" },
+    { id: "c", title: "Coupon" },
+];
+
+export { navData, menuData, profileNavData, folderData };

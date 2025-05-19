@@ -1,8 +1,7 @@
-import { useAtom } from "jotai";
-import { pagesAtom } from "@/src/shared/lib/atom";
+import { useState } from "react";
 
 const usePage = () => {
-    const [pages, setPages] = useAtom(pagesAtom);
+    const [pages, setPages] = useState("");
 
     const instagramHandler = () =>
         window.open(

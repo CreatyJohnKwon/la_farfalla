@@ -4,7 +4,7 @@ const IntroduceClient = () => {
     return (
         <div className="flex h-screen w-full flex-col overflow-hidden">
             <main className="relative flex h-full w-full flex-col items-center justify-center p-5 text-center">
-                <div className="-mt-16 space-y-3 font-pretendard text-[0.5em] tracking-tightest transition-all duration-300 ease-in-out sm:text-[1.25em]">
+                <div className="font-pretendard-thin -mt-16 space-y-3 text-[0.5em] tracking-tightest transition-all duration-300 ease-in-out sm:text-[1.25em]">
                     <p>사이의 여유, 선택의 아름다움</p>
                     <br />
                     <p>

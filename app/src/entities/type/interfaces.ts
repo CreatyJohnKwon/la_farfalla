@@ -63,7 +63,7 @@ type ProductsProps = {
 
 type profNavDataProps = {
     text: string;
-    link: "e" | "o" | "q";
+    link: "e" | "o" | "m" | "c";
 }[];
 
 type menuDataProps = {

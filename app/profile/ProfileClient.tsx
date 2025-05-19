@@ -1,11 +1,11 @@
 "use client";
 
 import ProfileNavbar from "@/src/widgets/navbar/ProfileNav";
-import EditProfile from "./EditProfile";
+import EditProfile from "../src/components/profile/EditProfile";
 import usePage from "@/src/shared/hooks/usePage";
-import ProfileInfo from "./ProfileInfo";
-import OrderClient from "./OrderClient";
-import { useEffect, useState, useRef } from "react";
+import ProfileInfo from "../src/components/profile/ProfileInfo";
+import OrderClient from "../src/components/profile/OrderClient";
+import { useEffect, useState } from "react";
 
 const ProfileClient = () => {
     const { pages } = usePage();
@@ -23,7 +23,7 @@ const ProfileClient = () => {
                 setChild(<EditProfile />);
                 break;
             default:
-                setChild(<div className="flex">500 : 서버 점검중입니다</div>);
+                setChild(<div className="flex">500 : 기능 개발중입니다</div>);
                 break;
         }
     }, [pages]);

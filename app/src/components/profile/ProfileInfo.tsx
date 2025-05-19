@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Chillguy from "../../public/images/chill.png";
+import Chillguy from "../../../../public/images/chill.png";
 import { useSession } from "next-auth/react";
 import useUsers from "@/src/shared/hooks/useUsers";
 import CustomButton from "@/src/widgets/button/CustomButton";
