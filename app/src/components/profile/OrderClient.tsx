@@ -24,11 +24,6 @@ const OrderClient = () => {
 
     return (
         <div className="flex h-full w-full flex-col font-pretendard">
-            {/* Header */}
-            <div className="font-amstel-thin w-full">
-                <span className="hidden h-auto w-full border-l border-gray-400 c_md:block" />
-            </div>
-
             <ul className="mt-20 flex w-full items-center justify-center">
                 {orderElement()}
             </ul>

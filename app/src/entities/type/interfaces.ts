@@ -57,13 +57,12 @@ type HomeClientProps = {
     products: Products[];
 };
 
-type ProductsProps = {
+type IDProps = {
     params: Promise<{ id: string }>;
 };
 
 type profNavDataProps = {
-    text: string;
-    link: "e" | "o" | "m" | "c";
+    id: string;
 }[];
 
 type menuDataProps = {
@@ -96,6 +95,17 @@ type SelectedItem = {
     originalPrice: number;
 };
 
+interface UserProfileData {
+    provider: string;
+    email: string;
+    name: string;
+    image?: string;
+    address?: string;
+    postcode?: string;
+    reward: number;
+    phoneNumber?: string;
+}
+
 export type {
     profNavDataProps,
     CustomButtonProps,
@@ -103,11 +113,13 @@ export type {
     HomeClientProps,
     SizeDropProps,
     menuDataProps,
-    ProductsProps,
+    IDProps,
     navDataProps,
     NavListProps,
     NavbarProps,
+
     RegistReqData,
+    UserProfileData,
     SelectedItem,
     Products,
     MenuItem,

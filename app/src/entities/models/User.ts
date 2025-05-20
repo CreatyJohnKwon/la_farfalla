@@ -49,7 +49,7 @@ const userSchema = new mongoose.Schema(
         reward: {
             type: Number,
             required: false,
-            default: 0,
+            default: 3000,
         },
     },
     {

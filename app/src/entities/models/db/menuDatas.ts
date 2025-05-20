@@ -3,10 +3,10 @@ import { profNavDataProps, navDataProps } from "@/src/entities/type/interfaces";
 const navData: navDataProps = [{ text: "home" }, { text: "" }];
 
 const profileNavData: profNavDataProps = [
-    { text: "Order", link: "o" },
-    { text: "Profile", link: "e" },
-    { text: "Mileage", link: "m" },
-    { text: "Coupon", link: "c" },
+    { id: "Order" },
+    { id: "Edit" },
+    { id: "Mileage" },
+    { id: "Coupon" },
 ];
 
 const menuData = [
@@ -28,11 +28,4 @@ const menuData = [
     },
 ];
 
-const folderData = [
-    { id: "o", title: "Order" },
-    { id: "e", title: "Edit" },
-    { id: "m", title: "Mileage" },
-    { id: "c", title: "Coupon" },
-];
-
-export { navData, menuData, profileNavData, folderData };
+export { navData, menuData, profileNavData };

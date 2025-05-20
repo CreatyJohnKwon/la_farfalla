@@ -2,7 +2,7 @@ import { getAuthSession } from "@/src/shared/lib/session";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/src/entities/models/db/mongoose";
 import User from "@/src/entities/models/User";
-import { UserProfile } from "@/src/entities/type/api/get";
+import { UserProfileData } from "@/src/entities/type/interfaces";
 import bcrypt from "bcryptjs";
 
 // GET: 유저 정보 조회
@@ -15,17 +15,21 @@ export async function GET() {
     await connectDB();
     const user = await User.findOne({
         email: session.user.email,
-    }).lean<UserProfile>();
+    }).lean<UserProfileData>();
 
     if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const result: UserProfile = {
-        name: user.name || "",
-        email: user.email || "",
+    const result: UserProfileData = {
+        name: user.name,
+        email: user.email,
         image: user.image || "",
-        address: user.address || undefined,
+        phoneNumber: user.phoneNumber || "000-0000-0000",
+        address: user.address || "",
+        postcode: user.postcode || "000-000",
+        provider: user.provider,
+        reward: user.reward || 0,
     };
 
     return NextResponse.json(result);

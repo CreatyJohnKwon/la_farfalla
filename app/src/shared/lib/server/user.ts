@@ -73,7 +73,7 @@ const updateUser = async (form: {
     return res.json();
 };
 
-export const getUser = async (email: string) => {
+const getUser = async (email: string) => {
     try {
         await connectDB();
         return await User.findOne({ email }).lean();
@@ -88,4 +88,4 @@ const getFormValue = (formData: FormData, key: string): string => {
     return typeof value === "string" ? value : "";
 };
 
-export { registUser, fetchUser, updateUser };
+export { registUser, fetchUser, updateUser, getUser };

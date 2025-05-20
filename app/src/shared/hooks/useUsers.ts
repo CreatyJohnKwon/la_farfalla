@@ -21,7 +21,7 @@ const useUsers = () => {
 
     const logoutHandler = () => {
         const result = confirm("로그아웃 하시겠습니까?");
-        if (result) signOut({ callbackUrl: "/" });
+        if (result) signOut({ callbackUrl: "/home" });
     };
 
     const menusData = session
