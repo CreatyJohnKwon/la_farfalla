@@ -24,7 +24,7 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.KAKAO_CLIENT_SECRET as string,
             authorization: {
                 params: {
-                    // scope: "profile_nickname profile_image account_email phone_number",
+                    // scope: "profile_nickname profile_image account_email phone_number", // 승인되면 전화번호 추가
                     scope: "profile_nickname profile_image account_email",
                 },
             },
