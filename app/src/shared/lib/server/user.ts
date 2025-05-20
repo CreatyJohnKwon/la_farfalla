@@ -38,6 +38,9 @@ const registUser = async (formData: RegistReqData) => {
             image,
             phoneNumber,
             address,
+            reward: 0,
+            mileage: 3000,
+            coupon: 0,
         });
 
         return { success: true, message: "회원가입이 완료되었습니다" };
