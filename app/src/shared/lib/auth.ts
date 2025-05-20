@@ -13,10 +13,21 @@ export const authOptions: NextAuthOptions = {
         NaverProvider({
             clientId: process.env.NAVER_CLIENT_ID as string,
             clientSecret: process.env.NAVER_CLIENT_SECRET as string,
+            authorization: {
+                params: {
+                    scope: "name email nickname profile_image mobile",
+                },
+            },
         }),
         KakaoProvider({
             clientId: process.env.KAKAO_CLIENT_ID as string,
             clientSecret: process.env.KAKAO_CLIENT_SECRET as string,
+            authorization: {
+                params: {
+                    // scope: "profile_nickname profile_image account_email phone_number",
+                    scope: "profile_nickname profile_image account_email",
+                },
+            },
         }),
         CredentialsProvider({
             name: "credentials",
@@ -49,7 +60,7 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
-        async signIn({ user, account, email }) {
+        async signIn({ user, account, profile }) {
             if (account?.provider === "credentials") return true;
 
             await connectDB();
@@ -66,13 +77,26 @@ export const authOptions: NextAuthOptions = {
             }
 
             if (!existingUser) {
+                let phoneNumber = "";
+                let image = user.image || "";
+
+                if (
+                    account?.provider === "naver" &&
+                    profile &&
+                    "response" in profile
+                ) {
+                    const response = (profile as any).response;
+                    phoneNumber = response.mobile || "";
+                    image = response.profile_image || image;
+                }
+
                 const result = await registUser({
-                    name: user.name || ("Unknown" as string),
-                    email: user.email as string,
-                    password: "" as string,
-                    phoneNumber: "" as string,
-                    address: "" as string,
-                    image: user.image || ("" as string),
+                    name: (user.name as string) || "",
+                    email: (user.email as string) || "",
+                    password: "",
+                    phoneNumber,
+                    address: "",
+                    image,
                     provider: account!.provider as string,
                 });
 

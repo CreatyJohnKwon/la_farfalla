@@ -54,7 +54,12 @@ const userSchema = new mongoose.Schema(
         mileage: {
             type: Number,
             required: false,
-            default: 3000,
+            default: 0,
+        },
+        coupon: {
+            type: Number,
+            required: false,
+            default: 0,
         },
     },
     {

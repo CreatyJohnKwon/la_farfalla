@@ -34,6 +34,10 @@ export async function POST(req: Request) {
             image,
             password: hashedPassword,
             provider: provider || "local",
+            reward: 0,
+            mileage: 3000,
+            coupon: 0,
+            phoneNumber: "",
         });
 
         await newUser.save();

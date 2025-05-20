@@ -151,7 +151,7 @@ const RegisterClient = () => {
                 <div className="font-amstel flex w-full justify-center gap-4">
                     <CustomButton
                         btnTitle="회원가입"
-                        btnStyle={`${isDisabled ? "bg-[#F9F5EB] text-gray-400" : "bg-[#F9F5EB] hover:bg-[#EADDC8] text-black"} transition-colors w-full px-6 py-3`}
+                        btnStyle={`${isDisabled ? "bg-[#F9F5EB] text-gray-400" : "bg-[#F9F5EB] hover:bg-[#EADDC8] text-black"} transition-colors w-full px-6 py-3 font-pretendard`}
                         btnDisabled={isDisabled}
                         btnType="submit"
                     />
