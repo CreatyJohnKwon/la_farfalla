@@ -1,10 +1,14 @@
 "use client";
 
-import ProfileNavbar from "@/src/widgets/navbar/ProfileNav";
-import EditProfile from "@/src/components/profile/EditProfile";
-import ProfileInfo from "@/src/components/profile/ProfileInfo";
-import OrderProfile from "@/src/components/profile/OrderProfile";
 import { useEffect, useState } from "react";
+import ProfileNavbar from "@/src/widgets/navbar/ProfileNav";
+import {
+    EditProfile,
+    ProfileInfo,
+    OrderList,
+    MileageList,
+    CouponList,
+} from "@/src/components/profile";
 
 const ProfileClient = ({ id }: { id: string }) => {
     const [title, setTitle] = useState<string | "">("");
@@ -14,7 +18,7 @@ const ProfileClient = ({ id }: { id: string }) => {
         switch (id) {
             case "order":
                 setTitle("Order List");
-                setChild(<OrderProfile />);
+                setChild(<OrderList />);
                 break;
             case "edit":
                 setTitle("Edit Profile");
@@ -22,11 +26,11 @@ const ProfileClient = ({ id }: { id: string }) => {
                 break;
             case "mileage":
                 setTitle("Mileage");
-                setChild(<div className="flex">마일리지 페이지</div>);
+                setChild(<MileageList />);
                 break;
             case "coupon":
                 setTitle("Coupon");
-                setChild(<div className="flex">쿠폰 페이지</div>);
+                setChild(<CouponList />);
                 break;
             default:
                 setChild(<div className="flex">500 : 기능 개발중입니다</div>);

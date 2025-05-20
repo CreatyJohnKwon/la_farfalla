@@ -30,6 +30,8 @@ export async function GET() {
         postcode: user.postcode || "000-000",
         provider: user.provider,
         reward: user.reward || 0,
+        mileage: user.mileage || 0,
+        coupon: user.coupon || 0,
     };
 
     return NextResponse.json(result);

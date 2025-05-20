@@ -102,8 +102,10 @@ interface UserProfileData {
     image?: string;
     address?: string;
     postcode?: string;
-    reward: number;
     phoneNumber?: string;
+    reward: number;
+    mileage: number;
+    coupon: number;
 }
 
 export type {
@@ -117,7 +119,6 @@ export type {
     navDataProps,
     NavListProps,
     NavbarProps,
-
     RegistReqData,
     UserProfileData,
     SelectedItem,

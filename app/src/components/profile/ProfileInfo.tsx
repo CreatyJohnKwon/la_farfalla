@@ -48,7 +48,7 @@ const ProfileInfo = () => {
                                 </span>
                                 <span className="font-pretendard text-base c_md:text-xl">
                                     누적 구매금액:
-                                    <span className="font-amstel">{` ${user?.reward} KRW`}</span>
+                                    <span className="font-amstel">{` ${user?.reward.toLocaleString()} KRW`}</span>
                                 </span>
                                 <span className="font-amstel text-sm text-gray-600 c_md:text-lg">
                                     {user?.email || "이메일 정보 없음"}
@@ -73,13 +73,25 @@ const ProfileInfo = () => {
             <div className="font-amstel col-span-1 hidden h-full flex-col items-center justify-center text-[1.5em] sm:flex c_md:text-[2em]">
                 {/* 섹션 1 : 마일리지 */}
                 <div className="flex h-full w-full items-center justify-center">
-                    <span>{`Mileage : 0`}</span>
+                    {isLoading ? (
+                        <div className="flex animate-pulse flex-row items-center gap-4">
+                            Mileage : <div className="h-6 w-16 bg-slate-200" />
+                        </div>
+                    ) : (
+                        <span>{`Mileage : ${user?.mileage.toLocaleString()}`}</span>
+                    )}
                 </div>
 
                 {/* 섹션 2 : 쿠폰 */}
                 <span className="h-auto w-[50vw] border-b border-gray-200 sm:w-3/4" />
                 <div className="flex h-full w-full items-center justify-center">
-                    <span>{`Coupon : 0`}</span>
+                    {isLoading ? (
+                        <div className="flex animate-pulse flex-row items-center gap-4">
+                            Coupon : <div className="h-6 w-16 bg-slate-200" />
+                        </div>
+                    ) : (
+                        <span>{`Coupon : ${user?.coupon}`}</span>
+                    )}
                 </div>
             </div>
         </div>

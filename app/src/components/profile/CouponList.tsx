@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const OrderProfile = () => {
+const CouponList = () => {
     const [orderDatas, setOrderDatas] = useState<string[] | []>([]);
 
     const orderElement = () => {
@@ -16,7 +16,7 @@ const OrderProfile = () => {
                     key={`order_item_none`}
                     className="font-pretendard-thin w-full text-center text-[0.5em] text-black/60"
                 >
-                    주문 내역이 없습니다
+                    발급된 쿠폰이 없습니다
                 </li>
             );
         }
@@ -31,4 +31,4 @@ const OrderProfile = () => {
     );
 };
 
-export default OrderProfile;
+export default CouponList;
