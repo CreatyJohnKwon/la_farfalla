@@ -78,11 +78,11 @@ const Sidebar = () => {
                     </button>
                 </ul>
 
-                <ul className="font-amstel -mt-20 flex flex-col space-y-10 text-center text-[2em] text-black">
-                    <li>
+                <ul className="font-amstel flex flex-col items-center justify-center gap-10 text-center text-[2em] text-black">
+                    <li className="relative">
                         <ShopDrop />
                     </li>
-                    <li>
+                    <li className="relative">
                         <AboutDrop />
                     </li>
 

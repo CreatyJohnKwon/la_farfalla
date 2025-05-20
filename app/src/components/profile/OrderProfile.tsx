@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const OrderClient = () => {
+const OrderProfile = () => {
     const [orderDatas, setOrderDatas] = useState<string[] | []>([]);
 
     const orderElement = () => {
@@ -14,7 +14,7 @@ const OrderClient = () => {
             return (
                 <li
                     key={`order_item_none`}
-                    className="w-full text-center font-pretendard text-[0.5em] font-[600] text-black/60"
+                    className="font-pretendard-thin w-full text-center text-[0.5em] text-black/60"
                 >
                     주문 내역이 없습니다
                 </li>
@@ -23,12 +23,12 @@ const OrderClient = () => {
     };
 
     return (
-        <div className="flex h-full w-full flex-col font-pretendard">
-            <ul className="mt-20 flex w-full items-center justify-center">
+        <div className="flex h-full w-full flex-col pb-48 font-pretendard sm:pb-0">
+            <ul className="mt-20 flex h-full w-full items-center justify-center">
                 {orderElement()}
             </ul>
         </div>
     );
 };
 
-export default OrderClient;
+export default OrderProfile;

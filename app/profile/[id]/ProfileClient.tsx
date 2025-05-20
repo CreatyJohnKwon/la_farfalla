@@ -3,7 +3,7 @@
 import ProfileNavbar from "@/src/widgets/navbar/ProfileNav";
 import EditProfile from "@/src/components/profile/EditProfile";
 import ProfileInfo from "@/src/components/profile/ProfileInfo";
-import OrderClient from "@/src/components/profile/OrderClient";
+import OrderProfile from "@/src/components/profile/OrderProfile";
 import { useEffect, useState } from "react";
 
 const ProfileClient = ({ id }: { id: string }) => {
@@ -14,7 +14,7 @@ const ProfileClient = ({ id }: { id: string }) => {
         switch (id) {
             case "order":
                 setTitle("Order List");
-                setChild(<OrderClient />);
+                setChild(<OrderProfile />);
                 break;
             case "edit":
                 setTitle("Edit Profile");
@@ -35,16 +35,16 @@ const ProfileClient = ({ id }: { id: string }) => {
     }, [id]);
 
     return (
-        <div className="h-screen w-screen">
+        <div className="h-screen w-full">
             <div className="grid h-full w-full items-center justify-center sm:grid-cols-10">
                 <ProfileNavbar id={id} />
 
                 <div className="col-span-8 flex h-full w-full flex-col items-center justify-center">
                     <ProfileInfo />
 
-                    <div className="font-amstel flex h-full w-full flex-col justify-start gap-5 text-5xl">
-                        <span className="w-full">{title}</span>
-                        <span className="hidden w-[90%] border-b border-gray-200 c_md:block" />
+                    <div className="mt-24 flex h-full w-full flex-col items-center justify-center gap-5 text-5xl sm:m-0 sm:items-stretch sm:justify-start">
+                        <span className="font-amstel-thin">{title}</span>
+                        <span className="w-[75vw] border-b border-gray-200" />
                         <div>{child}</div>
                     </div>
                 </div>

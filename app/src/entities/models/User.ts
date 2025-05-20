@@ -49,6 +49,11 @@ const userSchema = new mongoose.Schema(
         reward: {
             type: Number,
             required: false,
+            default: 0,
+        },
+        mileage: {
+            type: Number,
+            required: false,
             default: 3000,
         },
     },
