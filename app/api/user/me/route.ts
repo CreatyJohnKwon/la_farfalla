@@ -4,6 +4,8 @@ import { connectDB } from "@/src/entities/models/db/mongoose";
 import User from "@/src/entities/models/User";
 import { UserProfileData } from "@/src/entities/type/interfaces";
 import bcrypt from "bcryptjs";
+import { Coupon } from "@/src/entities/models/Coupon";
+import { Mileage } from "@/src/entities/models/Mileage";
 
 // GET: 유저 정보 조회
 export async function GET() {
@@ -21,7 +23,28 @@ export async function GET() {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    const now = new Date();
+
+    // ✅ 사용하지 않았고, 아직 유효한 쿠폰들
+    const availableCoupons = await Coupon.find({
+        userId: user._id,
+        isUsed: false,
+        expiredAt: { $gt: now },
+    }).lean();
+
+    // ✅ 사용하지 않았고, 아직 유효한 마일리지
+    const mileageHistory = await Mileage.find({
+        userId: user._id,
+        expiredAt: { $gt: now },
+    }).lean();
+
+    // 마일리지 총합 계산 (적립 - 사용)
+    const totalMileage = mileageHistory.reduce((acc, m) => {
+        return m.type === "earn" ? acc + m.amount : acc - m.amount;
+    }, 0);
+
     const result: UserProfileData = {
+        _id: user._id,
         name: user.name,
         email: user.email,
         image: user.image || "",
@@ -31,8 +54,8 @@ export async function GET() {
         postcode: user.postcode || "000-000",
         provider: user.provider,
         reward: user.reward || 0,
-        mileage: user.mileage || 0,
-        coupon: user.coupon || 0,
+        mileage: totalMileage || 0,
+        coupon: availableCoupons.length || 0,
     };
 
     return NextResponse.json(result);

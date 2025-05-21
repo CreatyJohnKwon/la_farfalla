@@ -46,8 +46,10 @@ const ProfileClient = ({ id }: { id: string }) => {
                 <div className="col-span-8 flex h-full w-[90vw] flex-col items-start justify-center sm:w-[90%]">
                     <ProfileInfo />
 
-                    <div className="mt-24 flex h-full w-full flex-col items-center justify-center gap-5 text-5xl sm:m-0 sm:items-stretch sm:justify-start">
-                        <span className="font-amstel-thin">{title}</span>
+                    <div className="mt-16 flex h-full w-full flex-col items-center justify-start gap-5 text-5xl sm:m-0 sm:items-stretch">
+                        <span className="font-amstel-thin place-self-start text-[0.8em]">
+                            {title}
+                        </span>
                         <span className="w-full border-b border-gray-200" />
                         <div>{child}</div>
                     </div>

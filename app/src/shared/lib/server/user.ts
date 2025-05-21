@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { connectDB } from "@/src/entities/models/db/mongoose";
 import User from "@/src/entities/models/User";
 import { RegistReqData } from "@/src/entities/type/interfaces";
+import { issueWelcomeBenefits } from "@/src/features/Benefits";
 
 const registUser = async (formData: RegistReqData) => {
     try {
@@ -27,15 +28,14 @@ const registUser = async (formData: RegistReqData) => {
             image = formDataStatus ? "" : formData.image,
             provider = formDataStatus ? "local" : formData.provider;
 
-        console.log(phoneNumber, address, detailAddress);
-
         await connectDB();
 
         if (await getUser(email))
             return { success: false, error: "이미 등록된 이메일입니다" };
 
         const password = await bcrypt.hash(pw, 10);
-        await User.create({
+
+        const newUser = await User.create({
             name,
             email,
             password,
@@ -45,9 +45,9 @@ const registUser = async (formData: RegistReqData) => {
             address,
             detailAddress,
             reward: 0,
-            mileage: 3000,
-            coupon: 0,
         });
+
+        issueWelcomeBenefits(newUser._id);
 
         return { success: true, message: "회원가입이 완료되었습니다" };
     } catch (error) {
@@ -96,6 +96,20 @@ const getUser = async (email: string) => {
 const getFormValue = (formData: FormData, key: string): string => {
     const value = formData.get(key);
     return typeof value === "string" ? value : "";
+};
+
+// lib/client/getMileage.ts
+export const getMileage = async (userId: string) => {
+    const res = await fetch(`/api/user/mileage?userId=${userId}`);
+    if (!res.ok) throw new Error("마일리지 불러오기 실패");
+    return await res.json();
+};
+
+// lib/client/getCoupon.ts
+export const getCoupon = async (userId: string) => {
+    const res = await fetch(`/api/user/coupon?userId=${userId}`);
+    if (!res.ok) throw new Error("쿠폰 불러오기 실패");
+    return await res.json();
 };
 
 export { registUser, fetchUser, updateUser, getUser };

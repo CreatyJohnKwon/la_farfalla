@@ -7,7 +7,7 @@ const ProfileInfo = () => {
     const { logoutHandler } = useUsers();
 
     return (
-        <div className="mt-24 h-3/4 w-full flex-col c_md:grid c_md:grid-cols-4">
+        <div className="h-3/4 w-full flex-col sm:mt-20 c_md:grid c_md:grid-cols-4">
             <div className="flex h-full w-full items-center justify-center c_md:col-span-2">
                 <div className="flex h-full w-full flex-col items-center justify-center gap-8 sm:items-start">
                     {isLoading ? (

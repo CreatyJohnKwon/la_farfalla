@@ -96,6 +96,7 @@ type SelectedItem = {
 };
 
 interface UserProfileData {
+    _id: string;
     provider: string;
     email: string;
     name: string;
@@ -105,8 +106,35 @@ interface UserProfileData {
     postcode?: string;
     phoneNumber?: string;
     reward: number;
-    mileage: number;
-    coupon: number;
+    mileage?: number;
+    coupon?: number;
+}
+
+interface Mileage {
+    _id: string;
+    userId: string;
+    type: "earn" | "spend";
+    amount: number;
+    description?: string;
+    relatedOrderId?: string;
+    expiredAt?: string;
+    createdAt: string;
+}
+
+interface Coupon {
+    _id: string;
+    userId: string;
+    name: string;
+    code: string;
+    discountType: "fixed" | "percentage";
+    discountValue: number;
+    isUsed: boolean;
+    usedAt?: string;
+    issuedAt: string;
+    expiredAt: string;
+    description?: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export type {
@@ -126,4 +154,6 @@ export type {
     Products,
     MenuItem,
     Posts,
+    Mileage,
+    Coupon,
 };
