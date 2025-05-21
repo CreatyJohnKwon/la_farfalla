@@ -15,11 +15,8 @@ const ProfileInfo = () => {
                             {/* 프로필 세부정보 스켈레톤 */}
                             <div className="flex flex-col items-start gap-2 text-center">
                                 <div className="h-12 w-40 bg-slate-200" />
-                                {/* 이름 */}
                                 <div className="h-4 w-48 bg-slate-200" />
-                                {/* 누적금액 */}
                                 <div className="mb-2 mt-2 h-4 w-48 bg-slate-200" />
-                                {/* 이메일 */}
                             </div>
                         </div>
                     ) : (
