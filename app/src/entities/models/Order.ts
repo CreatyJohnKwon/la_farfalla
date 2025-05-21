@@ -8,6 +8,7 @@ const orderSchema = new mongoose.Schema(
         color: { type: String, required: true }, // 색상
         quantity: { type: Number, required: true }, // 수량
         address: { type: String, required: true }, // 배송지 주소
+        detailAddress: { type: String, required: true }, // 배송지 상세 주소
         phoneNumber: { type: String, required: true }, // 배송지 전화번호
         postcode: { type: String, required: true }, // 우편번호
     },

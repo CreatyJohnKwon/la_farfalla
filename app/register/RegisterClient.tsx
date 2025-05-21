@@ -78,10 +78,19 @@ const RegisterClient = () => {
             password.length >= 8 &&
             password === confirmPassword &&
             phoneNumber.trim().length >= 11 &&
-            address.trim() !== "";
+            address.trim() !== "" &&
+            detailAddress.trim() !== "";
 
         setIsDisabled(!isValid);
-    }, [name, email, password, confirmPassword, phoneNumber, address]);
+    }, [
+        name,
+        email,
+        password,
+        confirmPassword,
+        phoneNumber,
+        address,
+        detailAddress,
+    ]);
 
     return (
         <div className="flex h-screen flex-col items-center justify-center bg-white px-4 text-center">
@@ -148,8 +157,9 @@ const RegisterClient = () => {
                     )}
                     {/* 휴대폰 번호 */}
                     <input
-                        type="text"
+                        type="tel"
                         value={phoneNumber}
+                        name="phoneNumber"
                         onChange={(e) => {
                             const raw = e.target.value
                                 .replace(/\D/g, "")
@@ -176,7 +186,7 @@ const RegisterClient = () => {
                             onClick={() =>
                                 openModal((value) => setAddress(value))
                             }
-                            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md bg-black px-4 py-2 text-sm text-white hover:bg-gray-800"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black px-5 py-4 text-sm text-white hover:bg-gray-800"
                         >
                             주소찾기
                         </button>

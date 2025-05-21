@@ -21,8 +21,13 @@ const registUser = async (formData: RegistReqData) => {
             address = formDataStatus
                 ? getFormValue(formData, "address")
                 : formData.address,
+            detailAddress = formDataStatus
+                ? getFormValue(formData, "detailAddress")
+                : formData.detailAddress,
             image = formDataStatus ? "" : formData.image,
             provider = formDataStatus ? "local" : formData.provider;
+
+        console.log(phoneNumber, address, detailAddress);
 
         await connectDB();
 
@@ -38,6 +43,7 @@ const registUser = async (formData: RegistReqData) => {
             image,
             phoneNumber,
             address,
+            detailAddress,
             reward: 0,
             mileage: 3000,
             coupon: 0,
@@ -64,10 +70,10 @@ const fetchUser = async () => {
 const updateUser = async (form: {
     name?: string;
     address?: string;
+    detailAddress?: string;
     password?: string;
     image?: string;
 }) => {
-    console.log(form.address);
     const res = await fetch("/api/user/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },

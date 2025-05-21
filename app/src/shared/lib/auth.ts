@@ -96,6 +96,7 @@ export const authOptions: NextAuthOptions = {
                     password: "",
                     phoneNumber,
                     address: "",
+                    detailAddress: "",
                     image,
                     provider: account!.provider as string,
                 });

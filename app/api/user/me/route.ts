@@ -27,6 +27,7 @@ export async function GET() {
         image: user.image || "",
         phoneNumber: user.phoneNumber || "000-0000-0000",
         address: user.address || "",
+        detailAddress: user.detailAddress || "",
         postcode: user.postcode || "000-000",
         provider: user.provider,
         reward: user.reward || 0,
@@ -44,7 +45,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { name, address, password, image } = body;
+    const { name, address, detailAddress, password, image } = body;
 
     await connectDB();
     const user = await User.findOne({ email: session.user.email });
@@ -55,6 +56,7 @@ export async function PATCH(req: Request) {
 
     if (name) user.name = name;
     if (address) user.address = address;
+    if (detailAddress) user.detailAddress = detailAddress;
     if (image) user.image = image;
     if (password) user.password = await bcrypt.hash(password, 10);
 

@@ -30,6 +30,11 @@ const userSchema = new mongoose.Schema(
             required: false,
             default: null, // 주소는 선택 사항
         },
+        detailAddress: {
+            type: String,
+            required: false,
+            default: null, // 상세 주소는 선택 사항
+        },
         image: {
             type: String,
             default: null, // 프로필 이미지 URL

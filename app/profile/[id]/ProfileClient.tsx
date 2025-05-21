@@ -43,12 +43,12 @@ const ProfileClient = ({ id }: { id: string }) => {
             <div className="grid h-full w-full items-center justify-center sm:grid-cols-10">
                 <ProfileNavbar id={id} />
 
-                <div className="col-span-8 flex h-full w-full flex-col items-center justify-center">
+                <div className="col-span-8 flex h-full w-[90vw] flex-col items-start justify-center sm:w-[90%]">
                     <ProfileInfo />
 
                     <div className="mt-24 flex h-full w-full flex-col items-center justify-center gap-5 text-5xl sm:m-0 sm:items-stretch sm:justify-start">
                         <span className="font-amstel-thin">{title}</span>
-                        <span className="w-[75vw] border-b border-gray-200" />
+                        <span className="w-full border-b border-gray-200" />
                         <div>{child}</div>
                     </div>
                 </div>

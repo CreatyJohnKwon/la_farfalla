@@ -101,6 +101,7 @@ interface UserProfileData {
     name: string;
     image?: string;
     address?: string;
+    detailAddress?: string;
     postcode?: string;
     phoneNumber?: string;
     reward: number;

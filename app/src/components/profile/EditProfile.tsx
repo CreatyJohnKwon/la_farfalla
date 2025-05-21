@@ -24,14 +24,16 @@ const EditProfile = () => {
     const [form, setForm] = useState({
         name: "",
         address: "",
+        detailAddress: "",
         password: "",
     });
 
     useEffect(() => {
         if (user) {
             setForm({
-                name: user.name,
-                address: user.address,
+                name: user.name ?? "",
+                address: user.address ?? "",
+                detailAddress: user.detailAddress ?? "",
                 password: "",
             });
         }
@@ -67,7 +69,7 @@ const EditProfile = () => {
     if (isLoading) return <p>Loading...</p>;
 
     return (
-        <div className="font-pretendard-thin mb-10 flex h-full w-[90vw] flex-col items-start justify-start gap-6 text-xl sm:w-11/12 sm:text-3xl">
+        <div className="font-pretendard-thin mb-10 flex h-full w-[90vw] flex-col items-start justify-start gap-6 text-xl sm:w-full sm:text-3xl">
             <span className="font-amstel-thin h-12 w-full border border-gray-200 bg-white px-4 py-2 text-gray-500 placeholder:text-gray-400 focus:outline-none">
                 {session?.user?.email}
             </span>
@@ -122,20 +124,19 @@ const EditProfile = () => {
                     onChange={handleChange}
                     placeholder={"주소"}
                     readOnly
-                    className="h-12 w-full border p-2 px-4 pt-2"
+                    className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none"
                 />
                 <button
                     type="button"
                     onClick={() =>
                         openModal((value) =>
-                            setForm({
-                                name: user.name,
-                                address: value,
-                                password: "",
-                            }),
+                            setForm((prev) => ({
+                                ...prev, // 기존 name, detailAddress, password는 손대지 않고
+                                address: value, // address만 업데이트
+                            })),
                         )
                     }
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md bg-black/70 px-4 py-2 text-base font-[600] text-white hover:bg-black"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/70 px-5 py-2 text-base font-[300] text-white hover:bg-black"
                 >
                     주소찾기
                 </button>
@@ -144,11 +145,10 @@ const EditProfile = () => {
             <input
                 type="text"
                 name="detailAddress"
-                // value={form.address}
+                value={form.detailAddress}
                 onChange={handleChange}
                 placeholder={"상세주소"}
-                readOnly
-                className="h-12 w-full border p-2 px-4 pt-2"
+                className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
             />
 
             <button
