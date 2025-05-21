@@ -1,9 +1,11 @@
 "use client";
 
+import AddressModal from "@/src/features/address/AddressModal";
 import {
     useUserQuery,
     useUpdateUserMutation,
 } from "@/src/shared/hooks/react-query/useUserQuery";
+import { useAddress } from "@/src/shared/hooks/useAddress";
 import useUsers from "@/src/shared/hooks/useUsers";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useEffect } from "react";
@@ -14,6 +16,7 @@ const EditProfile = () => {
     const updateUser = useUpdateUserMutation();
     // 클라이언트 측 비번 확인 검증용
     const [confirmPassword, setConfirmPassword] = useState<string>("");
+    const { isOpen, onComplete, openModal, closeModal } = useAddress();
 
     const router = useRouter();
 
@@ -27,8 +30,8 @@ const EditProfile = () => {
     useEffect(() => {
         if (user) {
             setForm({
-                name: user.name || "",
-                address: user.address || "",
+                name: user.name,
+                address: user.address,
                 password: "",
             });
         }
@@ -64,13 +67,13 @@ const EditProfile = () => {
     if (isLoading) return <p>Loading...</p>;
 
     return (
-        <div className="mb-10 flex h-full w-[90vw] flex-col items-start justify-start gap-6 text-xl sm:w-11/12 sm:text-3xl">
+        <div className="font-pretendard-thin mb-10 flex h-full w-[90vw] flex-col items-start justify-start gap-6 text-xl sm:w-11/12 sm:text-3xl">
             <span className="font-amstel-thin h-12 w-full border border-gray-200 bg-white px-4 py-2 text-gray-500 placeholder:text-gray-400 focus:outline-none">
                 {session?.user?.email}
             </span>
 
             {/* 비밀번호 */}
-            <div className="relative w-full font-pretendard">
+            <div className="relative w-full">
                 <input
                     type="password"
                     name="password"
@@ -91,7 +94,7 @@ const EditProfile = () => {
             </div>
 
             {/* 비밀번호 확인 */}
-            <div className="relative w-full font-pretendard">
+            <div className="relative w-full">
                 <input
                     type="password"
                     name="confirmPassword"
@@ -111,22 +114,41 @@ const EditProfile = () => {
                 )}
             </div>
 
-            <input
-                type="text"
-                name="postcode"
-                value={""}
-                onChange={handleChange}
-                placeholder="우편번호"
-                className="h-12 w-full border p-2 px-4 font-pretendard"
-            />
+            <div className="relative w-full">
+                <input
+                    type="text"
+                    name="address"
+                    value={form.address}
+                    onChange={handleChange}
+                    placeholder={"주소"}
+                    readOnly
+                    className="h-12 w-full border p-2 px-4 pt-2"
+                />
+                <button
+                    type="button"
+                    onClick={() =>
+                        openModal((value) =>
+                            setForm({
+                                name: user.name,
+                                address: value,
+                                password: "",
+                            }),
+                        )
+                    }
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md bg-black/70 px-4 py-2 text-base font-[600] text-white hover:bg-black"
+                >
+                    주소찾기
+                </button>
+            </div>
 
             <input
                 type="text"
-                name="address"
-                value={form.address}
+                name="detailAddress"
+                // value={form.address}
                 onChange={handleChange}
-                placeholder="주소"
-                className="h-12 w-full border p-2 px-4 pt-2 font-pretendard"
+                placeholder={"상세주소"}
+                readOnly
+                className="h-12 w-full border p-2 px-4 pt-2"
             />
 
             <button
@@ -135,6 +157,10 @@ const EditProfile = () => {
             >
                 Save
             </button>
+
+            {isOpen && (
+                <AddressModal onComplete={onComplete} onClose={closeModal} />
+            )}
         </div>
     );
 };

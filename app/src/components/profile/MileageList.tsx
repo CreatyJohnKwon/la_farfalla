@@ -3,11 +3,11 @@
 import { useState } from "react";
 
 const MileageList = () => {
-    const [orderDatas, setOrderDatas] = useState<string[] | []>([]);
+    const [mileageDatas, setMileageDatas] = useState<string[] | []>([]);
 
-    const orderElement = () => {
-        if (orderDatas.length > 0) {
-            orderDatas.map((item: any, index: number) => {
+    const MileageElement = () => {
+        if (mileageDatas.length > 0) {
+            mileageDatas.map((item: any, index: number) => {
                 return <li key={`order_item_${index}`}>{item}</li>;
             });
         } else {
@@ -25,7 +25,7 @@ const MileageList = () => {
     return (
         <div className="flex h-full w-full flex-col pb-48 font-pretendard sm:pb-0">
             <ul className="mt-20 flex h-full w-full items-center justify-center">
-                {orderElement()}
+                {MileageElement()}
             </ul>
         </div>
     );

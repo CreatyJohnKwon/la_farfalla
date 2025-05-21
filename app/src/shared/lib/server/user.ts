@@ -67,6 +67,7 @@ const updateUser = async (form: {
     password?: string;
     image?: string;
 }) => {
+    console.log(form.address);
     const res = await fetch("/api/user/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },

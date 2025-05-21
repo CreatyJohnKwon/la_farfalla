@@ -4,7 +4,9 @@ import { useEffect, useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CustomButton from "../src/widgets/button/CustomButton";
-import { registUserAction, formatPhoneNumber } from "./actions";
+import { registUserAction } from "./actions";
+import { useAddress } from "@/src/shared/hooks/useAddress";
+import AddressModal from "@/src/features/address/AddressModal";
 
 const RegisterClient = () => {
     const [name, setName] = useState<string>("");
@@ -13,6 +15,9 @@ const RegisterClient = () => {
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [phoneNumber, setPhoneNumber] = useState<string>("");
     const [address, setAddress] = useState<string>("");
+    const [detailAddress, setDetailAddress] = useState<string>("");
+
+    const { isOpen, openModal, closeModal, onComplete } = useAddress();
 
     const [isDisabled, setIsDisabled] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -31,6 +36,24 @@ const RegisterClient = () => {
     const isPasswordMatch = useMemo(() => {
         return password === confirmPassword && confirmPassword.length > 0;
     }, [password, confirmPassword]);
+
+    const formatPhoneNumber = (value: string): string => {
+        const numbers = value.replace(/\D/g, "").slice(0, 11);
+
+        // 02로 시작할 때
+        if (numbers.startsWith("02")) {
+            if (numbers.length >= 10) {
+                return numbers.replace(/(\d{2})(\d{4})(\d{4})/, "$1-$2-$3");
+            } else {
+                return numbers.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
+            }
+        }
+
+        // 그 외의 지역번호 (010, 031 등)
+        if (numbers.length < 4) return numbers;
+        if (numbers.length < 8) return numbers.replace(/(\d{3})(\d+)/, "$1-$2");
+        return numbers.replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
+    };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -62,11 +85,8 @@ const RegisterClient = () => {
 
     return (
         <div className="flex h-screen flex-col items-center justify-center bg-white px-4 text-center">
-            <span className="font-amstel mb-10 mt-10 text-5xl transition-all duration-700 ease-in-out sm:mb-16 sm:mt-0 sm:text-8xl">
-                Register
-            </span>
             <form
-                className="flex w-5/6 flex-col items-center justify-center gap-4 sm:w-3/6 sm:gap-6"
+                className="flex w-[90vw] flex-col items-center justify-center gap-4 sm:w-3/6 sm:gap-6"
                 onSubmit={handleSubmit}
             >
                 <div className="flex w-full flex-col gap-4 text-base md:text-lg">
@@ -129,20 +149,43 @@ const RegisterClient = () => {
                     {/* 휴대폰 번호 */}
                     <input
                         type="text"
-                        name="phoneNumber"
                         value={phoneNumber}
-                        onChange={(e) =>
-                            setPhoneNumber(formatPhoneNumber(e.target.value))
-                        }
+                        onChange={(e) => {
+                            const raw = e.target.value
+                                .replace(/\D/g, "")
+                                .slice(0, 11);
+                            const formatted = formatPhoneNumber(raw);
+                            setPhoneNumber(formatted);
+                        }}
+                        maxLength={phoneNumber.startsWith("02") ? 12 : 13}
                         placeholder="휴대폰 번호"
                         className="h-16 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                     />
+                    <div className="relative w-full">
+                        <input
+                            type="text"
+                            name="address"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            placeholder="주소"
+                            readOnly
+                            className="h-16 w-full border border-gray-200 bg-gray-50 px-4 pr-28 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                        />
+                        <button
+                            type="button"
+                            onClick={() =>
+                                openModal((value) => setAddress(value))
+                            }
+                            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md bg-black px-4 py-2 text-sm text-white hover:bg-gray-800"
+                        >
+                            주소찾기
+                        </button>
+                    </div>
                     <input
                         type="text"
-                        name="address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        placeholder="주소"
+                        name="detailAddress"
+                        onChange={(e) => setDetailAddress(e.target.value)}
+                        placeholder="상세주소"
                         className="h-16 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                     />
                 </div>
@@ -150,8 +193,8 @@ const RegisterClient = () => {
                 {/* 버튼 */}
                 <div className="font-amstel flex w-full justify-center gap-4">
                     <CustomButton
-                        btnTitle="회원가입"
-                        btnStyle={`${isDisabled ? "bg-[#F9F5EB] text-gray-400" : "bg-[#F9F5EB] hover:bg-[#EADDC8] text-black"} transition-colors w-full px-6 py-3 font-pretendard`}
+                        btnTitle="Regist"
+                        btnStyle={`${isDisabled ? "bg-[#F9F5EB]" : "bg-[#F9F5EB] hover:bg-[#EADDC8]"} transition-colors w-full px-6 py-3 text-black`}
                         btnDisabled={isDisabled}
                         btnType="submit"
                     />
@@ -161,11 +204,14 @@ const RegisterClient = () => {
                 <p className="m-2 w-full border-b" />
                 <Link
                     href={"/login"}
-                    className="flex w-full justify-center rounded-md bg-black/10 px-6 py-3 text-base text-black transition-colors duration-300 ease-in-out hover:bg-black/30 sm:text-lg md:text-xl"
+                    className="font-amstel flex w-full justify-center bg-black/10 px-6 py-3 text-base text-black transition-colors duration-300 ease-in-out hover:bg-black/30 sm:text-lg md:text-xl"
                 >
-                    로그인으로 돌아가기
+                    go to Login
                 </Link>
             </form>
+            {isOpen && (
+                <AddressModal onComplete={onComplete} onClose={closeModal} />
+            )}
         </div>
     );
 };
