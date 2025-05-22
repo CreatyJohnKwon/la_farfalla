@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 
 const ProfileNavbar = ({ id }: { id: string }) => {
     return (
-        <nav className="absolute col-span-2 mt-[10vh] h-full w-full transition-all duration-300 ease-in-out sm:static sm:top-20 sm:m-0 sm:h-full">
-            <div className="font-amstel fixed w-full pt-[2vh] text-[0.5em] transition-all duration-300 ease-in-out sm:ps-10 sm:pt-40 sm:text-[0.8em] md:text-[1.2em]">
+        <nav className="absolute col-span-2 mt-[12vh] h-full w-full transition-all duration-300 ease-in-out sm:static sm:top-20 sm:m-0 sm:h-full">
+            <div className="font-amstel fixed w-full pt-[2vh] text-[0.7em] transition-all duration-300 ease-in-out sm:ps-10 sm:pt-40 sm:text-[0.9em] md:text-[1.3em]">
                 {profileNavData.map((navList, index) => (
                     <div
                         key={`profile_nav_${index}`}

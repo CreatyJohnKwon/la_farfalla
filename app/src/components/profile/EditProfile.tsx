@@ -74,47 +74,55 @@ const EditProfile = () => {
                 {session?.user?.email}
             </span>
 
-            {/* 비밀번호 */}
-            <div className="relative w-full">
-                <input
-                    type="password"
-                    name="password"
-                    value={form.password}
-                    onChange={handleChange}
-                    placeholder="비밀번호 (8자 이상, 변경 시 입력)"
-                    className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                />
-                {form.password.length > 0 && (
-                    <p
-                        className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm sm:text-xl ${
-                            isPasswordSafe ? "text-green-500" : "text-red-500"
-                        }`}
-                    >
-                        {isPasswordSafe ? "안전함" : "위험함"}
-                    </p>
-                )}
-            </div>
+            {user.provider === "local" && (
+                <>
+                    {/* 비밀번호 */}
+                    <div className="relative w-full">
+                        <input
+                            type="password"
+                            name="password"
+                            value={form.password}
+                            onChange={handleChange}
+                            placeholder="비밀번호 (8자 이상, 변경 시 입력)"
+                            className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                        />
+                        {form.password.length > 0 && (
+                            <p
+                                className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm sm:text-xl ${
+                                    isPasswordSafe
+                                        ? "text-green-500"
+                                        : "text-red-500"
+                                }`}
+                            >
+                                {isPasswordSafe ? "안전함" : "위험함"}
+                            </p>
+                        )}
+                    </div>
 
-            {/* 비밀번호 확인 */}
-            <div className="relative w-full">
-                <input
-                    type="password"
-                    name="confirmPassword"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="비밀번호 확인"
-                    className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                />
-                {confirmPassword.length > 0 && (
-                    <p
-                        className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm sm:text-xl ${
-                            isPasswordMatch ? "text-green-500" : "text-red-500"
-                        }`}
-                    >
-                        {isPasswordMatch ? "일치함" : "불일치"}
-                    </p>
-                )}
-            </div>
+                    {/* 비밀번호 확인 */}
+                    <div className="relative w-full">
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="비밀번호 확인"
+                            className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                        />
+                        {confirmPassword.length > 0 && (
+                            <p
+                                className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm sm:text-xl ${
+                                    isPasswordMatch
+                                        ? "text-green-500"
+                                        : "text-red-500"
+                                }`}
+                            >
+                                {isPasswordMatch ? "일치함" : "불일치"}
+                            </p>
+                        )}
+                    </div>
+                </>
+            )}
 
             <div className="relative w-full">
                 <input

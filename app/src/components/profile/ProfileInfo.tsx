@@ -7,8 +7,8 @@ const ProfileInfo = () => {
     const { logoutHandler } = useUsers();
 
     return (
-        <div className="h-3/4 w-full flex-col sm:mt-20 c_md:grid c_md:grid-cols-4">
-            <div className="flex h-full w-full items-center justify-center c_md:col-span-2">
+        <div className="h-3/4 w-full flex-col sm:mt-20 md:grid md:grid-cols-4">
+            <div className="flex h-full w-full items-center justify-center md:col-span-2">
                 <div className="flex h-full w-full flex-col items-center justify-center gap-8 sm:items-start">
                     {isLoading ? (
                         <div className="flex animate-pulse flex-col gap-4">
@@ -23,14 +23,14 @@ const ProfileInfo = () => {
                         <>
                             {/* 프로필 세부정보 */}
                             <div className="flex flex-col items-center justify-center gap-2 text-center sm:items-start">
-                                <span className="font-pretendard text-2xl text-gray-800 c_md:font-pretendard c_md:text-3xl c_xl:text-4xl">
+                                <span className="font-pretendard text-2xl text-gray-800 md:font-pretendard md:text-[1.5em] c_xl:text-[1.8em]">
                                     {`${user?.name || "Guest"} 님`}
                                 </span>
-                                <span className="font-pretendard text-base c_md:text-xl">
+                                <span className="font-pretendard text-[0.8em] md:text-[1em]">
                                     누적 구매금액:
                                     <span className="font-amstel">{` ${user?.reward.toLocaleString()} KRW`}</span>
                                 </span>
-                                <span className="font-amstel text-sm text-gray-600 c_md:text-lg">
+                                <span className="font-amstel text-[0.8em] text-gray-600 md:text-[1em]">
                                     {user?.email || "이메일 정보 없음"}
                                 </span>
                             </div>
@@ -38,10 +38,10 @@ const ProfileInfo = () => {
                     )}
 
                     {/* 로그아웃 버튼 */}
-                    <div className="font-amstel mt-4 flex c_md:-mt-4">
+                    <div className="font-amstel mt-4 flex md:-mt-4">
                         <CustomButton
                             btnTitle="Logout"
-                            btnStyle="w-16 h-16 bg-black hover:bg-black/50 text-white transition-colors text-sm h-full sm:text-base z-10"
+                            btnStyle="w-16 h-16 bg-black hover:bg-black/50 text-white transition-colors text-[0.8em] md:text-[1em] h-full z-10"
                             btnDisabled={false}
                             btnType="submit"
                             btnFunc={logoutHandler}
@@ -50,7 +50,7 @@ const ProfileInfo = () => {
                 </div>
             </div>
 
-            <div className="font-amstel col-span-2 hidden h-full w-full flex-col items-center justify-center text-[1.5em] sm:flex c_md:text-[2em]">
+            <div className="font-amstel col-span-2 hidden h-full w-full flex-col items-center justify-center text-[1.5em] sm:flex md:text-[1.5em]">
                 {/* 섹션 1 : 마일리지 */}
                 <div className="flex h-full w-full items-center justify-end">
                     {isLoading ? (

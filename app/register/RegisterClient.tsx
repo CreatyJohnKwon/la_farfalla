@@ -7,6 +7,7 @@ import CustomButton from "../src/widgets/button/CustomButton";
 import { registUserAction } from "./actions";
 import { useAddress } from "@/src/shared/hooks/useAddress";
 import AddressModal from "@/src/features/address/AddressModal";
+import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
 
 const RegisterClient = () => {
     const [name, setName] = useState<string>("");
@@ -137,6 +138,9 @@ const RegisterClient = () => {
                         </p>
                     )}
                     {/* 비밀번호 확인 */}
+                    {/* {
+                        !isLoading && user.
+                    } */}
                     <input
                         type="password"
                         name="confirmPassword"
