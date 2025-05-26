@@ -1,11 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchUser, updateUser } from "@/src/shared/lib/server/user";
+import { fetchUser, updateUser, getCoupon } from "@/src/shared/lib/server/user";
 
-export const useUserQuery = () => {
+const useUserQuery = () => {
   return useQuery({ queryKey: ["user"], queryFn: fetchUser });
 };
 
-export const useUpdateUserMutation = () => {
+const useUpdateUserMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -15,3 +15,5 @@ export const useUpdateUserMutation = () => {
     },
   });
 };
+
+export { useUserQuery, useUpdateUserMutation };

@@ -1,36 +1,41 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getMileage } from "@/src/shared/lib/server/user";
 import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
 import { Mileage } from "@/src/entities/type/interfaces";
+import { useMileageQuery } from "@/src/shared/hooks/react-query/useBenefitQuery";
+import SkeletonList from "./SkeletonList";
 
 const MileageList = () => {
-    const [mileage, setMileage] = useState<Mileage[] | []>([]);
-    const { data: user, isLoading } = useUserQuery();
+    const { data: user, isLoading: isUserLoading } = useUserQuery();
+    const {
+        data: mileage,
+        isLoading: isCouponsLoading,
+        isError,
+    } = useMileageQuery(user?._id);
 
-    useEffect(() => {
-        if (!user?._id) return;
+    // 로딩 중엔 스켈레톤만
+    if (isUserLoading || isCouponsLoading) {
+        return (
+            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
+                <SkeletonList />
+            </ul>
+        );
+    }
 
-        getMileage(user?._id).then(setMileage).catch(console.error);
-    }, [user]);
+    // 에러
+    if (isError) {
+        return (
+            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
+                <li className="text-center text-red-500">쿠폰 로딩 실패</li>
+            </ul>
+        );
+    }
 
-    return (
-        <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
-            {isLoading ? (
-                Array.from({ length: 3 }).map((_, i) => (
-                    <li
-                        key={`mileage_skeleton_${i}`}
-                        className="animate-pulse border border-gray-200 bg-slate-100 p-4"
-                    >
-                        <div className="mb-2 h-4 w-1/3 bg-gray-300" />
-                        <div className="mb-2 h-3 w-1/3 bg-gray-300" />
-                        <div className="mb-2 h-3 w-1/3 bg-gray-300" />
-                        <div className="mb-2 h-3 w-1/3 bg-gray-300" />
-                    </li>
-                ))
-            ) : mileage.length > 0 ? (
-                mileage.map((item: Mileage) => (
+    // 마일리지가 하나라도 있을 때
+    if (mileage && mileage.length > 0) {
+        return (
+            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
+                {mileage.map((item: Mileage) => (
                     <li
                         key={item._id}
                         className={`border p-4 ${
@@ -67,12 +72,17 @@ const MileageList = () => {
                             </div>
                         )}
                     </li>
-                ))
-            ) : (
-                <li className="font-pretendard-thin mt-20 w-full text-center text-[0.5em] text-black/60">
-                    마일리지 내역이 없습니다
-                </li>
-            )}
+                ))}
+            </ul>
+        );
+    }
+
+    // 빈 상태
+    return (
+        <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
+            <li className="font-pretendard-thin mt-20 w-full text-center text-[0.5em] text-black/60">
+                마일리지 내역이 없습니다
+            </li>
         </ul>
     );
 };

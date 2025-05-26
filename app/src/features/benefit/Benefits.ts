@@ -22,6 +22,6 @@ export const issueWelcomeBenefits = async (userId: ObjectId) => {
         discountType: "percentage",
         discountValue: 30,
         expiredAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1년 후
-        description: "가입 후 7일 이내 사용 가능한 쿠폰",
+        description: "가입 후 1년 이내 사용 가능한 쿠폰",
     });
 };

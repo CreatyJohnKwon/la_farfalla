@@ -6,9 +6,9 @@ import {
     EditProfile,
     ProfileInfo,
     OrderList,
-    MileageList,
-    CouponList,
 } from "@/src/components/profile";
+import CouponList from "@/src/components/coupon/CouponList";
+import MileageList from "@/src/components/mileage/MileageList";
 
 const ProfileClient = ({ id }: { id: string }) => {
     const [title, setTitle] = useState<string | "">("");
