@@ -1,15 +1,20 @@
 "use client";
 
-import { useEffect, useState, useMemo, useTransition } from "react";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import CustomButton from "../src/widgets/button/CustomButton";
-import { registUserAction } from "./actions";
+
 import { useAddress } from "@/src/shared/hooks/useAddress";
 import AddressModal from "@/src/features/address/AddressModal";
-import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
+import CustomButton from "@/src/widgets/button/CustomButton";
+
+import { registUserAction } from "./actions";
 
 const RegisterClient = () => {
+    const router = useRouter();
+
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -17,26 +22,43 @@ const RegisterClient = () => {
     const [phoneNumber, setPhoneNumber] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [detailAddress, setDetailAddress] = useState<string>("");
+    const [error, setError] = useState<string | null>(null);
 
     const { isOpen, openModal, closeModal, onComplete } = useAddress();
 
-    const [isDisabled, setIsDisabled] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [isPending, startTransition] = useTransition(); // 로딩바 (isPending: 로딩중일 때 true)
+    const mutation: any = useMutation({ 
+        mutationFn: (formData: FormData) => registUserAction(formData),
+        onSuccess: (res: any) => {
+            if (!res.success) {
+                setError(res.message);
+            } else {
+                alert(res.message);
+                router.push("/login");
+            }
+        },
+        onError: (error) => {
+            setError("회원가입 중 오류가 발생했습니다.\n에러 메세지 : " + error.message);
+        },
+    })
+    
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!isValidForm) return;
 
-    const router = useRouter();
+        const formData = new FormData(e.currentTarget);
+        mutation.mutate(formData);
+    };
 
-    const isPasswordSafe = useMemo(() => {
-        return (
-            password.length >= 8 &&
-            /[A-Z]/.test(password) &&
-            /\d/.test(password)
-        );
-    }, [password]);
-
-    const isPasswordMatch = useMemo(() => {
-        return password === confirmPassword && confirmPassword.length > 0;
-    }, [password, confirmPassword]);
+    const isPasswordSafe = password.length >= 8 && /[A-Z]/.test(password) && /\d/.test(password);
+    const isPasswordMatch = password === confirmPassword && confirmPassword.length > 0;
+    const isValidForm =
+        name.trim() &&
+        email.trim() &&
+        isPasswordSafe &&
+        isPasswordMatch &&
+        phoneNumber.replace(/\D/g, "").length >= 10 &&
+        address.trim() &&
+        detailAddress.trim();
 
     const formatPhoneNumber = (value: string): string => {
         const numbers = value.replace(/\D/g, "").slice(0, 11);
@@ -55,43 +77,6 @@ const RegisterClient = () => {
         if (numbers.length < 8) return numbers.replace(/(\d{3})(\d+)/, "$1-$2");
         return numbers.replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
     };
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-
-        startTransition(() => {
-            registUserAction(formData).then((res: any) => {
-                if (!res.success) {
-                    setError(res.error);
-                } else {
-                    alert(res.message);
-                    router.push("/login");
-                }
-            });
-        });
-    };
-
-    useEffect(() => {
-        const isValid =
-            name.trim() !== "" &&
-            email.trim() !== "" &&
-            password.length >= 8 &&
-            password === confirmPassword &&
-            phoneNumber.trim().length >= 11 &&
-            address.trim() !== "" &&
-            detailAddress.trim() !== "";
-
-        setIsDisabled(!isValid);
-    }, [
-        name,
-        email,
-        password,
-        confirmPassword,
-        phoneNumber,
-        address,
-        detailAddress,
-    ]);
 
     return (
         <div className="flex h-screen flex-col items-center justify-center bg-white px-4 text-center">
@@ -138,9 +123,6 @@ const RegisterClient = () => {
                         </p>
                     )}
                     {/* 비밀번호 확인 */}
-                    {/* {
-                        !isLoading && user.
-                    } */}
                     <input
                         type="password"
                         name="confirmPassword"
@@ -207,9 +189,9 @@ const RegisterClient = () => {
                 {/* 버튼 */}
                 <div className="font-amstel flex w-full justify-center gap-4">
                     <CustomButton
-                        btnTitle="Regist"
-                        btnStyle={`${isDisabled ? "bg-[#F9F5EB]" : "bg-[#F9F5EB] hover:bg-[#EADDC8]"} transition-colors w-full px-6 py-3 text-black`}
-                        btnDisabled={isDisabled}
+                        btnTitle={mutation.isLoading ? "가입 중…" : "Regist"}
+                        btnStyle={`w-full px-6 py-3 ${!isValidForm || mutation.isLoading ? "bg-gray-200" : "bg-[#F9F5EB] hover:bg-[#EADDC8]"}`}
+                        btnDisabled={!isValidForm || mutation.isLoading}
                         btnType="submit"
                     />
                 </div>

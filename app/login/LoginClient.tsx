@@ -50,7 +50,7 @@ const LoginClient = () => {
                     action={loginAction}
                 >
                     <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-6">
-                        <div className="flex w-full flex-col gap-4 text-sm sm:col-span-4 md:text-lg">
+                        <div className="flex w-full flex-col gap-4 sm:col-span-4 text-[0.5em] md:text-[0.8em]">
                             <input
                                 type="email"
                                 name="email"
@@ -74,7 +74,7 @@ const LoginClient = () => {
                                 isDisabled
                                     ? "bg-black"
                                     : "bg-black hover:bg-black/50"
-                            } text-white transition-colors text-base font-semibold sm:col-span-2`}
+                            } text-white transition-colors font-semibold sm:col-span-2 text-[0.5em] md:text-[0.8em]`}
                             btnDisabled={isDisabled}
                             btnType="submit"
                         />
@@ -82,18 +82,18 @@ const LoginClient = () => {
                     <p className="m-2 w-full border-b" />
                     <Link
                         href={"/register"}
-                        className="flex w-full justify-center bg-black px-6 py-3 text-base text-white transition-colors duration-300 ease-in-out hover:bg-black/50 sm:text-lg md:text-xl"
+                        className="flex w-full justify-center bg-black px-6 py-3 text-white transition-colors duration-300 ease-in-out hover:bg-black/50 text-[0.5em] md:text-[0.8em]"
                     >
                         Join us
                     </Link>
-                    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 text-[0.5em] md:text-[0.8em]">
                         <button
                             onClick={() => loginHandler("naver")}
                             className="col-span-1 bg-[#03C75A] px-6 py-3 text-white transition-all duration-300 hover:bg-[#03C75A]/40"
                             type="button"
                         >
                             <div className="flex justify-center">
-                                <SiNaver className="me-3 mt-[3.5px] sm:me-5" />
+                                <SiNaver className="me-3 mt-[0.2em] sm:me-5" />
                                 Login with Naver
                             </div>
                         </button>
@@ -104,7 +104,7 @@ const LoginClient = () => {
                             type="button"
                         >
                             <div className="flex justify-center">
-                                <RiKakaoTalkFill className="me-3 mt-[2px] size-5 sm:me-5" />
+                                <RiKakaoTalkFill className="me-3 size-5 sm:me-5" />
                                 Login with Kakao
                             </div>
                         </button>

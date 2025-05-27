@@ -17,7 +17,7 @@ const CustomButton = ({
                 disabled={btnDisabled}
                 type={btnType}
             >
-                <div className="flex justify-center text-base transition-all duration-300 ease-in-out sm:text-lg md:text-xl">
+                <div className="flex justify-center text-base transition-all duration-300 ease-in-out">
                     {btnTitle}
                 </div>
             </button>
