@@ -41,7 +41,7 @@ const Navbar = () => {
         <>
             <nav className="fixed top-0 z-40 h-0 w-full bg-transparent ps-0 pt-5 text-[1em] shadow-none">
                 <div
-                    className={`font-amstel max-w-screen-w_max relative mx-auto flex items-center justify-between p-0 sm:p-4 sm:text-lg c_md:text-2xl ${textColor}`}
+                    className={`font-amstel max-w-screen-w_max relative mx-auto flex items-center justify-between p-0 sm:p-4 sm:text-[1.125em] c_md:text-[1.5rem] ${textColor}`}
                 >
                     {/* 왼쪽 메뉴 : PC */}
                     <ul className="hidden border-gray-100 ps-4 sm:flex sm:space-x-8">
@@ -59,7 +59,7 @@ const Navbar = () => {
                     </button>
 
                     {/* 가운데 중앙 로고 (절대 위치) */}
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[1.25em]">
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[1em] md:text-[1.25em]">
                         <Link href="/home">La farfalla</Link>
                     </div>
 

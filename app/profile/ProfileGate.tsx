@@ -16,7 +16,7 @@ const ProfileGate = () => {
                 {profileNavData.map((item) => (
                     <div
                         key={item.id}
-                        className="group relative h-full cursor-pointer overflow-hidden md:w-[20vw]"
+                        className="group relative h-full cursor-pointer overflow-hidden w-full sm:w-[20vw]"
                         onClick={() =>
                             router.push(
                                 `/profile/${item.id.toLowerCase()}`,
