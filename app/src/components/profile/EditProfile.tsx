@@ -69,7 +69,7 @@ const EditProfile = () => {
     if (isLoading) return <p>Loading...</p>;
 
     return (
-        <div className="font-pretendard-thin mb-10 flex h-full w-[90vw] flex-col items-start justify-start gap-6 text-xl sm:w-full sm:text-3xl">
+        <div className="font-pretendard-thin mb-10 flex h-full w-full flex-col items-start justify-start gap-6 text-xl sm:w-full sm:text-3xl">
             <span className="font-amstel-thin h-12 w-full border border-gray-200 bg-white px-4 py-2 text-gray-500 placeholder:text-gray-400 focus:outline-none">
                 {session?.user?.email}
             </span>
