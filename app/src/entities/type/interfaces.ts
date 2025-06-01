@@ -84,7 +84,8 @@ type CustomButtonProps = {
 
 type SelectedItem = {
     _id?: string;
-    image?: string;
+    image: string;
+    title: string;
     userId: string | null | undefined;
     cartItemId: string;
     productId: string;

@@ -17,7 +17,7 @@ export const issueWelcomeBenefits = async (userId: ObjectId) => {
     // 첫 가입 쿠폰 (3,000원 할인 / 7일 유효)
     await Coupon.create({
         userId,
-        name: "신규 가입 30% 할인 쿠폰",
+        name: "신규 가입 30% 할인",
         code: `WELCOME-${userId.toString().slice(-6)}`,
         discountType: "percentage",
         discountValue: 30,

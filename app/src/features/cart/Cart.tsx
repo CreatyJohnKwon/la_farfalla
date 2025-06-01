@@ -9,7 +9,13 @@ import { SelectedItem } from "@/src/entities/type/interfaces";
 const Cart = () => {
     const [totalQuantity, setTotalQuantity] = useState<number>(0);
     const [totalPrice, setTotalPrice] = useState<number>(0);
-    const { cartDatas, setCartDatas, setCartView } = useCart();
+    const {
+        cartDatas,
+        setCartDatas,
+        setCartView,
+        handleBuy,
+        handleRemoveCartAll,
+    } = useCart();
 
     useEffect(() => {
         if (cartDatas.length === 0) {
@@ -123,12 +129,11 @@ const Cart = () => {
                         <button
                             className="w-full max-w-[80vw] bg-black px-6 py-3 text-white hover:bg-black/70 sm:max-w-xs"
                             onClick={() => {
-                                if (confirm("구매 하시겠습니까?")) {
-                                    // 구매 로직
-                                    alert("구매 기능이 아직 없어요...");
-                                }
+                                handleBuy(cartDatas); // 구매하기
+                                handleRemoveCartAll(); // 장바구니 아이템 전부 비우기
+                                setCartDatas([]); // 장바구니 비우기
+                                setCartView(false); // 팝업 닫기
                             }}
-                            disabled={true}
                         >
                             buy now
                         </button>

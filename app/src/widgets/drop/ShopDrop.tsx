@@ -27,7 +27,7 @@ const ShopDrop = () => {
             <button onClick={() => setOpen((prev) => !prev)}>shop</button>
             {open && (
                 <ul
-                    className={`mt-2 w-full overflow-hidden bg-transparent py-2 text-[0.75em] font-light transition-all sm:absolute sm:top-full sm:w-max sm:rounded sm:px-0 sm:text-[1em] ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
+                    className={`mt-2 w-full overflow-hidden bg-transparent py-2 text-[0.75em] font-light transition-all sm:absolute sm:top-full sm:w-max sm:px-0 sm:text-[1em] ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
                 >
                     {category?.map((list: Products) => (
                         <li key={list._id} className="py-1">

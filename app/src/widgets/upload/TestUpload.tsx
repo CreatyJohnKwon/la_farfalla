@@ -32,7 +32,7 @@ export default function TestUpload() {
             />
             <button
                 onClick={handleUpload}
-                className="rounded-md bg-blue-600 px-4 py-2 text-white"
+                className="bg-blue-600 px-4 py-2 text-white"
             >
                 업로드
             </button>

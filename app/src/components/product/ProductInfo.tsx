@@ -10,6 +10,8 @@ import ProductDrop from "@/src/widgets/drop/ProductDrop";
 import QuantityModal from "@/src/widgets/modal/QuantityModal";
 import { useEffect } from "react";
 import useCart from "@/src/shared/hooks/useCart";
+import useUser from "@/src/shared/hooks/useUsers";
+import { redirect } from "next/navigation";
 
 const ProductInfo = ({ posts }: { posts: Posts }) => {
     const {
@@ -27,6 +29,7 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
         handleSelect,
         handleAddToCart,
     } = useCart();
+    const { session } = useUser();
 
     useEffect(() => {
         if (selectedSize && selectedColor) {
@@ -135,7 +138,14 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
                 <button
                     className="w-1/2 bg-gray-200 py-5 text-center text-base text-black hover:bg-gray-300"
                     disabled={selectedItems.length === 0}
-                    onClick={() => handleBuy()}
+                    onClick={() => {
+                        if (!session) {
+                            alert("로그인이 필요합니다.");
+                            redirect("/login");
+                            return;
+                        }
+                        handleBuy(selectedItems);
+                    }}
                 >
                     buy now
                 </button>

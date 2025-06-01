@@ -47,7 +47,9 @@ const useCart = () => {
 
         const newItem: SelectedItem = {
             userId: session?.user?.email,
+            title: posts.title.eg,
             cartItemId: crypto.randomUUID(),
+            image: posts.image,
             productId: posts._id,
             size,
             color,
@@ -97,9 +99,16 @@ const useCart = () => {
         });
     };
 
-    const handleBuy = () => {
-        setOrderDatas(selectedItems);
+    const handleBuy = (items: SelectedItem[]) => {
+        setOrderDatas(items);
         router.push("/order");
+    };
+
+    const handleRemoveCartAll = () => {
+        const ids = cartDatas
+            .filter((item) => item._id) // _id가 있는 애들만
+            .map((item) => item._id!.toString());
+        deleteCart(ids); // 장바구니 전부 비우기
     };
 
     return {
@@ -123,6 +132,7 @@ const useCart = () => {
         handleDeleteProduct,
         handleRouteProduct,
         handleUpdateProduct,
+        handleRemoveCartAll,
     };
 };
 
