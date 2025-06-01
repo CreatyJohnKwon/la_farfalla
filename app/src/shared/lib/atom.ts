@@ -11,3 +11,4 @@ export const pagesAtom = atom<"o" | "e" | "m" | "c" | string>("");
 export const sidebarAtom = atom<boolean>(false);
 export const cartViewAtom = atom<boolean>(false);
 export const cartDatasAtom = atom<SelectedItem[] | []>([]);
+export const orderDatasAtom = atom<SelectedItem[] | []>([]);

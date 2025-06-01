@@ -23,6 +23,7 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
         setSelectedColor,
         selectedItems,
         setSelectedItems,
+        handleBuy,
         handleSelect,
         handleAddToCart,
     } = useCart();
@@ -134,6 +135,7 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
                 <button
                     className="w-1/2 bg-gray-200 py-5 text-center text-base text-black hover:bg-gray-300"
                     disabled={selectedItems.length === 0}
+                    onClick={() => handleBuy()}
                 >
                     buy now
                 </button>

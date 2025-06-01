@@ -6,6 +6,7 @@ import { justDiscount } from "@/src/features/calculate";
 import { useRouter } from "next/navigation";
 import { postCart, deleteCart, updateQuantity } from "../lib/server/cart";
 import useUser from "@/src/shared/hooks/useUsers";
+import useOrder from "./useOrder";
 
 const useCart = () => {
     const [cartView, setCartView] = useAtom(cartViewAtom);
@@ -18,6 +19,7 @@ const useCart = () => {
     const [selectedColor, setSelectedColor] = useState<string | "">("");
     const { session } = useUser();
     const router = useRouter();
+    const { setOrderDatas } = useOrder();
 
     const handleAddToCart = async () => {
         const userEmail = session?.user?.email;
@@ -95,6 +97,11 @@ const useCart = () => {
         });
     };
 
+    const handleBuy = () => {
+        setOrderDatas(selectedItems);
+        router.push("/order");
+    };
+
     return {
         cartView,
         setCartView,
@@ -110,8 +117,9 @@ const useCart = () => {
         setSelectedItems,
         cartDatas,
         setCartDatas,
-        handleAddToCart,
+        handleBuy,
         handleSelect,
+        handleAddToCart,
         handleDeleteProduct,
         handleRouteProduct,
         handleUpdateProduct,

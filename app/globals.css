@@ -49,7 +49,10 @@ html {
     }
 
     .font-amstel-bold {
-        @apply font-amstel font-thin;
+        @apply font-amstel;
+        font-variation-settings:
+            "wght" 100,
+            "wdth" 400;
     }
 
     .font-pretendard-thin {
