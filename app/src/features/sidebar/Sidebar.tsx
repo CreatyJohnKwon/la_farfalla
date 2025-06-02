@@ -1,8 +1,8 @@
 "use client";
 
-import usePage from "@/src/shared/hooks/usePage";
-import useProduct from "@/src/shared/hooks/useProduct";
-import useUsers from "@/src/shared/hooks/useUsers";
+import usePage from "@src/shared/hooks/usePage";
+import useProduct from "@src/shared/hooks/useProduct";
+import useUsers from "@src/shared/hooks/useUsers";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -10,9 +10,9 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { IoCloseOutline } from "react-icons/io5";
 import { RxInstagramLogo } from "react-icons/rx";
 import { AiOutlineUser } from "react-icons/ai";
-import ShopDrop from "@/src/widgets/drop/ShopDrop";
-import AboutDrop from "@/src/widgets/drop/AboutDrop";
-import useCart from "@/src/shared/hooks/useCart";
+import ShopDrop from "@src/widgets/drop/ShopDrop";
+import AboutDrop from "@src/widgets/drop/AboutDrop";
+import useCart from "@src/shared/hooks/useCart";
 
 const Sidebar = () => {
     const { openSidebar, setOpenSidebar } = useProduct();

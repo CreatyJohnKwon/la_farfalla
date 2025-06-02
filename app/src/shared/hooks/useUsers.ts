@@ -1,4 +1,4 @@
-import { isLoggedInAtom } from "@/src/shared/lib/atom";
+import { isLoggedInAtom } from "@src/shared/lib/atom";
 import { useAtom } from "jotai";
 import { signIn } from "next-auth/react";
 import { useState } from "react";

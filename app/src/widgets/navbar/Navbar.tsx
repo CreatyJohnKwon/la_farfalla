@@ -1,7 +1,7 @@
 "use client";
 
-import useProduct from "@/src/shared/hooks/useProduct";
-import useUsers from "@/src/shared/hooks/useUsers";
+import useProduct from "@src/shared/hooks/useProduct";
+import useUsers from "@src/shared/hooks/useUsers";
 
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -12,8 +12,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import ShopDrop from "../drop/ShopDrop";
 import AboutDrop from "../drop/AboutDrop";
-import useCart from "@/src/shared/hooks/useCart";
-import Cart from "@/src/features/cart/Cart";
+import useCart from "@src/shared/hooks/useCart";
+import Cart from "@src/features/cart/Cart";
 
 const Navbar = () => {
     const { navStartData, session } = useUsers();

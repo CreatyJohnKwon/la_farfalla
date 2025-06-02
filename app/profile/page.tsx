@@ -1,4 +1,4 @@
-import { redirectIfNeeded } from "@/src/shared/lib/auth";
+import { redirectIfNeeded } from "@src/shared/lib/auth";
 import ProfileGate from "./ProfileGate";
 
 const Profile = async () => {

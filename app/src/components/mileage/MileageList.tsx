@@ -1,8 +1,8 @@
 "use client";
 
-import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
-import { Mileage } from "@/src/entities/type/interfaces";
-import { useMileageQuery } from "@/src/shared/hooks/react-query/useBenefitQuery";
+import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
+import { Mileage } from "@src/entities/type/interfaces";
+import { useMileageQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import SkeletonList from "./SkeletonList";
 
 const MileageList = () => {

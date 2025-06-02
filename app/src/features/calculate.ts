@@ -1,4 +1,4 @@
-import { Posts } from "@/src/entities/type/interfaces";
+import { Posts } from "@src/entities/type/interfaces";
 import Post from "../entities/models/Post";
 
 const serialize = <T extends { _id: any }>(

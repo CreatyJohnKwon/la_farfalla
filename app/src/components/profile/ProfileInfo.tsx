@@ -1,6 +1,6 @@
-import useUsers from "@/src/shared/hooks/useUsers";
-import CustomButton from "@/src/widgets/button/CustomButton";
-import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
+import useUsers from "@src/shared/hooks/useUsers";
+import CustomButton from "@src/widgets/button/CustomButton";
+import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 
 const ProfileInfo = () => {
     const { data: user, isLoading } = useUserQuery();

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Products } from "@/src/entities/type/interfaces";
-import useProduct from "@/src/shared/hooks/useProduct";
+import { Products } from "@src/entities/type/interfaces";
+import useProduct from "@src/shared/hooks/useProduct";
 import { useRouter } from "next/navigation";
 
 const ShopDrop = () => {

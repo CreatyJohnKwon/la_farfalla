@@ -1,10 +1,10 @@
 "use client";
 
-import useCart from "@/src/shared/hooks/useCart";
+import useCart from "@src/shared/hooks/useCart";
 import { useState, useEffect } from "react";
 import CartItem from "./CartItem";
-import { getCart } from "@/src/shared/lib/server/cart";
-import { SelectedItem } from "@/src/entities/type/interfaces";
+import { getCart } from "@src/shared/lib/server/cart";
+import { SelectedItem } from "@src/entities/type/interfaces";
 
 const Cart = () => {
     const [totalQuantity, setTotalQuantity] = useState<number>(0);

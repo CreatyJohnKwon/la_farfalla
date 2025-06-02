@@ -1,8 +1,8 @@
 "use client";
 
-import { HomeClientProps } from "@/src/entities/type/interfaces";
+import { HomeClientProps } from "@src/entities/type/interfaces";
 import { useEffect } from "react";
-import useProduct from "@/src/shared/hooks/useProduct";
+import useProduct from "@src/shared/hooks/useProduct";
 import Image from "next/image";
 import BackgroundImg from "../../public/images/sample_file.jpeg";
 

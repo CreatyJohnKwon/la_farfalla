@@ -1,11 +1,11 @@
 import { useAtom } from "jotai";
 import { useState } from "react";
-import { cartDatasAtom, cartViewAtom } from "@/src/shared/lib/atom";
-import { Posts, SelectedItem } from "@/src/entities/type/interfaces";
-import { justDiscount } from "@/src/features/calculate";
+import { cartDatasAtom, cartViewAtom } from "@src/shared/lib/atom";
+import { Posts, SelectedItem } from "@src/entities/type/interfaces";
+import { justDiscount } from "@src/features/calculate";
 import { useRouter } from "next/navigation";
 import { postCart, deleteCart, updateQuantity } from "../lib/server/cart";
-import useUser from "@/src/shared/hooks/useUsers";
+import useUser from "@src/shared/hooks/useUsers";
 import useOrder from "./useOrder";
 
 const useCart = () => {

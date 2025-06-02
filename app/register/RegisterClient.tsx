@@ -6,9 +6,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-import { useAddress } from "@/src/shared/hooks/useAddress";
-import AddressModal from "@/src/features/address/AddressModal";
-import CustomButton from "@/src/widgets/button/CustomButton";
+import { useAddress } from "@src/shared/hooks/useAddress";
+import AddressModal from "@src/features/address/AddressModal";
+import CustomButton from "@src/widgets/button/CustomButton";
 
 import { registUserAction } from "./actions";
 
@@ -26,7 +26,7 @@ const RegisterClient = () => {
 
     const { isOpen, openModal, closeModal, onComplete } = useAddress();
 
-    const mutation: any = useMutation({ 
+    const mutation: any = useMutation({
         mutationFn: (formData: FormData) => registUserAction(formData),
         onSuccess: (res: any) => {
             if (!res.success) {
@@ -37,10 +37,13 @@ const RegisterClient = () => {
             }
         },
         onError: (error) => {
-            setError("회원가입 중 오류가 발생했습니다.\n에러 메세지 : " + error.message);
+            setError(
+                "회원가입 중 오류가 발생했습니다.\n에러 메세지 : " +
+                    error.message,
+            );
         },
-    })
-    
+    });
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!isValidForm) return;
@@ -49,8 +52,10 @@ const RegisterClient = () => {
         mutation.mutate(formData);
     };
 
-    const isPasswordSafe = password.length >= 8 && /[A-Z]/.test(password) && /\d/.test(password);
-    const isPasswordMatch = password === confirmPassword && confirmPassword.length > 0;
+    const isPasswordSafe =
+        password.length >= 8 && /[A-Z]/.test(password) && /\d/.test(password);
+    const isPasswordMatch =
+        password === confirmPassword && confirmPassword.length > 0;
     const isValidForm =
         name.trim() &&
         email.trim() &&

@@ -1,7 +1,7 @@
 "use client";
 
-import CustomButton from "@/src/widgets/button/CustomButton";
-import useUsers from "@/src/shared/hooks/useUsers";
+import CustomButton from "@src/widgets/button/CustomButton";
+import useUsers from "@src/shared/hooks/useUsers";
 import { useEffect } from "react";
 import loginAction from "./actions";
 import Link from "next/link";

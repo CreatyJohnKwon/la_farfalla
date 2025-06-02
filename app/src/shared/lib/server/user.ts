@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import User from "@/src/entities/models/User";
-import { RegistReqData } from "@/src/entities/type/interfaces";
-import { issueWelcomeBenefits } from "@/src/features/benefit/benefits";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import User from "@src/entities/models/User";
+import { RegistReqData } from "@src/entities/type/interfaces";
+import { issueWelcomeBenefits } from "@src/features/benefit/benefits";
 
 const registUser = async (formData: RegistReqData) => {
     try {

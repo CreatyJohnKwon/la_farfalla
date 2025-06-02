@@ -1,5 +1,5 @@
-import { redirectIfNeeded } from "@/src/shared/lib/auth";
-import { IDProps } from "@/src/entities/type/interfaces";
+import { redirectIfNeeded } from "@src/shared/lib/auth";
+import { IDProps } from "@src/entities/type/interfaces";
 import ProfileClient from "@/profile/[id]/ProfileClient";
 
 const Profile = async ({ params }: IDProps) => {

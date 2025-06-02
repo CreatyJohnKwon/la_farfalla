@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import useProduct from "@/src/shared/hooks/useProduct";
+import useProduct from "@src/shared/hooks/useProduct";
 
 const AboutDrop = () => {
     const { setOpenSidebar } = useProduct();

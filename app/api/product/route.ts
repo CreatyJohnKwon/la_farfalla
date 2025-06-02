@@ -1,5 +1,5 @@
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import Post from "@/src/entities/models/Post";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import Post from "@src/entities/models/Post";
 import { NextRequest, NextResponse } from "next/server";
 
 const GET = async (req: NextRequest) => {

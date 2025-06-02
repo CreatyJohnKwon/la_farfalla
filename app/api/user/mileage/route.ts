@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import { Mileage } from "@/src/entities/models/Mileage";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import { Mileage } from "@src/entities/models/Mileage";
 
 export async function GET(req: NextRequest) {
     const userId = req.nextUrl.searchParams.get("userId");

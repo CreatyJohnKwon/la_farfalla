@@ -1,12 +1,12 @@
 "use client";
 
-import AddressModal from "@/src/features/address/AddressModal";
+import AddressModal from "@src/features/address/AddressModal";
 import {
     useUserQuery,
     useUpdateUserMutation,
-} from "@/src/shared/hooks/react-query/useUserQuery";
-import { useAddress } from "@/src/shared/hooks/useAddress";
-import useUsers from "@/src/shared/hooks/useUsers";
+} from "@src/shared/hooks/react-query/useUserQuery";
+import { useAddress } from "@src/shared/hooks/useAddress";
+import useUsers from "@src/shared/hooks/useUsers";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useEffect } from "react";
 

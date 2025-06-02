@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { getAuthSession } from "./src/shared/lib/session";
-import AuthProvider from "@/src/features/providers/AuthProvider";
-import RQProvider from "@/src/features/providers/RQProvider";
-import Sidebar from "@/src/features/sidebar/Sidebar";
-import Navbar from "@/src/widgets/navbar/Navbar";
-import Footer from "@/src/widgets/footer/Footer";
+import AuthProvider from "@src/features/providers/AuthProvider";
+import RQProvider from "@src/features/providers/RQProvider";
+import Sidebar from "@src/features/sidebar/Sidebar";
+import Navbar from "@src/widgets/navbar/Navbar";
+import Footer from "@src/widgets/footer/Footer";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import Cart from "@/src/entities/models/Cart";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import Cart from "@src/entities/models/Cart";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../src/shared/lib/auth";
 

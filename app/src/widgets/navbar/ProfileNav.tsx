@@ -1,6 +1,6 @@
 "use client";
 
-import { profileNavData } from "@/src/entities/models/db/menuDatas";
+import { profileNavData } from "@src/entities/models/db/menuDatas";
 import { redirect } from "next/navigation";
 
 const ProfileNavbar = ({ id }: { id: string }) => {

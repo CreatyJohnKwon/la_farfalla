@@ -4,13 +4,13 @@ import {
     priceResult,
     priceDiscount,
     justDiscount,
-} from "@/src/features/calculate";
-import { Posts } from "@/src/entities/type/interfaces";
-import ProductDrop from "@/src/widgets/drop/ProductDrop";
-import QuantityModal from "@/src/widgets/modal/QuantityModal";
+} from "@src/features/calculate";
+import { Posts } from "@src/entities/type/interfaces";
+import ProductDrop from "@src/widgets/drop/ProductDrop";
+import QuantityModal from "@src/widgets/modal/QuantityModal";
 import { useEffect } from "react";
-import useCart from "@/src/shared/hooks/useCart";
-import useUser from "@/src/shared/hooks/useUsers";
+import useCart from "@src/shared/hooks/useCart";
+import useUser from "@src/shared/hooks/useUsers";
 import { redirect } from "next/navigation";
 
 const ProductInfo = ({ posts }: { posts: Posts }) => {

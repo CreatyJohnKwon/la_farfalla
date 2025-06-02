@@ -1,7 +1,7 @@
-import { IDProps, Posts } from "@/src/entities/type/interfaces";
+import { IDProps, Posts } from "@src/entities/type/interfaces";
 import ProductClient from "./ProductClient";
-import { serializeFindOne } from "@/src/features/calculate";
-import { getProduct } from "@/src/shared/lib/server/shop";
+import { serializeFindOne } from "@src/features/calculate";
+import { getProduct } from "@src/shared/lib/server/shop";
 
 const Products = async ({ params }: IDProps) => {
     const { id } = await params;

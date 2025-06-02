@@ -3,7 +3,7 @@
 import { Session } from "next-auth";
 import { ReactNode, useEffect } from "react";
 import { useSetAtom } from "jotai";
-import { sessionAtom } from "@/src/shared/lib/atom";
+import { sessionAtom } from "@src/shared/lib/atom";
 import { SessionProvider } from "next-auth/react";
 
 const AuthProvider = ({
@@ -24,6 +24,6 @@ const AuthProvider = ({
             {children}
         </SessionProvider>
     );
-}
+};
 
 export default AuthProvider;

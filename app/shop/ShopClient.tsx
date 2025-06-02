@@ -1,9 +1,9 @@
 "use client";
 
-import ProductsList from "@/src/widgets/list/ProductsList";
-import { ShopClientProps } from "@/src/entities/type/interfaces";
+import ProductsList from "@src/widgets/list/ProductsList";
+import { ShopClientProps } from "@src/entities/type/interfaces";
 import { useEffect, useState } from "react";
-import useProduct from "@/src/shared/hooks/useProduct";
+import useProduct from "@src/shared/hooks/useProduct";
 
 const ShopClient = ({ posts }: ShopClientProps) => {
     const { section } = useProduct();

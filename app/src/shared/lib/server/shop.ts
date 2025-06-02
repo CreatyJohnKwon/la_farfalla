@@ -1,6 +1,6 @@
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import Post from "@/src/entities/models/Post";
-import Shop from "@/src/entities/models/Shop";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import Post from "@src/entities/models/Post";
+import Shop from "@src/entities/models/Shop";
 
 const getProduct = async (id: string) => {
     try {

@@ -1,6 +1,6 @@
 "use client";
 
-import { SelectedItem } from "@/src/entities/type/interfaces";
+import { SelectedItem } from "@src/entities/type/interfaces";
 
 const QuantityModal = ({
     id,

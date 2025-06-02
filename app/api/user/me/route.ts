@@ -1,11 +1,11 @@
-import { getAuthSession } from "@/src/shared/lib/session";
+import { getAuthSession } from "@src/shared/lib/session";
 import { NextResponse } from "next/server";
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import User from "@/src/entities/models/User";
-import { UserProfileData } from "@/src/entities/type/interfaces";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import User from "@src/entities/models/User";
+import { UserProfileData } from "@src/entities/type/interfaces";
 import bcrypt from "bcryptjs";
-import { Coupon } from "@/src/entities/models/Coupon";
-import { Mileage } from "@/src/entities/models/Mileage";
+import { Coupon } from "@src/entities/models/Coupon";
+import { Mileage } from "@src/entities/models/Mileage";
 
 // GET: 유저 정보 조회
 export async function GET() {

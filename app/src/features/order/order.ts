@@ -1,7 +1,7 @@
 "use server";
 
 import { ObjectId } from "mongoose";
-import { Coupon } from "@/src/entities/models/Coupon";
+import { Coupon } from "@src/entities/models/Coupon";
 
 export const orderAccept = async (userId: ObjectId) => {
     // await Coupon.create({

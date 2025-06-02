@@ -1,4 +1,4 @@
-import { redirectIfNeeded } from "@/src/shared/lib/auth";
+import { redirectIfNeeded } from "@src/shared/lib/auth";
 import LoginClient from "./LoginClient";
 
 const Login = async () => {

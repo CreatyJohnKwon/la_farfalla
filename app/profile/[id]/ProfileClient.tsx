@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ProfileNavbar from "@/src/widgets/navbar/ProfileNav";
-import { EditProfile, ProfileInfo, OrderList } from "@/src/components/profile";
-import CouponList from "@/src/components/coupon/CouponList";
-import MileageList from "@/src/components/mileage/MileageList";
+import ProfileNavbar from "@src/widgets/navbar/ProfileNav";
+import { EditProfile, ProfileInfo, OrderList } from "@src/components/profile";
+import CouponList from "@src/components/coupon/CouponList";
+import MileageList from "@src/components/mileage/MileageList";
 
 const ProfileClient = ({ id }: { id: string }) => {
     const [title, setTitle] = useState<string | "">("");

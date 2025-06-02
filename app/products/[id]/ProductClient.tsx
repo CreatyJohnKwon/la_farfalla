@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import DefaultImage from "../../../public/images/chill.png";
-import { Posts } from "@/src/entities/type/interfaces";
+import { Posts } from "@src/entities/type/interfaces";
 import ProductInfo from "../../src/components/product/ProductInfo";
 
 const ProductClient = ({ posts }: { posts: Posts }) => {

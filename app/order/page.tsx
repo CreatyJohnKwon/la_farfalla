@@ -2,9 +2,9 @@
 
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
-import useOrder from "@/src/shared/hooks/useOrder";
-import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
-import { useCouponsQuery } from "@/src/shared/hooks/react-query/useBenefitQuery";
+import useOrder from "@src/shared/hooks/useOrder";
+import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
+import { useCouponsQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import DefaultImage from "../../public/images/chill.png";
 import { set } from "mongoose";
 

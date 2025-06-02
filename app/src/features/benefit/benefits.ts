@@ -1,19 +1,9 @@
 "use server";
 
 import { ObjectId } from "mongoose";
-import { Coupon } from "@/src/entities/models/Coupon";
-// import { Mileage } from "../../entities/models/Mileage";
+import { Coupon } from "@src/entities/models/Coupon";
 
-export const issueWelcomeBenefits = async (userId: ObjectId) => {
-    // 마일리지 추가 로직
-    // await Mileage.create({
-    //     userId,
-    //     type: "earn",
-    //     amount: 3000,
-    //     description: "신규가입 적립",
-    //     expiredAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1년 후
-    // });
-
+const issueWelcomeBenefits = async (userId: ObjectId) => {
     // 첫 가입 쿠폰 (3,000원 할인 / 7일 유효)
     await Coupon.create({
         userId,
@@ -25,3 +15,5 @@ export const issueWelcomeBenefits = async (userId: ObjectId) => {
         description: "가입 후 1년 이내 사용 가능한 쿠폰",
     });
 };
+
+export { issueWelcomeBenefits };

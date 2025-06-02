@@ -3,8 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
-import { Posts } from "@/src/entities/type/interfaces";
-import { priceResult, priceDiscount } from "@/src/features/calculate";
+import { Posts } from "@src/entities/type/interfaces";
+import { priceResult, priceDiscount } from "@src/features/calculate";
 
 const ProductsList = ({
     posts,
