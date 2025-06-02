@@ -1,14 +1,20 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import useOrder from "@src/shared/hooks/useOrder";
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 import { useCouponsQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import DefaultImage from "../../public/images/chill.png";
-import { set } from "mongoose";
+import { useAddress } from "@/src/shared/hooks/useAddress";
+import AddressModal from "@/src/features/address/AddressModal";
 
 const Order = () => {
+    const { data: user, isLoading } = useUserQuery();
+    const { data: coupons, isLoading: isCouponsLoading } = useCouponsQuery(
+        user?._id,
+    );
+
     const [deliveryMemo, setDeliveryMemo] = useState("");
     const [customMemo, setCustomMemo] = useState("");
     const [couponMemo, setCouponMemo] = useState("");
@@ -17,12 +23,13 @@ const Order = () => {
     const [totalPrice, setTotalPrice] = useState("0");
     const [totalMileage, setTotalMileage] = useState("0");
     const [appliedCouponName, setAppliedCouponName] = useState("");
-
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [address, setAddress] = useState("");
+    const [detailAddress, setDetailAddress] = useState("");
     const { orderDatas } = useOrder();
-    const { data: user, isLoading } = useUserQuery();
-    const { data: coupons, isLoading: isCouponsLoading } = useCouponsQuery(
-        user?._id,
-    );
+
+    const { isOpen, openModal, closeModal, onComplete, formatPhoneNumber } =
+        useAddress();
 
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -52,6 +59,14 @@ const Order = () => {
         setTotalMileage(Math.floor(discountedPrice * 0.01).toLocaleString());
     }, [applyCoupon, orderDatas]);
 
+    useEffect(() => {
+        if (!user) return;
+
+        setPhoneNumber(user.phoneNumber);
+        setAddress(user.address);
+        setDetailAddress(user.detailAddress);
+    }, [user]);
+
     if (user && !isLoading && orderDatas.length > 0)
         return (
             <form
@@ -59,11 +74,11 @@ const Order = () => {
                     e.preventDefault();
                     alert("결제가 완료되었습니다.");
                 }}
-                className="h-full min-h-screen w-full bg-gray-50 pt-16 md:pt-32"
+                className="h-full min-h-screen w-full bg-gray-50 pt-16 md:pt-24"
             >
                 <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 p-5 md:grid-cols-2">
                     {/* 좌측 영역 */}
-                    <div className="space-y-6">
+                    <div className="space-y-6 md:h-[85vh] md:overflow-auto">
                         {/* 주문 상품 정보 */}
                         <section className="border bg-white p-4">
                             <h2 className="font-pretendard-bold mb-4">
@@ -119,9 +134,29 @@ const Order = () => {
                             </p>
                             <div className="text-sm">
                                 <p className="font-pretendard">{user.name}</p>
-                                <p className="font-amstel mt-1">
-                                    {user.phoneNumber || "휴대폰 정보 없음"}
-                                </p>
+                                <input
+                                    className="font-amstel mt-1 rounded-none border-b text-black focus:outline-none focus:ring-1 focus:ring-gray-200"
+                                    type="tel"
+                                    value={
+                                        phoneNumber.startsWith("000")
+                                            ? ""
+                                            : phoneNumber
+                                    }
+                                    name="phoneNumber"
+                                    onChange={(e) => {
+                                        const raw = e.target.value
+                                            .replace(/\D/g, "")
+                                            .slice(0, 11);
+                                        const formatted =
+                                            formatPhoneNumber(raw);
+                                        setPhoneNumber(formatted);
+                                    }}
+                                    maxLength={
+                                        phoneNumber.startsWith("02") ? 12 : 13
+                                    }
+                                    placeholder={`000-0000-0000`}
+                                />
+
                                 <p className="font-amstel">
                                     {user.email || "이메일 정보 없음"}
                                 </p>
@@ -136,14 +171,47 @@ const Order = () => {
                             <div className="text-sm">
                                 <p className="font-pretendard">{user.name}</p>
                                 <p className="font-amstel mt-1">
-                                    {user.phoneNumber || "휴대폰 정보 없음"}
+                                    {phoneNumber.startsWith("000") ||
+                                    phoneNumber === ""
+                                        ? "000-0000-0000"
+                                        : phoneNumber}
                                 </p>
-                                <p className="font-pretendard">
-                                    {user.address
-                                        ? `${user.address} ${user.detailAddress}`
-                                        : `배송지 정보 없음`}
-                                </p>
+
+                                <div className="relative w-full">
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        value={address}
+                                        onChange={(e) =>
+                                            setAddress(e.target.value)
+                                        }
+                                        placeholder="주소"
+                                        readOnly
+                                        className="mt-4 w-full appearance-none border border-gray-200 bg-white p-3 py-3 pr-8 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-200"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            openModal((value) =>
+                                                setAddress(value),
+                                            )
+                                        }
+                                        className="font-pretendard-bold absolute right-1 top-1/3 bg-black px-5 py-2 text-sm text-white hover:bg-gray-800"
+                                    >
+                                        주소찾기
+                                    </button>
+                                </div>
                             </div>
+
+                            <input
+                                name="detailAddress"
+                                value={detailAddress}
+                                onChange={(e) =>
+                                    setDetailAddress(e.target.value)
+                                }
+                                className="mt-4 w-full appearance-none border border-gray-300 bg-white p-3 pr-8 text-sm text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-200"
+                                placeholder="상세주소를 입력해주세요."
+                            />
 
                             <select
                                 name="deliveryMemo"
@@ -151,7 +219,11 @@ const Order = () => {
                                 onChange={(e) =>
                                     setDeliveryMemo(e.target.value)
                                 }
-                                className="mt-4 w-full appearance-none border border-gray-300 bg-white p-3 pr-8 text-sm text-gray-800"
+                                className={`mt-4 w-full appearance-none border border-gray-300 bg-white p-3 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-gray-200 ${
+                                    deliveryMemo === ""
+                                        ? "text-gray-400"
+                                        : "text-black"
+                                }`}
                             >
                                 <option value="">
                                     배송메모를 선택해 주세요.
@@ -168,7 +240,7 @@ const Order = () => {
                             {deliveryMemo === "custom" && (
                                 <input
                                     type="text"
-                                    name="customDeliveryMemo"
+                                    name="deliveryMemo"
                                     value={customMemo}
                                     onChange={(e) =>
                                         setCustomMemo(e.target.value)
@@ -181,10 +253,10 @@ const Order = () => {
 
                         {/* 쿠폰 및 적립금 */}
                         <section className="border bg-white p-4">
-                            <h2 className="font-pretendard-bold mb-2">쿠폰</h2>
-                            <div className="flex gap-2">
+                            <h2 className="font-pretendard-bold mb-5">쿠폰</h2>
+                            <div className="relative flex w-full gap-2">
                                 <select
-                                    name="couponMemo"
+                                    name="coupon"
                                     value={couponMemo}
                                     onChange={(e) => {
                                         const selectedName = e.target.value;
@@ -198,9 +270,9 @@ const Order = () => {
                                             );
                                         }
                                     }}
-                                    className="w-full appearance-none border border-gray-300 bg-white p-3 pr-8 text-sm text-gray-800"
+                                    className="w-full appearance-none border border-gray-300 bg-white p-3 pr-8 text-sm text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-200"
                                 >
-                                    <option value="" className="text-gray-100">
+                                    <option value="">
                                         적용할 쿠폰을 선택해주세요.
                                     </option>
                                     {!isCouponsLoading &&
@@ -215,7 +287,7 @@ const Order = () => {
                                 </select>
                                 <button
                                     type="button"
-                                    className="font-pretendard-bold text-nowrap bg-black px-8 text-xs text-white"
+                                    className="font-pretendard-bold absolute right-1 top-1/2 -translate-y-1/2 bg-black px-5 py-2 text-sm text-white hover:bg-gray-800"
                                     onClick={() => {
                                         setApplyCoupon(useCoupon);
                                         setAppliedCouponName(couponMemo);
@@ -255,6 +327,7 @@ const Order = () => {
                         </section>
 
                         <section className="border bg-white p-4">
+                            {/* name="mileage" */}
                             <h2 className="font-pretendard-bold mb-2">
                                 적립금
                             </h2>
@@ -299,12 +372,26 @@ const Order = () => {
                                 <span className="font-amstel-bold">
                                     {`KRW ${totalPrice}`}
                                 </span>
+                                <input
+                                    type="text"
+                                    name="totalPrice"
+                                    value={totalPrice}
+                                    className="hidden"
+                                    readOnly
+                                />
                             </div>
                             <p className="mt-2 font-pretendard text-sm text-gray-500">
                                 <span className="font-amstel">
                                     {`${totalMileage} Mileage`}
                                 </span>
                                 <span> 적립 예정</span>
+                                <input
+                                    type="text"
+                                    name="totalMileage"
+                                    value={totalMileage}
+                                    className="hidden"
+                                    readOnly
+                                />
                             </p>
                         </section>
 
@@ -345,7 +432,11 @@ const Order = () => {
                         {/* 약관 동의 */}
                         <section className="border bg-white p-4 font-pretendard">
                             <label className="flex items-start gap-2 text-sm leading-tight">
-                                <input type="checkbox" name="agree" required />
+                                <input
+                                    type="checkbox"
+                                    name="paymentAgree"
+                                    required
+                                />
                                 <span className="-mt-0.5">
                                     결제 동의 (구매조건 확인 및 결제진행에 동의)
                                 </span>
@@ -361,6 +452,12 @@ const Order = () => {
                         </button>
                     </div>
                 </div>
+                {isOpen && (
+                    <AddressModal
+                        onComplete={onComplete}
+                        onClose={closeModal}
+                    />
+                )}
             </form>
         );
 };
