@@ -1,6 +1,6 @@
 import { connectDB } from "@/src/entities/models/db/mongoose";
 import User from "@/src/entities/models/User";
-import { issueWelcomeBenefits } from "@/src/features/benefit/benefits";
+import { issueWelcomeBenefits } from "../../src/features/benefit/benefits";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
