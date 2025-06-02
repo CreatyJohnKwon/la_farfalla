@@ -53,7 +53,6 @@ jobs:
                     echo "🧨 Removing old files..."
                     cd /home/ec2-user/la_farfalla
                     docker-compose down || true
-                    rm -rf ./*
 
                     echo "📦 Unpacking build artifact..."
                     unzip -o build-artifact.zip
