@@ -37,7 +37,7 @@ const ProfileGate = () => {
                                     <p className="font-amstel text-[clamp(1rem,1.8vw,2rem)] font-semibold drop-shadow">
                                         {item.id}
                                     </p>
-                                    <p className="font-pretendard font-[200] text-xs md:text-[clamp(1rem,1.8vw,1rem)] drop-shadow">
+                                    <p className="font-pretendard -mt-1 font-[200] text-xs md:text-[clamp(1rem,1.8vw,1rem)] drop-shadow">
                                         {item.title}
                                     </p>
                                 </div>
