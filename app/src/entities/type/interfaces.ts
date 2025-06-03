@@ -6,7 +6,7 @@ interface Posts {
     price: string;
     discount: string;
     category: string;
-    image: string;
+    image: string[];
     colors: Array<string>;
     key: number;
     size: Array<string>;

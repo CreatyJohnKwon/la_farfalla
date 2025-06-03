@@ -8,6 +8,7 @@ import { useCouponsQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import DefaultImage from "../../public/images/chill.png";
 import { useAddress } from "@/src/shared/hooks/useAddress";
 import AddressModal from "@/src/features/address/AddressModal";
+import { redirect } from "next/navigation";
 
 const Order = () => {
     const { data: user, isLoading } = useUserQuery();
@@ -71,8 +72,20 @@ const Order = () => {
         return (
             <form
                 onSubmit={(e) => {
+                    // 이벤트 전이 방지
                     e.preventDefault();
+
+                    if (
+                        phoneNumber === "000-0000-0000" ||
+                        phoneNumber.length < 11
+                    )
+                        return alert("전화번호를 확인해주세요.");
+
+                    if (address === "" || detailAddress === "")
+                        return alert("주소를 확인해주세요.");
+
                     alert("결제가 완료되었습니다.");
+                    redirect("/home");
                 }}
                 className="h-full min-h-screen w-full bg-gray-50 pt-16 md:pt-24"
             >

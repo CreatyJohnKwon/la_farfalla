@@ -49,7 +49,7 @@ const useCart = () => {
             userId: session?.user?.email,
             title: posts.title.eg,
             cartItemId: crypto.randomUUID(),
-            image: posts.image,
+            image: posts.image[0],
             productId: posts._id,
             size,
             color,

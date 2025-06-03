@@ -47,8 +47,8 @@ const CartItem = ({ item }: { item: SelectedItem }) => {
                 width={500}
                 height={500}
                 src={
-                    product.image
-                        ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${product.image}`
+                    product.image[0]
+                        ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${product.image[0]}`
                         : DefaultImg
                 }
                 objectFit="cover"

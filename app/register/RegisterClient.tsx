@@ -13,6 +13,9 @@ import { registUserAction } from "./actions";
 
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
+import { X } from "lucide-react";
+import UserAgreeOne from "@/src/entities/UserAgreeOne";
+import UserAgreeTwo from "@/src/entities/UserAgreeTwo";
 
 const RegisterClient = () => {
     const router = useRouter();
@@ -26,6 +29,10 @@ const RegisterClient = () => {
     const [detailAddress, setDetailAddress] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
     const [pwdVisible, setPwdVisible] = useState<boolean>(false);
+    const [isOpenUserAgreeOne, setIsOpenUserAgreeOne] =
+        useState<boolean>(false);
+    const [isOpenUserAgreeTwo, setIsOpenUserAgreeTwo] =
+        useState<boolean>(false);
 
     const { isOpen, openModal, closeModal, onComplete, formatPhoneNumber } =
         useAddress();
@@ -70,20 +77,20 @@ const RegisterClient = () => {
         detailAddress.trim();
 
     return (
-        <div className="flex h-screen flex-col items-center justify-center text-center z-30">
+        <div className="z-30 flex h-screen flex-col items-center justify-center text-center">
             <form
-                className="flex flex-col items-center justify-center gap-4 sm:w-7/12 sm:gap-6 pt-40 pb-10"
+                className="flex w-[90vw] flex-col items-center justify-center gap-4 p-0 pb-10 sm:w-1/2 sm:gap-6 sm:pt-40"
                 onSubmit={handleSubmit}
             >
-                <div className="flex w-full flex-col gap-4 text-base md:text-lg ">
+                <div className="flex w-full flex-col gap-4 text-base md:text-lg c_xl:text-xl">
                     {/* 이름 */}
                     <input
                         type="text"
                         name="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="이름을 입력하세요"
-                        className="rounded-none h-12 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                        placeholder="이름"
+                        className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                     />
                     {/* 이메일 */}
                     <input
@@ -91,41 +98,47 @@ const RegisterClient = () => {
                         name="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="이메일을 입력하세요"
-                        className="rounded-none h-12 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                        placeholder="이메일"
+                        className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                     />
 
                     <div className="w-full">
                         {/* 비밀번호 입력 영역 */}
                         <div className="relative w-full">
                             <input
-                            type={pwdVisible ? "text" : "password"}
-                            name="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="비밀번호를 입력하세요 (8자 이상)"
-                            className="rounded-none h-12 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 pr-12" // ← 오른쪽 패딩 주의!
+                                type={pwdVisible ? "text" : "password"}
+                                name="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="비밀번호 (대소문자 포함, 8자 이상)"
+                                className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 pr-12 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200" // ← 오른쪽 패딩 주의!
                             />
 
                             <button
-                            type="button"
-                            onClick={() => setPwdVisible(!pwdVisible)}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700"
+                                type="button"
+                                onClick={() => setPwdVisible(!pwdVisible)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700"
                             >
-                            {!pwdVisible ? <FaRegEyeSlash size={20} /> : <FaRegEye size={20} />}
+                                {!pwdVisible ? (
+                                    <FaRegEyeSlash size={20} />
+                                ) : (
+                                    <FaRegEye size={20} />
+                                )}
                             </button>
                         </div>
 
                         {/* 비밀번호 안전도 메시지 */}
                         {password.length > 0 && (
-                            <p className={`mt-4 text-left text-sm ${isPasswordSafe ? "text-green-500" : "text-red-500"}`}>
-                            {isPasswordSafe
-                                ? "비밀번호가 안전합니다."
-                                : "8자 이상, 대문자와 숫자를 포함해야 합니다."}
+                            <p
+                                className={`mt-4 text-left text-sm ${isPasswordSafe ? "text-green-500" : "text-red-500"}`}
+                            >
+                                {isPasswordSafe
+                                    ? "비밀번호가 안전합니다."
+                                    : "8자 이상, 대문자와 숫자를 포함해야 합니다."}
                             </p>
                         )}
                     </div>
-                    
+
                     {/* 비밀번호 확인 */}
                     <input
                         type="password"
@@ -133,9 +146,9 @@ const RegisterClient = () => {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="비밀번호 확인"
-                        className="rounded-none h-12 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                        className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                     />
-                    
+
                     {/* 비밀번호 일치 여부 */}
                     {confirmPassword.length > 0 && (
                         <p
@@ -161,7 +174,7 @@ const RegisterClient = () => {
                         }}
                         maxLength={phoneNumber.startsWith("02") ? 12 : 13}
                         placeholder="휴대폰 번호"
-                        className="rounded-none h-12 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                        className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                     />
                     <div className="relative w-full">
                         <input
@@ -171,7 +184,7 @@ const RegisterClient = () => {
                             onChange={(e) => setAddress(e.target.value)}
                             placeholder="주소"
                             readOnly
-                            className="rounded-none h-12 w-full border border-gray-200 bg-gray-50 px-4 pr-28 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 pr-28 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
                         <button
                             type="button"
@@ -188,30 +201,96 @@ const RegisterClient = () => {
                         name="detailAddress"
                         onChange={(e) => setDetailAddress(e.target.value)}
                         placeholder="상세주소"
-                        className="rounded-none h-12 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                        className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                     />
                 </div>
 
+                <section className="place-self-start bg-transparent font-pretendard">
+                    <label className="flex items-start gap-2 text-sm leading-tight">
+                        <input type="checkbox" name="userCertify" required />
+                        <div className="-mt-0.5">
+                            <button
+                                className="text-blue-900 underline hover:text-blue-500"
+                                onClick={() => setIsOpenUserAgreeOne(true)}
+                            >
+                                이용약관
+                            </button>
+                            <span>{",\t"}</span>
+                            <button
+                                className="text-blue-900 underline hover:text-blue-500"
+                                onClick={() => setIsOpenUserAgreeTwo(true)}
+                            >
+                                개인정보 수집 및 이용
+                            </button>
+                            에 모두 동의합니다.
+                            <span className="text-red-600">{"\t(필수)"}</span>
+                        </div>
+                    </label>
+                </section>
+
+                <section className="place-self-start bg-transparent font-pretendard">
+                    <label className="flex items-start gap-2 text-sm leading-tight">
+                        <input type="checkbox" name="checkAdult" required />
+                        <div className="-mt-0.5">
+                            만 14세 이상입니다.
+                            <span className="text-red-600">{"\t(필수)"}</span>
+                        </div>
+                    </label>
+                </section>
+
                 {/* 버튼 */}
-                <div className="flex w-full justify-center gap-4">
+                <div className="mt-6 flex w-full justify-center gap-4 c_xl:text-xl">
                     <button
-                        className={`w-full px-6 py-3 text-white ${!isValidForm || mutation.isLoading ? "bg-black/70" : "bg-black hover:bg-black/70"}`}
+                        className={`w-full px-6 py-3 text-white c_xl:py-4 ${!isValidForm || mutation.isLoading ? "bg-black/70" : "bg-black hover:bg-black/70"}`}
                         disabled={!isValidForm || mutation.isLoading}
                         type="submit"
-                    >{mutation.isLoading ? "가입 중…" : "가입하기"}</button>
+                    >
+                        {mutation.isLoading ? "가입 중…" : "가입하기"}
+                    </button>
                 </div>
                 {error && <p className="text-red-500">{error}</p>}
 
                 <p className="m-2 w-full border-b" />
                 <Link
                     href={"/login"}
-                    className="font-pretendard flex w-full justify-center  px-6 py-3 text-base text-black transition-colors duration-300 ease-in-out bg-[#F9F5EB] hover:bg-[#EADDC8] sm:text-lg md:text-base"
+                    className="flex w-full justify-center bg-[#F9F5EB] px-6 py-3 font-pretendard text-base text-black transition-colors duration-300 ease-in-out hover:bg-[#EADDC8] sm:text-lg md:text-base c_xl:py-4 c_xl:text-xl"
                 >
                     로그인으로 가기
                 </Link>
             </form>
             {isOpen && (
                 <AddressModal onComplete={onComplete} onClose={closeModal} />
+            )}
+            {(isOpenUserAgreeOne || isOpenUserAgreeTwo) && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                    onClick={() => {
+                        if (isOpenUserAgreeOne) setIsOpenUserAgreeOne(false);
+                        if (isOpenUserAgreeTwo) setIsOpenUserAgreeTwo(false);
+                    }}
+                >
+                    <div
+                        className="relative h-[60vh] w-[90vw] overflow-hidden bg-white p-4 text-center shadow-xl md:w-1/3"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* 닫기 버튼 */}
+                        <button
+                            onClick={() => {
+                                if (isOpenUserAgreeOne)
+                                    setIsOpenUserAgreeOne(false);
+                                if (isOpenUserAgreeTwo)
+                                    setIsOpenUserAgreeTwo(false);
+                            }}
+                            className="absolute right-4 top-4 text-zinc-400 transition hover:text-zinc-800"
+                            aria-label="닫기"
+                        >
+                            <X className="h-5 w-5" />
+                        </button>
+
+                        {isOpenUserAgreeOne && <UserAgreeOne />}
+                        {isOpenUserAgreeTwo && <UserAgreeTwo />}
+                    </div>
+                </div>
             )}
         </div>
     );

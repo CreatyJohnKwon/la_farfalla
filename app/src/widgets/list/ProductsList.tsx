@@ -25,7 +25,7 @@ const ProductsList = ({
                     <Image
                         src={
                             posts.image
-                                ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${posts.image}`
+                                ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${posts.image[0]}`
                                 : DefaultImage
                         }
                         alt={posts.title.eg}
