@@ -4,7 +4,7 @@ const navData: navDataProps = [{ text: "home" }, { text: "" }];
 
 const profileNavData: profNavDataProps = [
     { id: "Order", title: "주문정보" },
-    { id: "Edit", title: "회원정보수정" },
+    { id: "Edit", title: "정보수정" },
     { id: "Mileage", title: "적립금" },
     { id: "Coupon", title: "쿠폰" },
 ];

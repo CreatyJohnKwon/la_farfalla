@@ -29,15 +29,24 @@ const ProfileGate = () => {
                                     className="w-full object-cover transition group-hover:brightness-75"
                                 />
                                 {/* 절대 위치 텍스트 (ID) */}
-                                <span className="font-amstel absolute inset-0 flex items-center justify-center text-[clamp(1rem,1.8vw,2rem)] font-semibold text-white drop-shadow">
+                                {/* <p className="font-amstel absolute inset-0 flex items-center justify-center text-[clamp(1rem,1.8vw,2rem)] font-semibold text-white drop-shadow">
                                     {item.id}
-                                </span>
+                                </p> */}
+
+                                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                    <p className="font-amstel -mb-1 text-[clamp(1rem,1.8vw,2rem)] font-semibold text-white drop-shadow">
+                                        {item.id}
+                                    </p>
+                                    <p className="font-pretendard font-[200] text-xs md:text-[clamp(1rem,1.8vw,1rem)] text-white drop-shadow">
+                                        {item.title}
+                                    </p>
+                                </div>
                             </div>
 
-                            {/* 제목 (Image와 딱 붙이기) */}
-                            <span className="font-pretendard-thin block w-full text-center text-lg text-black -mt-14 leading-none">
-                            {item.title}
-                            </span>
+                            {/* 제목 (Image와 딱 붙이기)
+                            <span className="font-pretendard-thin block w-full text-center text-lg text-black sm:-mt-14 leading-none">
+                                {item.title}
+                            </span> */}
                         </div>
                     </div>
                 ))}
