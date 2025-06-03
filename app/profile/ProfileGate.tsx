@@ -14,7 +14,7 @@ const ProfileGate = () => {
                 {profileNavData.map((item) => (
                     <div
                         key={item.id}
-                        className="group relative h-full w-full cursor-pointer overflow-hidden sm:w-[20vw]"
+                        className="group relative h-full w-full cursor-pointer overflow-hidden sm:w-[24vw]"
                         onClick={() =>
                             router.push(`/profile/${item.id.toLowerCase()}`)
                         }
@@ -24,8 +24,8 @@ const ProfileGate = () => {
                                 <Image
                                     src={FolderImage}
                                     alt={`profile_folder_img_${item.id.toLowerCase()}`}
-                                    width={500}
-                                    height={500}
+                                    width={1000}
+                                    height={1000}
                                     className="w-full object-cover transition group-hover:brightness-75"
                                 />
                                 {/* 절대 위치 텍스트 (ID) */}
