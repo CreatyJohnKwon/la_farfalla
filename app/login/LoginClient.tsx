@@ -1,15 +1,18 @@
 "use client";
 
-import CustomButton from "@src/widgets/button/CustomButton";
 import useUsers from "@src/shared/hooks/useUsers";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import loginAction from "./actions";
 import Link from "next/link";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
+import { FaRegEye } from "react-icons/fa6";
+import { FaRegEyeSlash } from "react-icons/fa6";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 const LoginClient = () => {
+    const [pwdVisible, setPwdVisible] = useState<boolean>(false);
+
     const {
         email,
         password,
@@ -46,7 +49,7 @@ const LoginClient = () => {
         <div className="h-screen w-screen">
             <div className="flex h-full w-auto flex-col items-center justify-center text-center">
                 <form
-                    className="font-amstel flex w-5/6 flex-col items-center justify-center gap-6 sm:w-2/6"
+                    className="font-amstel flex w-5/6 flex-col items-center justify-center gap-6 md:w-5/12"
                     action={loginAction}
                 >
                     <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-6">
@@ -56,24 +59,33 @@ const LoginClient = () => {
                                 name="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Insert Email"
-                                className="h-14 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:h-16"
+                                placeholder="이메일을 입력하세요"
+                                className="rounded-none font-pretendard-bold h-12 w-full border border-gray-200 bg-gray-50 px-4 text-black transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:h-14"
                             />
-                            <input
-                                type="password"
-                                name="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Insert Password"
-                                className="h-14 w-full border border-gray-200 bg-gray-50 px-4 text-gray-700 transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:h-16"
-                            />
+                            <div className="relative w-full">
+                                <input
+                                    type={pwdVisible ? "text" : "password"}
+                                    name="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="패스워드를 입력하세요"
+                                    className="rounded-none font-pretendard-bold h-12 w-full border border-gray-200 bg-gray-50 px-4 text-black transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:h-14"
+                                />
+                                <button 
+                                    type="button"
+                                    onClick={() => setPwdVisible(!pwdVisible)}
+                                    className="absolute right-1 top-1/2 -translate-y-1/2 p-4 text-black bg-transparent"
+                                >
+                                    {!pwdVisible ? <FaRegEyeSlash /> : <FaRegEye />}
+                                </button>
+                            </div>
                         </div>
                         <button
                             className={`w-full ${
                                 isDisabled
                                     ? "bg-black"
                                     : "bg-black hover:bg-black/50"
-                            } text-xs font-semibold text-white transition-colors sm:col-span-2 md:text-xl`}
+                            } px-6 py-3 text-xs font-semibold text-white transition-colors sm:col-span-2 md:text-xl`}
                             disabled={isDisabled}
                             type="submit"
                         >
@@ -95,7 +107,7 @@ const LoginClient = () => {
                         >
                             <div className="flex justify-center">
                                 <SiNaver className="me-3 mt-[0.2em] sm:me-5" />
-                                Login with Naver
+                                <span className="text-sm md:text-base">Login with Naver</span>
                             </div>
                         </button>
 
@@ -106,7 +118,7 @@ const LoginClient = () => {
                         >
                             <div className="flex justify-center">
                                 <RiKakaoTalkFill className="me-3 size-5 sm:me-5" />
-                                Login with Kakao
+                                <span className="text-sm md:text-base">Login with Kakao</span>
                             </div>
                         </button>
                     </div>

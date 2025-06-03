@@ -63,6 +63,7 @@ type IDProps = {
 
 type profNavDataProps = {
     id: string;
+    title: string;
 }[];
 
 type menuDataProps = {

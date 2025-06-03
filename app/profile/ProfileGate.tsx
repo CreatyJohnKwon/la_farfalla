@@ -2,9 +2,7 @@
 
 import Image from "next/image";
 import FolderImage from "../../public/images/folder_ic.png";
-
 import { profileNavData } from "@src/entities/models/db/menuDatas";
-
 import { useRouter } from "next/navigation";
 
 const ProfileGate = () => {
@@ -21,16 +19,24 @@ const ProfileGate = () => {
                             router.push(`/profile/${item.id.toLowerCase()}`)
                         }
                     >
-                        <div className="flex h-full w-full items-center justify-center">
-                            <Image
-                                src={FolderImage}
-                                alt={`profile_folder_img_${item.id.toLowerCase()}`}
-                                width={500}
-                                height={500}
-                                className="h-full w-full object-cover transition group-hover:brightness-75"
-                            />
-                            <span className="font-amstel absolute text-[clamp(1rem,1.8vw,2rem)] font-semibold text-white drop-shadow">
-                                {item.id}
+                        <div className="flex h-full w-full items-center justify-center flex-col">
+                            <div className="relative w-full">
+                                <Image
+                                    src={FolderImage}
+                                    alt={`profile_folder_img_${item.id.toLowerCase()}`}
+                                    width={500}
+                                    height={500}
+                                    className="w-full object-cover transition group-hover:brightness-75"
+                                />
+                                {/* 절대 위치 텍스트 (ID) */}
+                                <span className="font-amstel absolute inset-0 flex items-center justify-center text-[clamp(1rem,1.8vw,2rem)] font-semibold text-white drop-shadow">
+                                    {item.id}
+                                </span>
+                            </div>
+
+                            {/* 제목 (Image와 딱 붙이기) */}
+                            <span className="font-pretendard-thin block w-full text-center text-lg text-black -mt-14 leading-none">
+                            {item.title}
                             </span>
                         </div>
                     </div>

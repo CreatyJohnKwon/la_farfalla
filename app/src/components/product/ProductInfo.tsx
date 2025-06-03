@@ -51,8 +51,8 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
     return (
         <div className="mt-5 flex h-full w-full flex-col items-center justify-center gap-6 md:col-span-1 md:mt-0">
             {/* title */}
-            <div className="flex flex-col items-center">
-                <span className="font-amstel text-[1.3em] md:text-[1.7em]">
+            <div className="flex flex-col items-center gap-5 text-center">
+                <span className="font-amstel text-[1.3em] md:text-[1.7em] w-[90vw]">
                     {posts.title.eg}
                 </span>
                 <span className="-mt-1 font-pretendard text-[0.8em] md:text-[1em]">

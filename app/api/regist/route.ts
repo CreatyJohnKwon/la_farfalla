@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
     try {
-        await connectDB(); // 여기는 mongoose 기반이니까 꼭 필요
+        await connectDB();
 
         const body = await req.json();
         const { name, email, password, confirmPassword, image, provider } =
