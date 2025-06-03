@@ -48,7 +48,7 @@ const useCart = () => {
         const newItem: SelectedItem = {
             userId: session?.user?.email,
             title: posts.title.eg,
-            cartItemId: crypto.randomUUID() || "7fdejsduhfibeoijrnf",
+            cartItemId: crypto.randomUUID(),
             image: posts.image,
             productId: posts._id,
             size,
