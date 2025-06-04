@@ -33,7 +33,6 @@ const ProfileClient = ({ id }: { id: string }) => {
                 break;
             default:
                 redirect("/profile/order");
-                break;
         }
     }, [id]);
 

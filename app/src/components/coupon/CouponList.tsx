@@ -39,14 +39,13 @@ const CouponList = () => {
                         className="border border-gray-200 bg-white p-4"
                     >
                         <div className="flex justify-between">
-                            <span className="font-pretendard-thin text-[0.3em] sm:text-[0.5em]">
+                            <span className="font-pretendard-thin mb-3 text-[0.3em] sm:text-[0.5em]">
                                 {coupon.name}
                             </span>
-                            <span className="text-[0.2em] text-red-500">
-                                만료일:{" "}
-                                {new Date(
+                            <span className="text-xs text-red-500">
+                                {`만료일: ${new Date(
                                     coupon.expiredAt,
-                                ).toLocaleDateString()}
+                                ).toLocaleDateString()}`}
                             </span>
                         </div>
                         <p className="mt-1 text-xs text-gray-600">

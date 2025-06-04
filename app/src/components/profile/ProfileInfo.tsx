@@ -63,7 +63,6 @@ const ProfileInfo = () => {
                 </div>
 
                 {/* 섹션 2 : 쿠폰 */}
-                {/* <span className="h-auto w-[50vw] border-b border-gray-200 sm:w-3/4" /> */}
                 <div className="flex h-full w-full items-center justify-end">
                     {isLoading ? (
                         <div className="flex animate-pulse flex-row items-center gap-4">

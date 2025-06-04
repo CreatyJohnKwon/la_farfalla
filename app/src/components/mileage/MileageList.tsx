@@ -67,8 +67,9 @@ const MileageList = () => {
                         </div>
                         {item.expiredAt && (
                             <div className="mt-1 text-xs text-gray-400">
-                                만료일:{" "}
-                                {new Date(item.expiredAt).toLocaleDateString()}
+                                {`만료일: ${new Date(
+                                    item.expiredAt,
+                                ).toLocaleDateString()}`}
                             </div>
                         )}
                     </li>

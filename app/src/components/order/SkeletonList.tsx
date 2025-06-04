@@ -8,6 +8,7 @@ const SkeletonList = () => (
                 <div className="mb-4 h-3 w-1/3 bg-gray-300" />
                 <div className="mb-4 h-3 w-1/3 bg-gray-300" />
                 <div className="mb-4 h-3 w-1/3 bg-gray-300" />
+                <div className="h-3 w-1/3 bg-gray-300" />
             </li>
         ))}
     </>

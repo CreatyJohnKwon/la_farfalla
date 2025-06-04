@@ -148,6 +148,7 @@ interface OrderItem {
 }
 
 interface OrderData {
+    _id?: string;
     userId: string;
     userNm: string;
     phoneNumber: string;
