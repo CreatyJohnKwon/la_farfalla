@@ -35,6 +35,11 @@ const userSchema = new mongoose.Schema(
             required: false,
             default: null, // 상세 주소는 선택 사항
         },
+        postcode: {
+            type: String,
+            required: false,
+            default: null, // 우편 번호는 선택 사항
+        },
         image: {
             type: String,
             default: null, // 프로필 이미지 URL

@@ -27,6 +27,7 @@ const RegisterClient = () => {
     const [phoneNumber, setPhoneNumber] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [detailAddress, setDetailAddress] = useState<string>("");
+    const [postcode, setPostcode] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
     const [pwdVisible, setPwdVisible] = useState<boolean>(false);
     const [isOpenUserAgreeOne, setIsOpenUserAgreeOne] =
@@ -186,12 +187,22 @@ const RegisterClient = () => {
                             readOnly
                             className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 pr-28 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
+                        <input
+                            name="postcode"
+                            value={postcode}
+                            onChange={(e) => setPostcode(e.target.value)}
+                            readOnly
+                            className="hidden"
+                        />
                         <button
                             type="button"
                             onClick={() =>
-                                openModal((value) => setAddress(value))
+                                openModal((value) => {
+                                    setAddress(value.address);
+                                    setPostcode(value.zonecode);
+                                })
                             }
-                            className="absolute right-1 top-1/2 -translate-y-1/2 bg-black px-4 py-3 text-xs text-white hover:bg-gray-800"
+                            className="absolute right-1 top-1/2 -translate-y-1/2 bg-black px-4 py-[1.3vh] text-sm text-white hover:bg-gray-800"
                         >
                             주소찾기
                         </button>
@@ -210,6 +221,7 @@ const RegisterClient = () => {
                         <input type="checkbox" name="userCertify" required />
                         <div className="-mt-0.5">
                             <button
+                                type="button"
                                 className="text-blue-900 underline hover:text-blue-500"
                                 onClick={() => setIsOpenUserAgreeOne(true)}
                             >
@@ -217,6 +229,7 @@ const RegisterClient = () => {
                             </button>
                             <span>{",\t"}</span>
                             <button
+                                type="button"
                                 className="text-blue-900 underline hover:text-blue-500"
                                 onClick={() => setIsOpenUserAgreeTwo(true)}
                             >

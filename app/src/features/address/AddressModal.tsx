@@ -1,11 +1,7 @@
 "use client";
 
+import { AddressModalProps } from "@/src/entities/type/interfaces";
 import { useEffect, useRef } from "react";
-
-interface AddressModalProps {
-    onComplete: (address: string) => void;
-    onClose: () => void;
-}
 
 declare global {
     interface Window {
@@ -24,9 +20,9 @@ const AddressModal = ({ onComplete, onClose }: AddressModalProps) => {
 
             new window.daum.Postcode({
                 oncomplete: (data: any) => {
-                    const fullAddress = data.address; // 전체 주소
-                    // const zonecode = data.zonecode; // 우편번호
-                    onComplete(fullAddress);
+                    const addressData = data.address; // 전체 주소
+                    const zonecode = data.zonecode; // 우편번호
+                    onComplete(data);
                     onClose();
                 },
                 width: "100%",

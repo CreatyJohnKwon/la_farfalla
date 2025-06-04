@@ -1,5 +1,4 @@
 import useUsers from "@src/shared/hooks/useUsers";
-import CustomButton from "@src/widgets/button/CustomButton";
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 
 const ProfileInfo = () => {
@@ -9,7 +8,7 @@ const ProfileInfo = () => {
     return (
         <div className="h-3/4 w-full flex-col sm:mt-20 md:grid md:grid-cols-4">
             <div className="flex h-full w-full items-center justify-center md:col-span-2">
-                <div className="flex h-full w-full flex-col items-start justify-center gap-8">
+                <div className="flex h-full w-full flex-col items-start justify-center gap-8 sm:pb-28">
                     {isLoading ? (
                         <div className="flex animate-pulse flex-col gap-4">
                             {/* 프로필 세부정보 스켈레톤 */}

@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from "react";
 import ProfileNavbar from "@src/widgets/navbar/ProfileNav";
-import { EditProfile, ProfileInfo, OrderList } from "@src/components/profile";
+import EditProfile from "@/src/components/profile/EditProfile";
+import ProfileInfo from "@/src/components/profile/ProfileInfo";
 import CouponList from "@src/components/coupon/CouponList";
 import MileageList from "@src/components/mileage/MileageList";
+import OrderList from "@src/components/order/OrderList";
+import { redirect } from "next/navigation";
 
 const ProfileClient = ({ id }: { id: string }) => {
     const [title, setTitle] = useState<string | "">("");
@@ -29,7 +32,7 @@ const ProfileClient = ({ id }: { id: string }) => {
                 setChild(<CouponList />);
                 break;
             default:
-                setChild(<div className="flex">500 : 기능 개발중입니다</div>);
+                redirect("/profile/order");
                 break;
         }
     }, [id]);

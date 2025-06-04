@@ -25,6 +25,9 @@ const registUser = async (formData: RegistReqData) => {
             detailAddress = formDataStatus
                 ? getFormValue(formData, "detailAddress")
                 : formData.detailAddress,
+            postcode = formDataStatus
+                ? getFormValue(formData, "postcode")
+                : formData.postcode,
             image = formDataStatus ? "" : formData.image,
             provider = formDataStatus ? "local" : formData.provider;
 
@@ -44,6 +47,7 @@ const registUser = async (formData: RegistReqData) => {
             phoneNumber,
             address,
             detailAddress,
+            postcode,
             reward: 0,
         });
 
@@ -71,6 +75,7 @@ const updateUser = async (form: {
     name?: string;
     address?: string;
     detailAddress?: string;
+    postcode?: string;
     password?: string;
     image?: string;
 }) => {
@@ -98,18 +103,30 @@ const getFormValue = (formData: FormData, key: string): string => {
     return typeof value === "string" ? value : "";
 };
 
-// lib/client/getMileage.ts
-export const getMileage = async (userId: string) => {
+const getMileage = async (userId: string) => {
     const res = await fetch(`/api/user/mileage?userId=${userId}`);
     if (!res.ok) throw new Error("마일리지 불러오기 실패");
     return await res.json();
 };
 
-// lib/client/getCoupon.ts
-export const getCoupon = async (userId: string) => {
+const getCoupon = async (userId: string) => {
     const res = await fetch(`/api/user/coupon?userId=${userId}`);
     if (!res.ok) throw new Error("쿠폰 불러오기 실패");
     return await res.json();
 };
 
-export { registUser, fetchUser, updateUser, getUser };
+const getOrder = async (userId: string) => {
+    const res = await fetch(`/api/user/order?userId=${userId}`);
+    if (!res.ok) throw new Error("마일리지 불러오기 실패");
+    return await res.json();
+};
+
+export {
+    registUser,
+    fetchUser,
+    updateUser,
+    getUser,
+    getMileage,
+    getCoupon,
+    getOrder,
+};

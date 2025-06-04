@@ -8,6 +8,8 @@ import { useCouponsQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import DefaultImage from "../../public/images/chill.png";
 import { useAddress } from "@/src/shared/hooks/useAddress";
 import AddressModal from "@/src/features/address/AddressModal";
+import { OrderData } from "@/src/entities/type/interfaces";
+import { orderAccept } from "@/src/features/order/order";
 import { redirect } from "next/navigation";
 
 const Order = () => {
@@ -21,11 +23,12 @@ const Order = () => {
     const [couponMemo, setCouponMemo] = useState("");
     const [useCoupon, setUseCoupon] = useState(0);
     const [applyCoupon, setApplyCoupon] = useState(0);
-    const [totalPrice, setTotalPrice] = useState("0");
-    const [totalMileage, setTotalMileage] = useState("0");
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [totalMileage, setTotalMileage] = useState(0);
     const [appliedCouponName, setAppliedCouponName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [address, setAddress] = useState("");
+    const [postcode, setPostcode] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
     const { orderDatas } = useOrder();
 
@@ -56,8 +59,8 @@ const Order = () => {
             ) *
             (1 - applyCoupon / 100);
 
-        setTotalPrice(Math.floor(discountedPrice).toLocaleString());
-        setTotalMileage(Math.floor(discountedPrice * 0.01).toLocaleString());
+        setTotalPrice(Math.floor(discountedPrice));
+        setTotalMileage(Math.floor(discountedPrice * 0.01));
     }, [applyCoupon, orderDatas]);
 
     useEffect(() => {
@@ -66,7 +69,37 @@ const Order = () => {
         setPhoneNumber(user.phoneNumber);
         setAddress(user.address);
         setDetailAddress(user.detailAddress);
+        setPostcode(user.postcode);
     }, [user]);
+
+    const orderComplete = async () => {
+        if (!user) return;
+
+        const orderData: OrderData = {
+            userId: user._id,
+            userNm: user.name,
+            phoneNumber: phoneNumber,
+            address: address,
+            detailAddress: detailAddress,
+            deliveryMemo: customMemo ? customMemo : deliveryMemo,
+            postcode: postcode,
+            items: orderDatas.map((item) => ({
+                productId: item.productId,
+                productNm: item.title,
+                quantity: item.quantity,
+                color: item.color,
+                size: item.size,
+            })),
+            totalPrice: totalPrice,
+        };
+
+        const res = await orderAccept(orderData);
+
+        if (res.success) {
+            alert(res.message);
+            redirect(`/home`);
+        } else alert(res.message);
+    };
 
     if (user && !isLoading && orderDatas.length > 0)
         return (
@@ -84,8 +117,10 @@ const Order = () => {
                     if (address === "" || detailAddress === "")
                         return alert("주소를 확인해주세요.");
 
-                    alert("결제가 완료되었습니다.");
-                    redirect("/home");
+                    if (deliveryMemo === "custom" && customMemo === "")
+                        return alert("배송 메모를 확인해주세요.");
+
+                    orderComplete();
                 }}
                 className="h-full min-h-screen w-full bg-gray-50 pt-16 md:pt-24"
             >
@@ -202,14 +237,24 @@ const Order = () => {
                                         readOnly
                                         className="mt-4 w-full appearance-none border border-gray-200 bg-white p-3 py-3 pr-8 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-200"
                                     />
+                                    <input
+                                        name="postcode"
+                                        value={postcode}
+                                        onChange={(e) =>
+                                            setPostcode(e.target.value)
+                                        }
+                                        readOnly
+                                        className="hidden"
+                                    />
                                     <button
                                         type="button"
                                         onClick={() =>
-                                            openModal((value) =>
-                                                setAddress(value),
-                                            )
+                                            openModal((value) => {
+                                                setAddress(value.address);
+                                                setPostcode(value.zonecode);
+                                            })
                                         }
-                                        className="font-pretendard-bold absolute right-1 top-1/3 bg-black px-5 py-2 text-sm text-white hover:bg-gray-800"
+                                        className="font-pretendard-bold absolute right-1 top-1/3 bg-black px-5 py-[0.7vh] text-sm text-white hover:bg-gray-800"
                                     >
                                         주소찾기
                                     </button>
@@ -259,7 +304,7 @@ const Order = () => {
                                         setCustomMemo(e.target.value)
                                     }
                                     placeholder="배송메모를 입력해 주세요."
-                                    className="mt-2 w-full border p-2 text-sm"
+                                    className="mt-1 w-full border p-3 text-sm focus:outline-none focus:ring-1 focus:ring-gray-200"
                                 />
                             )}
                         </section>
@@ -300,7 +345,7 @@ const Order = () => {
                                 </select>
                                 <button
                                     type="button"
-                                    className="font-pretendard-bold absolute right-1 top-1/2 -translate-y-1/2 bg-black px-5 py-2 text-sm text-white hover:bg-gray-800"
+                                    className="font-pretendard-bold absolute right-1 top-1/2 -translate-y-1/2 bg-black px-5 py-[0.7vh] text-sm text-white hover:bg-gray-800"
                                     onClick={() => {
                                         setApplyCoupon(useCoupon);
                                         setAppliedCouponName(couponMemo);
@@ -371,7 +416,7 @@ const Order = () => {
                                     상품가격
                                 </span>
                                 <span className="font-amstel">
-                                    {`KRW ${totalPrice}`}
+                                    {`KRW ${totalPrice.toLocaleString()}`}
                                 </span>
                             </div>
                             <div className="mb-2 flex justify-between text-sm">
@@ -383,7 +428,7 @@ const Order = () => {
                                     총 주문금액
                                 </span>
                                 <span className="font-amstel-bold">
-                                    {`KRW ${totalPrice}`}
+                                    {`KRW ${totalPrice.toLocaleString()}`}
                                 </span>
                                 <input
                                     type="text"
@@ -395,7 +440,7 @@ const Order = () => {
                             </div>
                             <p className="mt-2 font-pretendard text-sm text-gray-500">
                                 <span className="font-amstel">
-                                    {`${totalMileage} Mileage`}
+                                    {`${totalMileage.toLocaleString()} Mileage`}
                                 </span>
                                 <span> 적립 예정</span>
                                 <input

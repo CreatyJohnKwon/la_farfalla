@@ -68,7 +68,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { name, address, detailAddress, password, image } = body;
+    const { name, address, detailAddress, postcode, password, image } = body;
 
     await connectDB();
     const user = await User.findOne({ email: session.user.email });
@@ -80,6 +80,7 @@ export async function PATCH(req: Request) {
     if (name) user.name = name;
     if (address) user.address = address;
     if (detailAddress) user.detailAddress = detailAddress;
+    if (postcode) user.postcode = postcode;
     if (image) user.image = image;
     if (password) user.password = await bcrypt.hash(password, 10);
 

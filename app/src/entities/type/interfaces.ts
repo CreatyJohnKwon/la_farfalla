@@ -139,6 +139,37 @@ interface Coupon {
     updatedAt: string;
 }
 
+interface OrderItem {
+    productId: string;
+    productNm: string;
+    size: string;
+    color: string;
+    quantity: number;
+}
+
+interface OrderData {
+    userId: string;
+    userNm: string;
+    phoneNumber: string;
+    address: string;
+    detailAddress: string;
+    deliveryMemo: string;
+    postcode: string;
+    items: OrderItem[];
+    totalPrice: number;
+    createdAt?: string;
+}
+
+interface AddressModalProps {
+    onComplete: (address: string) => void;
+    onClose: () => void;
+}
+
+interface AddressData {
+    address: string;
+    zonecode: string;
+}
+
 export type {
     profNavDataProps,
     CustomButtonProps,
@@ -152,10 +183,14 @@ export type {
     NavbarProps,
     RegistReqData,
     UserProfileData,
+    OrderData,
+    OrderItem,
     SelectedItem,
     Products,
     MenuItem,
     Posts,
     Mileage,
     Coupon,
+    AddressModalProps,
+    AddressData,
 };

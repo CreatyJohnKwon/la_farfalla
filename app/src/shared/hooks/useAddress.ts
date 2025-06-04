@@ -1,3 +1,4 @@
+import { AddressData } from "@/src/entities/type/interfaces";
 import { useState } from "react";
 
 export const useAddress = () => {
@@ -6,7 +7,7 @@ export const useAddress = () => {
         () => () => {},
     );
 
-    const openModal = (callback: (address: string) => void) => {
+    const openModal = (callback: (address: AddressData) => void) => {
         setOnComplete(() => callback);
         setIsOpen(true);
     };
