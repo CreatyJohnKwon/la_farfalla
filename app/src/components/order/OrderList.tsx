@@ -33,7 +33,7 @@ const OrderList = () => {
 
     if (order && order.length > 0) {
         return (
-            <ul className="flex w-[90vw] flex-col gap-4 overflow-y-auto pb-10 sm:h-[43vh] sm:w-auto sm:pb-0">
+            <ul className="flex h-[43vh] w-[90vw] flex-col gap-4 overflow-y-auto pb-10 sm:w-auto">
                 {order.map((item, index) => (
                     <OrderItem key={`order_${index}`} item={item} />
                 ))}

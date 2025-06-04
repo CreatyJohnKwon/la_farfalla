@@ -176,7 +176,7 @@ const EditProfile = () => {
 
             <button
                 onClick={handleSubmit}
-                className="font-amstel place-self-end bg-black px-7 py-2 text-[0.8em] text-white"
+                className="font-amstel place-self-end bg-black px-5 py-2 text-xl text-white"
             >
                 Save
             </button>
