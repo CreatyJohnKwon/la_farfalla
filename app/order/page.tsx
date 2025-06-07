@@ -8,9 +8,10 @@ import { useCouponsQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import DefaultImage from "../../public/images/chill.png";
 import { useAddress } from "@/src/shared/hooks/useAddress";
 import AddressModal from "@/src/features/address/AddressModal";
-import { OrderData } from "@/src/entities/type/interfaces";
+import { MileageItem, OrderData } from "@/src/entities/type/interfaces";
 import { orderAccept } from "@/src/features/order/order";
 import { redirect } from "next/navigation";
+import { earnMileage } from "@/src/features/benefit/mileage";
 
 const Order = () => {
     const { data: user, isLoading } = useUserQuery();
@@ -96,6 +97,16 @@ const Order = () => {
         const res = await orderAccept(orderData);
 
         if (res.success) {
+            const addMileage: MileageItem = {
+                userId: user?._id,
+                type: "earn",
+                amount: totalMileage,
+                description: "주문 마일리지",
+                relatedOrderId: res?.orderId,
+                createdAt: new Date().toISOString(),
+            }
+            earnMileage(addMileage);
+
             alert(res.message);
             redirect(`/home`);
         } else alert(res.message);

@@ -8,7 +8,6 @@ const mileageSchema = new Schema(
         amount: { type: Number, required: true },
         description: { type: String },
         relatedOrderId: { type: Types.ObjectId, ref: "Order", default: null },
-        expiredAt: { type: Date },
         createdAt: { type: Date, default: Date.now },
     },
     { timestamps: true },

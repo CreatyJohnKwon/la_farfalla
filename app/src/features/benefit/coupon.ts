@@ -2,8 +2,10 @@
 
 import { ObjectId } from "mongoose";
 import { Coupon } from "@src/entities/models/Coupon";
+import { MileageItem } from "@/src/entities/type/interfaces";
+import { Mileage } from "@/src/entities/models/Mileage";
 
-const issueWelcomeBenefits = async (userId: ObjectId) => {
+const benefitWelcomeCoupon = async (userId: ObjectId) => {
     // 첫 가입 쿠폰 (3,000원 할인 / 7일 유효)
     await Coupon.create({
         userId,
@@ -16,4 +18,4 @@ const issueWelcomeBenefits = async (userId: ObjectId) => {
     });
 };
 
-export { issueWelcomeBenefits };
+export { benefitWelcomeCoupon };

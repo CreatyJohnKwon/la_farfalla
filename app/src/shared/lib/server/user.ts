@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
 import { RegistReqData } from "@src/entities/type/interfaces";
-import { issueWelcomeBenefits } from "@src/features/benefit/benefits";
+import { benefitWelcomeCoupon } from "@/src/features/benefit/coupon";
 
 const registUser = async (formData: RegistReqData) => {
     try {
@@ -51,7 +51,7 @@ const registUser = async (formData: RegistReqData) => {
             reward: 0,
         });
 
-        issueWelcomeBenefits(newUser._id);
+        benefitWelcomeCoupon(newUser._id);
 
         return { success: true, message: "회원가입이 완료되었습니다" };
     } catch (error) {

@@ -112,14 +112,13 @@ interface UserProfileData {
     coupon?: number;
 }
 
-interface Mileage {
-    _id: string;
+interface MileageItem {
+    _id?: string;
     userId: string;
     type: "earn" | "spend";
     amount: number;
     description?: string;
     relatedOrderId?: string;
-    expiredAt?: string;
     createdAt: string;
 }
 
@@ -190,7 +189,7 @@ export type {
     Products,
     MenuItem,
     Posts,
-    Mileage,
+    MileageItem,
     Coupon,
     AddressModalProps,
     AddressData,

@@ -22,14 +22,14 @@ const ProfileInfo = () => {
                         <>
                             {/* 프로필 세부정보 */}
                             <div className="flex flex-col items-start justify-center gap-2 text-center">
-                                <span className="font-pretendard text-2xl text-gray-800 md:font-pretendard md:text-3xl c_xl:text-4xl">
+                                <span className="font-pretendard text-xl sm:text-2xl text-gray-800 md:font-pretendard md:text-3xl c_xl:text-4xl">
                                     {`${user?.name || "Guest"} 님`}
                                 </span>
-                                <span className="font-pretendard c_xl:text-xl">
+                                <span className="font-pretendard text-sm sm:text-base c_xl:text-xl">
                                     누적 구매금액:
                                     <span className="font-amstel">{` ${user?.reward.toLocaleString()} KRW`}</span>
                                 </span>
-                                <span className="font-amstel text-gray-600 underline c_xl:text-xl">
+                                <span className="font-amstel text-gray-600 underline text-sm sm:text-base c_xl:text-xl">
                                     {user?.email || "이메일 정보 없음"}
                                 </span>
                             </div>
@@ -39,7 +39,7 @@ const ProfileInfo = () => {
                     {/* 로그아웃 버튼 */}
                     <div className="font-amstel -mt-4 flex">
                         <button
-                            className="z-10 h-12 w-20 bg-black text-base text-white transition-colors hover:bg-black/50 md:text-lg"
+                            className="z-10 h-10 sm:h-12 w-16 sm:w-20 bg-black text-sm text-white transition-colors hover:bg-black/50 sm:text-base md:text-lg"
                             disabled={false}
                             type="submit"
                             onClick={logoutHandler}
@@ -58,7 +58,7 @@ const ProfileInfo = () => {
                             Mileage : <div className="h-6 w-16 bg-slate-200" />
                         </div>
                     ) : (
-                        <span>{`Mileage : ${user?.mileage.toLocaleString()}`}</span>
+                        <span>{`Mileage : ${user?.reward.toLocaleString()}`}</span>
                     )}
                 </div>
 

@@ -77,7 +77,7 @@ const EditProfile = () => {
 
     return (
         <div className="font-pretendard-thin mb-10 flex h-full w-full flex-col items-start justify-start gap-6 text-xl sm:w-full sm:text-3xl">
-            <span className="font-amstel-thin h-[4vh] w-full border border-gray-200 bg-white px-4 py-2 text-gray-500 placeholder:text-gray-400 focus:outline-none">
+            <span className="font-amstel-thin w-full border border-gray-200 bg-white px-4 py-2 text-gray-500 placeholder:text-gray-400 focus:outline-none">
                 {session?.user?.email}
             </span>
 
@@ -91,7 +91,7 @@ const EditProfile = () => {
                             value={form.password}
                             onChange={handleChange}
                             placeholder="비밀번호 (8자 이상, 변경 시 입력)"
-                            className="h-[4vh] w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
                         {form.password.length > 0 && (
                             <p
@@ -114,7 +114,7 @@ const EditProfile = () => {
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             placeholder="비밀번호 확인"
-                            className="h-[4vh] w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
                         {confirmPassword.length > 0 && (
                             <p
@@ -139,7 +139,7 @@ const EditProfile = () => {
                     onChange={handleChange}
                     placeholder={"주소"}
                     readOnly
-                    className="h-[4vh] w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none"
+                    className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none"
                 />
                 <input
                     name="postcode"
@@ -171,7 +171,7 @@ const EditProfile = () => {
                 value={form.detailAddress}
                 onChange={handleChange}
                 placeholder={"상세주소"}
-                className="h-[4vh] w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
             />
 
             <button

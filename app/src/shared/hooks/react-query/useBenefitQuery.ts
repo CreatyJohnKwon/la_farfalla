@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getCoupon, getMileage, getOrder } from "@src/shared/lib/server/user";
-import { Coupon, Mileage, OrderData } from "@src/entities/type/interfaces";
+import { Coupon, MileageItem, OrderData } from "@src/entities/type/interfaces";
 
 const useCouponsQuery = (userId?: string) => {
     return useQuery<Coupon[], Error>({
@@ -13,7 +13,7 @@ const useCouponsQuery = (userId?: string) => {
 };
 
 const useMileageQuery = (userId?: string) => {
-    return useQuery<Mileage[], Error>({
+    return useQuery<MileageItem[], Error>({
         queryKey: ["mileage", userId],
         queryFn: () => getMileage(userId!),
         enabled: Boolean(userId), // userId 준비되면 요청

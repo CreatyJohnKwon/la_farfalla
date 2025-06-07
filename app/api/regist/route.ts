@@ -1,6 +1,6 @@
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
-import { issueWelcomeBenefits } from "@src/features/benefit/benefits";
+import { benefitWelcomeCoupon } from "@/src/features/benefit/coupon";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
         });
 
         await newUser.save();
-        await issueWelcomeBenefits(newUser._id);
+        await benefitWelcomeCoupon(newUser._id);
 
         return NextResponse.json({ message: "회원가입 완료" }, { status: 201 });
     } catch (err) {
