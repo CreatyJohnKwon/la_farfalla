@@ -45,10 +45,10 @@ const ProfileClient = ({ id }: { id: string }) => {
                     <ProfileInfo />
 
                     <div className="mt-5 flex h-full w-full flex-col items-center justify-start gap-5 text-5xl sm:m-0 sm:items-stretch">
-                        <span className="font-amstel-thin text-[0.8em] w-full">
+                        <span className="font-amstel-thin w-full text-[0.8em]">
                             {title}
                         </span>
-                        <span className="h-0 border-b border-gray-200 w-full sm:w-full" />
+                        <span className="h-0 w-full border-b border-gray-200 sm:w-full" />
                         <div>{child}</div>
                     </div>
                 </div>

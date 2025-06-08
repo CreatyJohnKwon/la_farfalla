@@ -3,6 +3,7 @@ import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
 import { RegistReqData } from "@src/entities/type/interfaces";
 import { benefitWelcomeCoupon } from "@/src/features/benefit/coupon";
+import { signOut } from "next-auth/react";
 
 const registUser = async (formData: RegistReqData) => {
     try {

@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     }
 
     await connectDB();
-    const coupons = await Coupon.find({ userId }).lean();
+    const coupons = await Coupon.find({ userId, isUsed: false }).lean();
 
     return NextResponse.json(coupons);
 }

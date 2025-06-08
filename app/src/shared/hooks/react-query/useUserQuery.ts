@@ -3,17 +3,22 @@ import { fetchUser, updateUser } from "@src/shared/lib/server/user";
 import { signOut } from "next-auth/react";
 import { useEffect } from "react";
 
-const useUserQuery = () => {
+const useUserQuery = (enabled = true) => {
+    const queryClient = useQueryClient();
+
     const { data, error, isError, isLoading } = useQuery({
         queryKey: ["user"],
         queryFn: fetchUser,
+        enabled,
+        retry: false,
     });
 
     useEffect(() => {
-        if (data?.error?.includes("실패")) {
+        if (error) {
+            queryClient.clear(); // 캐시 초기화
             signOut({ callbackUrl: "/" });
         }
-    }, [data]);
+    }, [error]);
 
     return { data, error, isError, isLoading };
 };

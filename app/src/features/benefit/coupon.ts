@@ -2,8 +2,6 @@
 
 import { ObjectId } from "mongoose";
 import { Coupon } from "@src/entities/models/Coupon";
-import { MileageItem } from "@/src/entities/type/interfaces";
-import { Mileage } from "@/src/entities/models/Mileage";
 
 const benefitWelcomeCoupon = async (userId: ObjectId) => {
     // 첫 가입 쿠폰 (3,000원 할인 / 7일 유효)
@@ -18,4 +16,29 @@ const benefitWelcomeCoupon = async (userId: ObjectId) => {
     });
 };
 
-export { benefitWelcomeCoupon };
+// 쿠폰 사용됨 로직
+const spendCoupon = async (userId: ObjectId, couponCode: string) => {
+    const updatedCoupon = await Coupon.findOneAndUpdate(
+        {
+            userId,
+            code: couponCode,
+            isUsed: false,
+            expiredAt: { $gt: new Date() }, // 만료되지 않은 것만
+        },
+        {
+            $set: {
+                isUsed: true,
+                usedAt: new Date(),
+            },
+        },
+        { new: true },
+    );
+
+    if (!updatedCoupon) {
+        throw new Error("사용 가능한 쿠폰이 없습니다.");
+    }
+
+    console.log(`coupon spend ${couponCode}, on: ${updatedCoupon.usedAt}`);
+};
+
+export { benefitWelcomeCoupon, spendCoupon };

@@ -32,7 +32,7 @@ const CouponList = () => {
     // 쿠폰이 하나라도 있을 때
     if (coupons && coupons.length > 0) {
         return (
-            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
+            <ul className="flex h-[43vh] w-[90vw] flex-col gap-4 overflow-y-auto sm:w-auto">
                 {coupons.map((coupon: Coupon) => (
                     <li
                         key={coupon._id}

@@ -61,6 +61,11 @@ const userSchema = new mongoose.Schema(
             required: false,
             default: 0,
         },
+        mileage: {
+            type: Number,
+            required: false,
+            default: 0,
+        },
     },
     {
         timestamps: true,

@@ -1,13 +1,23 @@
 "use server";
 
 import Order from "@/src/entities/models/Order";
+import User from "@/src/entities/models/User";
 import { OrderData } from "@/src/entities/type/interfaces";
+import mongoose from "mongoose";
 
-export const orderAccept = async (orderData: OrderData) => {
+const orderAccept = async (orderData: OrderData) => {
     try {
         const newOrder = await Order.create({
             ...orderData,
         });
+
+        // 사용자 정보(DB)에 마일리지 요소만 차감
+        await User.findByIdAndUpdate(
+            new mongoose.Types.ObjectId(orderData.userId),
+            {
+                $inc: { reward: +orderData.totalPrice },
+            },
+        );
 
         return {
             success: true,
@@ -24,3 +34,5 @@ export const orderAccept = async (orderData: OrderData) => {
         };
     }
 };
+
+export { orderAccept };

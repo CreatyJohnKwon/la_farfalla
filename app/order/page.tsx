@@ -1,40 +1,55 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import useOrder from "@src/shared/hooks/useOrder";
-import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
-import { useCouponsQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
+
 import DefaultImage from "../../public/images/chill.png";
 import { useAddress } from "@/src/shared/hooks/useAddress";
 import AddressModal from "@/src/features/address/AddressModal";
-import { MileageItem, OrderData } from "@/src/entities/type/interfaces";
-import { orderAccept } from "@/src/features/order/order";
-import { redirect } from "next/navigation";
-import { earnMileage } from "@/src/features/benefit/mileage";
 
 const Order = () => {
-    const { data: user, isLoading } = useUserQuery();
-    const { data: coupons, isLoading: isCouponsLoading } = useCouponsQuery(
-        user?._id,
-    );
-
-    const [deliveryMemo, setDeliveryMemo] = useState("");
-    const [customMemo, setCustomMemo] = useState("");
-    const [couponMemo, setCouponMemo] = useState("");
-    const [useCoupon, setUseCoupon] = useState(0);
-    const [applyCoupon, setApplyCoupon] = useState(0);
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [totalMileage, setTotalMileage] = useState(0);
-    const [appliedCouponName, setAppliedCouponName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [address, setAddress] = useState("");
-    const [postcode, setPostcode] = useState("");
-    const [detailAddress, setDetailAddress] = useState("");
     const { orderDatas } = useOrder();
-
     const { isOpen, openModal, closeModal, onComplete, formatPhoneNumber } =
         useAddress();
+    const {
+        user,
+        isLoading,
+        coupons,
+        isCouponsLoading,
+
+        mileage,
+        setMileage,
+        usedMileage,
+        setUsedMileage,
+        deliveryMemo,
+        setDeliveryMemo,
+        customMemo,
+        setCustomMemo,
+        couponMemo,
+        setCouponMemo,
+        useCoupon,
+        setUseCoupon,
+        applyCoupon,
+        setApplyCoupon,
+        totalPrice,
+        setTotalPrice,
+        totalMileage,
+        setTotalMileage,
+        appliedCouponName,
+        setAppliedCouponName,
+        phoneNumber,
+        setPhoneNumber,
+        address,
+        setAddress,
+        postcode,
+        setPostcode,
+        detailAddress,
+        setDetailAddress,
+        setSaveAddress,
+
+        orderComplete,
+    } = useOrder();
 
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -58,11 +73,12 @@ const Order = () => {
                 (acc, p) => acc + p.discountPrice * p.quantity,
                 0,
             ) *
-            (1 - applyCoupon / 100);
+                (1 - applyCoupon / 100) -
+            usedMileage;
 
         setTotalPrice(Math.floor(discountedPrice));
         setTotalMileage(Math.floor(discountedPrice * 0.01));
-    }, [applyCoupon, orderDatas]);
+    }, [usedMileage, applyCoupon, orderDatas]);
 
     useEffect(() => {
         if (!user) return;
@@ -71,46 +87,14 @@ const Order = () => {
         setAddress(user.address);
         setDetailAddress(user.detailAddress);
         setPostcode(user.postcode);
+        setMileage(user.mileage);
     }, [user]);
 
-    const orderComplete = async () => {
+    useEffect(() => {
         if (!user) return;
 
-        const orderData: OrderData = {
-            userId: user._id,
-            userNm: user.name,
-            phoneNumber: phoneNumber,
-            address: address,
-            detailAddress: detailAddress,
-            deliveryMemo: customMemo ? customMemo : deliveryMemo,
-            postcode: postcode,
-            items: orderDatas.map((item) => ({
-                productId: item.productId,
-                productNm: item.title,
-                quantity: item.quantity,
-                color: item.color,
-                size: item.size,
-            })),
-            totalPrice: totalPrice,
-        };
-
-        const res = await orderAccept(orderData);
-
-        if (res.success) {
-            const addMileage: MileageItem = {
-                userId: user?._id,
-                type: "earn",
-                amount: totalMileage,
-                description: "주문 마일리지",
-                relatedOrderId: res?.orderId,
-                createdAt: new Date().toISOString(),
-            }
-            earnMileage(addMileage);
-
-            alert(res.message);
-            redirect(`/home`);
-        } else alert(res.message);
-    };
+        setMileage(user.mileage - usedMileage);
+    }, [usedMileage]);
 
     if (user && !isLoading && orderDatas.length > 0)
         return (
@@ -318,6 +302,18 @@ const Order = () => {
                                     className="mt-1 w-full border p-3 text-sm focus:outline-none focus:ring-1 focus:ring-gray-200"
                                 />
                             )}
+
+                            {/* custom akkk */}
+                            <label className="mt-4 flex items-center gap-2 justify-self-end font-pretendard text-sm leading-tight">
+                                <input
+                                    type="checkbox"
+                                    name="saveAddress"
+                                    onChange={(e) =>
+                                        setSaveAddress(e.target.checked)
+                                    }
+                                />
+                                <span>다음에도 이 주소 사용하기</span>
+                            </label>
                         </section>
 
                         {/* 쿠폰 및 적립금 */}
@@ -347,7 +343,7 @@ const Order = () => {
                                     {!isCouponsLoading &&
                                         coupons?.map((items, index) => (
                                             <option
-                                                key={`coupon_${index}`}
+                                                key={`cp_${index}`}
                                                 value={items.name}
                                             >
                                                 {items.name}
@@ -360,7 +356,6 @@ const Order = () => {
                                     onClick={() => {
                                         setApplyCoupon(useCoupon);
                                         setAppliedCouponName(couponMemo);
-                                        setCouponMemo("");
                                     }}
                                     disabled={couponMemo === ""}
                                 >
@@ -401,16 +396,73 @@ const Order = () => {
                                 적립금
                             </h2>
                             <div className="flex items-center justify-between">
-                                <p className="text-sm">
-                                    사용 가능 적립금{" "}
-                                    <span className="font-medium">
-                                        {user.mileage || 0}
-                                    </span>
-                                </p>
-                                <label className="flex items-center gap-1 text-sm">
-                                    <input type="checkbox" name="usePoint" />
-                                    전액사용
-                                </label>
+                                {user.mileage > 0 || user.mileage ? (
+                                    <>
+                                        <span className="text-sm">
+                                            {`사용 가능 적립금`}
+                                            <span className="font-amstel ms-2">
+                                                {mileage.toLocaleString()}
+                                            </span>
+                                            <input
+                                                className="font-amstel ms-4 mt-1 w-12 rounded-none border-b text-black focus:outline-none focus:ring-1 focus:ring-gray-200"
+                                                type="text"
+                                                inputMode="numeric"
+                                                pattern="[0-9]*"
+                                                name="useMileage"
+                                                value={
+                                                    usedMileage !== 0
+                                                        ? usedMileage.toLocaleString()
+                                                        : ""
+                                                }
+                                                onChange={(e) => {
+                                                    const raw =
+                                                        e.target.value.replace(
+                                                            /[^0-9]/g,
+                                                            "",
+                                                        );
+                                                    const value = Number(raw);
+
+                                                    if (value > user.mileage) {
+                                                        alert(
+                                                            "사용 가능한 적립금보다 많습니다.",
+                                                        );
+                                                        return;
+                                                    }
+
+                                                    setUsedMileage(value);
+                                                }}
+                                                placeholder={"0"}
+                                            />
+                                        </span>
+                                        <label className="flex items-center gap-1 text-sm">
+                                            <input
+                                                type="checkbox"
+                                                name="usePoint"
+                                                onChange={(e) => {
+                                                    const checked =
+                                                        e.target.checked;
+                                                    checked
+                                                        ? setUsedMileage(
+                                                              Number(
+                                                                  user.mileage,
+                                                              ),
+                                                          )
+                                                        : setUsedMileage(0);
+                                                }}
+                                            />
+                                            전액사용
+                                        </label>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="text-sm">
+                                            {`사용 가능 적립금`}
+                                            <span className="font-amstel ms-2">
+                                                {mileage.toLocaleString()}
+                                            </span>
+                                        </span>
+                                    </>
+                                )}
                             </div>
                         </section>
                     </div>
@@ -500,13 +552,13 @@ const Order = () => {
 
                         {/* 약관 동의 */}
                         <section className="border bg-white p-4 font-pretendard">
-                            <label className="flex items-start gap-2 text-sm leading-tight">
+                            <label className="flex items-center gap-2 text-sm leading-tight">
                                 <input
                                     type="checkbox"
                                     name="paymentAgree"
                                     required
                                 />
-                                <span className="-mt-0.5">
+                                <span className="font-pretendard">
                                     결제 동의 (구매조건 확인 및 결제진행에 동의)
                                 </span>
                             </label>

@@ -32,17 +32,6 @@ export async function GET() {
         expiredAt: { $gt: now },
     }).lean();
 
-    // ✅ 사용하지 않았고, 아직 유효한 마일리지
-    const mileageHistory = await Mileage.find({
-        userId: user._id,
-        expiredAt: { $gt: now },
-    }).lean();
-
-    // 마일리지 총합 계산 (적립 - 사용)
-    const totalMileage = mileageHistory.reduce((acc, m) => {
-        return m.type === "earn" ? acc + m.amount : acc - m.amount;
-    }, 0);
-
     const result: UserProfileData = {
         _id: user._id,
         name: user.name,
@@ -54,7 +43,7 @@ export async function GET() {
         postcode: user.postcode || "000-000",
         provider: user.provider,
         reward: user.reward || 0,
-        mileage: totalMileage || 0,
+        mileage: user.mileage || 0,
         coupon: availableCoupons.length || 0,
     };
 
@@ -68,7 +57,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { name, address, detailAddress, postcode, password, image } = body;
+    const { name, address, detailAddress, postcode, password, mileage } = body;
 
     await connectDB();
     const user = await User.findOne({ email: session.user.email });
@@ -81,8 +70,8 @@ export async function PATCH(req: Request) {
     if (address) user.address = address;
     if (detailAddress) user.detailAddress = detailAddress;
     if (postcode) user.postcode = postcode;
-    if (image) user.image = image;
     if (password) user.password = await bcrypt.hash(password, 10);
+    if (mileage) user.mileage = mileage;
 
     await user.save();
 

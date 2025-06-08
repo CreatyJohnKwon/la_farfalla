@@ -1,7 +1,7 @@
 "use client";
 
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
-import { Mileage } from "@src/entities/type/interfaces";
+import { MileageItem } from "@src/entities/type/interfaces";
 import { useMileageQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import SkeletonList from "./SkeletonList";
 
@@ -34,8 +34,8 @@ const MileageList = () => {
     // 마일리지가 하나라도 있을 때
     if (mileage && mileage.length > 0) {
         return (
-            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
-                {mileage.map((item: Mileage) => (
+            <ul className="flex h-[43vh] w-[85vw] flex-col gap-4 overflow-y-auto sm:w-auto">
+                {mileage.map((item: MileageItem) => (
                     <li
                         key={item._id}
                         className={`border p-4 ${
@@ -65,13 +65,6 @@ const MileageList = () => {
                         <div className="mt-1 text-xs text-gray-500">
                             {new Date(item.createdAt).toLocaleDateString()} 발생
                         </div>
-                        {item.expiredAt && (
-                            <div className="mt-1 text-xs text-gray-400">
-                                {`만료일: ${new Date(
-                                    item.expiredAt,
-                                ).toLocaleDateString()}`}
-                            </div>
-                        )}
                     </li>
                 ))}
             </ul>

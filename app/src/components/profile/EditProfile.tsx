@@ -75,117 +75,123 @@ const EditProfile = () => {
             </p>
         );
 
-    return (
-        <div className="font-pretendard-thin mb-10 flex h-full w-[85vw] sm:w-full flex-col items-start justify-start gap-6 text-lg sm:text-xl c_xl:text-3xl">
-            <span className="font-amstel-thin w-full border border-gray-200 bg-white px-4 py-2 text-gray-500 placeholder:text-gray-400 focus:outline-none">
-                {session?.user?.email}
-            </span>
+    if (session && session.user)
+        return (
+            <div className="font-pretendard-thin flex h-[43vh] w-[85vw] flex-col items-start justify-start gap-6 overflow-y-auto text-lg sm:w-full sm:text-xl c_xl:text-3xl">
+                <span className="font-amstel-thin w-full border border-gray-200 bg-white px-4 py-2 text-gray-500 placeholder:text-gray-400 focus:outline-none">
+                    {session.user.email}
+                </span>
 
-            {user.provider === "local" && (
-                <>
-                    {/* 비밀번호 */}
-                    <div className="relative w-full">
-                        <input
-                            type="password"
-                            name="password"
-                            value={form.password}
-                            onChange={handleChange}
-                            placeholder="비밀번호 (8자 이상, 변경 시 입력)"
-                            className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                        />
-                        {form.password.length > 0 && (
-                            <p
-                                className={`absolute right-3 top-1/2 -translate-y-1/2 ${
-                                    isPasswordSafe
-                                        ? "text-green-500"
-                                        : "text-red-500"
-                                }`}
-                            >
-                                {isPasswordSafe ? "안전함" : "위험함"}
-                            </p>
-                        )}
-                    </div>
+                {user.provider === "local" && (
+                    <>
+                        {/* 비밀번호 */}
+                        <div className="relative w-full">
+                            <input
+                                type="password"
+                                name="password"
+                                value={form.password}
+                                onChange={handleChange}
+                                placeholder="비밀번호 (8자 이상, 변경 시 입력)"
+                                className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            />
+                            {form.password.length > 0 && (
+                                <p
+                                    className={`absolute right-3 top-1/2 -translate-y-1/2 ${
+                                        isPasswordSafe
+                                            ? "text-green-500"
+                                            : "text-red-500"
+                                    }`}
+                                >
+                                    {isPasswordSafe ? "안전함" : "위험함"}
+                                </p>
+                            )}
+                        </div>
 
-                    {/* 비밀번호 확인 */}
-                    <div className="relative w-full">
-                        <input
-                            type="password"
-                            name="confirmPassword"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="비밀번호 확인"
-                            className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                        />
-                        {confirmPassword.length > 0 && (
-                            <p
-                                className={`absolute right-3 top-1/2 -translate-y-1/2 ${
-                                    isPasswordMatch
-                                        ? "text-green-500"
-                                        : "text-red-500"
-                                }`}
-                            >
-                                {isPasswordMatch ? "일치함" : "불일치"}
-                            </p>
-                        )}
-                    </div>
-                </>
-            )}
+                        {/* 비밀번호 확인 */}
+                        <div className="relative w-full">
+                            <input
+                                type="password"
+                                name="confirmPassword"
+                                value={confirmPassword}
+                                onChange={(e) =>
+                                    setConfirmPassword(e.target.value)
+                                }
+                                placeholder="비밀번호 확인"
+                                className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            />
+                            {confirmPassword.length > 0 && (
+                                <p
+                                    className={`absolute right-3 top-1/2 -translate-y-1/2 ${
+                                        isPasswordMatch
+                                            ? "text-green-500"
+                                            : "text-red-500"
+                                    }`}
+                                >
+                                    {isPasswordMatch ? "일치함" : "불일치"}
+                                </p>
+                            )}
+                        </div>
+                    </>
+                )}
 
-            <div className="relative w-full">
+                <div className="relative w-full">
+                    <input
+                        type="text"
+                        name="address"
+                        value={form.address}
+                        onChange={handleChange}
+                        placeholder={"주소"}
+                        readOnly
+                        className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none"
+                    />
+                    <input
+                        name="postcode"
+                        value={form.postcode}
+                        onChange={handleChange}
+                        readOnly
+                        className="hidden"
+                    />
+                    <button
+                        type="button"
+                        onClick={() =>
+                            openModal((value) =>
+                                setForm((prev) => ({
+                                    ...prev, // 기존 name, detailAddress, password는 손대지 않고
+                                    address: value.address, // 새 주소 추가
+                                    postcode: value.zonecode, // 새 우편번호 추가
+                                })),
+                            )
+                        }
+                        className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/70 px-5 py-2 text-base font-[300] text-white hover:bg-black sm:text-lg"
+                    >
+                        주소찾기
+                    </button>
+                </div>
+
                 <input
                     type="text"
-                    name="address"
-                    value={form.address}
+                    name="detailAddress"
+                    value={form.detailAddress}
                     onChange={handleChange}
-                    placeholder={"주소"}
-                    readOnly
-                    className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none"
+                    placeholder={"상세주소"}
+                    className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                 />
-                <input
-                    name="postcode"
-                    value={form.postcode}
-                    onChange={handleChange}
-                    readOnly
-                    className="hidden"
-                />
+
                 <button
-                    type="button"
-                    onClick={() =>
-                        openModal((value) =>
-                            setForm((prev) => ({
-                                ...prev, // 기존 name, detailAddress, password는 손대지 않고
-                                address: value.address, // 새 주소 추가
-                                postcode: value.zonecode, // 새 우편번호 추가
-                            })),
-                        )
-                    }
-                    className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/70 px-5 py-2 font-[300] text-white hover:bg-black text-base sm:text-lg"
+                    onClick={handleSubmit}
+                    className="font-amstel place-self-end bg-black px-5 py-2 text-base text-white sm:text-lg"
                 >
-                    주소찾기
+                    Save
                 </button>
+
+                {isOpen && (
+                    <AddressModal
+                        onComplete={onComplete}
+                        onClose={closeModal}
+                    />
+                )}
             </div>
-
-            <input
-                type="text"
-                name="detailAddress"
-                value={form.detailAddress}
-                onChange={handleChange}
-                placeholder={"상세주소"}
-                className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
-            />
-
-            <button
-                onClick={handleSubmit}
-                className="font-amstel place-self-end bg-black px-5 py-2 text-base sm:text-lg text-white"
-            >
-                Save
-            </button>
-
-            {isOpen && (
-                <AddressModal onComplete={onComplete} onClose={closeModal} />
-            )}
-        </div>
-    );
+        );
 };
 
 export default EditProfile;

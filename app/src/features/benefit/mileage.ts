@@ -14,27 +14,21 @@ const earnMileage = async (item: MileageItem) => {
 
     // 사용자 정보(DB)에 마일리지 요소만 추가
     await User.findByIdAndUpdate(new mongoose.Types.ObjectId(userId), {
-        $inc: { reward: amount },
+        $inc: { mileage: amount },
     });
-}
+};
 
 // 상품 구매 시에 사용된 마일리지 차감
 const spendMileage = async (item: MileageItem) => {
-  const { userId, amount } = item;
+    const { userId, amount } = item;
 
     // 마일리지 사용 정보 투입
     await Mileage.create(item);
-        // ...rest,
-        // userId,
-        // amount,
-        // type: "spend",
-        // createdAt: new Date().toISOString(),
-    // );
 
     // 사용자 정보(DB)에 마일리지 요소만 차감
     await User.findByIdAndUpdate(new mongoose.Types.ObjectId(userId), {
-        $inc: { reward: -amount },
+        $inc: { mileage: -amount },
     });
-}
+};
 
 export { earnMileage, spendMileage };
