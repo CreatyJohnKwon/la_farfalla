@@ -70,13 +70,13 @@ const EditProfile = () => {
 
     if (isLoading)
         return (
-            <p className="font-amstel-thin \\ place-self-center text-center">
+            <p className="font-amstel-thin place-self-center text-center text-lg">
                 Loading...
             </p>
         );
 
     return (
-        <div className="font-pretendard-thin mb-10 flex h-full w-full flex-col items-start justify-start gap-6 text-xl sm:w-full sm:text-3xl">
+        <div className="font-pretendard-thin mb-10 flex h-full w-[85vw] sm:w-full flex-col items-start justify-start gap-6 text-lg sm:text-xl c_xl:text-3xl">
             <span className="font-amstel-thin w-full border border-gray-200 bg-white px-4 py-2 text-gray-500 placeholder:text-gray-400 focus:outline-none">
                 {session?.user?.email}
             </span>
@@ -95,7 +95,7 @@ const EditProfile = () => {
                         />
                         {form.password.length > 0 && (
                             <p
-                                className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm sm:text-xl ${
+                                className={`absolute right-3 top-1/2 -translate-y-1/2 ${
                                     isPasswordSafe
                                         ? "text-green-500"
                                         : "text-red-500"
@@ -118,7 +118,7 @@ const EditProfile = () => {
                         />
                         {confirmPassword.length > 0 && (
                             <p
-                                className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm sm:text-xl ${
+                                className={`absolute right-3 top-1/2 -translate-y-1/2 ${
                                     isPasswordMatch
                                         ? "text-green-500"
                                         : "text-red-500"
@@ -159,7 +159,7 @@ const EditProfile = () => {
                             })),
                         )
                     }
-                    className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/70 px-5 py-2 text-base font-[300] text-white hover:bg-black"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/70 px-5 py-2 font-[300] text-white hover:bg-black text-base sm:text-lg"
                 >
                     주소찾기
                 </button>
@@ -176,7 +176,7 @@ const EditProfile = () => {
 
             <button
                 onClick={handleSubmit}
-                className="font-amstel place-self-end bg-black px-5 py-2 text-xl text-white"
+                className="font-amstel place-self-end bg-black px-5 py-2 text-base sm:text-lg text-white"
             >
                 Save
             </button>

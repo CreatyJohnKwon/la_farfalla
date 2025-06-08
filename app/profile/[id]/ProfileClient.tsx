@@ -41,14 +41,14 @@ const ProfileClient = ({ id }: { id: string }) => {
             <div className="grid h-full w-full items-center justify-center sm:grid-cols-10">
                 <ProfileNavbar id={id} />
 
-                <div className="col-span-8 mt-32 flex h-full w-[80vw] flex-col items-start justify-center sm:mt-0 sm:w-[90%]">
+                <div className="col-span-8 mt-32 flex h-full w-[85vw] flex-col items-start justify-center sm:mt-0 sm:w-[90%]">
                     <ProfileInfo />
 
                     <div className="mt-5 flex h-full w-full flex-col items-center justify-start gap-5 text-5xl sm:m-0 sm:items-stretch">
-                        <span className="font-amstel-thin place-self-start text-[0.8em]">
+                        <span className="font-amstel-thin text-[0.8em] w-full">
                             {title}
                         </span>
-                        <span className="w-full border-b border-gray-200" />
+                        <span className="h-0 border-b border-gray-200 w-full sm:w-full" />
                         <div>{child}</div>
                     </div>
                 </div>
