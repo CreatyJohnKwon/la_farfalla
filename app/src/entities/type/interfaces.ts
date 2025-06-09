@@ -158,6 +158,9 @@ interface OrderData {
     items: OrderItem[];
     totalPrice: number;
     createdAt?: string;
+    shippingStatus: "pending" | "ready" | "shipped" | "delivered" | "cancelled";
+    shippedAt?: string;
+    trackingNumber?: string;
 }
 
 interface AddressModalProps {

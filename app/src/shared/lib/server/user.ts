@@ -1,9 +1,8 @@
 import bcrypt from "bcryptjs";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
-import { RegistReqData } from "@src/entities/type/interfaces";
+import { RegistReqData, UserProfileData } from "@src/entities/type/interfaces";
 import { benefitWelcomeCoupon } from "@/src/features/benefit/coupon";
-import { signOut } from "next-auth/react";
 
 const registUser = async (formData: RegistReqData) => {
     try {
@@ -99,6 +98,12 @@ const getUser = async (email: string) => {
     }
 };
 
+const getUserbyId = async (userId: string) => {
+    const res = await fetch(`/api/admin/user?userId=${userId}`);
+    if (!res.ok) throw new Error("단일 유저 정보 불러오기 실패");
+    return await res.json();
+};
+
 const getFormValue = (formData: FormData, key: string): string => {
     const value = formData.get(key);
     return typeof value === "string" ? value : "";
@@ -116,12 +121,6 @@ const getCoupon = async (userId: string) => {
     return await res.json();
 };
 
-const getOrder = async (userId: string) => {
-    const res = await fetch(`/api/user/order?userId=${userId}`);
-    if (!res.ok) throw new Error("마일리지 불러오기 실패");
-    return await res.json();
-};
-
 export {
     registUser,
     fetchUser,
@@ -129,5 +128,5 @@ export {
     getUser,
     getMileage,
     getCoupon,
-    getOrder,
+    getUserbyId,
 };

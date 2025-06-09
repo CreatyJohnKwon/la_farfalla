@@ -13,6 +13,7 @@ import { AiOutlineUser } from "react-icons/ai";
 import ShopDrop from "@src/widgets/drop/ShopDrop";
 import AboutDrop from "@src/widgets/drop/AboutDrop";
 import useCart from "@src/shared/hooks/useCart";
+import AdminDrop from "@/src/widgets/drop/AdminDrop";
 
 const Sidebar = () => {
     const { openSidebar, setOpenSidebar } = useProduct();
@@ -49,22 +50,13 @@ const Sidebar = () => {
                     <IoCloseOutline />
                 </button>
 
-                <div className="font-amstel absolute top-5 text-[1.25em]">
+                <div className="font-amstel absolute left-1/2 top-8 -translate-x-1/2 -translate-y-1/3 text-base">
                     <Link href="/home" onClick={() => setOpenSidebar(false)}>
                         La farfalla
                     </Link>
                 </div>
 
                 <ul className="absolute right-5 top-5 flex space-x-2 transition-all duration-300 ease-in-out">
-                    <Link
-                        href={session ? "/profile" : "/login"}
-                        onClick={() => setOpenSidebar(false)}
-                    >
-                        <AiOutlineUser
-                            className={`text-[1.5em] text-black ${session ? "me-4" : "me-0"}`}
-                        />
-                    </Link>
-
                     <button
                         onClick={() => {
                             setOpenSidebar(false);
@@ -73,9 +65,18 @@ const Sidebar = () => {
                         className={`${session ? "block" : "hidden"}`}
                     >
                         <HiOutlineShoppingBag
-                            className={`me-1 text-[1.5em] text-black`}
+                            className={`me-4 text-[1.5em] text-black ${session ? "block" : "hidden"}`}
                         />
                     </button>
+
+                    <Link
+                        href={session ? "/profile" : "/login"}
+                        onClick={() => setOpenSidebar(false)}
+                    >
+                        <AiOutlineUser
+                            className={`me-2 text-[1.5em] text-black`}
+                        />
+                    </Link>
                 </ul>
 
                 <ul className="font-amstel flex flex-col items-center justify-center gap-10 text-center text-[2em] text-black">
@@ -83,13 +84,17 @@ const Sidebar = () => {
                         <ShopDrop />
                     </li>
                     <li className="relative">
-                        <AboutDrop />
+                        {session?.user?.email === "admin@admin.com" ? (
+                            <AdminDrop />
+                        ) : (
+                            <AboutDrop />
+                        )}
                     </li>
 
                     <li>
                         <button
                             onClick={() => instagramHandler()}
-                            className="mt-36 text-[1em] text-black"
+                            className="mt-32 text-[1em] text-black"
                         >
                             <RxInstagramLogo />
                         </button>

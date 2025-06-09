@@ -1,7 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchUser, updateUser } from "@src/shared/lib/server/user";
+import {
+    fetchUser,
+    getUserbyId,
+    updateUser,
+} from "@src/shared/lib/server/user";
 import { signOut } from "next-auth/react";
 import { useEffect } from "react";
+import { UserProfileData } from "@/src/entities/type/interfaces";
 
 const useUserQuery = (enabled = true) => {
     const queryClient = useQueryClient();
@@ -34,4 +39,14 @@ const useUpdateUserMutation = () => {
     });
 };
 
-export { useUserQuery, useUpdateUserMutation };
+const useOneUserQuery = (userId?: string) => {
+    return useQuery<UserProfileData, Error>({
+        queryKey: ["admin-get-user", userId],
+        queryFn: () => getUserbyId(userId!),
+        staleTime: 1000 * 60 * 3,
+        enabled: Boolean(userId), // userId 없으면 실행 안 함
+        retry: false,
+    });
+};
+
+export { useUserQuery, useUpdateUserMutation, useOneUserQuery };

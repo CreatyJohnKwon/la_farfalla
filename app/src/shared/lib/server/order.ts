@@ -21,4 +21,16 @@ const updateCoupon = async (couponId: string) => {
     }
 };
 
-export { updateCoupon };
+const getOrder = async (userId: string) => {
+    const res = await fetch(`/api/user/order?userId=${userId}`);
+    if (!res.ok) throw new Error("마일리지 불러오기 실패");
+    return await res.json();
+};
+
+const getAllOrder = async () => {
+    const res = await fetch(`/api/admin/list/order`);
+    if (!res.ok) throw new Error("주문 리스트 불러오기 실패");
+    return await res.json();
+};
+
+export { updateCoupon, getOrder, getAllOrder };

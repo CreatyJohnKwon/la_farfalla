@@ -14,6 +14,7 @@ import ShopDrop from "../drop/ShopDrop";
 import AboutDrop from "../drop/AboutDrop";
 import useCart from "@src/shared/hooks/useCart";
 import Cart from "@src/features/cart/Cart";
+import AdminDrop from "../drop/AdminDrop";
 
 const Navbar = () => {
     const { navStartData, session } = useUsers();
@@ -47,10 +48,24 @@ const Navbar = () => {
                 >
                     {/* 왼쪽 메뉴 : PC */}
                     <ul className="hidden border-gray-100 ps-4 sm:flex sm:space-x-8">
-                        <li className="block ps-4 sm:ps-6">{children}</li>
-                        <li className="block ps-4 sm:ps-6">
-                            <AboutDrop />
+                        <li className="block ps-4 sm:ps-6" key={"shop-menu"}>
+                            {children}
                         </li>
+                        {session?.user?.email === "admin@admin.com" ? (
+                            <li
+                                className="block ps-4 sm:ps-6"
+                                key={"admin-menu"}
+                            >
+                                <AdminDrop />
+                            </li>
+                        ) : (
+                            <li
+                                className="block ps-4 sm:ps-6"
+                                key={"about-menu"}
+                            >
+                                <AboutDrop />
+                            </li>
+                        )}
                     </ul>
 
                     {/* 왼쪽 메뉴 : Mobile */}

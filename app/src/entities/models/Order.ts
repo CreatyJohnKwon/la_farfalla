@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const orderSchema = new mongoose.Schema(
     {
+        // 주문 정보
         userId: { type: Schema.Types.ObjectId, ref: "User", required: true }, // 사용자 ID
         userNm: { type: String, required: true }, // 사용자 이름
         phoneNumber: { type: String, required: true }, // 배송지 전화번호
@@ -18,6 +19,16 @@ const orderSchema = new mongoose.Schema(
             },
         ],
         totalPrice: { type: Number, required: true }, // 총 금액
+
+        // 배송 상태
+        shippingStatus: {
+            type: String,
+            enum: ["pending", "ready", "shipped", "delivered", "cancelled"],
+            default: "pending", // 주문 완료 직후
+            require: true,
+        },
+        shippedAt: { type: Date, required: false }, // 출고 일시
+        trackingNumber: { type: String, required: false, default: "" }, // 운송장 번호
     },
     {
         timestamps: true,
