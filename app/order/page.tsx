@@ -47,6 +47,7 @@ const Order = () => {
         detailAddress,
         setDetailAddress,
         setSaveAddress,
+        setPayments,
 
         orderComplete,
     } = useOrder();
@@ -281,8 +282,8 @@ const Order = () => {
                                 <option value="">
                                     배송메모를 선택해 주세요.
                                 </option>
-                                <option value="문 앞에 두고 가세요.">
-                                    문 앞에 두고 가세요.
+                                <option value="문 앞에 두고 가주세요.">
+                                    문 앞에 두고 가주세요.
                                 </option>
                                 <option value="경비실에 맡겨주세요.">
                                     경비실에 맡겨주세요.
@@ -406,8 +407,6 @@ const Order = () => {
                                             <input
                                                 className="font-amstel ms-4 mt-1 w-12 rounded-none border-b text-black focus:outline-none focus:ring-1 focus:ring-gray-200"
                                                 type="text"
-                                                inputMode="numeric"
-                                                pattern="[0-9]*"
                                                 name="useMileage"
                                                 value={
                                                     usedMileage !== 0
@@ -526,8 +525,8 @@ const Order = () => {
                                     <input
                                         type="radio"
                                         name="payment"
-                                        value="social"
                                         defaultChecked
+                                        onChange={() => setPayments("간편결제")}
                                     />
                                     {"\t간편결제"}
                                 </label>
@@ -535,17 +534,9 @@ const Order = () => {
                                     <input
                                         type="radio"
                                         name="payment"
-                                        value="card"
+                                        onChange={() => setPayments("신용카드")}
                                     />
                                     {"\t신용카드"}
-                                </label>
-                                <label className="flex items-center gap-2 text-sm">
-                                    <input
-                                        type="radio"
-                                        name="payment"
-                                        value="bank"
-                                    />
-                                    {"\t무통장입금"}
                                 </label>
                             </div>
                         </section>

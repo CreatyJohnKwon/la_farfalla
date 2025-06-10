@@ -158,6 +158,7 @@ interface OrderData {
     items: OrderItem[];
     totalPrice: number;
     createdAt?: string;
+    payMethod: "간편결제" | "신용카드";
     shippingStatus: "pending" | "ready" | "shipped" | "delivered" | "cancelled";
     shippedAt?: string;
     trackingNumber?: string;

@@ -8,6 +8,7 @@ const orderSchema = new mongoose.Schema(
         phoneNumber: { type: String, required: true }, // 배송지 전화번호
         address: { type: String, required: true }, // 배송지 주소
         detailAddress: { type: String, required: true }, // 배송지 상세 주소
+        deliveryMemo: { type: String, required: true }, // 배송 메모
         postcode: { type: String, required: true }, // 우편번호
         items: [
             {
@@ -19,6 +20,14 @@ const orderSchema = new mongoose.Schema(
             },
         ],
         totalPrice: { type: Number, required: true }, // 총 금액
+
+        // 결제 수단
+        payMethod: {
+            type: String,
+            enum: ["간편결제", "신용카드"], // 간편결제, 신용카드
+            default: "간편결제", // 주문 완료 직후
+            require: true,
+        },
 
         // 배송 상태
         shippingStatus: {

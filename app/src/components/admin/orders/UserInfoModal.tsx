@@ -43,8 +43,11 @@ const UserInfoModal = ({
                             label="전화번호"
                             value={userData?.phoneNumber}
                         />
-
-                        <div className="mt-6 rounded-md bg-gray-50 p-6">
+                        <InfoRow
+                            label="결제방법"
+                            value={orderData?.payMethod}
+                        />
+                        <div className="rounded-md bg-gray-50 p-6">
                             <p className="mb-5 border-b pb-2 text-base font-semibold text-gray-700">
                                 주문 상품 목록 (총 {totalQuantity}개)
                             </p>
@@ -67,19 +70,18 @@ const UserInfoModal = ({
                                 ))}
                             </div>
                         </div>
-
-                        <div className="mt-4 rounded-lg bg-gray-100 p-4">
-                            <p className="mb-2 text-sm font-semibold text-gray-500">
-                                배송 주소
-                            </p>
-                            <p className="text-sm text-gray-800">
-                                {orderData?.address}
-                                {orderData?.postcode &&
-                                    ` (${orderData?.postcode})`}
-                                {orderData?.detailAddress &&
-                                    `, ${orderData?.detailAddress}`}
-                            </p>
-                        </div>
+                        <BoxElement
+                            label={"배송 주소"}
+                            value={`${orderData?.address}
+            ${orderData?.postcode && `${orderData?.postcode}`}
+            ${orderData?.detailAddress && `, ${orderData?.detailAddress}`}`}
+                        />
+                        {orderData?.deliveryMemo && (
+                            <BoxElement
+                                label={"배송 메모"}
+                                value={`${orderData?.deliveryMemo}`}
+                            />
+                        )}
 
                         <div className="me-1 mt-2 place-self-end text-end text-xs">
                             <p className="mb-1 font-medium text-gray-500">
@@ -111,6 +113,13 @@ const InfoRow = ({ label, value }: { label: string; value?: string }) => (
     <div className="flex justify-between text-sm font-medium">
         <span className="text-gray-500">{label}</span>
         <span className="text-gray-900">{value || "-"}</span>
+    </div>
+);
+
+const BoxElement = ({ label, value }: { label: string; value?: string }) => (
+    <div className="mt-4 rounded-lg bg-gray-100 p-4">
+        <p className="mb-2 text-sm font-semibold text-gray-500">{label}</p>
+        <p className="text-sm text-gray-800">{value}</p>
     </div>
 );
 

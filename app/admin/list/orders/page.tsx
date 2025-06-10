@@ -2,63 +2,70 @@
 
 import UserInfoModal from "@/src/components/admin/orders/UserInfoModal";
 import { OrderData } from "@/src/entities/type/interfaces";
-import { useAllOrderQuery } from "@/src/shared/hooks/react-query/useOrderQuery";
-import { useState } from "react";
-
-const statusColor = {
-    pending: "text-yellow-500",
-    ready: "text-blue-500",
-    shipped: "text-green-500",
-    delivered: "text-indigo-500",
-    cancelled: "text-gray-400",
-} as const;
-
-const statusResult = {
-    pending: "출고",
-    ready: "배송 준비",
-    shipped: "배송",
-    delivered: "배송 완료",
-    cancelled: "배송 취소",
-} as const;
+import useOrderList from "@/src/shared/hooks/useOrderList";
 
 const Orders = () => {
-    const { data: orders, isLoading: orderListLoading } = useAllOrderQuery();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [orderData, setOrderData] = useState<OrderData | null>(null);
-    const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
+    const {
+        statusColor,
+        statusResult,
 
-    const onClose = () => setIsModalOpen(false);
+        isModalOpen,
+        setIsModalOpen,
+        orderData,
+        setOrderData,
+        selectedOrderIds,
 
-    const toggleAll = () => {
-        if (!orders) return;
-        if (selectedOrderIds.length === orders.length) {
-            setSelectedOrderIds([]);
-        } else {
-            setSelectedOrderIds(
-                orders.map((order) => order._id!).filter(Boolean),
-            );
-        }
-    };
+        orderListLoading,
+        orders,
 
-    const toggleSingle = (id: string | undefined) => {
-        if (!id) return;
+        onClose,
+        toggleAll,
+        toggleSingle,
+        isAllSelected,
+        updateStatus,
 
-        if (selectedOrderIds.includes(id)) {
-            setSelectedOrderIds((prev) =>
-                prev.filter((orderId) => orderId !== id),
-            );
-        } else {
-            setSelectedOrderIds((prev) => [...prev, id]);
-        }
-    };
+        refetch,
+    } = useOrderList();
 
-    const isAllSelected = !!(
-        orders?.length && selectedOrderIds.length === orders.length
-    );
+    // 두번 호출 해결해야 됨 (트래픽 2배 증가 방어목적)
+    // useEffect(() => {
+    //     console.log("asd");
+    //     refetch();
+    // }, []);
 
     return (
-        <div className="w-full max-w-full overflow-x-auto border p-8 font-pretendard md:overflow-x-visible">
-            <table className="ms-0 mt-20 h-full w-full min-w-[800px] table-auto text-left text-sm sm:ms-5 sm:mt-36">
+        <div className="w-full max-w-full overflow-x-auto border font-pretendard sm:p-16 md:overflow-x-visible">
+            <div className="ms-5 mt-20 flex h-8 w-full items-center justify-between sm:ms-0">
+                {/* 새로고침 버튼 */}
+                <button
+                    onClick={() => refetch()}
+                    className="flex h-full w-8 items-center justify-center rounded border border-gray-300 bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800"
+                    title="새로고침"
+                >
+                    <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        />
+                    </svg>
+                </button>
+
+                <button
+                    onClick={() => updateStatus()}
+                    className="flex h-full w-auto items-center justify-center rounded border border-gray-300 bg-gray-100 p-2 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800"
+                    title="선택적 상태 수정"
+                >
+                    선택적 상태 변경
+                </button>
+            </div>
+            <table className="ms-5 mt-5 h-full w-full min-w-[700px] table-auto text-left text-sm sm:ms-0">
                 <thead>
                     <tr className="border-b text-gray-600">
                         <th className="w-[3%] px-2 py-2 md:px-4">
@@ -141,7 +148,7 @@ const Orders = () => {
                                 </td>
                                 <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
                                     <button className="text-red-500">
-                                        수정
+                                        변경
                                     </button>
                                 </td>
                             </tr>

@@ -42,6 +42,9 @@ const useOrder = () => {
     const [postcode, setPostcode] = useState<string>("");
     const [detailAddress, setDetailAddress] = useState<string>("");
     const [saveAddress, setSaveAddress] = useState<boolean>(false);
+    const [payments, setPayments] = useState<"간편결제" | "신용카드">(
+        "간편결제",
+    );
 
     const orderComplete = async () => {
         if (!user) return;
@@ -61,9 +64,12 @@ const useOrder = () => {
                 color: item.color,
                 size: item.size,
             })),
+            payMethod: payments,
             shippingStatus: "pending",
             totalPrice: totalPrice,
         };
+
+        console.log(orderData);
 
         const res = await orderAccept(orderData);
 
@@ -173,6 +179,7 @@ const useOrder = () => {
         setDetailAddress,
         saveAddress,
         setSaveAddress,
+        setPayments,
 
         orderComplete,
     };
