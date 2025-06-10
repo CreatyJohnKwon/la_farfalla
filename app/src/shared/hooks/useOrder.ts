@@ -61,6 +61,7 @@ const useOrder = () => {
                 color: item.color,
                 size: item.size,
             })),
+            shippingStatus: "pending",
             totalPrice: totalPrice,
         };
 
