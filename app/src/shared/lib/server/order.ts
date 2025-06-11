@@ -1,4 +1,6 @@
+import Order from "@/src/entities/models/Order";
 import axios from "axios";
+import mongoose from "mongoose";
 
 const updateCoupon = async (couponId: string) => {
     try {
@@ -21,6 +23,21 @@ const updateCoupon = async (couponId: string) => {
     }
 };
 
+const updateAdminOrder = async (
+    orderId: string | undefined,
+    shippingStatus: string,
+    trackingNumber: string,
+) => {
+    const res = await fetch("/api/admin/list/order", {
+        method: "POST",
+        body: JSON.stringify({ orderId, shippingStatus, trackingNumber }),
+        headers: { "Content-Type": "application/json" },
+    });
+
+    const result = await res.json();
+    return result;
+};
+
 const getOrder = async (userId: string) => {
     const res = await fetch(`/api/user/order?userId=${userId}`);
     if (!res.ok) throw new Error("마일리지 불러오기 실패");
@@ -33,4 +50,4 @@ const getAllOrder = async () => {
     return await res.json();
 };
 
-export { updateCoupon, getOrder, getAllOrder };
+export { updateCoupon, getOrder, getAllOrder, updateAdminOrder };

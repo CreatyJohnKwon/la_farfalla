@@ -97,12 +97,7 @@ type SelectedItem = {
     originalPrice: number;
 };
 
-type ShippingStatus =
-    | "pending"
-    | "ready"
-    | "shipped"
-    | "delivered"
-    | "cancelled";
+type ShippingStatus = "pending" | "ready" | "shipped" | "confirm";
 
 interface UserProfileData {
     _id: string;
@@ -166,7 +161,7 @@ interface OrderData {
     totalPrice: number;
     createdAt?: string;
     payMethod: "간편결제" | "신용카드";
-    shippingStatus: "pending" | "ready" | "shipped" | "delivered" | "cancelled";
+    shippingStatus: ShippingStatus;
     shippedAt?: string;
     trackingNumber?: string;
 }

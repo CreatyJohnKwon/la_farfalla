@@ -1,8 +1,8 @@
 import { OrderData, ShippingStatus } from "@/src/entities/type/interfaces";
-import { useOrderQuery } from "@/src/shared/hooks/react-query/useBenefitQuery";
+import { useUpdateOrderMutation } from "@/src/shared/hooks/react-query/useOrderQuery";
 import useOrderList from "@/src/shared/hooks/useOrderList";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const StatusUpdateModal = ({
     orderData,
@@ -11,20 +11,47 @@ const StatusUpdateModal = ({
     orderData: OrderData | null;
     onClose: () => void;
 }) => {
-    const { refetch } = useOrderQuery();
+    const {
+        statusResult,
 
-    const { statusResult } = useOrderList();
-    const [radioValue, setRadioValue] = useState<
-        "pending" | "ready" | "shipped" | "delivered" | "cancelled"
-    >(orderData?.shippingStatus as ShippingStatus | "pending");
-    const [waybillNumber, setWaybillNumber] = useState<number>(
-        Number(orderData?.trackingNumber),
-    );
+        waybillNumber,
+        setWaybillNumber,
+        radioValue,
+        setRadioValue,
+        refetch,
+    } = useOrderList();
 
-    const updatePendingStatus = () => {
-        alert("상태가 업데이트 되었습니다.");
-        onClose();
-        refetch();
+    const { mutateAsync: updateOrder } = useUpdateOrderMutation();
+
+    useEffect(() => {
+        setRadioValue(orderData?.shippingStatus as ShippingStatus);
+    }, []);
+
+    const handleUpdate = async () => {
+        if (
+            (radioValue === "shipped" && waybillNumber.toString().length < 9) ||
+            waybillNumber === null
+        ) {
+            return alert("운송장번호를 확인해주세요");
+        }
+
+        if (confirm("운송 상태를 정말 변경하시겠습니까?")) {
+            try {
+                const result = await updateOrder({
+                    orderId: orderData?._id,
+                    shippingStatus: radioValue,
+                    trackingNumber: waybillNumber.toString(),
+                });
+                if (result) {
+                    refetch();
+                    onClose();
+                }
+            } catch (err) {
+                alert("변경 중 오류 발생!");
+            }
+        }
+
+        console.log(orderData?.trackingNumber);
     };
 
     return (
@@ -71,15 +98,19 @@ const StatusUpdateModal = ({
                         ))}
                     </div>
 
-                    {radioValue !== "pending" && (
+                    {radioValue === "shipped" && (
                         <div className="w-full flex-shrink-0 flex-col">
                             <label className="mb-2 block text-sm font-medium text-gray-600">
-                                운송장번호
+                                운송장번호 (우체국)
                             </label>
                             <input
                                 type="text"
                                 name="waybill"
-                                placeholder="운송장번호 입력 (숫자만 입력하세요)"
+                                placeholder={
+                                    orderData?.trackingNumber
+                                        ? "변경할 운송장번호 입력 (숫자만 입력하세요)"
+                                        : "운송장번호 입력 (숫자만 입력하세요)"
+                                }
                                 className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-300"
                                 value={waybillNumber ? waybillNumber : ""}
                                 onChange={(e) => {
@@ -94,15 +125,32 @@ const StatusUpdateModal = ({
                             />
                         </div>
                     )}
+
+                    {radioValue === "confirm" && (
+                        <div className="relative w-full flex-shrink-0 flex-col">
+                            <label className="mb-2 block text-sm font-medium text-gray-600">
+                                운송장번호 (우체국)
+                            </label>
+                            <h1 className="w-full rounded-lg border border-gray-300 p-2 text-black">
+                                {orderData?.trackingNumber}
+                            </h1>
+                        </div>
+                    )}
+
+                    <div className="rounded-lg bg-gray-50 p-6 shadow-sm transition">
+                        <button className="hover:accent-red-600">
+                            배송 취소 (교환 및 환불)
+                        </button>
+                    </div>
                 </div>
 
                 {/* 닫기 버튼 */}
                 <div className="mt-6 flex gap-3 text-lg text-white">
                     <button
-                        onClick={updatePendingStatus}
+                        onClick={() => handleUpdate()}
                         className="w-full rounded-lg bg-gray-800 py-2 hover:bg-gray-700"
                     >
-                        적용
+                        변경
                     </button>
                     <button
                         onClick={onClose}

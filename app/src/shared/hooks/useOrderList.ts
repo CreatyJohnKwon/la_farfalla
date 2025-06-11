@@ -6,26 +6,31 @@ const useOrderList = () => {
     const statusColor = {
         pending: "text-yellow-500",
         ready: "text-blue-500",
-        shipped: "text-green-500",
-        delivered: "text-indigo-500",
-        cancelled: "text-gray-400",
+        shipped: "text-indigo-500",
+        confirm: "text-green-500",
     } as const;
 
     const statusResult = {
-        pending: "출고",
-        ready: "배송 준비",
-        shipped: "배송",
-        delivered: "배송 완료",
-        cancelled: "배송 취소",
+        pending: "주문 완료",
+        ready: "상품 준비 중",
+        shipped: "출고",
+        confirm: "구매 확정",
     } as const;
 
     const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
     const [isSelectedModalOpen, setIsSelectedModalOpen] =
         useState<boolean>(false);
+    const [isProductModalOpen, setIsProductModalOpen] =
+        useState<boolean>(false);
 
     const [orderData, setOrderData] = useState<OrderData | null>(null);
     const [selectedOrder, setSelectedOrder] = useState<OrderData[]>([]);
+    const [waybillNumber, setWaybillNumber] = useState<number>(0);
+
+    const [radioValue, setRadioValue] = useState<
+        "pending" | "ready" | "shipped" | "confirm"
+    >("pending");
 
     const {
         data: orders,
@@ -33,9 +38,15 @@ const useOrderList = () => {
         refetch,
     } = useAllOrderQuery();
 
-    const onCloseUserModal = () => setIsUserModalOpen(false);
-    const onCloseStatusModal = () => setIsStatusModalOpen(false);
-    const onCloseSelectedModal = () => setIsSelectedModalOpen(false);
+    const onClose = () => {
+        // 모달 종료 상태 변경
+        setIsUserModalOpen(false);
+        setIsProductModalOpen(false);
+        setIsStatusModalOpen(false);
+        setIsSelectedModalOpen(false);
+
+        setSelectedOrder([]);
+    };
 
     const toggleAll = () => {
         if (!orders) return;
@@ -62,8 +73,6 @@ const useOrderList = () => {
         orders?.length && selectedOrder.length === orders.length
     );
 
-    const updateStatus = () => {};
-
     return {
         statusColor,
         statusResult,
@@ -74,21 +83,25 @@ const useOrderList = () => {
         setIsStatusModalOpen,
         isSelectedModalOpen,
         setIsSelectedModalOpen,
+        isProductModalOpen,
+        setIsProductModalOpen,
         orderData,
         setOrderData,
+        waybillNumber,
+        setWaybillNumber,
         selectedOrder,
+        setSelectedOrder,
+        radioValue,
+        setRadioValue,
 
         orderListLoading,
         orders,
 
-        onCloseUserModal,
-        onCloseStatusModal,
-        onCloseSelectedModal,
+        onClose,
 
         toggleAll,
         toggleSingle,
         isAllSelected,
-        updateStatus,
 
         refetch,
     };

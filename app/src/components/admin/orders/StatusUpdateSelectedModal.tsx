@@ -1,8 +1,8 @@
 import { OrderData, ShippingStatus } from "@/src/entities/type/interfaces";
-import { useOrderQuery } from "@/src/shared/hooks/react-query/useBenefitQuery";
+import { useUpdateOrderMutation } from "@/src/shared/hooks/react-query/useOrderQuery";
 import useOrderList from "@/src/shared/hooks/useOrderList";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const StatusUpdateSelectedModal = ({
     orderData,
@@ -11,18 +11,16 @@ const StatusUpdateSelectedModal = ({
     orderData: OrderData[] | null;
     onClose: () => void;
 }) => {
-    const { refetch } = useOrderQuery();
+    const {
+        statusResult,
 
-    const { statusResult } = useOrderList();
-    const [radioValue, setRadioValue] = useState<
-        "pending" | "ready" | "shipped" | "delivered" | "cancelled"
-    >("pending");
-    const [waybillNumber, setWaybillNumber] = useState<number>(0);
+        waybillNumber,
+        setWaybillNumber,
+        radioValue,
+        setRadioValue,
+    } = useOrderList();
 
-    const updatePendingStatus = () => {
-        alert("상태가 업데이트 되었습니다.");
-        onClose();
-    };
+    const { mutateAsync: updateOrder } = useUpdateOrderMutation();
 
     // 더 간결한 버전 (ES6+ 사용) - TypeScript 버전
     const getMostFrequentShoppingStatusES6 = () => {
@@ -42,8 +40,7 @@ const StatusUpdateSelectedModal = ({
                 pending: 0,
                 ready: 0,
                 shipped: 0,
-                delivered: 0,
-                cancelled: 0,
+                confirm: 0,
             },
         );
 
@@ -55,10 +52,37 @@ const StatusUpdateSelectedModal = ({
     };
 
     useEffect(() => {
+        setWaybillNumber(0);
+
         if (orderData && Array.isArray(orderData) && orderData.length > 0) {
             getMostFrequentShoppingStatusES6();
         }
     }, [orderData]);
+
+    const handleUpdate = async () => {
+        if (
+            (radioValue !== "pending" && waybillNumber.toString().length < 9) ||
+            waybillNumber === null
+        ) {
+            return alert("운송장번호를 확인해주세요");
+        }
+
+        // if (confirm("운송 상태를 정말 변경하시겠습니까?")) {
+        //     try {
+        //         const result = await updateOrder({
+        //             orderId: orderData?._id,
+        //             shippingStatus: radioValue,
+        //             trackingNumber: waybillNumber.toString(),
+        //         });
+        //         console.log("✅ 변경 결과:", result); // 결과 받아옴
+        //         refetch();
+        //         onClose();
+        //     } catch (err) {
+        //         console.error("❌ 변경 실패:", err);
+        //         alert("변경 중 오류 발생!");
+        //     }
+        // }
+    };
 
     return (
         <div
@@ -105,36 +129,46 @@ const StatusUpdateSelectedModal = ({
                     </div>
 
                     {/* 운송장번호 입력 */}
-                    <div className="w-full flex-shrink-0 flex-col">
-                        <label className="mb-2 block text-sm font-medium text-gray-600">
-                            운송장번호
-                        </label>
-                        <input
-                            type="text"
-                            name="waybill"
-                            placeholder="운송장번호 입력 (숫자만 입력하세요)"
-                            className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-300"
-                            value={waybillNumber ? waybillNumber : ""}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                if (/^\d*$/.test(value)) {
-                                    // 숫자만 허용하는 정규식
-                                    setWaybillNumber(Number(value));
-                                } else {
-                                    return;
-                                }
-                            }}
-                        />
-                    </div>
+
+                    {radioValue === "ready" && (
+                        <div className="w-full flex-shrink-0 flex-col">
+                            <label className="mb-2 block text-sm font-medium text-gray-600">
+                                운송장번호 (우체국)
+                            </label>
+                            <input
+                                type="text"
+                                name="waybill"
+                                placeholder="운송장번호 입력 (숫자만 입력하세요)"
+                                className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                value={waybillNumber ? waybillNumber : ""}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (/^\d*$/.test(value)) {
+                                        // 숫자만 허용하는 정규식
+                                        setWaybillNumber(Number(value));
+                                    } else {
+                                        return;
+                                    }
+                                }}
+                            />
+                        </div>
+                    )}
                 </div>
 
                 {/* 닫기 버튼 */}
                 <div className="mt-6 flex gap-3 text-lg text-white">
                     <button
-                        onClick={updatePendingStatus}
+                        onClick={() => {
+                            if (
+                                (radioValue === "ready" &&
+                                    waybillNumber.toString().length < 9) ||
+                                waybillNumber === null
+                            )
+                                return alert("운송장번호를 확인해주세요");
+                        }}
                         className="w-full rounded-lg bg-gray-800 py-2 hover:bg-gray-700"
                     >
-                        적용
+                        변경
                     </button>
                     <button
                         onClick={onClose}

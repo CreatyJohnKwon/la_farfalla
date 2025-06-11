@@ -29,7 +29,7 @@ const HomeClient = ({ products }: HomeClientProps) => {
                     alt="background"
                     height={1000}
                     width={1000}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover object-[70%_center] sm:object-left"
                 />
             </div>
         </div>
