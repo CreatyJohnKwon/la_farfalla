@@ -8,7 +8,7 @@ const orderSchema = new mongoose.Schema(
         phoneNumber: { type: String, required: true }, // 배송지 전화번호
         address: { type: String, required: true }, // 배송지 주소
         detailAddress: { type: String, required: true }, // 배송지 상세 주소
-        deliveryMemo: { type: String, required: true }, // 배송 메모
+        deliveryMemo: { type: String, required: false, default: "" }, // 배송 메모
         postcode: { type: String, required: true }, // 우편번호
         items: [
             {

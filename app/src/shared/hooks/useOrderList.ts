@@ -19,9 +19,13 @@ const useOrderList = () => {
         cancelled: "배송 취소",
     } as const;
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
+    const [isSelectedModalOpen, setIsSelectedModalOpen] =
+        useState<boolean>(false);
+
     const [orderData, setOrderData] = useState<OrderData | null>(null);
-    const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
+    const [selectedOrder, setSelectedOrder] = useState<OrderData[]>([]);
 
     const {
         data: orders,
@@ -29,56 +33,58 @@ const useOrderList = () => {
         refetch,
     } = useAllOrderQuery();
 
-    const onClose = () => setIsModalOpen(false);
+    const onCloseUserModal = () => setIsUserModalOpen(false);
+    const onCloseStatusModal = () => setIsStatusModalOpen(false);
+    const onCloseSelectedModal = () => setIsSelectedModalOpen(false);
 
     const toggleAll = () => {
         if (!orders) return;
-        if (selectedOrderIds.length === orders.length) {
-            setSelectedOrderIds([]);
+        if (selectedOrder.length === orders.length) {
+            setSelectedOrder([]);
         } else {
-            setSelectedOrderIds(
-                orders.map((order) => order._id!).filter(Boolean),
-            );
+            setSelectedOrder(orders);
         }
     };
 
-    const toggleSingle = (id: string | undefined) => {
-        if (!id) return;
+    const toggleSingle = (data: OrderData | undefined) => {
+        if (!data) return;
 
-        if (selectedOrderIds.includes(id)) {
-            setSelectedOrderIds((prev) =>
-                prev.filter((orderId) => orderId !== id),
+        if (selectedOrder.includes(data)) {
+            setSelectedOrder((prev) =>
+                prev.filter((orderId) => orderId !== data),
             );
         } else {
-            setSelectedOrderIds((prev) => [...prev, id]);
+            setSelectedOrder((prev) => [...prev, data]);
         }
     };
 
     const isAllSelected = !!(
-        orders?.length && selectedOrderIds.length === orders.length
+        orders?.length && selectedOrder.length === orders.length
     );
 
-    const updateStatus = () => {
-        if (selectedOrderIds.length === 0)
-            return alert("1개 이상 체크해주세요.");
-
-        // 여기에 상품 출고 => 배송 상태 변경 모달 추가
-    };
+    const updateStatus = () => {};
 
     return {
         statusColor,
         statusResult,
 
-        isModalOpen,
-        setIsModalOpen,
+        isUserModalOpen,
+        setIsUserModalOpen,
+        isStatusModalOpen,
+        setIsStatusModalOpen,
+        isSelectedModalOpen,
+        setIsSelectedModalOpen,
         orderData,
         setOrderData,
-        selectedOrderIds,
+        selectedOrder,
 
         orderListLoading,
         orders,
 
-        onClose,
+        onCloseUserModal,
+        onCloseStatusModal,
+        onCloseSelectedModal,
+
         toggleAll,
         toggleSingle,
         isAllSelected,

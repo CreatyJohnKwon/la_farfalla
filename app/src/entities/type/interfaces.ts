@@ -97,6 +97,13 @@ type SelectedItem = {
     originalPrice: number;
 };
 
+type ShippingStatus =
+    | "pending"
+    | "ready"
+    | "shipped"
+    | "delivered"
+    | "cancelled";
+
 interface UserProfileData {
     _id: string;
     provider: string;
@@ -197,4 +204,5 @@ export type {
     Coupon,
     AddressModalProps,
     AddressData,
+    ShippingStatus,
 };

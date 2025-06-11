@@ -4,7 +4,8 @@ import { HomeClientProps } from "@src/entities/type/interfaces";
 import { useEffect } from "react";
 import useProduct from "@src/shared/hooks/useProduct";
 import Image from "next/image";
-import BackgroundImg from "../../public/images/sample_file.jpeg";
+// import BackgroundImg from "../../public/images/sample_file.jpeg";
+import BackgroundImg from "../../public/images/background_img.jpeg";
 
 const HomeClient = ({ products }: HomeClientProps) => {
     const { setCategory } = useProduct();

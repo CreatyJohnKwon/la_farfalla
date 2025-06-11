@@ -1,5 +1,7 @@
 "use client";
 
+import StatusUpdateSelectedModal from "@/src/components/admin/orders/StatusUpdateSelectedModal";
+import StatusUpdateModal from "@/src/components/admin/orders/StatusUpdateModal";
 import UserInfoModal from "@/src/components/admin/orders/UserInfoModal";
 import { OrderData } from "@/src/entities/type/interfaces";
 import useOrderList from "@/src/shared/hooks/useOrderList";
@@ -9,16 +11,23 @@ const Orders = () => {
         statusColor,
         statusResult,
 
-        isModalOpen,
-        setIsModalOpen,
+        isUserModalOpen,
+        setIsUserModalOpen,
+        isStatusModalOpen,
+        setIsStatusModalOpen,
+        isSelectedModalOpen,
+        setIsSelectedModalOpen,
         orderData,
         setOrderData,
-        selectedOrderIds,
+        selectedOrder,
 
         orderListLoading,
         orders,
 
-        onClose,
+        onCloseUserModal,
+        onCloseStatusModal,
+        onCloseSelectedModal,
+
         toggleAll,
         toggleSingle,
         isAllSelected,
@@ -58,9 +67,12 @@ const Orders = () => {
                 </button>
 
                 <button
-                    onClick={() => updateStatus()}
-                    className="flex h-full w-auto items-center justify-center rounded border border-gray-300 bg-gray-100 p-2 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800"
+                    onClick={() => {
+                        setIsSelectedModalOpen(true);
+                    }}
+                    className={`flex h-full w-auto items-center justify-center rounded border border-gray-300 bg-gray-100 p-2 text-gray-600 transition-colors ${selectedOrder.length > 0 && "hover:bg-gray-200 hover:text-gray-800"}`}
                     title="선택적 상태 수정"
+                    disabled={selectedOrder.length === 0}
                 >
                     선택적 상태 변경
                 </button>
@@ -108,13 +120,11 @@ const Orders = () => {
                                             type="checkbox"
                                             checked={Boolean(
                                                 order._id &&
-                                                    selectedOrderIds.includes(
-                                                        order._id,
+                                                    selectedOrder.includes(
+                                                        order,
                                                     ),
                                             )}
-                                            onChange={() =>
-                                                toggleSingle(order._id)
-                                            }
+                                            onChange={() => toggleSingle(order)}
                                         />
                                     )}
                                 </td>
@@ -129,7 +139,7 @@ const Orders = () => {
                                         className="hover:text-blue-700 hover:underline"
                                         onClick={() => {
                                             setOrderData(order);
-                                            setIsModalOpen(true);
+                                            setIsUserModalOpen(true);
                                         }}
                                     >
                                         {order.userNm}
@@ -147,7 +157,13 @@ const Orders = () => {
                                     {order.createdAt}
                                 </td>
                                 <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
-                                    <button className="text-red-500">
+                                    <button
+                                        className="text-red-500"
+                                        onClick={() => {
+                                            setOrderData(order);
+                                            setIsStatusModalOpen(true);
+                                        }}
+                                    >
                                         변경
                                     </button>
                                 </td>
@@ -156,8 +172,23 @@ const Orders = () => {
                     </tbody>
                 )}
             </table>
-            {isModalOpen && orderData && (
-                <UserInfoModal orderData={orderData} onClose={onClose} />
+            {isUserModalOpen && orderData && (
+                <UserInfoModal
+                    orderData={orderData}
+                    onClose={onCloseUserModal}
+                />
+            )}
+            {isStatusModalOpen && orderData && (
+                <StatusUpdateModal
+                    orderData={orderData}
+                    onClose={onCloseStatusModal}
+                />
+            )}
+            {isSelectedModalOpen && (
+                <StatusUpdateSelectedModal
+                    orderData={selectedOrder}
+                    onClose={onCloseSelectedModal}
+                />
             )}
         </div>
     );
