@@ -97,7 +97,7 @@ type SelectedItem = {
     originalPrice: number;
 };
 
-type ShippingStatus = "pending" | "ready" | "shipped" | "confirm";
+type ShippingStatus = "pending" | "ready" | "shipped" | "confirm" | "cancel";
 
 interface UserProfileData {
     _id: string;
@@ -176,6 +176,12 @@ interface AddressData {
     zonecode: string;
 }
 
+interface OrderUpdateInput {
+    orderId: string | undefined;
+    shippingStatus: string;
+    trackingNumber: string;
+}
+
 export type {
     profNavDataProps,
     CustomButtonProps,
@@ -200,4 +206,5 @@ export type {
     AddressModalProps,
     AddressData,
     ShippingStatus,
+    OrderUpdateInput,
 };

@@ -1,10 +1,5 @@
-import {
-    QueryObserverResult,
-    useMutation,
-    useQuery,
-    useQueryClient,
-} from "@tanstack/react-query";
-import { OrderData } from "@src/entities/type/interfaces";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { OrderData, OrderUpdateInput } from "@src/entities/type/interfaces";
 import { getAllOrder, updateAdminOrder } from "../../lib/server/order";
 
 const useAllOrderQuery = () => {
@@ -16,31 +11,44 @@ const useAllOrderQuery = () => {
     });
 };
 
-const useUpdateOrderMutation = () => {
+const useSmartUpdateOrderMutation = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({
-            orderId,
-            shippingStatus,
-            trackingNumber,
-        }: {
-            orderId: string | undefined;
-            shippingStatus: string;
-            trackingNumber: string;
-        }) => updateAdminOrder(orderId, shippingStatus, trackingNumber),
+        mutationFn: async (input: OrderUpdateInput | OrderUpdateInput[]) => {
+            // 여러 개 처리
+            if (Array.isArray(input)) {
+                const results = await Promise.allSettled(
+                    input.map((order) =>
+                        updateAdminOrder(
+                            order.orderId,
+                            order.shippingStatus,
+                            order.trackingNumber,
+                        ),
+                    ),
+                );
+                return results;
+            }
 
-        onSuccess: (data: any) => {
-            console.log("✅ 업데이트 성공:", data);
-            queryClient.invalidateQueries({ queryKey: ["orders"] }); // 주문 목록 refetch
-            alert("업데이트 성공!");
+            // 단일 처리
+            return updateAdminOrder(
+                input.orderId,
+                input.shippingStatus,
+                input.trackingNumber,
+            );
         },
 
-        onError: (error: any) => {
-            console.error("❌ 업데이트 실패:", error);
-            alert("업데이트 중 문제가 발생했어요.");
+        onSuccess: (data) => {
+            console.log("✅ 업데이트 성공", data);
+            queryClient.invalidateQueries({ queryKey: ["orders"] });
+            alert("주문 상태 업데이트 완료!");
+        },
+
+        onError: (error) => {
+            console.error("❌ 업데이트 실패", error);
+            alert("업데이트 중 오류가 발생했어요.");
         },
     });
 };
 
-export { useAllOrderQuery, useUpdateOrderMutation };
+export { useAllOrderQuery, useSmartUpdateOrderMutation };

@@ -1,5 +1,5 @@
 import { OrderData, ShippingStatus } from "@/src/entities/type/interfaces";
-import { useUpdateOrderMutation } from "@/src/shared/hooks/react-query/useOrderQuery";
+import { useSmartUpdateOrderMutation } from "@/src/shared/hooks/react-query/useOrderQuery";
 import useOrderList from "@/src/shared/hooks/useOrderList";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
@@ -21,7 +21,7 @@ const StatusUpdateModal = ({
         refetch,
     } = useOrderList();
 
-    const { mutateAsync: updateOrder } = useUpdateOrderMutation();
+    const { mutateAsync: smartUpdateOrder } = useSmartUpdateOrderMutation();
 
     useEffect(() => {
         setRadioValue(orderData?.shippingStatus as ShippingStatus);
@@ -37,21 +37,33 @@ const StatusUpdateModal = ({
 
         if (confirm("운송 상태를 정말 변경하시겠습니까?")) {
             try {
-                const result = await updateOrder({
+                await smartUpdateOrder({
                     orderId: orderData?._id,
                     shippingStatus: radioValue,
                     trackingNumber: waybillNumber.toString(),
                 });
-                if (result) {
-                    refetch();
-                    onClose();
-                }
+                refetch();
+                onClose();
             } catch (err) {
                 alert("변경 중 오류 발생!");
             }
         }
+    };
 
-        console.log(orderData?.trackingNumber);
+    const handleCancelUpdate = async () => {
+        if (confirm("정말로 배송을 취소하시겠습니까?")) {
+            try {
+                await smartUpdateOrder({
+                    orderId: orderData?._id,
+                    shippingStatus: "cancel",
+                    trackingNumber: "",
+                });
+                refetch();
+                onClose();
+            } catch (err) {
+                alert("변경 중 오류 발생!");
+            }
+        }
     };
 
     return (
@@ -76,26 +88,43 @@ const StatusUpdateModal = ({
                 <div className="space-y-6 text-gray-700">
                     <div className="rounded-lg bg-gray-50 p-6 shadow-sm transition">
                         {/* 라디오 버튼 그룹 */}
-                        {Object.entries(statusResult).map(([key, label]) => (
-                            <label
-                                key={key}
-                                className="flex cursor-pointer items-center space-x-4 rounded-lg p-3 transition hover:bg-gray-100"
-                            >
-                                <input
-                                    type="radio"
-                                    name="orderStatus"
-                                    value={key}
-                                    checked={radioValue === key}
-                                    onChange={() =>
-                                        setRadioValue(key as ShippingStatus)
-                                    }
-                                    className="accent-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                                />
-                                <span className="font-medium text-gray-800">
-                                    {label}
-                                </span>
-                            </label>
-                        ))}
+                        {Object.entries(statusResult).map(([key, label]) => {
+                            if (key === "cancel") {
+                                return (
+                                    <div key={key} className="place-self-end">
+                                        <button
+                                            className="mt-4 text-red-600 hover:text-red-800"
+                                            onClick={() => handleCancelUpdate()}
+                                        >
+                                            배송 취소하기
+                                        </button>
+                                    </div>
+                                );
+                            } else {
+                                return (
+                                    <label
+                                        key={key}
+                                        className="flex cursor-pointer items-center space-x-4 rounded-lg p-3 transition hover:bg-gray-100"
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="orderStatus"
+                                            value={key}
+                                            checked={radioValue === key}
+                                            onChange={() =>
+                                                setRadioValue(
+                                                    key as ShippingStatus,
+                                                )
+                                            }
+                                            className="accent-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                        />
+                                        <span className="font-medium text-gray-800">
+                                            {label}
+                                        </span>
+                                    </label>
+                                );
+                            }
+                        })}
                     </div>
 
                     {radioValue === "shipped" && (
@@ -131,17 +160,15 @@ const StatusUpdateModal = ({
                             <label className="mb-2 block text-sm font-medium text-gray-600">
                                 운송장번호 (우체국)
                             </label>
-                            <h1 className="w-full rounded-lg border border-gray-300 p-2 text-black">
-                                {orderData?.trackingNumber}
+                            <h1
+                                className={`"text-black"} w-full rounded-lg border border-gray-300 p-2`}
+                            >
+                                {orderData?.trackingNumber
+                                    ? orderData?.trackingNumber
+                                    : "아직 출고 전입니다."}
                             </h1>
                         </div>
                     )}
-
-                    <div className="rounded-lg bg-gray-50 p-6 shadow-sm transition">
-                        <button className="hover:accent-red-600">
-                            배송 취소 (교환 및 환불)
-                        </button>
-                    </div>
                 </div>
 
                 {/* 닫기 버튼 */}

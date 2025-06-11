@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
             shippingStatus,
         };
 
-        if (shippingStatus === "ready") {
+        if (shippingStatus === "shipped" || shippingStatus === "cancel") {
             updateData.trackingNumber = trackingNumber;
             updateData.shippedAt = new Date();
         }

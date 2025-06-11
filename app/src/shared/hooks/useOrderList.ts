@@ -1,4 +1,4 @@
-import { OrderData } from "@/src/entities/type/interfaces";
+import { OrderData, ShippingStatus } from "@/src/entities/type/interfaces";
 import { useAllOrderQuery } from "@/src/shared/hooks/react-query/useOrderQuery";
 import { useState } from "react";
 
@@ -8,6 +8,7 @@ const useOrderList = () => {
         ready: "text-blue-500",
         shipped: "text-indigo-500",
         confirm: "text-green-500",
+        cancel: "text-red-500",
     } as const;
 
     const statusResult = {
@@ -15,6 +16,7 @@ const useOrderList = () => {
         ready: "상품 준비 중",
         shipped: "출고",
         confirm: "구매 확정",
+        cancel: "구매 취소 (교환 및 환불)",
     } as const;
 
     const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
@@ -28,9 +30,7 @@ const useOrderList = () => {
     const [selectedOrder, setSelectedOrder] = useState<OrderData[]>([]);
     const [waybillNumber, setWaybillNumber] = useState<number>(0);
 
-    const [radioValue, setRadioValue] = useState<
-        "pending" | "ready" | "shipped" | "confirm"
-    >("pending");
+    const [radioValue, setRadioValue] = useState<ShippingStatus>("pending");
 
     const {
         data: orders,
