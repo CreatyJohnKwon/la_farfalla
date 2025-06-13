@@ -3,32 +3,32 @@
 import Link from "next/link";
 import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
-import { Posts } from "@src/entities/type/interfaces";
+import { Product } from "@src/entities/type/interfaces";
 import { priceResult, priceDiscount } from "@src/features/calculate";
 
 const ProductsList = ({
-    posts,
+    product,
     index = 0,
 }: {
-    posts: Posts;
+    product: Product;
     index?: number;
 }) => {
     return (
         <li
-            key={posts._id}
+            key={product._id}
             className="animate-fade-in pt-10 text-center opacity-0"
             style={{ animationDelay: `${index * 50}ms` }} // stagger 효과
         >
-            <Link href={`/products/${posts._id}`}>
+            <Link href={`/products/${product._id}`}>
                 <div className="relative w-full overflow-hidden">
                     <div className="pb-[100%]"></div> {/* 1:1 비율 확보 */}
                     <Image
                         src={
-                            posts.image
-                                ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${posts.image[0]}`
+                            product.image
+                                ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${product.image[0]}`
                                 : DefaultImage
                         }
-                        alt={posts.title.eg}
+                        alt={product.title.eg}
                         fill
                         className="absolute left-0 top-0 h-full w-full object-cover"
                         priority
@@ -37,25 +37,25 @@ const ProductsList = ({
                 </div>
 
                 <div className="pt-2 text-[0.60rem] transition-all duration-700 ease-in-out sm:pt-6 sm:text-[1.05rem] c_xl:text-xl">
-                    <p className="font-amstel-thin sm:font-amstel">{`[${posts.category}]`}</p>
-                    <p className="font-pretendard">{`${posts.title.kr}`}</p>
-                    <p className="font-amstel-thin sm:font-amstel">{`${posts.colors.length} colors`}</p>
+                    <p className="font-amstel-thin sm:font-amstel">{`[${product.category}]`}</p>
+                    <p className="font-pretendard">{`${product.title.kr}`}</p>
+                    <p className="font-amstel-thin sm:font-amstel">{`${product.colors.length} colors`}</p>
                 </div>
 
-                {posts.discount === "0" || !posts.discount ? (
+                {product.discount === "0" || !product.discount ? (
                     <span className="font-amstel-thin sm:font-amstel text-base c_xl:text-xl">
-                        {`KRW ${priceResult(posts)}`}
+                        {`KRW ${priceResult(product)}`}
                     </span>
                 ) : (
                     <div className="font-amstel-thin sm:font-amstel">
                         <p className="text-[0.60rem] text-gray-600 line-through transition-all duration-300 ease-in-out sm:text-lg c_xl:ms-2">
-                            {`KRW ${priceResult(posts)}`}
+                            {`KRW ${priceResult(product)}`}
                         </p>
                         <span className="me-1 text-[0.60rem] text-black transition-all duration-300 ease-in-out sm:me-2 sm:text-base c_xl:text-xl">
-                            {`${posts.discount}%`}
+                            {`${product.discount}%`}
                         </span>
                         <span className="text-[0.60rem] transition-all duration-300 ease-in-out sm:text-base c_xl:text-xl">
-                            {`KRW ${priceDiscount(posts)}`}
+                            {`KRW ${priceDiscount(product)}`}
                         </span>
                     </div>
                 )}

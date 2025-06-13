@@ -1,11 +1,11 @@
 import { connectDB } from "@src/entities/models/db/mongoose";
-import Post from "@src/entities/models/Post";
-import Shop from "@src/entities/models/Shop";
+import Product from "@/src/entities/models/Product";
+import Season from "@/src/entities/models/Season";
 
 const getProduct = async (id: string) => {
     try {
         await connectDB();
-        return await Post.findById(id).lean();
+        return await Product.findById(id).lean();
     } catch (error) {
         console.error("Error fetching product:", error);
         throw new Error("Failed to fetch product");
@@ -15,7 +15,7 @@ const getProduct = async (id: string) => {
 const getShopProducts = async () => {
     try {
         await connectDB();
-        return await Post.find({}).lean();
+        return await Product.find({}).lean();
     } catch (error) {
         console.error("Error fetching shop products:", error);
         throw new Error("Failed to fetch shop products");
@@ -25,7 +25,7 @@ const getShopProducts = async () => {
 const getSeason = async () => {
     try {
         await connectDB();
-        const products = await Shop.find({}).lean();
+        const products = await Season.find({}).lean();
         return products;
     } catch (error) {
         console.error("Error fetching home products:", error);

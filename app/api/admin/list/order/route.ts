@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import Order from "@src/entities/models/Order";
-import mongoose from "mongoose";
 
 export async function GET(req: NextRequest) {
     await connectDB();

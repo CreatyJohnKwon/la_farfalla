@@ -1,5 +1,5 @@
 import { connectDB } from "@src/entities/models/db/mongoose";
-import Post from "@src/entities/models/Post";
+import Product from "@/src/entities/models/Product";
 import { NextRequest, NextResponse } from "next/server";
 
 const GET = async (req: NextRequest) => {
@@ -12,7 +12,7 @@ const GET = async (req: NextRequest) => {
             return NextResponse.json({ error: "Missing id" }, { status: 400 });
         }
 
-        const productItem = await Post.findById(id).lean();
+        const productItem = await Product.findById(id).lean();
 
         if (!productItem) {
             return NextResponse.json(

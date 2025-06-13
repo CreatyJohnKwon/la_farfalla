@@ -112,11 +112,9 @@ const Orders = () => {
                                     {order._id && (
                                         <input
                                             type="checkbox"
-                                            checked={Boolean(
-                                                order._id &&
-                                                    selectedOrder.includes(
-                                                        order,
-                                                    ),
+                                            checked={selectedOrder.some(
+                                                (selected) =>
+                                                    selected._id === order._id,
                                             )}
                                             onChange={() => toggleSingle(order)}
                                         />

@@ -5,7 +5,7 @@ import {
     priceDiscount,
     justDiscount,
 } from "@src/features/calculate";
-import { Posts } from "@src/entities/type/interfaces";
+import { Product } from "@src/entities/type/interfaces";
 import ProductDrop from "@src/widgets/drop/ProductDrop";
 import QuantityModal from "@src/widgets/modal/QuantityModal";
 import { useEffect } from "react";
@@ -13,7 +13,7 @@ import useCart from "@src/shared/hooks/useCart";
 import useUser from "@src/shared/hooks/useUsers";
 import { redirect } from "next/navigation";
 
-const ProductInfo = ({ posts }: { posts: Posts }) => {
+const ProductInfo = ({ product }: { product: Product }) => {
     const {
         count,
         setCount,
@@ -33,7 +33,7 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
 
     useEffect(() => {
         if (selectedSize && selectedColor) {
-            handleSelect(selectedSize, selectedColor, posts);
+            handleSelect(selectedSize, selectedColor, product);
         }
     }, [selectedSize, selectedColor]);
 
@@ -42,7 +42,7 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
             (sum, item) => sum + item.quantity,
             0,
         );
-        const tempCalc = justDiscount(posts) * temp;
+        const tempCalc = justDiscount(product) * temp;
 
         setCount(temp);
         setResult(tempCalc.toLocaleString());
@@ -53,28 +53,28 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
             {/* title */}
             <div className="flex flex-col items-center gap-5 text-center">
                 <span className="font-amstel w-[90vw] text-[1.3em] md:text-[1.7em]">
-                    {posts.title.eg}
+                    {product.title.eg}
                 </span>
                 <span className="-mt-1 font-pretendard text-[0.8em] md:text-[1em]">
-                    {posts.title.kr}
+                    {product.title.kr}
                 </span>
             </div>
 
             {/* Description text */}
             <span className="w-9/12 text-center font-pretendard text-[0.8em] font-[300]">
-                {posts.description.text}
+                {product.description.text}
             </span>
 
             {/* price */}
-            {posts.discount === "0" || !posts.discount ? (
-                <div className="font-amstel text-[1em]">{`KRW ${priceResult(posts)}`}</div>
+            {product.discount === "0" || !product.discount ? (
+                <div className="font-amstel text-[1em]">{`KRW ${priceResult(product)}`}</div>
             ) : (
                 <>
                     <div className="font-amstel text-[1em]">
-                        <span className="pe-2">{`${posts.discount}%`}</span>
-                        <span className="font-amstel-thin text-gray-500 line-through">{`KRW ${priceResult(posts)}`}</span>
+                        <span className="pe-2">{`${product.discount}%`}</span>
+                        <span className="font-amstel-thin text-gray-500 line-through">{`KRW ${priceResult(product)}`}</span>
                     </div>
-                    <span className="font-amstel -mt-2 text-[1em] text-black">{`KRW ${priceDiscount(posts)}`}</span>
+                    <span className="font-amstel -mt-2 text-[1em] text-black">{`KRW ${priceDiscount(product)}`}</span>
                 </>
             )}
 
@@ -82,13 +82,13 @@ const ProductInfo = ({ posts }: { posts: Posts }) => {
             <div className="flex w-4/5 flex-col gap-3 md:w-3/4">
                 <ProductDrop
                     title={"size"}
-                    items={posts.size}
+                    items={product.size}
                     selected={selectedSize}
                     setSelected={setSelectedSize}
                 />
                 <ProductDrop
                     title={"color"}
-                    items={posts.colors}
+                    items={product.colors}
                     selected={selectedColor}
                     setSelected={setSelectedColor}
                 />

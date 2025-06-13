@@ -5,14 +5,14 @@ import { ShopClientProps } from "@src/entities/type/interfaces";
 import { useEffect, useState } from "react";
 import useProduct from "@src/shared/hooks/useProduct";
 
-const ShopClient = ({ posts }: ShopClientProps) => {
+const ShopClient = ({ product }: ShopClientProps) => {
     const { section } = useProduct();
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "auto" });
 
-        if (posts.length) setLoading(false);
+        if (product.length) setLoading(false);
     }, [section]);
 
     return (
@@ -30,12 +30,12 @@ const ShopClient = ({ posts }: ShopClientProps) => {
                                   className="aspect-square animate-pulse bg-neutral-100"
                               />
                           ))
-                        : posts.map((post, index) => {
-                              if (post.key === +section || +section === 0) {
+                        : product.map((item, index) => {
+                              if (item.key === +section || +section === 0) {
                                   return (
                                       <ProductsList
-                                          key={post._id}
-                                          posts={post}
+                                          key={item._id}
+                                          product={item}
                                           index={index}
                                       />
                                   );

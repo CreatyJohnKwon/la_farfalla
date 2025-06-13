@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
-const shopSchema = new mongoose.Schema(
+const seasonSchema = new mongoose.Schema(
     {
         title: { type: String, required: true },
         key: { type: Number, required: true },
         year: { type: String, required: true },
     },
-    { timestamps: true, collection: "shop" },
+    { timestamps: true, collection: "season" },
 );
 
-export default mongoose.models?.Shop || mongoose.model("Shop", shopSchema);
+export default mongoose.models?.Shop || mongoose.model("Season", seasonSchema);

@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { useState } from "react";
 import { cartDatasAtom, cartViewAtom } from "@src/shared/lib/atom";
-import { Posts, SelectedItem } from "@src/entities/type/interfaces";
+import { Product, SelectedItem } from "@src/entities/type/interfaces";
 import { justDiscount } from "@src/features/calculate";
 import { useRouter } from "next/navigation";
 import { postCart, deleteCart, updateQuantity } from "../lib/server/cart";
@@ -38,7 +38,7 @@ const useCart = () => {
     };
 
     // 옵션 첫 선택
-    const handleSelect = (size: string, color: string, posts: Posts) => {
+    const handleSelect = (size: string, color: string, product: Product) => {
         const alreadyExists = selectedItems.find(
             (item) => item.size === size && item.color === color,
         );
@@ -47,15 +47,15 @@ const useCart = () => {
 
         const newItem: SelectedItem = {
             userId: session?.user?.email,
-            title: posts.title.eg,
+            title: product.title.eg,
             cartItemId: crypto.randomUUID(),
-            image: posts.image[0],
-            productId: posts._id,
+            image: product.image[0],
+            productId: product._id,
             size,
             color,
             quantity: 1,
-            discountPrice: justDiscount(posts),
-            originalPrice: parseInt(posts.price),
+            discountPrice: justDiscount(product),
+            originalPrice: parseInt(product.price),
         };
 
         setSelectedItems((prev) => [...prev, newItem]);

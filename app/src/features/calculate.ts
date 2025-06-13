@@ -1,5 +1,4 @@
-import { Posts } from "@src/entities/type/interfaces";
-import Post from "../entities/models/Post";
+import { Product } from "@src/entities/type/interfaces";
 
 const serialize = <T extends { _id: any }>(
     docs: T[],
@@ -16,20 +15,20 @@ const serializeFindOne = <T extends { _id: any }>(
     _id: doc._id.toString(),
 });
 
-const priceResult = (post: Posts): string => {
-    const price: number = Number(post.price);
+const priceResult = (product: Product): string => {
+    const price: number = Number(product.price);
 
-    if (post.price) {
+    if (product.price) {
         return price.toLocaleString();
     }
     return "0";
 };
 
-const priceDiscount = (post: Posts): string => {
-    const price: number = Number(post.price);
-    const discount = Number(post.discount);
+const priceDiscount = (product: Product): string => {
+    const price: number = Number(product.price);
+    const discount = Number(product.discount);
 
-    if (post.price && post.discount) {
+    if (product.price && product.discount) {
         let discountPrice = price - price * (discount / 100);
         discountPrice = Math.floor(discountPrice / 10) * 10;
 
@@ -38,11 +37,11 @@ const priceDiscount = (post: Posts): string => {
     return "0";
 };
 
-const justDiscount = (post: Posts): number => {
-    const price: number = Number(post.price);
-    const discount = Number(post.discount);
+const justDiscount = (product: Product): number => {
+    const price: number = Number(product.price);
+    const discount = Number(product.discount);
 
-    if (post.price && post.discount) {
+    if (product.price && product.discount) {
         let discountPrice = price - price * (discount / 100);
         discountPrice = Math.floor(discountPrice / 10) * 10;
 

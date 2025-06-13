@@ -1,8 +1,8 @@
 // for server and datas
-interface Posts {
+interface Product {
     _id: string;
-    title: PostTitleLanguage;
-    description: PostDescription;
+    title: ProductTitleLanguage;
+    description: ProductDescription;
     price: string;
     discount: string;
     category: string;
@@ -12,12 +12,12 @@ interface Posts {
     size: Array<string>;
 }
 
-interface PostDescription {
+interface ProductDescription {
     image: string;
     text: string;
 }
 
-interface PostTitleLanguage {
+interface ProductTitleLanguage {
     kr: string;
     eg: string;
 }
@@ -50,7 +50,7 @@ type NavbarProps = {
 };
 
 type ShopClientProps = {
-    posts: Posts[];
+    product: Product[];
 };
 
 type HomeClientProps = {
@@ -200,7 +200,7 @@ export type {
     SelectedItem,
     Products,
     MenuItem,
-    Posts,
+    Product,
     MileageItem,
     Coupon,
     AddressModalProps,
