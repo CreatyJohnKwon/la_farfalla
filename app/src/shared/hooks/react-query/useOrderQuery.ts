@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { OrderData, OrderUpdateInput } from "@src/entities/type/interfaces";
-import { getAllOrder, updateAdminOrder } from "../../lib/server/order";
+import { getOrderList, updateAdminOrder } from "../../lib/server/order";
 
 const useAllOrderQuery = () => {
     return useQuery<OrderData[], Error>({
         queryKey: ["admin-order"],
-        queryFn: () => getAllOrder(),
+        queryFn: () => getOrderList(),
         staleTime: 1000 * 60 * 3, // 3분 캐시
         retry: false, // 실패 시 재시도 OFF
     });

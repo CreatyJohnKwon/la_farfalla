@@ -5,7 +5,7 @@ import { atom } from "jotai";
 
 export const isLoggedInAtom = atomWithStorage<boolean>("login", false);
 export const sessionAtom = atomWithStorage<Session | null>("session", null);
-export const sectionAtom = atomWithStorage<number>("section", 0);
+export const sectionAtom = atomWithStorage<string>("section", "");
 export const categoryAtom = atomWithStorage<Products[] | []>("category", []);
 export const pagesAtom = atom<"o" | "e" | "m" | "c" | string>("");
 export const sidebarAtom = atom<boolean>(false);

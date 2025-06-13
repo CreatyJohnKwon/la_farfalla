@@ -1,18 +1,8 @@
-import { IDProps, Product } from "@src/entities/type/interfaces";
 import ProductClient from "./ProductClient";
-import { serializeFindOne } from "@src/features/calculate";
-import { getProduct } from "@src/shared/lib/server/shop";
 
-const Products = async ({ params }: IDProps) => {
+const Products = async ({ params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params;
-    if (!id) return null;
-
-    const productData = await getProduct(id);
-    if (!productData) return null;
-
-    const productRaw = serializeFindOne(productData as unknown as Product);
-
-    return <ProductClient product={productRaw} />;
+    return <ProductClient id={id} />;
 };
 
 export default Products;

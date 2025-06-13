@@ -1,6 +1,6 @@
 // for server and datas
 interface Product {
-    _id: string;
+    _id?: string;
     title: ProductTitleLanguage;
     description: ProductDescription;
     price: string;
@@ -8,7 +8,7 @@ interface Product {
     category: string;
     image: string[];
     colors: Array<string>;
-    key: number;
+    seasonId: string;
     size: Array<string>;
 }
 
@@ -27,10 +27,9 @@ interface MenuItem {
     link: string;
 }
 
-interface Products {
+interface Season {
     _id: string;
     title: string;
-    key: number;
     year: string;
 }
 
@@ -47,18 +46,6 @@ type SizeDropProps = {
 type NavbarProps = {
     children?: any;
     textColor?: string;
-};
-
-type ShopClientProps = {
-    product: Product[];
-};
-
-type HomeClientProps = {
-    products: Products[];
-};
-
-type IDProps = {
-    params: Promise<{ id: string }>;
 };
 
 type profNavDataProps = {
@@ -185,11 +172,8 @@ interface OrderUpdateInput {
 export type {
     profNavDataProps,
     CustomButtonProps,
-    ShopClientProps,
-    HomeClientProps,
     SizeDropProps,
     menuDataProps,
-    IDProps,
     navDataProps,
     NavListProps,
     NavbarProps,
@@ -198,7 +182,7 @@ export type {
     OrderData,
     OrderItem,
     SelectedItem,
-    Products,
+    Season,
     MenuItem,
     Product,
     MileageItem,

@@ -42,8 +42,8 @@ const productSchema = new mongoose.Schema(
             type: [String],
             required: true,
         },
-        key: {
-            type: Number,
+        seasonId: {
+            type: mongoose.Types.ObjectId,
             unique: true,
             required: true,
         },

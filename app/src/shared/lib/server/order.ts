@@ -44,10 +44,10 @@ const getOrder = async (userId: string) => {
     return await res.json();
 };
 
-const getAllOrder = async () => {
+const getOrderList = async () => {
     const res = await fetch(`/api/admin/list/order`);
     if (!res.ok) throw new Error("주문 리스트 불러오기 실패");
     return await res.json();
 };
 
-export { updateCoupon, getOrder, getAllOrder, updateAdminOrder };
+export { updateCoupon, getOrder, getOrderList, updateAdminOrder };

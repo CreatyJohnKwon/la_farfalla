@@ -1,11 +1,11 @@
 "use client";
 
-import StatusUpdateSelectedModal from "@/src/components/admin/orders/StatusUpdateSelectedModal";
-import StatusUpdateModal from "@/src/components/admin/orders/StatusUpdateModal";
-import UserInfoModal from "@/src/components/admin/orders/UserInfoModal";
+import StatusUpdateSelectedModal from "@/src/widgets/modal/StatusUpdateSelectedModal";
+import StatusUpdateModal from "@/src/widgets/modal/StatusUpdateModal";
+import UserInfoModal from "@/src/widgets/modal/UserInfoModal";
 import { OrderData } from "@/src/entities/type/interfaces";
 import useOrderList from "@/src/shared/hooks/useOrderList";
-import ProductInfoModal from "@/src/components/admin/orders/ProductInfoModal";
+import ProductInfoModal from "@/src/widgets/modal/ProductInfoModal";
 
 const Orders = () => {
     const {
