@@ -21,7 +21,6 @@ const Products = () => {
     const [onStatus, setOnStatus] = useState<"create" | "update">();
     const [editProduct, setEditProduct] = useState<Product>();
     const { data: season, isLoading: isSeasonLoading } = useSeasonQuery();
-    const { setFormData } = useProduct();
 
     if (isProductListLoading) return <div>Loading...</div>;
     if (!products) return <div>상품 리스트를 불러올 수 없습니다.</div>;
@@ -31,25 +30,6 @@ const Products = () => {
 
     const returnSeason = (seasonId: string): string =>
         season?.find((item) => item._id === seasonId)?.title || "";
-
-    useEffect(() => {
-        setFormData({
-            title: {
-                kr: "",
-                eg: "",
-            },
-            description: {
-                image: "",
-                text: "",
-            },
-            price: "",
-            discount: "",
-            image: [],
-            colors: [],
-            seasonId: "",
-            size: [],
-        });
-    }, [onStatus]);
 
     return (
         !isSeasonLoading && (
