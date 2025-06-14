@@ -12,7 +12,9 @@ const client = new S3Client({
 
 const config = {
     api: {
-        bodyParser: false,
+        bodyParser: {
+            sizeLimit: "10mb",
+        },
     },
 };
 
