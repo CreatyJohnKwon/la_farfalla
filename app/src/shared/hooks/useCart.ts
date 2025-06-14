@@ -65,7 +65,7 @@ const useCart = () => {
         setSelectedColor("");
     };
 
-    const handleRouteProduct = (productId: string) => {
+    const handleRouteProduct = (productId: string | undefined) => {
         router.push(`/products/${productId}`);
         setCartView(false);
     };

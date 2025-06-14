@@ -164,7 +164,7 @@ interface AddressData {
 }
 
 interface OrderUpdateInput {
-    orderId: string;
+    orderId: string | undefined;
     shippingStatus: string;
     trackingNumber: string;
 }
