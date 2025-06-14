@@ -53,25 +53,6 @@ const GET = async () => {
     return NextResponse.json(cartItems);
 };
 
-const DELETE = async (req: NextRequest) => {
-    const body = await req.json();
-    const ids = body?.ids; // 배열로 받음: 확장가능성 염두 (모두선택 삭제 대비)
-
-    if (!Array.isArray(ids) || ids.length === 0) {
-        return NextResponse.json(
-            { error: "삭제할 id가 없습니다" },
-            { status: 400 },
-        );
-    }
-
-    await connectDB();
-
-    // 한 번에 삭제
-    await Cart.deleteMany({ _id: { $in: ids } });
-
-    return NextResponse.json({ ok: true });
-};
-
 const PATCH = async (req: NextRequest) => {
     try {
         const body = await req.json();
@@ -98,6 +79,25 @@ const PATCH = async (req: NextRequest) => {
         console.error("PATCH error:", error);
         return NextResponse.json({ error: "서버 오류" }, { status: 500 });
     }
+};
+
+const DELETE = async (req: NextRequest) => {
+    const body = await req.json();
+    const ids = body?.ids; // 배열로 받음: 확장가능성 염두 (모두선택 삭제 대비)
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+        return NextResponse.json(
+            { error: "삭제할 id가 없습니다" },
+            { status: 400 },
+        );
+    }
+
+    await connectDB();
+
+    // 한 번에 삭제
+    await Cart.deleteMany({ _id: { $in: ids } });
+
+    return NextResponse.json({ ok: true });
 };
 
 export { POST, GET, DELETE, PATCH };

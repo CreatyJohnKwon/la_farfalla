@@ -9,7 +9,7 @@ const GET = async (req: NextRequest) => {
 
         if (!productId || !isValidObjectId(productId)) {
             return NextResponse.json(
-                { error: "올바른 userId가 필요합니다." },
+                { error: "올바른 productId가 필요합니다." },
                 { status: 400 },
             );
         }
@@ -152,4 +152,29 @@ const PUT = async (req: NextRequest) => {
     }
 };
 
-export { GET, POST, PUT };
+const DELETE = async (req: NextRequest) => {
+    try {
+        const productId = req.nextUrl.searchParams.get("productId");
+
+        if (!productId || !isValidObjectId(productId)) {
+            return NextResponse.json(
+                { error: "올바른 productId가 필요합니다." },
+                { status: 400 },
+            );
+        }
+
+        await connectDB();
+
+        await Product.deleteOne({ _id: productId });
+
+        return NextResponse.json({ ok: true });
+    } catch (err) {
+        console.error("DELETE Error:", err);
+        return NextResponse.json(
+            { error: "Internal Server Error" },
+            { status: 500 },
+        );
+    }
+};
+
+export { GET, POST, PUT, DELETE };

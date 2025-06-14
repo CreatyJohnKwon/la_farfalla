@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useState, useRef } from "react";
 import DefaultImage from "../../../../public/images/chill.png";
 import { motion, useMotionValue, useAnimation } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react"; // lucide 아이콘 추천
 
 const Slider = ({ images }: { images: string[] }) => {
     const [current, setCurrent] = useState(0);
@@ -68,13 +67,13 @@ const Slider = ({ images }: { images: string[] }) => {
                     ))}
                 </motion.div>
 
-                {/* 인디케이터 */}
+                {/* 인디케이터: indicator */}
                 <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 gap-2">
                     {images.map((_, idx) => (
                         <button
                             key={idx}
                             onClick={() => slideTo(idx)}
-                            className={`h-3 w-3 rounded-full ${
+                            className={`h-2 w-2 rounded-full ${
                                 current === idx
                                     ? "scale-125 bg-white"
                                     : "bg-gray-400"
@@ -83,20 +82,44 @@ const Slider = ({ images }: { images: string[] }) => {
                     ))}
                 </div>
 
-                {/* 버튼 */}
+                {/* 모던한 큰 화살표 버튼 */}
                 <button
                     onClick={() =>
                         slideTo(current > 0 ? current - 1 : images.length - 1)
                     }
-                    className="group absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/20 p-3 transition-all hover:bg-white/50"
+                    className="group absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full p-4 transition-all"
                 >
-                    <ChevronLeft className="h-5 w-5 text-zinc-600 transition group-hover:scale-110" />
+                    <svg
+                        className="h-16 w-16 text-black/40 transition-transform group-hover:-translate-x-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2.5}
+                            d="M15 19l-7-7 7-7"
+                        />
+                    </svg>
                 </button>
                 <button
                     onClick={() => slideTo((current + 1) % images.length)}
-                    className="group absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/20 p-3 transition-all hover:bg-white/50"
+                    className="group absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full p-4 transition-all"
                 >
-                    <ChevronRight className="h-5 w-5 text-zinc-600 transition group-hover:scale-110" />
+                    <svg
+                        className="h-16 w-16 text-black/40 transition-transform group-hover:translate-x-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2.5}
+                            d="M9 5l7 7-7 7"
+                        />
+                    </svg>
                 </button>
             </div>
         </div>

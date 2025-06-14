@@ -24,8 +24,15 @@ const UpdateProductModal = ({
 }) => {
     const [colorInput, setColorInput] = useState<string>("");
     const [sizeInput, setSizeInput] = useState<string>("");
-    const [imagePreview, setImagePreview] = useState<string[]>([]);
-    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [imageData, setImageData] = useState<{
+        previews: string[];
+        files: File[];
+        existingUrls: string[];
+    }>({
+        previews: [],
+        files: [],
+        existingUrls: [],
+    });
     const [descriptionImage, setDescriptionImage] = useState<File | null>(null);
     const [hasImageChanges, setHasImageChanges] = useState<boolean>(false);
     const [hasDescriptionImageChanges, setHasDescriptionImageChanges] =
@@ -36,7 +43,7 @@ const UpdateProductModal = ({
     const { mutateAsync: createProduct } = usePostProductMutation();
     const { mutateAsync: updateProduct } = useUpdateProductMutation();
 
-    // 기존 상품 데이터로 초기화 (업데이트 모드)
+    // 기존 상품 데이터로 초기화할 때 (useEffect 내부)
     useEffect(() => {
         if (mode === "update" && product) {
             setFormData({
@@ -50,11 +57,16 @@ const UpdateProductModal = ({
                 size: product.size,
             });
 
-            // 기존 이미지 미리보기 설정
-            setImagePreview(product.image || []);
+            // 기존 이미지 데이터 설정
+            setImageData({
+                previews: product.image || [],
+                files: [],
+                existingUrls: product.image || [],
+            });
         }
     }, [mode, product, setFormData]);
 
+    // 수정된 resetAll 함수
     const resetAll = () => {
         const confirmMessage =
             mode === "update"
@@ -74,18 +86,17 @@ const UpdateProductModal = ({
                     seasonId: product.seasonId,
                     size: product.size,
                 });
-                setImagePreview(product.image || []);
+
+                setImageData({
+                    previews: product.image || [],
+                    files: [],
+                    existingUrls: product.image || [],
+                });
             } else {
                 // 생성 모드: 빈 값으로 리셋
                 setFormData({
-                    title: {
-                        kr: "",
-                        eg: "",
-                    },
-                    description: {
-                        image: "",
-                        text: "",
-                    },
+                    title: { kr: "", eg: "" },
+                    description: { image: "", text: "" },
                     price: "",
                     discount: "",
                     image: [],
@@ -93,12 +104,16 @@ const UpdateProductModal = ({
                     seasonId: "",
                     size: [],
                 });
-                setImagePreview([]);
+
+                setImageData({
+                    previews: [],
+                    files: [],
+                    existingUrls: [],
+                });
             }
 
             setColorInput("");
             setSizeInput("");
-            setImageFiles([]);
             setDescriptionImage(null);
             setHasImageChanges(false);
             setHasDescriptionImageChanges(false);
@@ -144,38 +159,73 @@ const UpdateProductModal = ({
         }
     };
 
+    // 수정된 handleImageUpload 함수
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
 
-        if (formData.image.length + files.length > 3) {
+        // 현재 총 이미지 개수 계산
+        const currentImageCount = imageData.previews.length;
+
+        if (currentImageCount + files.length > 3) {
             alert("이미지는 최대 3개까지만 업로드할 수 있습니다.");
             return;
         }
 
-        setImageFiles((prev) => [...prev, ...files]);
+        // 새로운 파일들을 추가
+        const newFiles = [...imageData.files, ...files];
         setHasImageChanges(true);
 
         // 미리보기 생성
-        files.forEach((file) => {
+        const newPreviews = [...imageData.previews];
+        let processedCount = 0;
+
+        files.forEach((file, index) => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 if (e.target?.result) {
-                    setImagePreview((prev) => [
-                        ...prev,
-                        e.target?.result as string,
-                    ]);
+                    newPreviews.push(e.target.result as string);
+                    processedCount++;
+
+                    // 모든 파일이 처리되면 상태 업데이트
+                    if (processedCount === files.length) {
+                        setImageData({
+                            previews: newPreviews,
+                            files: newFiles,
+                            existingUrls: imageData.existingUrls,
+                        });
+                    }
                 }
             };
             reader.readAsDataURL(file);
         });
     };
 
+    // 수정된 removeImage 함수
     const removeImage = (index: number) => {
-        const newFiles = imageFiles.filter((_, i) => i !== index);
-        const newPreviews = imagePreview.filter((_, i) => i !== index);
+        const newPreviews = [...imageData.previews];
+        const newFiles = [...imageData.files];
+        const newExistingUrls = [...imageData.existingUrls];
 
-        setImageFiles(newFiles);
-        setImagePreview(newPreviews);
+        // 제거할 이미지가 기존 이미지인지 새로 추가된 이미지인지 확인
+        const isExistingImage = index < imageData.existingUrls.length;
+
+        if (isExistingImage) {
+            // 기존 이미지 제거
+            newExistingUrls.splice(index, 1);
+            newPreviews.splice(index, 1);
+        } else {
+            // 새로 추가된 이미지 제거
+            const fileIndex = index - imageData.existingUrls.length;
+            newFiles.splice(fileIndex, 1);
+            newPreviews.splice(index, 1);
+        }
+
+        setImageData({
+            previews: newPreviews,
+            files: newFiles,
+            existingUrls: newExistingUrls,
+        });
+
         setHasImageChanges(true);
     };
 
@@ -216,11 +266,7 @@ const UpdateProductModal = ({
     const validateForm = () => {
         const validations = [
             {
-                condition: mode === "create" && imageFiles.length !== 3,
-                message: "이미지를 정확히 3개 업로드해주세요.",
-            },
-            {
-                condition: mode === "update" && imagePreview.length !== 3,
+                condition: imageData.previews.length !== 3,
                 message: "이미지를 정확히 3개 유지해주세요.",
             },
             {
@@ -279,19 +325,35 @@ const UpdateProductModal = ({
                     : "상품을 등록하시겠습니까?";
 
             if (validateForm() && confirm(confirmMessage)) {
-                let uploadedImageUrls: string[] = formData.image;
-                let uploadedDescriptionImageUrl: string =
-                    formData.description.image;
+                let uploadedImageUrls: string[] = imageData.existingUrls;
 
-                // 이미지가 변경된 경우에만 업로드
-                if (hasImageChanges && imageFiles.length > 0) {
-                    const newImageUrls = await uploadImagesToServer(imageFiles);
-                    if (newImageUrls) {
-                        uploadedImageUrls = newImageUrls;
+                // 이미지가 변경된 경우 처리
+                if (hasImageChanges) {
+                    // 새로 추가된 파일이 있는 경우 업로드
+                    if (imageData.files.length > 0) {
+                        const newImageUrls = await uploadImagesToServer(
+                            imageData.files,
+                        );
+                        if (newImageUrls) {
+                            // 기존 유지된 이미지 URL과 새로 업로드된 이미지 URL을 합침
+                            uploadedImageUrls = [
+                                ...imageData.existingUrls,
+                                ...newImageUrls,
+                            ];
+                        }
+                    } else {
+                        // 새로 추가된 파일은 없지만 기존 이미지가 삭제된 경우
+                        // (기존 이미지만 유지)
+                        uploadedImageUrls = imageData.existingUrls;
                     }
+                } else {
+                    // 이미지 변경이 없는 경우 기존 이미지 유지
+                    uploadedImageUrls = formData.image;
                 }
 
-                // 설명 이미지가 변경된 경우에만 업로드
+                // 설명 이미지 처리
+                let uploadedDescriptionImageUrl: string =
+                    formData.description.image;
                 if (hasDescriptionImageChanges && descriptionImage) {
                     const newDescriptionImageUrls =
                         await uploadImagesToServer(descriptionImage);
@@ -382,10 +444,10 @@ const UpdateProductModal = ({
                                     key={index}
                                     className="relative flex aspect-square items-center justify-center rounded-lg border-2 border-dashed border-gray-300"
                                 >
-                                    {imagePreview[index] ? (
+                                    {imageData.previews[index] ? (
                                         <>
                                             <Image
-                                                src={imagePreview[index]}
+                                                src={imageData.previews[index]}
                                                 alt={`Preview ${index + 1}`}
                                                 fill
                                                 className="rounded-lg object-cover"
@@ -423,11 +485,7 @@ const UpdateProductModal = ({
                             className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
                         />
                         <p className="mt-1 text-xs text-gray-500">
-                            현재{" "}
-                            {mode === "create"
-                                ? imageFiles.length
-                                : imagePreview.length}
-                            /3개
+                            현재 {imageData.previews.length}/3개
                             {mode === "update" &&
                                 hasImageChanges &&
                                 " (변경됨)"}

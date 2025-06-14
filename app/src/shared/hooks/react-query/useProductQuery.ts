@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Product, Season } from "@/src/entities/type/interfaces";
 import {
+    deleteProduct,
     getProduct,
     getProductList,
     postProduct,
@@ -81,11 +82,11 @@ const useDeleteProductMutation = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (productId: string) => {
-            // return deleteProduct(productId);
+        mutationFn: async (productId: Product) => {
+            return deleteProduct(productId);
         },
 
-        onSuccess: (data, productId) => {
+        onSuccess: (productId) => {
             queryClient.invalidateQueries({
                 queryKey: ["get-product-list"],
             });

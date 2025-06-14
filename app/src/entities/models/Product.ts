@@ -27,7 +27,7 @@ const productSchema = new mongoose.Schema(
             required: true,
         },
         discount: {
-            type: String, // 퍼센트지만 string으로 받기로 했으므로
+            type: String,
             default: "0",
         },
         image: {
@@ -40,7 +40,6 @@ const productSchema = new mongoose.Schema(
         },
         seasonId: {
             type: mongoose.Types.ObjectId,
-            unique: true,
             required: true,
         },
         size: {
