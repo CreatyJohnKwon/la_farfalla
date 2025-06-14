@@ -13,9 +13,8 @@ const client = new S3Client({
 const config = {
     api: {
         bodyParser: {
-            sizeLimit: "10mb",
+            sizeLimit: "25mb",
         },
     },
 };
-
 export { client, config };
