@@ -23,11 +23,7 @@ const ProductsList = ({
                 <div className="relative w-full overflow-hidden">
                     <div className="pb-[100%]"></div> {/* 1:1 비율 확보 */}
                     <Image
-                        src={
-                            product.image
-                                ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${product.image[0]}`
-                                : DefaultImage
-                        }
+                        src={product.image ? product.image[0] : DefaultImage}
                         alt={product.title.eg || ""}
                         fill
                         className="absolute left-0 top-0 h-full w-full object-cover"

@@ -138,7 +138,7 @@ const Order = () => {
                                         <Image
                                             src={
                                                 product.image
-                                                    ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${product.image}`
+                                                    ? product.image
                                                     : DefaultImage
                                             }
                                             alt="상품 이미지"

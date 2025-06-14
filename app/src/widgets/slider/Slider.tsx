@@ -57,11 +57,7 @@ const Slider = ({ images }: { images: string[] }) => {
                             style={{ width: `${100}%` }}
                         >
                             <Image
-                                src={
-                                    img
-                                        ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${img}`
-                                        : DefaultImage
-                                }
+                                src={img ? img : DefaultImage}
                                 alt={`img-${i}`}
                                 width={500}
                                 height={500}

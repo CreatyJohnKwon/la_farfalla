@@ -15,22 +15,19 @@ export const orderDatasAtom = atomWithStorage<SelectedItem[] | []>(
     [],
 );
 
-export const productFormDatasAtom = atomWithStorage<Product>(
-    "productFormDatas",
-    {
-        title: {
-            kr: "",
-            eg: "",
-        },
-        description: {
-            image: "",
-            text: "",
-        },
-        price: "",
-        discount: "",
-        image: [],
-        colors: [],
-        seasonId: "",
-        size: [],
+export const productFormDatasAtom = atom<Product>({
+    title: {
+        kr: "",
+        eg: "",
     },
-);
+    description: {
+        image: "",
+        text: "",
+    },
+    price: "",
+    discount: "",
+    image: [],
+    colors: [],
+    seasonId: "",
+    size: [],
+});

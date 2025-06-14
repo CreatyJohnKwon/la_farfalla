@@ -24,7 +24,7 @@ const ProductClient = ({ id }: { id: string }) => {
                 <Image
                     src={
                         product.description.image
-                            ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${product.description.image[0]}`
+                            ? product.description.image
                             : DefaultImage
                     }
                     alt={"product_image_" + id}

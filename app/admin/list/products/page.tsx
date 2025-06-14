@@ -126,7 +126,7 @@ const Products = () => {
                                         height={500}
                                         src={
                                             product.image[0]
-                                                ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${product.image[0]}`
+                                                ? product.image[0]
                                                 : DefaultImage
                                         }
                                         alt="대표 이미지"

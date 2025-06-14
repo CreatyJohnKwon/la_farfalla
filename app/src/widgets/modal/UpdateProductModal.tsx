@@ -36,38 +36,8 @@ const UpdateProductModal = ({
     const { mutateAsync: createProduct } = usePostProductMutation();
     const { mutateAsync: updateProduct } = useUpdateProductMutation();
 
-    const getImageUrl = (imagePath: string) => {
-        if (!imagePath) return "";
-
-        // 이미 완전한 URL인 경우 (data: URL 또는 https:// 로 시작)
-        if (imagePath.startsWith("data:") || imagePath.startsWith("https://")) {
-            return imagePath;
-        }
-
-        // 상대 경로인 경우 R2 도메인 추가
-        const R2_DOMAIN = "https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev";
-        return `${R2_DOMAIN}/${imagePath.startsWith("/") ? imagePath.slice(1) : imagePath}`;
-    };
-
     // 기존 상품 데이터로 초기화 (업데이트 모드)
     useEffect(() => {
-        setFormData({
-            title: {
-                kr: "",
-                eg: "",
-            },
-            description: {
-                image: "",
-                text: "",
-            },
-            price: "",
-            discount: "",
-            image: [],
-            colors: [],
-            seasonId: "",
-            size: [],
-        });
-
         if (mode === "update" && product) {
             setFormData({
                 title: product.title,
@@ -81,11 +51,7 @@ const UpdateProductModal = ({
             });
 
             // 기존 이미지 미리보기 설정
-            // 기존 이미지 미리보기 설정 (R2 URL 적용)
-            const processedImages = (product.image || []).map((img) =>
-                getImageUrl(img),
-            );
-            setImagePreview(processedImages);
+            setImagePreview(product.image || []);
         }
     }, [mode, product, setFormData]);
 
@@ -108,10 +74,7 @@ const UpdateProductModal = ({
                     seasonId: product.seasonId,
                     size: product.size,
                 });
-                const processedImages = (product.image || []).map((img) =>
-                    getImageUrl(img),
-                );
-                setImagePreview(processedImages);
+                setImagePreview(product.image || []);
             } else {
                 // 생성 모드: 빈 값으로 리셋
                 setFormData({
@@ -525,37 +488,13 @@ const UpdateProductModal = ({
                             {formData.description.image ? (
                                 <div className="relative">
                                     <div className="relative h-64 w-full overflow-y-auto rounded-lg border border-gray-200">
-                                        {mode === "create" ? (
-                                            <Image
-                                                src={
-                                                    product
-                                                        ? "https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/" +
-                                                          product?.description
-                                                              .image
-                                                        : formData.description
-                                                              .image
-                                                }
-                                                alt="설명 이미지 미리보기"
-                                                width={800}
-                                                height={600}
-                                                className="w-full object-contain"
-                                            />
-                                        ) : (
-                                            <Image
-                                                src={
-                                                    product
-                                                        ? "https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/" +
-                                                          product?.description
-                                                              .image
-                                                        : formData.description
-                                                              .image
-                                                }
-                                                alt="설명 이미지 미리보기"
-                                                width={800}
-                                                height={600}
-                                                className="w-full object-contain"
-                                            />
-                                        )}
+                                        <Image
+                                            src={formData.description.image}
+                                            alt="설명 이미지 미리보기"
+                                            width={800}
+                                            height={600}
+                                            className="w-full object-contain"
+                                        />
                                     </div>
                                     <button
                                         type="button"

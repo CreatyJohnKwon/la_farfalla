@@ -31,7 +31,9 @@ const uploadImageToR2 = async (file: Buffer, originalFileName: string) => {
     });
 
     await client.send(command);
-    return fileName || ``;
+    return (
+        `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${fileName}` || ``
+    );
 };
 
 const uploadImagesToServer = async (
