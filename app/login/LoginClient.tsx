@@ -49,7 +49,7 @@ const LoginClient = () => {
         <div className="h-screen w-screen">
             <div className="flex h-full w-auto flex-col items-center justify-center text-center">
                 <form
-                    className="font-amstel flex w-5/6 flex-col items-center justify-center gap-6 md:w-5/12"
+                    className="flex w-5/6 flex-col items-center justify-center gap-6 md:w-5/12"
                     action={loginAction}
                 >
                     <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-6">
@@ -60,23 +60,29 @@ const LoginClient = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="이메일을 입력하세요"
-                                className="rounded-none font-pretendard-bold h-12 w-full border border-gray-200 bg-gray-50 px-4 text-black transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:h-14"
+                                className="h-12 w-full rounded-none border border-gray-200 bg-gray-50 px-4 font-pretendard text-black transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:h-14"
                             />
                             <div className="relative w-full">
                                 <input
                                     type={pwdVisible ? "text" : "password"}
                                     name="password"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
                                     placeholder="패스워드를 입력하세요"
-                                    className="rounded-none font-pretendard-bold h-12 w-full border border-gray-200 bg-gray-50 px-4 text-black transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:h-14"
+                                    className="h-12 w-full rounded-none border border-gray-200 bg-gray-50 px-4 font-pretendard text-black transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:h-14"
                                 />
-                                <button 
+                                <button
                                     type="button"
                                     onClick={() => setPwdVisible(!pwdVisible)}
-                                    className="absolute right-1 top-1/2 -translate-y-1/2 p-4 text-black bg-transparent"
+                                    className="absolute right-1 top-1/2 -translate-y-1/2 bg-transparent p-4 text-black"
                                 >
-                                    {!pwdVisible ? <FaRegEyeSlash /> : <FaRegEye />}
+                                    {!pwdVisible ? (
+                                        <FaRegEyeSlash />
+                                    ) : (
+                                        <FaRegEye />
+                                    )}
                                 </button>
                             </div>
                         </div>
@@ -85,7 +91,7 @@ const LoginClient = () => {
                                 isDisabled
                                     ? "bg-black"
                                     : "bg-black hover:bg-black/50"
-                            } px-6 py-3 text-xs font-semibold text-white transition-colors sm:col-span-2 md:text-xl`}
+                            } font-amstel px-6 py-3 text-xs font-semibold text-white transition-colors sm:col-span-2 md:text-xl`}
                             disabled={isDisabled}
                             type="submit"
                         >
@@ -95,11 +101,11 @@ const LoginClient = () => {
                     <p className="m-2 w-full border-b" />
                     <Link
                         href={"/register"}
-                        className="flex w-full justify-center bg-black px-6 py-3 text-xs text-white transition-colors duration-300 ease-in-out hover:bg-black/50 md:text-base"
+                        className="font-amstel flex w-full justify-center bg-black px-6 py-3 text-xs text-white transition-colors duration-300 ease-in-out hover:bg-black/50 md:text-base"
                     >
                         Join us
                     </Link>
-                    <div className="grid w-full grid-cols-1 gap-4 text-xs sm:grid-cols-2 md:text-base">
+                    <div className="font-amstel grid w-full grid-cols-1 gap-4 text-xs sm:grid-cols-2 md:text-base">
                         <button
                             onClick={() => loginHandler("naver")}
                             className="col-span-1 bg-[#03C75A] px-6 py-3 text-white transition-all duration-300 hover:bg-[#03C75A]/40"
@@ -107,7 +113,9 @@ const LoginClient = () => {
                         >
                             <div className="flex justify-center">
                                 <SiNaver className="me-3 mt-[0.2em] sm:me-5" />
-                                <span className="text-sm md:text-base">Login with Naver</span>
+                                <span className="text-sm md:text-base">
+                                    Login with Naver
+                                </span>
                             </div>
                         </button>
 
@@ -118,7 +126,9 @@ const LoginClient = () => {
                         >
                             <div className="flex justify-center">
                                 <RiKakaoTalkFill className="me-3 size-5 sm:me-5" />
-                                <span className="text-sm md:text-base">Login with Kakao</span>
+                                <span className="text-sm md:text-base">
+                                    Login with Kakao
+                                </span>
                             </div>
                         </button>
                     </div>

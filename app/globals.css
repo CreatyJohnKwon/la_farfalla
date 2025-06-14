@@ -54,14 +54,6 @@ html {
             "wght" 100,
             "wdth" 400;
     }
-
-    .font-pretendard-thin {
-        @apply font-pretendard font-thin tracking-tighter;
-    }
-
-    .font-pretendard-bold {
-        @apply font-pretendard font-semibold tracking-tighter;
-    }
 }
 
 @font-face {
