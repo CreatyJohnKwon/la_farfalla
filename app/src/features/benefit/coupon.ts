@@ -37,8 +37,6 @@ const spendCoupon = async (userId: ObjectId, couponCode: string) => {
     if (!updatedCoupon) {
         throw new Error("사용 가능한 쿠폰이 없습니다.");
     }
-
-    console.log(`coupon spend ${couponCode}, on: ${updatedCoupon.usedAt}`);
 };
 
 export { benefitWelcomeCoupon, spendCoupon };

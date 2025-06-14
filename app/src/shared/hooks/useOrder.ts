@@ -69,8 +69,6 @@ const useOrder = () => {
             totalPrice: totalPrice,
         };
 
-        console.log(orderData);
-
         const res = await orderAccept(orderData);
 
         if (res.success) {

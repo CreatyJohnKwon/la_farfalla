@@ -47,9 +47,7 @@ const useSmartUpdateOrderMutation = () => {
             );
         },
 
-        onSuccess: (data, variables) => {
-            console.log("✅ 업데이트 성공", data);
-
+        onSuccess: (variables) => {
             // 더 구체적인 캐시 업데이트
             queryClient.invalidateQueries({ queryKey: ["orders"] });
 

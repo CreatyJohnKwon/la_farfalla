@@ -6,10 +6,6 @@ const updateCoupon = async (couponId: string) => {
     try {
         const res = await axios.patch(`/api/user/coupon/${couponId}`);
 
-        console.log("✅ response data:", res.data);
-        console.log("📡 status:", res.status);
-        console.log("📄 full response:", res);
-
         if (!res.data) throw new Error("업데이트 실패");
 
         return res.data;

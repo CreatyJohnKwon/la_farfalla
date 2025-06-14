@@ -102,7 +102,6 @@ export const authOptions: NextAuthOptions = {
                 });
 
                 if (result.success) {
-                    console.log("로그인 성공 : " + result.message);
                     return true;
                 }
 

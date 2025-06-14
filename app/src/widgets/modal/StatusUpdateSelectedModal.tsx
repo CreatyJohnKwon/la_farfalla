@@ -26,10 +26,8 @@ const StatusUpdateSelectedModal = ({
     // 더 간결한 버전 (ES6+ 사용) - TypeScript 버전
     const getMostFrequentShoppingStatusES6 = () => {
         // 배열 유효성 검사
-        if (!orderData || !Array.isArray(orderData) || orderData.length === 0) {
-            console.log("orderData is not a valid array:", orderData);
+        if (!orderData || !Array.isArray(orderData) || orderData.length === 0)
             return;
-        }
 
         const statusCount = orderData.reduce(
             (acc: Record<ShippingStatus, number>, order) => {
