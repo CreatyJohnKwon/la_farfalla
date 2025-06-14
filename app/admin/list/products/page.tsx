@@ -7,9 +7,9 @@ import {
 } from "@/src/shared/hooks/react-query/useProductQuery";
 import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UpdateProductModal from "@/src/widgets/modal/UpdateProductModal";
-import { a } from "node_modules/framer-motion/dist/types.d-CtuPurYT";
+import useProduct from "@/src/shared/hooks/useProduct";
 
 const Products = () => {
     const {
@@ -18,7 +18,10 @@ const Products = () => {
         refetch,
     } = useProductListQuery();
     const [isOpenUpdateModal, setIsOpenUpdateModal] = useState<boolean>(false);
+    const [onStatus, setOnStatus] = useState<"create" | "update">();
+    const [editProduct, setEditProduct] = useState<Product>();
     const { data: season, isLoading: isSeasonLoading } = useSeasonQuery();
+    const { setFormData } = useProduct();
 
     if (isProductListLoading) return <div>Loading...</div>;
     if (!products) return <div>상품 리스트를 불러올 수 없습니다.</div>;
@@ -28,6 +31,25 @@ const Products = () => {
 
     const returnSeason = (seasonId: string): string =>
         season?.find((item) => item._id === seasonId)?.title || "";
+
+    useEffect(() => {
+        setFormData({
+            title: {
+                kr: "",
+                eg: "",
+            },
+            description: {
+                image: "",
+                text: "",
+            },
+            price: "",
+            discount: "",
+            image: [],
+            colors: [],
+            seasonId: "",
+            size: [],
+        });
+    }, [onStatus]);
 
     return (
         !isSeasonLoading && (
@@ -56,7 +78,10 @@ const Products = () => {
 
                     {/* 상품 등록하기 버튼 */}
                     <button
-                        onClick={() => onOpen()}
+                        onClick={() => {
+                            onOpen();
+                            setOnStatus("create");
+                        }}
                         className={`flex h-full w-auto items-center justify-center rounded border border-gray-300 bg-gray-100 p-2 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800`}
                     >
                         상품 등록하기
@@ -79,9 +104,6 @@ const Products = () => {
                             <th className="w-[15%] px-2 py-2 text-xs sm:text-sm md:px-4">
                                 상품명
                             </th>
-                            {/* <th className="w-[10%] px-2 py-2 text-xs sm:text-sm md:px-4">
-                            카테고리
-                        </th> */}
                             <th className="w-[10%] px-2 py-2 text-xs sm:text-sm md:px-4">
                                 시즌
                             </th>
@@ -144,9 +166,6 @@ const Products = () => {
                                 <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
                                     {returnSeason(product.seasonId)}
                                 </td>
-                                {/* <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
-                                {product.category}
-                            </td> */}
                                 <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
                                     {`${product.price}원`}
                                 </td>
@@ -165,7 +184,11 @@ const Products = () => {
                                 </td>
                                 <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
                                     <button
-                                        // onClick={() => onEdit(product)}
+                                        onClick={() => {
+                                            onOpen();
+                                            setOnStatus("update");
+                                            setEditProduct(product);
+                                        }}
                                         className="mr-2 text-gray-600 hover:underline"
                                     >
                                         수정
@@ -182,7 +205,12 @@ const Products = () => {
                     </tbody>
                 </table>
                 {isOpenUpdateModal && (
-                    <UpdateProductModal onClose={onClose} season={season} />
+                    <UpdateProductModal
+                        onClose={onClose}
+                        season={season}
+                        product={editProduct}
+                        mode={onStatus}
+                    />
                 )}
             </div>
         )

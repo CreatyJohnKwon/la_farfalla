@@ -1,67 +1,127 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Product, Season } from "@/src/entities/type/interfaces";
 import { uploadImagesToServer } from "@/src/shared/lib/uploadToR2";
+import {
+    usePostProductMutation,
+    useUpdateProductMutation,
+} from "@/src/shared/hooks/react-query/useProductQuery";
+import useProduct from "@/src/shared/hooks/useProduct";
 
 const UpdateProductModal = ({
     onClose,
     season,
+    product, // 기존 상품 데이터 (업데이트 시)
+    mode = "create", // "create" | "update"
 }: {
     onClose: () => void;
     season?: Season[];
+    product?: Product;
+    mode?: "create" | "update";
 }) => {
-    const [formData, setFormData] = useState<Product>({
-        title: {
-            kr: "",
-            eg: "",
-        },
-        description: {
-            image: "",
-            text: "",
-        },
-        price: "",
-        discount: "",
-        category: "",
-        image: [],
-        colors: [],
-        seasonId: "",
-        size: [],
-    });
-
     const [colorInput, setColorInput] = useState<string>("");
     const [sizeInput, setSizeInput] = useState<string>("");
     const [imagePreview, setImagePreview] = useState<string[]>([]);
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [descriptionImage, setDescriptionImage] = useState<File | null>(null);
+    const [hasImageChanges, setHasImageChanges] = useState<boolean>(false);
+    const [hasDescriptionImageChanges, setHasDescriptionImageChanges] =
+        useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const { formData, setFormData } = useProduct();
+
+    const { mutateAsync: createProduct } = usePostProductMutation();
+    const { mutateAsync: updateProduct } = useUpdateProductMutation();
+
+    const getImageUrl = (imagePath: string) => {
+        if (!imagePath) return "";
+
+        // 이미 완전한 URL인 경우 (data: URL 또는 https:// 로 시작)
+        if (imagePath.startsWith("data:") || imagePath.startsWith("https://")) {
+            return imagePath;
+        }
+
+        // 상대 경로인 경우 R2 도메인 추가
+        const R2_DOMAIN = "https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev";
+        return `${R2_DOMAIN}/${imagePath.startsWith("/") ? imagePath.slice(1) : imagePath}`;
+    };
+
+    // 기존 상품 데이터로 초기화 (업데이트 모드)
+    useEffect(() => {
+        if (mode === "update" && product) {
+            setFormData({
+                title: product.title,
+                description: product.description,
+                price: product.price,
+                discount: product.discount || "",
+                image: product.image,
+                colors: product.colors,
+                seasonId: product.seasonId,
+                size: product.size,
+            });
+
+            // 기존 이미지 미리보기 설정
+            // 기존 이미지 미리보기 설정 (R2 URL 적용)
+            const processedImages = (product.image || []).map((img) =>
+                getImageUrl(img),
+            );
+            setImagePreview(processedImages);
+        }
+    }, [mode, product, setFormData]);
 
     const resetAll = () => {
-        if (confirm("정말 모두 초기화하시겠습니까?")) {
-            setFormData({
-                title: {
-                    kr: "",
-                    eg: "",
-                },
-                description: {
-                    image: "",
-                    text: "",
-                },
-                price: "",
-                discount: "",
-                category: "",
-                image: [],
-                colors: [],
-                seasonId: "",
-                size: [],
-            });
+        const confirmMessage =
+            mode === "update"
+                ? "정말 초기값으로 되돌리시겠습니까?"
+                : "정말 모두 초기화하시겠습니까?";
+
+        if (confirm(confirmMessage)) {
+            if (mode === "update" && product) {
+                // 업데이트 모드: 원본 데이터로 리셋
+                setFormData({
+                    title: product.title,
+                    description: product.description,
+                    price: product.price,
+                    discount: product.discount || "",
+                    image: product.image,
+                    colors: product.colors,
+                    seasonId: product.seasonId,
+                    size: product.size,
+                });
+                const processedImages = (product.image || []).map((img) =>
+                    getImageUrl(img),
+                );
+                setImagePreview(processedImages);
+            } else {
+                // 생성 모드: 빈 값으로 리셋
+                setFormData({
+                    title: {
+                        kr: "",
+                        eg: "",
+                    },
+                    description: {
+                        image: "",
+                        text: "",
+                    },
+                    price: "",
+                    discount: "",
+                    image: [],
+                    colors: [],
+                    seasonId: "",
+                    size: [],
+                });
+                setImagePreview([]);
+            }
+
             setColorInput("");
             setSizeInput("");
-            setImagePreview([]);
             setImageFiles([]);
             setDescriptionImage(null);
+            setHasImageChanges(false);
+            setHasDescriptionImageChanges(false);
         }
     };
 
@@ -113,6 +173,7 @@ const UpdateProductModal = ({
         }
 
         setImageFiles((prev) => [...prev, ...files]);
+        setHasImageChanges(true);
 
         // 미리보기 생성
         files.forEach((file) => {
@@ -135,6 +196,7 @@ const UpdateProductModal = ({
 
         setImageFiles(newFiles);
         setImagePreview(newPreviews);
+        setHasImageChanges(true);
     };
 
     const addColor = () => {
@@ -174,8 +236,12 @@ const UpdateProductModal = ({
     const validateForm = () => {
         const validations = [
             {
-                condition: imageFiles.length !== 3,
+                condition: mode === "create" && imageFiles.length !== 3,
                 message: "이미지를 정확히 3개 업로드해주세요.",
+            },
+            {
+                condition: mode === "update" && imagePreview.length !== 3,
+                message: "이미지를 정확히 3개 유지해주세요.",
             },
             {
                 condition: !formData.title.kr || !formData.title.eg,
@@ -190,7 +256,14 @@ const UpdateProductModal = ({
                 message: "설명을 적어주세요.",
             },
             {
-                condition: !descriptionImage,
+                condition: mode === "create" && !descriptionImage,
+                message: "설명 이미지를 선택해주세요.",
+            },
+            {
+                condition:
+                    mode === "update" &&
+                    !formData.description.image &&
+                    !descriptionImage,
                 message: "설명 이미지를 선택해주세요.",
             },
             {
@@ -206,6 +279,7 @@ const UpdateProductModal = ({
                 message: "사이즈를 선택해주세요.",
             },
         ];
+
         for (const { condition, message } of validations) {
             if (condition) {
                 alert(message);
@@ -218,38 +292,84 @@ const UpdateProductModal = ({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 상품 등록로직
         try {
-            if (validateForm() && confirm("상품을 업데이트 하시겠습니까?")) {
-                const uploadedImageUrls =
-                    await uploadImagesToServer(imageFiles);
-                const uploadedDescriptionImageUrls =
-                    await uploadImagesToServer(descriptionImage);
+            const confirmMessage =
+                mode === "update"
+                    ? "상품을 업데이트 하시겠습니까?"
+                    : "상품을 등록하시겠습니까?";
+
+            if (validateForm() && confirm(confirmMessage)) {
+                let uploadedImageUrls: string[] = formData.image;
+                let uploadedDescriptionImageUrl: string =
+                    formData.description.image;
+
+                // 이미지가 변경된 경우에만 업로드
+                if (hasImageChanges && imageFiles.length > 0) {
+                    const newImageUrls = await uploadImagesToServer(imageFiles);
+                    if (newImageUrls) {
+                        uploadedImageUrls = newImageUrls;
+                    }
+                }
+
+                // 설명 이미지가 변경된 경우에만 업로드
+                if (hasDescriptionImageChanges && descriptionImage) {
+                    const newDescriptionImageUrls =
+                        await uploadImagesToServer(descriptionImage);
+                    if (newDescriptionImageUrls && newDescriptionImageUrls[0]) {
+                        uploadedDescriptionImageUrl =
+                            newDescriptionImageUrls[0];
+                    }
+                }
 
                 const finalData: Product = {
                     ...formData,
-                    image: uploadedImageUrls ?? [], // null이면 빈 배열
+                    image: uploadedImageUrls,
                     description: {
-                        image: uploadedDescriptionImageUrls?.[0] ?? "", // null이거나 빈 배열일 때 빈 문자열
+                        image: uploadedDescriptionImageUrl,
                         text: formData.description.text,
                     },
                 };
 
-                console.log(finalData);
+                // 업데이트 모드인 경우 ID 포함
+                if (mode === "update" && product?._id) {
+                    finalData._id = product._id;
+                }
 
-                // await fetch("/api/products", {
-                //     method: "POST",
-                //     headers: { "Content-Type": "application/json" },
-                //     body: JSON.stringify(finalData),
-                // });
+                if (mode === "update") {
+                    await updateProduct(finalData);
+                } else {
+                    await createProduct(finalData);
+                }
 
-                // alert("상품이 성공적으로 등록되었습니다.");
-                // onClose();
+                onClose();
             }
         } catch (err) {
             console.error(err);
-            alert("상품 등록 중 오류가 발생했습니다.");
+            const errorMessage =
+                mode === "update"
+                    ? "상품 업데이트 중 오류가 발생했습니다."
+                    : "상품 등록 중 오류가 발생했습니다.";
+            alert(errorMessage);
         }
+    };
+
+    const handleDescriptionImageChange = (file: File) => {
+        setDescriptionImage(file);
+        setHasDescriptionImageChanges(true);
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            if (e.target?.result) {
+                setFormData((prev) => ({
+                    ...prev,
+                    description: {
+                        ...prev.description,
+                        image: e.target?.result as string,
+                    },
+                }));
+            }
+        };
+        reader.readAsDataURL(file);
     };
 
     return (
@@ -266,7 +386,7 @@ const UpdateProductModal = ({
                 onClick={(e) => e.stopPropagation()}
             >
                 <h1 className="mb-6 text-center font-pretendard text-2xl font-semibold text-gray-800">
-                    상품 등록
+                    {mode === "update" ? "상품 수정" : "상품 등록"}
                 </h1>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -323,7 +443,14 @@ const UpdateProductModal = ({
                             className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
                         />
                         <p className="mt-1 text-xs text-gray-500">
-                            현재 {imageFiles.length}/3개 업로드됨
+                            현재{" "}
+                            {mode === "create"
+                                ? imageFiles.length
+                                : imagePreview.length}
+                            /3개
+                            {mode === "update" &&
+                                hasImageChanges &&
+                                " (변경됨)"}
                         </p>
                     </div>
 
@@ -374,19 +501,22 @@ const UpdateProductModal = ({
                         />
 
                         <label className="mb-2 block text-sm font-medium text-gray-700">
-                            상품 설명 이미지 *
+                            상품 설명 이미지 *{" "}
+                            {hasDescriptionImageChanges && "(변경됨)"}
                         </label>
                         <div className="rounded-lg border-2 border-dashed border-gray-300 p-4">
                             {formData.description.image ? (
                                 <div className="relative">
                                     <div className="relative h-64 w-full overflow-y-auto rounded-lg border border-gray-200">
-                                        <Image
-                                            src={formData.description.image}
+                                        {/* <Image
+                                            src={
+                                                formData.description.image || 
+                                            }
                                             alt="설명 이미지 미리보기"
                                             width={800}
                                             height={600}
                                             className="w-full object-contain"
-                                        />
+                                        /> */}
                                     </div>
                                     <button
                                         type="button"
@@ -398,6 +528,8 @@ const UpdateProductModal = ({
                                                     image: "",
                                                 },
                                             }));
+                                            setDescriptionImage(null);
+                                            setHasDescriptionImageChanges(true);
                                         }}
                                         className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
                                     >
@@ -418,30 +550,7 @@ const UpdateProductModal = ({
                                                         e.target as HTMLInputElement
                                                     ).files?.[0];
                                                     if (file) {
-                                                        const reader =
-                                                            new FileReader();
-                                                        reader.onload = (e) => {
-                                                            if (
-                                                                e.target?.result
-                                                            ) {
-                                                                setFormData(
-                                                                    (prev) => ({
-                                                                        ...prev,
-                                                                        description:
-                                                                            {
-                                                                                ...prev.description,
-                                                                                image: e
-                                                                                    .target
-                                                                                    ?.result as string,
-                                                                            },
-                                                                    }),
-                                                                );
-                                                            }
-                                                        };
-                                                        reader.readAsDataURL(
-                                                            file,
-                                                        );
-                                                        setDescriptionImage(
+                                                        handleDescriptionImageChange(
                                                             file,
                                                         );
                                                     }
@@ -486,26 +595,9 @@ const UpdateProductModal = ({
                                                     e.target as HTMLInputElement
                                                 ).files?.[0];
                                                 if (file) {
-                                                    const reader =
-                                                        new FileReader();
-                                                    reader.onload = (e) => {
-                                                        if (e.target?.result) {
-                                                            setFormData(
-                                                                (prev) => ({
-                                                                    ...prev,
-                                                                    description:
-                                                                        {
-                                                                            ...prev.description,
-                                                                            image: e
-                                                                                .target
-                                                                                ?.result as string,
-                                                                        },
-                                                                }),
-                                                            );
-                                                        }
-                                                    };
-                                                    setDescriptionImage(file);
-                                                    reader.readAsDataURL(file);
+                                                    handleDescriptionImageChange(
+                                                        file,
+                                                    );
                                                 }
                                             };
                                             input.click();
@@ -549,7 +641,7 @@ const UpdateProductModal = ({
                                     시즌 선택
                                 </option>
                                 {season?.map((item, index) => (
-                                    <option key={index} value={item.title}>
+                                    <option key={index} value={item._id}>
                                         {item.title}
                                     </option>
                                 ))}
@@ -694,20 +786,20 @@ const UpdateProductModal = ({
                             onClick={onClose}
                             className="flex-1 rounded-lg border border-gray-300 py-2 text-gray-700 hover:bg-gray-50"
                         >
-                            취소
+                            닫기
                         </button>
                         <button
                             type="button"
                             onClick={resetAll}
                             className="flex-1 rounded-lg border border-gray-300 bg-red-500 py-2 text-white hover:bg-red-400"
                         >
-                            초기화
+                            {mode === "update" ? "초기값으로" : "초기화"}
                         </button>
                         <button
                             type="submit"
                             className="flex-1 rounded-lg bg-gray-800 py-2 text-white hover:bg-gray-700"
                         >
-                            상품 등록
+                            {mode === "update" ? "상품 수정" : "상품 등록"}
                         </button>
                     </div>
                 </form>

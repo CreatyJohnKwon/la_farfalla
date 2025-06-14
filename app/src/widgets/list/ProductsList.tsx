@@ -28,7 +28,7 @@ const ProductsList = ({
                                 ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${product.image[0]}`
                                 : DefaultImage
                         }
-                        alt={product.title.eg}
+                        alt={product.title.eg || ""}
                         fill
                         className="absolute left-0 top-0 h-full w-full object-cover"
                         priority
@@ -37,7 +37,7 @@ const ProductsList = ({
                 </div>
 
                 <div className="pt-2 text-[0.60rem] transition-all duration-700 ease-in-out sm:pt-6 sm:text-[1.05rem] c_xl:text-xl">
-                    <p className="font-amstel-thin sm:font-amstel">{`[${product.category}]`}</p>
+                    <p className="font-amstel-thin sm:font-amstel">{`[${product.title.eg}]`}</p>
                     <p className="font-pretendard">{`${product.title.kr}`}</p>
                     <p className="font-amstel-thin sm:font-amstel">{`${product.colors.length} colors`}</p>
                 </div>

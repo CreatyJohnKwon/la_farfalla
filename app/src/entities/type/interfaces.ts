@@ -5,7 +5,6 @@ interface Product {
     description: ProductDescription;
     price: string;
     discount: string;
-    category: string;
     image: string[];
     colors: Array<string>;
     seasonId: string;

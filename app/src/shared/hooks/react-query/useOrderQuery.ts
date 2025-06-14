@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { OrderData, OrderUpdateInput } from "@src/entities/type/interfaces";
 import { getOrderList, updateAdminOrder } from "../../lib/server/order";
+import useProduct from "../useProduct";
 
 const useAllOrderQuery = () => {
     return useQuery<OrderData[], Error>({
@@ -13,10 +14,10 @@ const useAllOrderQuery = () => {
 
 const useSmartUpdateOrderMutation = () => {
     const queryClient = useQueryClient();
+    const { setFormData } = useProduct();
 
     return useMutation({
         mutationFn: async (input: OrderUpdateInput | OrderUpdateInput[]) => {
-            // 여러 개 처리
             if (Array.isArray(input)) {
                 const results = await Promise.allSettled(
                     input.map((order) =>
@@ -27,10 +28,18 @@ const useSmartUpdateOrderMutation = () => {
                         ),
                     ),
                 );
+
+                // 실패한 항목들 체크
+                const failures = results.filter(
+                    (result) => result.status === "rejected",
+                );
+                if (failures.length > 0) {
+                    throw new Error(`${failures.length}개 항목 업데이트 실패`);
+                }
+
                 return results;
             }
 
-            // 단일 처리
             return updateAdminOrder(
                 input.orderId,
                 input.shippingStatus,
@@ -38,15 +47,40 @@ const useSmartUpdateOrderMutation = () => {
             );
         },
 
-        onSuccess: (data) => {
+        onSuccess: (data, variables) => {
             console.log("✅ 업데이트 성공", data);
+
+            // 더 구체적인 캐시 업데이트
             queryClient.invalidateQueries({ queryKey: ["orders"] });
-            alert("주문 상태 업데이트 완료!");
+
+            // 배열인지 단일인지에 따른 메시지 구분
+            const count = Array.isArray(variables) ? variables.length : 1;
+            alert(`${count}개 주문 상태 업데이트 완료!`);
+
+            setFormData({
+                title: {
+                    kr: "",
+                    eg: "",
+                },
+                description: {
+                    image: "",
+                    text: "",
+                },
+                price: "",
+                discount: "",
+                image: [],
+                colors: [],
+                seasonId: "",
+                size: [],
+            });
         },
 
-        onError: (error) => {
+        onError: (error, variables) => {
             console.error("❌ 업데이트 실패", error);
-            alert("업데이트 중 오류가 발생했어요.");
+            const count = Array.isArray(variables) ? variables.length : 1;
+            alert(
+                `${count}개 주문 업데이트 중 오류가 발생했어요: ${error.message}`,
+            );
         },
     });
 };

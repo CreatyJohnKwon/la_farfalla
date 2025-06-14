@@ -24,10 +24,10 @@ const ProductClient = ({ id }: { id: string }) => {
                 <Image
                     src={
                         product.description.image
-                            ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${product.description.image}`
+                            ? `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${product.description.image[0]}`
                             : DefaultImage
                     }
-                    alt={"description Image"}
+                    alt={"product_image_" + id}
                     width={500}
                     height={500}
                     style={{ objectFit: "contain" }}

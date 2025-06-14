@@ -6,8 +6,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
     try {
-        await connectDB();
-
         const body = await req.json();
         const { name, email, password, confirmPassword, image, provider } =
             body;
@@ -28,6 +26,8 @@ export async function POST(req: Request) {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        await connectDB();
 
         const newUser = new User({
             name,
