@@ -30,7 +30,7 @@ const postProduct = async (productData: Product) => {
 };
 
 const updateProduct = async (productData: Product) => {
-    const res = await fetch(`/api/product/${productData._id}`, {
+    const res = await fetch(`/api/product?productId=${productData._id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
