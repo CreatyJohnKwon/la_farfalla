@@ -74,7 +74,7 @@ type SelectedItem = {
     _id?: string;
     image: string;
     title: string;
-    userId: string | null | undefined;
+    userId: string | null;
     cartItemId: string;
     productId: string;
     size: string;
@@ -164,9 +164,13 @@ interface AddressData {
 }
 
 interface OrderUpdateInput {
-    orderId: string | undefined;
+    orderId: string;
     shippingStatus: string;
     trackingNumber: string;
+}
+
+interface IDProps {
+    params: Promise<{ id: string }>;
 }
 
 export type {
@@ -191,4 +195,5 @@ export type {
     AddressData,
     ShippingStatus,
     OrderUpdateInput,
+    IDProps,
 };

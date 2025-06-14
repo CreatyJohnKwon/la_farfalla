@@ -31,7 +31,39 @@ const uploadImageToR2 = async (file: Buffer, originalFileName: string) => {
     });
 
     await client.send(command);
-    return `${process.env.R2_FILE_DOMAIN}/${fileName}` || ``;
+    return (
+        `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${fileName}` || ``
+    );
 };
 
-export default uploadImageToR2;
+const uploadImagesToServer = async (
+    images: File | File[] | null,
+): Promise<string[] | null> => {
+    if (!images) return null;
+
+    const formData = new FormData();
+
+    // images가 배열인지 확인
+    if (Array.isArray(images)) {
+        images.forEach((image) => {
+            formData.append("images", image);
+        });
+    } else {
+        formData.append("images", images);
+    }
+
+    const response = await fetch("/api/upload/image", {
+        method: "POST",
+        body: formData,
+    });
+
+    if (!response.ok) {
+        throw new Error("Upload failed");
+    }
+
+    const { urls } = await response.json();
+
+    return Array.isArray(urls) ? urls : [urls]; // 항상 배열로 반환
+};
+
+export { uploadImageToR2, uploadImagesToServer };

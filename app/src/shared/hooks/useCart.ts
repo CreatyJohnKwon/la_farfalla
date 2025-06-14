@@ -46,11 +46,11 @@ const useCart = () => {
         if (alreadyExists) return alert("이미 선택한 옵션입니다.");
 
         const newItem: SelectedItem = {
-            userId: session?.user?.email,
+            userId: session?.user?.email || "",
             title: product.title.eg,
             cartItemId: crypto.randomUUID(),
             image: product.image[0],
-            productId: product._id,
+            productId: product._id || "",
             size,
             color,
             quantity: 1,
