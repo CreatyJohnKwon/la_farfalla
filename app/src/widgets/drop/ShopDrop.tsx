@@ -46,7 +46,7 @@ const ShopDrop = ({ category }: { category: Season[] }) => {
                         <li key={list._id} className="py-1">
                             <button
                                 onClick={() => {
-                                    setSection(list._id);
+                                    setSection(list.title);
                                     setOpen(false);
                                     setOpenSidebar(false);
                                     router.push("/shop");

@@ -7,7 +7,7 @@ interface Product {
     discount: string;
     image: string[];
     colors: Array<string>;
-    seasonId: string;
+    seasonName: string;
     size: Array<string>;
 }
 

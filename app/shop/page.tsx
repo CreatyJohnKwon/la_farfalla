@@ -31,7 +31,8 @@ const Shop = () => {
                         {product
                             .filter(
                                 (item) =>
-                                    section === "" || item.seasonId === section,
+                                    section === "" ||
+                                    item.seasonName === section,
                             )
                             .map((item, index) => (
                                 <ProductsList

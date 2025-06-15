@@ -38,9 +38,16 @@ const productSchema = new mongoose.Schema(
             type: [String],
             required: true,
         },
-        seasonId: {
+        seasonName: {
             type: String,
-            required: true,
+            required: false,
+            default: "",
+            validate: {
+                validator: function (v: string) {
+                    return typeof v === "string"; // 빈 문자열도 포함
+                },
+                message: "seasonName은 문자열이어야 합니다.",
+            },
         },
         size: {
             type: [String],

@@ -27,7 +27,7 @@ export const productFormDatasAtom = atom<Product>({
     discount: "",
     image: [],
     colors: [],
-    seasonId: "",
+    seasonName: "",
     size: [],
 });
 export const loadingAtom = atom(false);

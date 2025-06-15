@@ -56,7 +56,7 @@ const UpdateProductModal = ({
                 discount: product.discount || "",
                 image: product.image,
                 colors: product.colors,
-                seasonId: product.seasonId,
+                seasonName: product.seasonName,
                 size: product.size,
             });
 
@@ -86,7 +86,7 @@ const UpdateProductModal = ({
                     discount: product.discount || "",
                     image: product.image,
                     colors: product.colors,
-                    seasonId: product.seasonId,
+                    seasonName: product.seasonName,
                     size: product.size,
                 });
 
@@ -104,7 +104,7 @@ const UpdateProductModal = ({
                     discount: "",
                     image: [],
                     colors: [],
-                    seasonId: "",
+                    seasonName: "",
                     size: [],
                 });
 
@@ -275,10 +275,6 @@ const UpdateProductModal = ({
             {
                 condition: !formData.title.kr || !formData.title.eg,
                 message: "상품명(한글, 영어)을 모두 입력해주세요.",
-            },
-            {
-                condition: !formData.seasonId,
-                message: "시즌을 선택해주세요.",
             },
             {
                 condition: !formData.description.text,
@@ -657,36 +653,26 @@ const UpdateProductModal = ({
                     </div>
 
                     {/* 카테고리, 시즌, 가격, 할인율 */}
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                         <div>
                             <label className="mb-2 block text-sm font-medium text-gray-700">
-                                시즌 추가
-                            </label>
-                            <button
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
-                                type="button"
-                            >
-                                추가 하기
-                            </button>
-                        </div>
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-gray-700">
-                                시즌 *
+                                시즌
                             </label>
                             <select
-                                name="seasonId"
-                                value={formData.seasonId}
+                                name="seasonName"
+                                value={formData.seasonName}
                                 onChange={handleInputChange}
                                 className="h-[42px] w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                             >
                                 <option key={"default"} value="">
                                     시즌 선택
                                 </option>
-                                {season?.map((item, index) => (
-                                    <option key={index} value={item._id}>
-                                        {item.title}
-                                    </option>
-                                ))}
+                                {season &&
+                                    season.map((item: Season, index) => (
+                                        <option key={index} value={item.title}>
+                                            {item.title}
+                                        </option>
+                                    ))}
                             </select>
                         </div>
                         <div>

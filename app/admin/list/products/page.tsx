@@ -57,16 +57,28 @@ const Products = () => {
                         </svg>
                     </button>
 
-                    {/* 상품 등록하기 버튼 */}
-                    <button
-                        onClick={() => {
-                            onOpen();
-                            setOnStatus("create");
-                        }}
-                        className={`flex h-full w-auto items-center justify-center rounded border border-gray-300 bg-gray-100 p-2 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800`}
-                    >
-                        상품 등록하기
-                    </button>
+                    <div className="flex h-full gap-4">
+                        {/* 상품 등록하기 버튼 */}
+                        <button
+                            onClick={() => {
+                                // onOpenSeasonModal();
+                            }}
+                            className={`flex h-full w-auto items-center justify-center rounded border border-gray-300 bg-gray-100 p-2 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800`}
+                        >
+                            시즌 관리
+                        </button>
+
+                        {/* 상품 등록하기 버튼 */}
+                        <button
+                            onClick={() => {
+                                onOpen();
+                                setOnStatus("create");
+                            }}
+                            className={`flex h-full w-auto items-center justify-center rounded border border-gray-300 bg-gray-100 p-2 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800`}
+                        >
+                            상품 등록하기
+                        </button>
+                    </div>
                 </div>
 
                 <table className="ms-5 mt-5 h-full w-full min-w-[700px] table-auto text-left text-sm sm:ms-0">
@@ -129,7 +141,7 @@ const Products = () => {
                                     </div>
                                 </td>
                                 <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
-                                    {returnSeason(product.seasonId)}
+                                    {returnSeason(product.seasonName)}
                                 </td>
                                 <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
                                     {`${product.price}원`}
@@ -162,7 +174,7 @@ const Products = () => {
                                         onClick={() => {
                                             if (
                                                 confirm(
-                                                    `${product.title} 상품을\n삭제하시겠습니까?`,
+                                                    `"${product.title.kr}" 상품을\n삭제하시겠습니까?`,
                                                 )
                                             ) {
                                                 deleteProduct(product);
@@ -185,6 +197,12 @@ const Products = () => {
                         mode={onStatus}
                     />
                 )}
+                {/* {isOpenUpdateSeasonModal && (
+                    <UpdateSeasonModal
+                        onClose={onClose}
+                        season={season}
+                    />
+                )} */}
             </div>
         )
     );

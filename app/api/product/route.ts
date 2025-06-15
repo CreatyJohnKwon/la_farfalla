@@ -46,22 +46,24 @@ const POST = async (req: NextRequest) => {
             discount,
             image,
             colors,
-            seasonId,
+            seasonName,
             size,
         } = body;
 
-        // 필수 필드 검증
+        // 필수 필드 검증 (빈 문자열 허용 → null/undefined만 막음)
         if (
             !title ||
             !description ||
             !price ||
             !image ||
             !colors ||
-            !seasonId ||
-            !size
+            size === undefined || // size: [] 도 허용되게
+            title.kr === undefined ||
+            description.image === undefined ||
+            description.text === undefined
         ) {
             return NextResponse.json(
-                { error: "모든 필수 필드를 입력해야 합니다." },
+                { error: "모든 필수 필드를 정확히 입력해야 합니다." },
                 { status: 400 },
             );
         }
@@ -75,7 +77,7 @@ const POST = async (req: NextRequest) => {
             discount: discount || "0", // 선택 필드 기본값 처리
             image,
             colors,
-            seasonId,
+            seasonName: seasonName ?? "", // 명시적으로 빈 문자열 허용
             size,
         });
 
@@ -111,7 +113,7 @@ const PUT = async (req: NextRequest) => {
             discount,
             image,
             colors,
-            seasonId,
+            seasonName,
             size,
         } = body;
 
@@ -126,12 +128,12 @@ const PUT = async (req: NextRequest) => {
                 discount: discount || "0",
                 image,
                 colors,
-                seasonId,
+                seasonName: seasonName ?? "", // 빈 문자열 허용
                 size,
             },
             {
-                new: true, // 수정된 문서를 반환
-                runValidators: true, // Mongoose 스키마 validation 수행
+                new: true,
+                runValidators: true,
             },
         ).lean();
 
