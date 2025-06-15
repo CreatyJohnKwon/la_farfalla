@@ -98,6 +98,12 @@ const getUser = async (email: string) => {
     }
 };
 
+const getUserList = async () => {
+    const res = await fetch(`/api/admin/list/user`);
+    if (!res.ok) throw new Error("단일 유저 정보 불러오기 실패");
+    return await res.json();
+};
+
 const getUserbyId = async (userId: string) => {
     const res = await fetch(`/api/admin/user?userId=${userId}`);
     if (!res.ok) throw new Error("단일 유저 정보 불러오기 실패");
@@ -129,4 +135,5 @@ export {
     getMileage,
     getCoupon,
     getUserbyId,
+    getUserList
 };

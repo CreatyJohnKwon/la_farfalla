@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     fetchUser,
     getUserbyId,
+    getUserList,
     updateUser,
 } from "@src/shared/lib/server/user";
 import { signOut } from "next-auth/react";
@@ -49,4 +50,13 @@ const useOneUserQuery = (userId?: string) => {
     });
 };
 
-export { useUserQuery, useUpdateUserMutation, useOneUserQuery };
+const useUserListQuery = () => {
+    return useQuery<UserProfileData[], Error>({
+        queryKey: ["admin-get-user-list"],
+        queryFn: () => getUserList(),
+        staleTime: 1000 * 60 * 3,
+        retry: false,
+    });
+};
+
+export { useUserQuery, useUpdateUserMutation, useOneUserQuery, useUserListQuery };
