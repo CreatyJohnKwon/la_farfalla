@@ -68,7 +68,7 @@ const useSmartUpdateOrderMutation = () => {
                 discount: "",
                 image: [],
                 colors: [],
-                seasonId: "",
+                seasonName: "",
                 size: [],
             });
         },
