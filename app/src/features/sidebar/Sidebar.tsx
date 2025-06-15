@@ -14,7 +14,7 @@ import ShopDrop from "@src/widgets/drop/ShopDrop";
 import AboutDrop from "@src/widgets/drop/AboutDrop";
 import useCart from "@src/shared/hooks/useCart";
 import AdminDrop from "@/src/widgets/drop/AdminDrop";
-import { useSeasonQuery } from "@/src/shared/hooks/react-query/useProductQuery";
+import { useSeasonQuery } from "@/src/shared/hooks/react-query/useSeasonQuery";
 
 const Sidebar = () => {
     const { openSidebar, setOpenSidebar } = useProduct();

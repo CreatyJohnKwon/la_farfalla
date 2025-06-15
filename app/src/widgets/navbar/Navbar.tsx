@@ -15,7 +15,7 @@ import AboutDrop from "../drop/AboutDrop";
 import useCart from "@src/shared/hooks/useCart";
 import Cart from "@src/features/cart/Cart";
 import AdminDrop from "../drop/AdminDrop";
-import { useSeasonQuery } from "@/src/shared/hooks/react-query/useProductQuery";
+import { useSeasonQuery } from "@/src/shared/hooks/react-query/useSeasonQuery";
 
 const Navbar = () => {
     const { data: category, isLoading: isCategoryLoad } = useSeasonQuery();

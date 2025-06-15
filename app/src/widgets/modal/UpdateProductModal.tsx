@@ -12,15 +12,14 @@ import {
 import useProduct from "@/src/shared/hooks/useProduct";
 import { useSetAtom } from "jotai";
 import { loadingAtom } from "@/src/shared/lib/atom";
+import { useSeasonQuery } from "@/src/shared/hooks/react-query/useSeasonQuery";
 
 const UpdateProductModal = ({
     onClose,
-    season,
     product, // 기존 상품 데이터 (업데이트 시)
     mode = "create", // "create" | "update"
 }: {
     onClose: () => void;
-    season?: Season[];
     product?: Product;
     mode?: "create" | "update";
 }) => {
@@ -42,9 +41,40 @@ const UpdateProductModal = ({
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { formData, setFormData } = useProduct();
 
+    const { data: season, isLoading, error } = useSeasonQuery();
     const { mutateAsync: createProduct } = usePostProductMutation();
     const { mutateAsync: updateProduct } = useUpdateProductMutation();
     const setLoading = useSetAtom(loadingAtom);
+
+    // 로딩 상태
+    if (isLoading) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                <div className="rounded-lg bg-white p-8">
+                    <div className="text-center">로딩 중...</div>
+                </div>
+            </div>
+        );
+    }
+
+    // 에러 상태
+    if (error) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                <div className="rounded-lg bg-white p-8">
+                    <div className="text-center text-red-600">
+                        데이터를 불러오는데 실패했습니다.
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="mt-4 rounded-lg bg-gray-900 px-4 py-2 text-white"
+                    >
+                        닫기
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     // 기존 상품 데이터로 초기화할 때 (useEffect 내부)
     useEffect(() => {

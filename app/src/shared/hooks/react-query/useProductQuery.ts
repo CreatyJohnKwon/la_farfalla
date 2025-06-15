@@ -30,15 +30,6 @@ const useProductQuery = (id: string) => {
     });
 };
 
-const useSeasonQuery = () => {
-    return useQuery<Season[], Error>({
-        queryKey: ["get-season"],
-        queryFn: () => getSeason(),
-        staleTime: 1000 * 60 * 60, // 1시간 캐시
-        retry: true,
-    });
-};
-
 const usePostProductMutation = () => {
     const queryClient = useQueryClient();
     const setLoading = useSetAtom(loadingAtom);
@@ -145,7 +136,6 @@ const useDeleteProductMutation = () => {
 export {
     useProductListQuery,
     useProductQuery,
-    useSeasonQuery,
     usePostProductMutation,
     useDeleteProductMutation,
     useUpdateProductMutation,
