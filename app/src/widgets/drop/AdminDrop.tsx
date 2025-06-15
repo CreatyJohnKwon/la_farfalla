@@ -22,11 +22,16 @@ const AdminDrop = () => {
     }, []);
 
     return (
-        <div ref={ref} className="font-amstel z-40">
-            <button onClick={() => setOpen((prev) => !prev)}>admin</button>
+        <div ref={ref} className="z-40">
+            <button
+                className="font-amstel"
+                onClick={() => setOpen((prev) => !prev)}
+            >
+                admin
+            </button>
             {open && (
                 <ul
-                    className={`mt-2 overflow-hidden bg-transparent font-pretendard text-[0.75em] sm:absolute sm:text-[1em] ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
+                    className={`mt-2 overflow-hidden bg-transparent font-pretendard text-xl font-[300] sm:absolute sm:text-base ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
                 >
                     <li key={"admin-orders"} className="py-1">
                         <button

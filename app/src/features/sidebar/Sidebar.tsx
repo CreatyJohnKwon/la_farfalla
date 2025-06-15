@@ -88,7 +88,7 @@ const Sidebar = () => {
                         </Link>
                     </ul>
 
-                    <ul className="font-amstel flex flex-col items-center justify-center gap-10 text-center text-[2em] text-black">
+                    <ul className="flex flex-col items-center justify-center gap-10 text-center text-[2em] text-black">
                         <li className="relative">
                             <ShopDrop category={category} />
                         </li>
@@ -103,7 +103,7 @@ const Sidebar = () => {
                         <li>
                             <button
                                 onClick={() => instagramHandler()}
-                                className="mt-32 text-[1em] text-black"
+                                className="mt-32 text-3xl text-black"
                             >
                                 <RxInstagramLogo />
                             </button>
