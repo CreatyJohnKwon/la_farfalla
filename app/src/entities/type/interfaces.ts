@@ -12,7 +12,7 @@ interface Product {
 }
 
 interface ProductDescription {
-    image: string;
+    images: string[];
     text: string;
 }
 

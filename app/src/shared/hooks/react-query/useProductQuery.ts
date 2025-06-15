@@ -47,7 +47,7 @@ const usePostProductMutation = () => {
                     eg: "",
                 },
                 description: {
-                    image: "",
+                    images: [],
                     text: "",
                 },
                 price: "",
@@ -87,7 +87,7 @@ const useUpdateProductMutation = () => {
                     eg: "",
                 },
                 description: {
-                    image: "",
+                    images: [],
                     text: "",
                 },
                 price: "",

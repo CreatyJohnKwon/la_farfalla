@@ -34,11 +34,23 @@ const UpdateProductModal = ({
         files: [],
         existingUrls: [],
     });
-    const [descriptionImage, setDescriptionImage] = useState<File | null>(null);
+
+    // 설명 이미지 데이터 상태 추가
+    const [descriptionImageData, setDescriptionImageData] = useState<{
+        previews: string[];
+        files: File[];
+        existingUrls: string[];
+    }>({
+        previews: [],
+        files: [],
+        existingUrls: [],
+    });
+
     const [hasImageChanges, setHasImageChanges] = useState<boolean>(false);
     const [hasDescriptionImageChanges, setHasDescriptionImageChanges] =
         useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const descriptionFileInputRef = useRef<HTMLInputElement>(null);
     const { formData, setFormData } = useProduct();
 
     const { data: season, isLoading, error } = useSeasonQuery();
@@ -96,6 +108,19 @@ const UpdateProductModal = ({
                 files: [],
                 existingUrls: product.image || [],
             });
+
+            // 기존 설명 이미지 데이터 설정
+            const descriptionImages = Array.isArray(product.description.images)
+                ? product.description.images
+                : product.description.images
+                  ? [product.description.images]
+                  : [];
+
+            setDescriptionImageData({
+                previews: descriptionImages,
+                files: [],
+                existingUrls: descriptionImages,
+            });
         }
     }, [mode, product, setFormData]);
 
@@ -125,11 +150,25 @@ const UpdateProductModal = ({
                     files: [],
                     existingUrls: product.image || [],
                 });
+
+                const descriptionImages = Array.isArray(
+                    product.description.images,
+                )
+                    ? product.description.images
+                    : product.description.images
+                      ? [product.description.images]
+                      : [];
+
+                setDescriptionImageData({
+                    previews: descriptionImages,
+                    files: [],
+                    existingUrls: descriptionImages,
+                });
             } else {
                 // 생성 모드: 빈 값으로 리셋
                 setFormData({
                     title: { kr: "", eg: "" },
-                    description: { image: "", text: "" },
+                    description: { images: [], text: "" },
                     price: "",
                     discount: "",
                     image: [],
@@ -143,11 +182,16 @@ const UpdateProductModal = ({
                     files: [],
                     existingUrls: [],
                 });
+
+                setDescriptionImageData({
+                    previews: [],
+                    files: [],
+                    existingUrls: [],
+                });
             }
 
             setColorInput("");
             setSizeInput("");
-            setDescriptionImage(null);
             setHasImageChanges(false);
             setHasDescriptionImageChanges(false);
         }
@@ -233,6 +277,41 @@ const UpdateProductModal = ({
         });
     };
 
+    // 설명 이미지 업로드 핸들러 추가
+    const handleDescriptionImageUpload = (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        const files = Array.from(e.target.files || []);
+
+        // 새로운 파일들을 추가
+        const newFiles = [...descriptionImageData.files, ...files];
+        setHasDescriptionImageChanges(true);
+
+        // 미리보기 생성
+        const newPreviews = [...descriptionImageData.previews];
+        let processedCount = 0;
+
+        files.forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                if (e.target?.result) {
+                    newPreviews.push(e.target.result as string);
+                    processedCount++;
+
+                    // 모든 파일이 처리되면 상태 업데이트
+                    if (processedCount === files.length) {
+                        setDescriptionImageData({
+                            previews: newPreviews,
+                            files: newFiles,
+                            existingUrls: descriptionImageData.existingUrls,
+                        });
+                    }
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
     // 수정된 removeImage 함수
     const removeImage = (index: number) => {
         const newPreviews = [...imageData.previews];
@@ -260,6 +339,36 @@ const UpdateProductModal = ({
         });
 
         setHasImageChanges(true);
+    };
+
+    // 설명 이미지 제거 함수 추가
+    const removeDescriptionImage = (index: number) => {
+        const newPreviews = [...descriptionImageData.previews];
+        const newFiles = [...descriptionImageData.files];
+        const newExistingUrls = [...descriptionImageData.existingUrls];
+
+        // 제거할 이미지가 기존 이미지인지 새로 추가된 이미지인지 확인
+        const isExistingImage =
+            index < descriptionImageData.existingUrls.length;
+
+        if (isExistingImage) {
+            // 기존 이미지 제거
+            newExistingUrls.splice(index, 1);
+            newPreviews.splice(index, 1);
+        } else {
+            // 새로 추가된 이미지 제거
+            const fileIndex = index - descriptionImageData.existingUrls.length;
+            newFiles.splice(fileIndex, 1);
+            newPreviews.splice(index, 1);
+        }
+
+        setDescriptionImageData({
+            previews: newPreviews,
+            files: newFiles,
+            existingUrls: newExistingUrls,
+        });
+
+        setHasDescriptionImageChanges(true);
     };
 
     const addColor = () => {
@@ -311,15 +420,16 @@ const UpdateProductModal = ({
                 message: "설명을 적어주세요.",
             },
             {
-                condition: mode === "create" && !descriptionImage,
-                message: "설명 이미지를 선택해주세요.",
+                condition:
+                    mode === "create" &&
+                    descriptionImageData.previews.length === 0,
+                message: "설명 이미지를 최소 1개 이상 선택해주세요.",
             },
             {
                 condition:
                     mode === "update" &&
-                    !formData.description.image &&
-                    !descriptionImage,
-                message: "설명 이미지를 선택해주세요.",
+                    descriptionImageData.previews.length === 0,
+                message: "설명 이미지를 최소 1개 이상 선택해주세요.",
             },
             {
                 condition: !formData.price,
@@ -342,25 +452,6 @@ const UpdateProductModal = ({
             }
         }
         return true;
-    };
-
-    const handleDescriptionImageChange = (file: File) => {
-        setDescriptionImage(file);
-        setHasDescriptionImageChanges(true);
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            if (e.target?.result) {
-                setFormData((prev) => ({
-                    ...prev,
-                    description: {
-                        ...prev.description,
-                        image: e.target?.result as string,
-                    },
-                }));
-            }
-        };
-        reader.readAsDataURL(file);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -402,14 +493,25 @@ const UpdateProductModal = ({
                 }
 
                 // 설명 이미지 처리
-                let uploadedDescriptionImageUrl: string =
-                    formData.description.image;
-                if (hasDescriptionImageChanges && descriptionImage) {
-                    const newDescriptionImageUrls =
-                        await uploadImagesToServer(descriptionImage);
-                    if (newDescriptionImageUrls && newDescriptionImageUrls[0]) {
-                        uploadedDescriptionImageUrl =
-                            newDescriptionImageUrls[0];
+                let uploadedDescriptionImageUrls: string[] =
+                    descriptionImageData.existingUrls;
+                if (hasDescriptionImageChanges) {
+                    // 새로 추가된 파일이 있는 경우 업로드
+                    if (descriptionImageData.files.length > 0) {
+                        const newDescriptionImageUrls =
+                            await uploadImagesToServer(
+                                descriptionImageData.files,
+                            );
+                        if (newDescriptionImageUrls) {
+                            uploadedDescriptionImageUrls = [
+                                ...descriptionImageData.existingUrls,
+                                ...newDescriptionImageUrls,
+                            ];
+                        }
+                    } else {
+                        // 새로 추가된 파일은 없지만 기존 이미지가 삭제된 경우
+                        uploadedDescriptionImageUrls =
+                            descriptionImageData.existingUrls;
                     }
                 }
 
@@ -417,7 +519,7 @@ const UpdateProductModal = ({
                     ...formData,
                     image: uploadedImageUrls,
                     description: {
-                        image: uploadedDescriptionImageUrl,
+                        images: uploadedDescriptionImageUrls,
                         text: formData.description.text,
                     },
                 };
@@ -426,6 +528,8 @@ const UpdateProductModal = ({
                 if (mode === "update" && product?._id) {
                     finalData._id = product._id;
                 }
+
+                console.log(finalData);
 
                 if (mode === "update") {
                     await updateProduct(finalData);
@@ -570,115 +674,66 @@ const UpdateProductModal = ({
                             rows={3}
                         />
 
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
-                            상품 설명 이미지 *{" "}
-                            {hasDescriptionImageChanges && "(변경됨)"}
-                        </label>
-                        <div className="rounded-lg border-2 border-dashed border-gray-300 p-4">
-                            {formData.description.image ? (
-                                <div className="relative">
-                                    <div className="relative h-64 w-full overflow-y-auto rounded-lg border border-gray-200">
-                                        <Image
-                                            src={formData.description.image}
-                                            alt="설명 이미지 미리보기"
-                                            width={800}
-                                            height={600}
-                                            className="w-full object-contain"
-                                        />
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setFormData((prev) => ({
-                                                ...prev,
-                                                description: {
-                                                    ...prev.description,
-                                                    image: "",
-                                                },
-                                            }));
-                                            setDescriptionImage(null);
-                                            setHasDescriptionImageChanges(true);
-                                        }}
-                                        className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
-                                    >
-                                        ×
-                                    </button>
-                                    <div className="mt-2 text-center">
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const input =
-                                                    document.createElement(
-                                                        "input",
-                                                    );
-                                                input.type = "file";
-                                                input.accept = "image/*";
-                                                input.onchange = (e) => {
-                                                    const file = (
-                                                        e.target as HTMLInputElement
-                                                    ).files?.[0];
-                                                    if (file) {
-                                                        handleDescriptionImageChange(
-                                                            file,
-                                                        );
+                        {/* 설명 이미지 섹션 */}
+                        <div className="mt-4 rounded-md border-2 border-dashed bg-gray-50 p-4">
+                            <label className="mb-3 block text-sm font-medium text-gray-700">
+                                상품 설명 이미지 *
+                                {hasDescriptionImageChanges && " (변경됨)"}
+                            </label>
+
+                            {/* 설명 이미지 미리보기 */}
+                            {descriptionImageData.previews.length > 0 && (
+                                <div className="mb-4 grid grid-cols-2 gap-4 md:grid-cols-3">
+                                    {descriptionImageData.previews.map(
+                                        (preview, index) => (
+                                            <div
+                                                key={index}
+                                                className="relative aspect-square overflow-hidden rounded-lg border border-gray-200"
+                                            >
+                                                <Image
+                                                    src={preview}
+                                                    alt={`설명 이미지 ${index + 1}`}
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        removeDescriptionImage(
+                                                            index,
+                                                        )
                                                     }
-                                                };
-                                                input.click();
-                                            }}
-                                            className="rounded-lg bg-gray-100 px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
-                                        >
-                                            이미지 변경
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="text-center">
-                                    <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
-                                        <svg
-                                            className="h-8 w-8 text-gray-400"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                            />
-                                        </svg>
-                                    </div>
-                                    <div className="mb-2 text-sm text-gray-600">
-                                        상품 설명 이미지를 업로드하세요
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            const input =
-                                                document.createElement("input");
-                                            input.type = "file";
-                                            input.accept = "image/*";
-                                            input.onchange = (e) => {
-                                                const file = (
-                                                    e.target as HTMLInputElement
-                                                ).files?.[0];
-                                                if (file) {
-                                                    handleDescriptionImageChange(
-                                                        file,
-                                                    );
-                                                }
-                                            };
-                                            input.click();
-                                        }}
-                                        className="rounded-lg bg-gray-200 px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
-                                    >
-                                        이미지 선택
-                                    </button>
-                                    <p className="mt-2 text-xs text-gray-500">
-                                        JPG, PNG, GIF 파일을 지원합니다
-                                    </p>
+                                                    className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-sm text-white hover:bg-red-600"
+                                                >
+                                                    ×
+                                                </button>
+                                            </div>
+                                        ),
+                                    )}
                                 </div>
                             )}
+
+                            {/* 설명 이미지 업로드 버튼 */}
+                            <div className="rounded-lg border-gray-300 p-4">
+                                <div className="text-center">
+                                    <div className="mb-2 text-sm text-gray-600">
+                                        설명 이미지를 업로드하세요 (세로로
+                                        연결될 이미지들)
+                                    </div>
+                                    <input
+                                        ref={descriptionFileInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={handleDescriptionImageUpload}
+                                        className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
+                                    />
+                                    <p className="mt-2 text-xs text-gray-500">
+                                        JPG, PNG, GIF 파일을 지원합니다. 현재{" "}
+                                        {descriptionImageData.previews.length}개
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

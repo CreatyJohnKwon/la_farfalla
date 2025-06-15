@@ -61,7 +61,7 @@ const useSmartUpdateOrderMutation = () => {
                     eg: "",
                 },
                 description: {
-                    image: "",
+                    images: [],
                     text: "",
                 },
                 price: "",

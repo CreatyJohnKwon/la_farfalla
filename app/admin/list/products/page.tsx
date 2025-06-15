@@ -10,7 +10,7 @@ import DefaultImage from "../../../../public/images/chill.png";
 import { useState } from "react";
 import UpdateProductModal from "@/src/widgets/modal/UpdateProductModal";
 import UpdateSeasonModal from "@/src/widgets/modal/UpdateSeasonModal";
-import { useSeasonQuery } from "@/src/shared/hooks/react-query/useSeasonQuery";
+import Link from "next/link";
 
 const Products = () => {
     const {
@@ -114,17 +114,19 @@ const Products = () => {
                             className="border-b hover:bg-gray-50"
                         >
                             <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
-                                <Image
-                                    width={500}
-                                    height={500}
-                                    src={
-                                        product.image[0]
-                                            ? product.image[0]
-                                            : DefaultImage
-                                    }
-                                    alt="대표 이미지"
-                                    className="h-20 w-20 object-cover"
-                                />
+                                <Link href={`/products/${product._id}`}>
+                                    <Image
+                                        width={500}
+                                        height={500}
+                                        src={
+                                            product.image[0]
+                                                ? product.image[0]
+                                                : DefaultImage
+                                        }
+                                        alt="대표 이미지"
+                                        className="h-20 w-20 object-cover"
+                                    />
+                                </Link>
                             </td>
                             <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
                                 <div className="w-[80%]">

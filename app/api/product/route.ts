@@ -50,20 +50,35 @@ const POST = async (req: NextRequest) => {
             size,
         } = body;
 
-        // 필수 필드 검증 (빈 문자열 허용 → null/undefined만 막음)
+        // 기본 필수 필드 검증
         if (
             !title ||
             !description ||
             !price ||
             !image ||
             !colors ||
-            size === undefined || // size: [] 도 허용되게
+            size === undefined ||
             title.kr === undefined ||
-            description.image === undefined ||
+            description.images === undefined ||
             description.text === undefined
         ) {
             return NextResponse.json(
                 { error: "모든 필수 필드를 정확히 입력해야 합니다." },
+                { status: 400 },
+            );
+        }
+
+        // 배열 데이터 유효성 검사
+        if (
+            !Array.isArray(image) ||
+            !Array.isArray(colors) ||
+            !Array.isArray(size) ||
+            !Array.isArray(description.images)
+        ) {
+            return NextResponse.json(
+                {
+                    error: "image, colors, size, description.images는 배열이어야 합니다.",
+                },
                 { status: 400 },
             );
         }
@@ -74,20 +89,21 @@ const POST = async (req: NextRequest) => {
             title,
             description,
             price,
-            discount: discount || "0", // 선택 필드 기본값 처리
+            discount: discount || "0",
             image,
             colors,
-            seasonName: seasonName ?? "", // 명시적으로 빈 문자열 허용
+            seasonName: seasonName ?? "",
             size,
         });
 
         const savedProduct = await newProduct.save();
 
         return NextResponse.json(savedProduct, { status: 201 });
-    } catch (err) {
+    } catch (err: any) {
         console.error("POST Error:", err);
+        console.error("유효성 검사 에러:", err.errors);
         return NextResponse.json(
-            { error: "Internal Server Error" },
+            { error: "Internal Server Error", details: err.message },
             { status: 500 },
         );
     }

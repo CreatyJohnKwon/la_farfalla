@@ -20,7 +20,7 @@ export const productFormDatasAtom = atom<Product>({
         eg: "",
     },
     description: {
-        image: "",
+        images: [],
         text: "",
     },
     price: "",

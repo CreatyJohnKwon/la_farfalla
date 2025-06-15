@@ -37,7 +37,7 @@ const uploadImageToR2 = async (file: Buffer, originalFileName: string) => {
 };
 
 const uploadImagesToServer = async (
-    images: File | File[] | null,
+    images: File[] | null,
 ): Promise<string[] | null> => {
     if (!images) return null;
 

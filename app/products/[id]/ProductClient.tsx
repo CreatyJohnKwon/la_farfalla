@@ -19,21 +19,34 @@ const ProductClient = ({ id }: { id: string }) => {
                 <Slider images={product.image} />
                 <ProductInfo product={product} />
             </div>
-            {/* description 이미지 */}
-            <div className="mt-[80vh] w-full md:w-2/4">
-                <Image
-                    src={
-                        product.description.image
-                            ? product.description.image
-                            : DefaultImage
-                    }
-                    alt={"product_image_" + id}
-                    width={500}
-                    height={500}
-                    style={{ objectFit: "contain" }}
-                    className="h-full w-full"
-                    priority
-                />
+            {/* description 이미지들 */}
+            <div className="mt-[80vh] flex w-full flex-col md:w-2/5">
+                {product.description.images &&
+                product.description.images.length > 0 ? (
+                    product.description.images.map((image, index) => (
+                        <div key={index} className="mb-4 w-full">
+                            <Image
+                                src={image || DefaultImage}
+                                alt={`product_image_${id}_${index}`}
+                                width={500}
+                                height={500}
+                                style={{ objectFit: "contain" }}
+                                className="h-auto w-full"
+                                priority={index === 0} // 첫 번째 이미지만 priority
+                            />
+                        </div>
+                    ))
+                ) : (
+                    <Image
+                        src={DefaultImage}
+                        alt={`product_image_${id}_default`}
+                        width={500}
+                        height={500}
+                        style={{ objectFit: "contain" }}
+                        className="h-auto w-full"
+                        priority
+                    />
+                )}
             </div>
         </div>
     );
