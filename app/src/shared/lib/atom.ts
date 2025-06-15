@@ -14,7 +14,6 @@ export const orderDatasAtom = atomWithStorage<SelectedItem[] | []>(
     "orderData",
     [],
 );
-
 export const productFormDatasAtom = atom<Product>({
     title: {
         kr: "",
@@ -31,3 +30,4 @@ export const productFormDatasAtom = atom<Product>({
     seasonId: "",
     size: [],
 });
+export const loadingAtom = atom(false);

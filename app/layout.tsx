@@ -8,6 +8,8 @@ import RQProvider from "@src/features/providers/RQProvider";
 import Sidebar from "@src/features/sidebar/Sidebar";
 import Navbar from "@src/widgets/navbar/Navbar";
 import Footer from "@src/widgets/footer/Footer";
+import { ScreenLoader } from "./src/widgets/loader/ScreenLoader";
+import { Provider as JotaiProvider } from "jotai";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -36,14 +38,17 @@ const RootLayout = async ({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
             >
-                <RQProvider>
-                    <AuthProvider session={session}>
-                        <main>{children}</main>
-                        <Sidebar />
-                        <Navbar />
-                        <Footer />
-                    </AuthProvider>
-                </RQProvider>
+                <JotaiProvider>
+                    <RQProvider>
+                        <AuthProvider session={session}>
+                            <main>{children}</main>
+                            <Sidebar />
+                            <Navbar />
+                            <Footer />
+                            <ScreenLoader />
+                        </AuthProvider>
+                    </RQProvider>
+                </JotaiProvider>
                 <Script
                     src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"
                     strategy="beforeInteractive"

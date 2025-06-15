@@ -10,6 +10,8 @@ import {
     useUpdateProductMutation,
 } from "@/src/shared/hooks/react-query/useProductQuery";
 import useProduct from "@/src/shared/hooks/useProduct";
+import { useSetAtom } from "jotai";
+import { loadingAtom } from "@/src/shared/lib/atom";
 
 const UpdateProductModal = ({
     onClose,
@@ -42,6 +44,7 @@ const UpdateProductModal = ({
 
     const { mutateAsync: createProduct } = usePostProductMutation();
     const { mutateAsync: updateProduct } = useUpdateProductMutation();
+    const setLoading = useSetAtom(loadingAtom);
 
     // 기존 상품 데이터로 초기화할 때 (useEffect 내부)
     useEffect(() => {
@@ -315,6 +318,25 @@ const UpdateProductModal = ({
         return true;
     };
 
+    const handleDescriptionImageChange = (file: File) => {
+        setDescriptionImage(file);
+        setHasDescriptionImageChanges(true);
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            if (e.target?.result) {
+                setFormData((prev) => ({
+                    ...prev,
+                    description: {
+                        ...prev.description,
+                        image: e.target?.result as string,
+                    },
+                }));
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -325,6 +347,8 @@ const UpdateProductModal = ({
                     : "상품을 등록하시겠습니까?";
 
             if (validateForm() && confirm(confirmMessage)) {
+                setLoading(true);
+
                 let uploadedImageUrls: string[] = imageData.existingUrls;
 
                 // 이미지가 변경된 경우 처리
@@ -392,26 +416,8 @@ const UpdateProductModal = ({
                     ? "상품 업데이트 중 오류가 발생했습니다."
                     : "상품 등록 중 오류가 발생했습니다.";
             alert(errorMessage);
+            setLoading(false);
         }
-    };
-
-    const handleDescriptionImageChange = (file: File) => {
-        setDescriptionImage(file);
-        setHasDescriptionImageChanges(true);
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            if (e.target?.result) {
-                setFormData((prev) => ({
-                    ...prev,
-                    description: {
-                        ...prev.description,
-                        image: e.target?.result as string,
-                    },
-                }));
-            }
-        };
-        reader.readAsDataURL(file);
     };
 
     return (

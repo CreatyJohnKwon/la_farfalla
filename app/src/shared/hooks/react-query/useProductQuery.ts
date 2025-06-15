@@ -8,6 +8,8 @@ import {
     updateProduct,
 } from "../../lib/server/product";
 import { getSeason } from "../../lib/server/season";
+import { useSetAtom } from "jotai";
+import { loadingAtom } from "../../lib/atom";
 
 const useProductListQuery = () => {
     return useQuery<Product[], Error>({
@@ -38,24 +40,27 @@ const useSeasonQuery = () => {
 
 const usePostProductMutation = () => {
     const queryClient = useQueryClient();
+    const setLoading = useSetAtom(loadingAtom);
 
     return useMutation({
         mutationFn: async (productData: Product) => postProduct(productData),
-        onSuccess: (data) => {
+        onSuccess: () => {
             // 상품 리스트 캐시 업데이트
             queryClient.invalidateQueries({ queryKey: ["get-product-list"] });
-
             alert(`상품 업데이트 완료!`);
         },
-
         onError: (error) => {
             alert(`상품 업데이트 중 오류가 발생했어요: ${error.message}`);
+        },
+        onSettled: () => {
+            setLoading(false);
         },
     });
 };
 
 const useUpdateProductMutation = () => {
     const queryClient = useQueryClient();
+    const setLoading = useSetAtom(loadingAtom);
 
     return useMutation({
         mutationFn: async (productData: Product) => updateProduct(productData), // PUT /products/:id
@@ -70,6 +75,9 @@ const useUpdateProductMutation = () => {
         onError: (error) => {
             console.error("❌ 상품 수정 실패", error);
             alert(`상품 수정 중 오류가 발생했어요: ${error.message}`);
+        },
+        onSettled: () => {
+            setLoading(false);
         },
     });
 };
