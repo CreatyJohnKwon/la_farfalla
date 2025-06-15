@@ -20,7 +20,7 @@ const ProductClient = ({ id }: { id: string }) => {
                 <ProductInfo product={product} />
             </div>
             {/* description 이미지 */}
-            <div className="mt-10 w-full md:w-2/4">
+            <div className="mt-[80vh] w-full md:w-2/4">
                 <Image
                     src={
                         product.description.image

@@ -40,7 +40,7 @@ const ProductDrop = ({
 
     return (
         <div ref={dropRef} className="font-amstel relative w-full">
-            <label className="mb-1 block text-sm font-semibold text-black">
+            <label className="mb-1 block text-base font-semibold text-black">
                 {title} <span className="text-gray-800">*</span>
             </label>
             <div
