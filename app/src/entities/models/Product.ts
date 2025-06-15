@@ -39,7 +39,7 @@ const productSchema = new mongoose.Schema(
             required: true,
         },
         seasonId: {
-            type: mongoose.Types.ObjectId,
+            type: String,
             required: true,
         },
         size: {
