@@ -49,112 +49,114 @@ const ProductInfo = ({ product }: { product: Product }) => {
     }, [selectedItems]);
 
     return (
-        <div className="mt-5 flex h-full w-full flex-col items-center justify-center gap-6 text-[2em] md:col-span-1 md:mt-0">
-            {/* title */}
-            <div className="flex flex-col items-center gap-5 text-center">
-                <span className="font-amstel w-[90vw] text-[1.3em] md:text-[1.7em]">
-                    {product.title.eg}
-                </span>
-                <span className="-mt-1 font-pretendard text-[0.8em] md:text-[1em]">
-                    {product.title.kr}
-                </span>
-            </div>
-
-            {/* Description text */}
-            <span className="w-9/12 text-center font-pretendard text-[0.8em] font-[300]">
-                {product.description.text}
-            </span>
-
-            {/* price */}
-            {product.discount === "0" || !product.discount ? (
-                <div className="font-amstel text-[1em]">{`KRW ${priceResult(product)}`}</div>
-            ) : (
-                <>
-                    <div className="font-amstel text-[1em]">
-                        <span className="pe-2">{`${product.discount}%`}</span>
-                        <span className="font-amstel-thin text-gray-500 line-through">{`KRW ${priceResult(product)}`}</span>
-                    </div>
-                    <span className="font-amstel -mt-2 text-[1em] text-black">{`KRW ${priceDiscount(product)}`}</span>
-                </>
-            )}
-
-            {/* size drop */}
-            <div className="flex w-4/5 flex-col gap-3 md:w-3/4">
-                <ProductDrop
-                    title={"size"}
-                    items={product.size}
-                    selected={selectedSize}
-                    setSelected={setSelectedSize}
-                />
-                <ProductDrop
-                    title={"color"}
-                    items={product.colors}
-                    selected={selectedColor}
-                    setSelected={setSelectedColor}
-                />
-            </div>
-
-            {/* 상품 추가 */}
-            {selectedItems.map((item) => (
-                <QuantityModal
-                    id={item.cartItemId}
-                    custom="w-3/4 text-[0.8em] md:text-[1em] font-amstel flex items-center justify-end gap-4 text-black c_md:gap-6"
-                    key={item.cartItemId}
-                    item={item}
-                    onDelete={(id) => {
-                        setSelectedItems((prev) =>
-                            prev.filter((i) => i.cartItemId !== id),
-                        );
-                    }}
-                    updateQuantity={(newQty) => {
-                        setSelectedItems((prev) =>
-                            prev.map((i) =>
-                                i.cartItemId === item.cartItemId
-                                    ? { ...i, quantity: newQty }
-                                    : i,
-                            ),
-                        );
-                    }}
-                />
-            ))}
-
-            {selectedItems.length > 0 ? (
-                <div className="flex w-3/4 items-center justify-end text-center text-black">
-                    <span className="me-1 font-pretendard text-[0.8em] font-[300] md:text-[1em]">
-                        총 상품금액(수량) :
+        <div className="w-full md:w-1/2">
+            <div className="mt-3 flex h-full flex-col items-center justify-center gap-3 md:mt-0 md:gap-3 lg:gap-3 xl:gap-4">
+                {/* title */}
+                <div className="flex flex-col items-center gap-2 text-center md:gap-3 lg:gap-4 xl:gap-5">
+                    <span className="font-amstel w-[90vw] text-3xl md:text-4xl c_xl:text-6xl">
+                        {product.title.eg}
                     </span>
-                    <span className="font-amstel mb-2 text-[2em] md:text-[2.2em]">
-                        {result}
-                    </span>
-                    <span className="ms-2 font-pretendard text-[0.8em] font-[300] md:text-[1em]">
-                        {`(${count}개)`}
+                    <span className="-mt-1 font-pretendard text-lg font-[300] md:text-xl xl:text-2xl">
+                        {product.title.kr}
                     </span>
                 </div>
-            ) : (
-                <div>{/* 빈칸 추가 */}</div>
-            )}
 
-            <div className="font-amstel flex w-3/4 justify-between gap-14">
-                <button
-                    className="w-1/2 bg-gray-200 py-5 text-center text-xl text-black hover:bg-gray-300"
-                    disabled={selectedItems.length === 0}
-                    onClick={() => {
-                        if (!session) {
-                            alert("로그인이 필요합니다.");
-                            return redirect("/login");
-                        }
-                        handleBuy(selectedItems);
-                    }}
-                >
-                    buy now
-                </button>
-                <button
-                    className="w-1/2 bg-gray-200 py-5 text-center text-xl text-black hover:bg-gray-300"
-                    disabled={selectedItems.length === 0}
-                    onClick={() => handleAddToCart()}
-                >
-                    cart
-                </button>
+                {/* Description text */}
+                <span className="w-full px-2 text-center font-pretendard text-sm font-[200] c_xl:text-base">
+                    {product.description.text}
+                </span>
+
+                {/* price */}
+                {product.discount === "0" || !product.discount ? (
+                    <div className="font-amstel text-base md:text-lg">{`KRW ${priceResult(product)}`}</div>
+                ) : (
+                    <>
+                        <div className="font-amstel text-base md:text-lg">
+                            <span className="pe-2">{`${product.discount}%`}</span>
+                            <span className="font-amstel-thin text-gray-500 line-through">{`KRW ${priceResult(product)}`}</span>
+                        </div>
+                        <span className="font-amstel -mt-1 text-base text-black md:-mt-2 md:text-lg">{`KRW ${priceDiscount(product)}`}</span>
+                    </>
+                )}
+
+                {/* size drop */}
+                <div className="flex w-full flex-col gap-2 px-2 md:w-4/5 md:gap-3 md:px-0 lg:w-3/4">
+                    <ProductDrop
+                        title={"size"}
+                        items={product.size}
+                        selected={selectedSize}
+                        setSelected={setSelectedSize}
+                    />
+                    <ProductDrop
+                        title={"color"}
+                        items={product.colors}
+                        selected={selectedColor}
+                        setSelected={setSelectedColor}
+                    />
+                </div>
+
+                {/* 상품 추가 */}
+                {selectedItems.map((item) => (
+                    <QuantityModal
+                        id={item.cartItemId}
+                        custom="w-full text-sm md:text-base font-amstel flex items-center justify-end gap-2 md:gap-4 text-black c_md:gap-6 px-2 md:px-0"
+                        key={item.cartItemId}
+                        item={item}
+                        onDelete={(id) => {
+                            setSelectedItems((prev) =>
+                                prev.filter((i) => i.cartItemId !== id),
+                            );
+                        }}
+                        updateQuantity={(newQty) => {
+                            setSelectedItems((prev) =>
+                                prev.map((i) =>
+                                    i.cartItemId === item.cartItemId
+                                        ? { ...i, quantity: newQty }
+                                        : i,
+                                ),
+                            );
+                        }}
+                    />
+                ))}
+
+                {selectedItems.length > 0 ? (
+                    <div className="flex w-full items-center justify-end px-2 text-center text-black md:px-0">
+                        <span className="me-1 font-pretendard text-xs font-[300] md:text-sm lg:text-base">
+                            총 상품금액(수량) :
+                        </span>
+                        <span className="font-amstel mb-1 text-lg md:mb-2 md:text-xl lg:text-2xl xl:text-[2em]">
+                            {result}
+                        </span>
+                        <span className="ms-1 font-pretendard text-xs font-[300] md:ms-2 md:text-sm lg:text-base">
+                            {`(${count}개)`}
+                        </span>
+                    </div>
+                ) : (
+                    <div className="h-4 md:h-6">{/* 빈칸 추가 */}</div>
+                )}
+
+                <div className="font-amstel flex w-full justify-between gap-4 px-2 md:w-5/6 md:gap-6 md:px-0 lg:gap-8 xl:gap-10">
+                    <button
+                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 md:py-3 md:text-lg lg:text-xl"
+                        disabled={selectedItems.length === 0}
+                        onClick={() => {
+                            if (!session) {
+                                alert("로그인이 필요합니다.");
+                                return redirect("/login");
+                            }
+                            handleBuy(selectedItems);
+                        }}
+                    >
+                        buy now
+                    </button>
+                    <button
+                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 md:py-3 md:text-lg lg:text-xl"
+                        disabled={selectedItems.length === 0}
+                        onClick={() => handleAddToCart()}
+                    >
+                        cart
+                    </button>
+                </div>
             </div>
         </div>
     );

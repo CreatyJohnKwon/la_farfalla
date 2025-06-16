@@ -20,23 +20,25 @@ const QuantityModal = ({
         updateQuantity(item.quantity > 1 ? item.quantity - 1 : 1);
 
     return (
-        <div className={`${custom} `}>
+        <div className={`${custom} flex-wrap md:flex-nowrap`}>
             {/* 상품명 + 옵션 표기 */}
-            <span>{`${item.size} - ${item.color}`}</span>
+            <span className="min-w-0 flex-shrink-0 truncate text-xs md:text-sm lg:text-base">
+                {`${item.size} - ${item.color}`}
+            </span>
 
             {/* 수량 */}
-            <div className="flex items-center justify-center gap-2">
-                <div className="flex aspect-square w-4 items-center justify-center bg-gray-200 text-center text-xs c_md:w-10 c_md:text-sm">
+            <div className="flex flex-shrink-0 items-center justify-center gap-1 md:gap-2">
+                <div className="flex aspect-square w-6 items-center justify-center bg-gray-200 text-center text-xs md:w-8 md:text-sm lg:w-10">
                     {item.quantity}
                 </div>
                 <button
-                    className="flex aspect-square w-4 items-center justify-center bg-gray-200 text-center text-xs transition hover:bg-gray-300 active:scale-95 c_md:w-10 c_md:text-sm"
+                    className="flex aspect-square w-6 items-center justify-center bg-gray-200 text-center text-xs transition hover:bg-gray-300 active:scale-95 md:w-8 md:text-sm lg:w-10"
                     onClick={increase}
                 >
                     +
                 </button>
                 <button
-                    className="flex aspect-square w-4 items-center justify-center bg-gray-200 text-center text-xs transition hover:bg-gray-300 active:scale-95 c_md:w-10 c_md:text-sm"
+                    className="flex aspect-square w-6 items-center justify-center bg-gray-200 text-center text-xs transition hover:bg-gray-300 active:scale-95 md:w-8 md:text-sm lg:w-10"
                     onClick={decrease}
                 >
                     −
@@ -44,13 +46,13 @@ const QuantityModal = ({
             </div>
 
             {/* 개별 금액 */}
-            <div className="-me-3 text-right md:m-0">
+            <div className="min-w-0 flex-shrink-0 text-right text-xs md:text-sm lg:text-base">
                 KRW {(item.quantity * item.discountPrice).toLocaleString()}
             </div>
 
             <button
                 onClick={() => onDelete(id)}
-                className="right-5 top-3 ms-2 font-thin text-black sm:m-0"
+                className="ml-2 flex-shrink-0 text-lg font-thin text-black transition-colors hover:text-red-500 md:text-xl"
             >
                 &times;
             </button>

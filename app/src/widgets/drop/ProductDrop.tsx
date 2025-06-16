@@ -40,24 +40,24 @@ const ProductDrop = ({
 
     return (
         <div ref={dropRef} className="font-amstel relative w-full">
-            <label className="mb-1 block text-xl font-semibold text-black">
+            <label className="mb-1 block text-xs font-semibold text-black md:text-sm">
                 {title} <span className="text-gray-800">*</span>
             </label>
             <div
-                className="w-full cursor-pointer border border-gray-300 bg-white px-4 py-3 pr-10 text-xl text-gray-800"
+                className="relative w-full cursor-pointer border border-gray-300 bg-white px-3 py-2 pr-8 text-xs text-gray-800 md:px-4 md:pr-10 md:text-sm"
                 onClick={() => setOpen(!open)}
             >
                 {selected || `${title} (필수)`}
-                <IoChevronDown className="ointer-events-none absolute right-3 top-12 text-black" />
+                <IoChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-sm text-black md:right-3" />
             </div>
 
             {open && (
-                <ul className="absolute z-10 mt-1 w-full border border-gray-200 bg-white shadow-md">
+                <ul className="absolute z-20 max-h-40 w-full overflow-y-auto border border-gray-200 bg-white shadow-md md:max-h-48">
                     {items.map((item, index) => (
                         <li
                             key={index}
                             onClick={() => handleSelect(item)}
-                            className="cursor-pointer px-4 py-2 text-sm hover:bg-gray-100"
+                            className="cursor-pointer px-3 py-2 text-xs transition-colors hover:bg-gray-100 md:px-4 md:text-sm"
                         >
                             {item}
                         </li>

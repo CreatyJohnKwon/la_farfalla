@@ -14,13 +14,12 @@ const ProductClient = ({ id }: { id: string }) => {
 
     return (
         <div className="flex h-full w-full flex-col items-center justify-center overflow-x-hidden">
-            <div className="grid h-full w-full grid-cols-1 gap-2 pt-20 transition-all duration-300 ease-in-out md:w-4/6 md:grid-cols-2 md:pt-40">
-                {/* 이미지 슬라이더 */}
+            <div className="mx-auto flex h-full w-full flex-col gap-3 pt-12 transition-all duration-300 ease-in-out md:w-[90%] md:flex-row md:gap-8 md:pt-16 lg:w-[85%] lg:gap-12 lg:pt-24 xl:w-[75%] xl:gap-20 xl:pt-32">
                 <Slider images={product.image} />
                 <ProductInfo product={product} />
             </div>
             {/* description 이미지들 */}
-            <div className="mt-[80vh] flex w-full flex-col md:w-2/5">
+            <div className="mt-[30vh] flex w-full flex-col md:mt-[80vh] md:w-2/5">
                 {product.description.images &&
                 product.description.images.length > 0 ? (
                     product.description.images.map((image, index) => (
