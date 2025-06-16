@@ -172,7 +172,15 @@ interface IDProps {
     params: Promise<{ id: string }>;
 }
 
+interface ModalProps {
+    onClose: () => void;
+    children: React.ReactNode;
+    className?: string; // 추가
+    containerClassName?: string; // 컨테이너용 추가
+}
+
 export type {
+    ModalProps,
     profNavDataProps,
     CustomButtonProps,
     SizeDropProps,

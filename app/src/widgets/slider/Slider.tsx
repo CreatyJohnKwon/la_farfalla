@@ -32,6 +32,11 @@ const Slider = ({ images }: { images: string[] }) => {
         }
     };
 
+    const getImageSrc = (image: string | File): string => {
+        if (typeof image === "string") return image;
+        return URL.createObjectURL(image);
+    };
+
     return (
         <div
             className="w-full overflow-hidden"
@@ -52,15 +57,15 @@ const Slider = ({ images }: { images: string[] }) => {
                     {images.map((img, i) => (
                         <div
                             key={i}
-                            className="w-full flex-shrink-0"
+                            className="aspect-[3/4] w-full flex-shrink-0"
                             style={{ width: `${100}%` }}
                         >
                             <Image
-                                src={img ? img : DefaultImage}
+                                src={img ? getImageSrc(img) : DefaultImage}
                                 alt={`img-${i}`}
                                 width={500}
                                 height={500}
-                                className="h-full w-full object-contain"
+                                className="h-full w-full object-fill"
                                 priority={i === 0}
                             />
                         </div>

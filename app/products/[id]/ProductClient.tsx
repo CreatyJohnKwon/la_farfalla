@@ -14,7 +14,7 @@ const ProductClient = ({ id }: { id: string }) => {
 
     return (
         <div className="flex h-full w-full flex-col items-center justify-center overflow-x-hidden">
-            <div className="grid h-full w-full grid-cols-1 gap-2 pt-20 transition-all duration-300 ease-in-out md:w-3/4 md:grid-cols-2 md:pt-40">
+            <div className="grid h-full w-full grid-cols-1 gap-2 pt-20 transition-all duration-300 ease-in-out md:w-4/6 md:grid-cols-2 md:pt-40">
                 {/* 이미지 슬라이더 */}
                 <Slider images={product.image} />
                 <ProductInfo product={product} />
@@ -24,7 +24,7 @@ const ProductClient = ({ id }: { id: string }) => {
                 {product.description.images &&
                 product.description.images.length > 0 ? (
                     product.description.images.map((image, index) => (
-                        <div key={index} className="mb-4 w-full">
+                        <div key={index} className="w-full">
                             <Image
                                 src={image || DefaultImage}
                                 alt={`product_image_${id}_${index}`}

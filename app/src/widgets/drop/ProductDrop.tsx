@@ -40,15 +40,15 @@ const ProductDrop = ({
 
     return (
         <div ref={dropRef} className="font-amstel relative w-full">
-            <label className="mb-1 block text-base font-semibold text-black">
+            <label className="mb-1 block text-xl font-semibold text-black">
                 {title} <span className="text-gray-800">*</span>
             </label>
             <div
-                className="w-full cursor-pointer border border-gray-300 bg-white px-4 py-3 pr-10 text-sm text-gray-800"
+                className="w-full cursor-pointer border border-gray-300 bg-white px-4 py-3 pr-10 text-xl text-gray-800"
                 onClick={() => setOpen(!open)}
             >
                 {selected || `${title} (필수)`}
-                <IoChevronDown className="pointer-events-none absolute right-3 top-10 text-black" />
+                <IoChevronDown className="ointer-events-none absolute right-3 top-12 text-black" />
             </div>
 
             {open && (

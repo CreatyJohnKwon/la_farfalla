@@ -49,7 +49,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
     }, [selectedItems]);
 
     return (
-        <div className="mt-5 flex h-full w-full flex-col items-center justify-center gap-6 text-[1.2em] md:col-span-1 md:mt-0">
+        <div className="mt-5 flex h-full w-full flex-col items-center justify-center gap-6 text-[2em] md:col-span-1 md:mt-0">
             {/* title */}
             <div className="flex flex-col items-center gap-5 text-center">
                 <span className="font-amstel w-[90vw] text-[1.3em] md:text-[1.7em]">
@@ -136,7 +136,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
 
             <div className="font-amstel flex w-3/4 justify-between gap-14">
                 <button
-                    className="w-1/2 bg-gray-200 py-5 text-center text-base text-black hover:bg-gray-300"
+                    className="w-1/2 bg-gray-200 py-5 text-center text-xl text-black hover:bg-gray-300"
                     disabled={selectedItems.length === 0}
                     onClick={() => {
                         if (!session) {
@@ -149,7 +149,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                     buy now
                 </button>
                 <button
-                    className="w-1/2 bg-gray-200 py-5 text-center text-base text-black hover:bg-gray-300"
+                    className="w-1/2 bg-gray-200 py-5 text-center text-xl text-black hover:bg-gray-300"
                     disabled={selectedItems.length === 0}
                     onClick={() => handleAddToCart()}
                 >

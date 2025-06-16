@@ -13,6 +13,8 @@ import useProduct from "@/src/shared/hooks/useProduct";
 import { useSetAtom } from "jotai";
 import { loadingAtom } from "@/src/shared/lib/atom";
 import { useSeasonQuery } from "@/src/shared/hooks/react-query/useSeasonQuery";
+import PreviewProductModal from "./PreviewProductModal";
+import Modal from "./Modal";
 
 const UpdateProductModal = ({
     onClose,
@@ -46,12 +48,13 @@ const UpdateProductModal = ({
         existingUrls: [],
     });
 
-    const [hasImageChanges, setHasImageChanges] = useState<boolean>(false);
+    const [hasImageChanges, setHasImageChanges] = useState(false);
     const [hasDescriptionImageChanges, setHasDescriptionImageChanges] =
-        useState<boolean>(false);
+        useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const descriptionFileInputRef = useRef<HTMLInputElement>(null);
     const { formData, setFormData } = useProduct();
+    const [openProductModal, setOpenproductModal] = useState(false);
 
     const { data: season, isLoading, error } = useSeasonQuery();
     const { mutateAsync: createProduct } = usePostProductMutation();
@@ -551,373 +554,368 @@ const UpdateProductModal = ({
     };
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-            onClick={onClose}
-        >
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto bg-white p-6 shadow-2xl"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <h1 className="mb-6 text-center font-pretendard text-2xl font-semibold text-gray-800">
-                    {mode === "update" ? "상품 수정" : "상품 등록"}
-                </h1>
+        <Modal onClose={onClose}>
+            <h1 className="mb-6 text-center font-pretendard text-2xl font-semibold text-gray-800">
+                {mode === "update" ? "상품 수정" : "상품 등록"}
+            </h1>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* 이미지 업로드 섹션 */}
-                    <div className="rounded-md bg-gray-50 p-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
+                {/* 이미지 업로드 섹션 */}
+                <div className="rounded-md bg-gray-50 p-4">
+                    <label className="mb-3 block text-sm font-medium text-gray-700">
+                        상품 이미지 (필수 3개)
+                    </label>
+
+                    <div className="mb-4 grid grid-cols-3 gap-4">
+                        {Array.from({ length: 3 }).map((_, index) => (
+                            <div
+                                key={index}
+                                className="relative flex aspect-square items-center justify-center rounded-lg border-2 border-dashed border-gray-300"
+                            >
+                                {imageData.previews[index] ? (
+                                    <>
+                                        <Image
+                                            src={imageData.previews[index]}
+                                            alt={`Preview ${index + 1}`}
+                                            fill
+                                            className="rounded-lg object-cover"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeImage(index)}
+                                            className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-sm text-white hover:bg-red-600"
+                                        >
+                                            ×
+                                        </button>
+                                    </>
+                                ) : (
+                                    <div className="text-center text-gray-400">
+                                        <div className="mb-2 text-2xl">+</div>
+                                        <div className="text-xs">
+                                            이미지 {index + 1}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                        className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                        현재 {imageData.previews.length}/3개
+                        {mode === "update" && hasImageChanges && " (변경됨)"}
+                    </p>
+                </div>
+
+                {/* 상품명 입력 */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                            상품명 (한글) *
+                        </label>
+                        <input
+                            type="text"
+                            name="titleKr"
+                            value={formData.title.kr}
+                            onChange={handleInputChange}
+                            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            placeholder="한글 상품명을 입력하세요"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                            상품명 (영어) *
+                        </label>
+                        <input
+                            type="text"
+                            name="titleEg"
+                            value={formData.title.eg}
+                            onChange={handleInputChange}
+                            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            placeholder="English product name"
+                            required
+                        />
+                    </div>
+                </div>
+
+                {/* 상품 설명 */}
+                <div>
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                        상품 설명 *
+                    </label>
+                    <textarea
+                        name="descriptionText"
+                        value={formData.description.text}
+                        onChange={handleInputChange}
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                        placeholder="상품 설명을 입력하세요"
+                        rows={3}
+                    />
+
+                    {/* 설명 이미지 섹션 */}
+                    <div className="mt-4 rounded-md border-2 border-dashed bg-gray-50 p-4">
                         <label className="mb-3 block text-sm font-medium text-gray-700">
-                            상품 이미지 (필수 3개)
+                            상품 설명 이미지 *
+                            {hasDescriptionImageChanges && " (변경됨)"}
                         </label>
 
-                        <div className="mb-4 grid grid-cols-3 gap-4">
-                            {Array.from({ length: 3 }).map((_, index) => (
-                                <div
-                                    key={index}
-                                    className="relative flex aspect-square items-center justify-center rounded-lg border-2 border-dashed border-gray-300"
-                                >
-                                    {imageData.previews[index] ? (
-                                        <>
+                        {/* 설명 이미지 미리보기 */}
+                        {descriptionImageData.previews.length > 0 && (
+                            <div className="mb-4 grid grid-cols-2 gap-4 md:grid-cols-3">
+                                {descriptionImageData.previews.map(
+                                    (preview, index) => (
+                                        <div
+                                            key={index}
+                                            className="relative aspect-square overflow-visible rounded-lg border border-gray-200"
+                                        >
                                             <Image
-                                                src={imageData.previews[index]}
-                                                alt={`Preview ${index + 1}`}
+                                                src={preview}
+                                                alt={`설명 이미지 ${index + 1}`}
                                                 fill
-                                                className="rounded-lg object-cover"
+                                                className="object-cover"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() =>
-                                                    removeImage(index)
+                                                    removeDescriptionImage(
+                                                        index,
+                                                    )
                                                 }
                                                 className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-sm text-white hover:bg-red-600"
                                             >
                                                 ×
                                             </button>
-                                        </>
-                                    ) : (
-                                        <div className="text-center text-gray-400">
-                                            <div className="mb-2 text-2xl">
-                                                +
-                                            </div>
-                                            <div className="text-xs">
-                                                이미지 {index + 1}
-                                            </div>
                                         </div>
-                                    )}
+                                    ),
+                                )}
+                            </div>
+                        )}
+
+                        {/* 설명 이미지 업로드 버튼 */}
+                        <div className="rounded-lg border-gray-300 p-4">
+                            <div className="text-center">
+                                <div className="mb-2 text-sm text-gray-600">
+                                    설명 이미지를 업로드하세요 (세로로 연결될
+                                    이미지들)
                                 </div>
-                            ))}
-                        </div>
-
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleImageUpload}
-                            className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
-                        />
-                        <p className="mt-1 text-xs text-gray-500">
-                            현재 {imageData.previews.length}/3개
-                            {mode === "update" &&
-                                hasImageChanges &&
-                                " (변경됨)"}
-                        </p>
-                    </div>
-
-                    {/* 상품명 입력 */}
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-gray-700">
-                                상품명 (한글) *
-                            </label>
-                            <input
-                                type="text"
-                                name="titleKr"
-                                value={formData.title.kr}
-                                onChange={handleInputChange}
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
-                                placeholder="한글 상품명을 입력하세요"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-gray-700">
-                                상품명 (영어) *
-                            </label>
-                            <input
-                                type="text"
-                                name="titleEg"
-                                value={formData.title.eg}
-                                onChange={handleInputChange}
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
-                                placeholder="English product name"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    {/* 상품 설명 */}
-                    <div>
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
-                            상품 설명 *
-                        </label>
-                        <textarea
-                            name="descriptionText"
-                            value={formData.description.text}
-                            onChange={handleInputChange}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
-                            placeholder="상품 설명을 입력하세요"
-                            rows={3}
-                        />
-
-                        {/* 설명 이미지 섹션 */}
-                        <div className="mt-4 rounded-md border-2 border-dashed bg-gray-50 p-4">
-                            <label className="mb-3 block text-sm font-medium text-gray-700">
-                                상품 설명 이미지 *
-                                {hasDescriptionImageChanges && " (변경됨)"}
-                            </label>
-
-                            {/* 설명 이미지 미리보기 */}
-                            {descriptionImageData.previews.length > 0 && (
-                                <div className="mb-4 grid grid-cols-2 gap-4 md:grid-cols-3">
-                                    {descriptionImageData.previews.map(
-                                        (preview, index) => (
-                                            <div
-                                                key={index}
-                                                className="relative aspect-square overflow-hidden rounded-lg border border-gray-200"
-                                            >
-                                                <Image
-                                                    src={preview}
-                                                    alt={`설명 이미지 ${index + 1}`}
-                                                    fill
-                                                    className="object-cover"
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        removeDescriptionImage(
-                                                            index,
-                                                        )
-                                                    }
-                                                    className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-sm text-white hover:bg-red-600"
-                                                >
-                                                    ×
-                                                </button>
-                                            </div>
-                                        ),
-                                    )}
-                                </div>
-                            )}
-
-                            {/* 설명 이미지 업로드 버튼 */}
-                            <div className="rounded-lg border-gray-300 p-4">
-                                <div className="text-center">
-                                    <div className="mb-2 text-sm text-gray-600">
-                                        설명 이미지를 업로드하세요 (세로로
-                                        연결될 이미지들)
-                                    </div>
-                                    <input
-                                        ref={descriptionFileInputRef}
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        onChange={handleDescriptionImageUpload}
-                                        className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
-                                    />
-                                    <p className="mt-2 text-xs text-gray-500">
-                                        JPG, PNG, GIF 파일을 지원합니다. 현재{" "}
-                                        {descriptionImageData.previews.length}개
-                                    </p>
-                                </div>
+                                <input
+                                    ref={descriptionFileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={handleDescriptionImageUpload}
+                                    className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
+                                />
+                                <p className="mt-2 text-xs text-gray-500">
+                                    JPG, PNG, GIF 파일을 지원합니다. 현재{" "}
+                                    {descriptionImageData.previews.length}개
+                                </p>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    {/* 카테고리, 시즌, 가격, 할인율 */}
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-gray-700">
-                                시즌
-                            </label>
-                            <select
-                                name="seasonName"
-                                value={formData.seasonName}
-                                onChange={handleInputChange}
-                                className="h-[42px] w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
-                            >
-                                <option key={"default"} value="">
-                                    시즌 선택
-                                </option>
-                                {season &&
-                                    season.map((item: Season, index) => (
-                                        <option key={index} value={item.title}>
-                                            {item.title}
-                                        </option>
-                                    ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-gray-700">
-                                가격 (원) *
-                            </label>
-                            <input
-                                type="text"
-                                name="price"
-                                value={
-                                    formData.price
-                                        ? Number(formData.price).toLocaleString(
-                                              "ko-KR",
-                                          )
-                                        : ""
-                                }
-                                onChange={handleInputChange}
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
-                                placeholder="0"
-                            />
-                        </div>
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-gray-700">
-                                할인율 (%)
-                            </label>
-                            <input
-                                type="text"
-                                name="discount"
-                                value={formData.discount}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    // 숫자만 허용하고 100 이하로 제한
-                                    if (
-                                        value === "" ||
-                                        (/^\d+$/.test(value) &&
-                                            parseInt(value) <= 100)
-                                    ) {
-                                        handleInputChange(e);
-                                    }
-                                }}
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
-                                placeholder="100 이하만 가능"
-                            />
-                        </div>
-                    </div>
-
-                    {/* 색상 입력 */}
+                {/* 카테고리, 시즌, 가격, 할인율 */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div>
                         <label className="mb-2 block text-sm font-medium text-gray-700">
-                            색상 *
+                            시즌
                         </label>
-                        <div className="mb-2 flex gap-2">
-                            <input
-                                type="text"
-                                value={colorInput}
-                                onChange={(e) => setColorInput(e.target.value)}
-                                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
-                                placeholder="색상을 입력하세요"
-                                onKeyPress={(e) =>
-                                    e.key === "Enter" &&
-                                    (e.preventDefault(), addColor())
-                                }
-                            />
-                            <button
-                                type="button"
-                                onClick={addColor}
-                                className="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
-                            >
-                                추가
-                            </button>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {formData.colors.map((color, index) => (
-                                <span
-                                    key={index}
-                                    className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-sm"
-                                >
-                                    {color}
-                                    <button
-                                        type="button"
-                                        onClick={() => removeColor(color)}
-                                        className="text-gray-400 hover:text-red-500"
-                                    >
-                                        ×
-                                    </button>
-                                </span>
-                            ))}
-                        </div>
+                        <select
+                            name="seasonName"
+                            value={formData.seasonName}
+                            onChange={handleInputChange}
+                            className="h-[42px] w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                        >
+                            <option key={"default"} value="">
+                                시즌 선택
+                            </option>
+                            {season &&
+                                season.map((item: Season, index) => (
+                                    <option key={index} value={item.title}>
+                                        {item.title}
+                                    </option>
+                                ))}
+                        </select>
                     </div>
-
-                    {/* 사이즈 입력 */}
                     <div>
                         <label className="mb-2 block text-sm font-medium text-gray-700">
-                            사이즈 *
+                            가격 (원) *
                         </label>
-                        <div className="mb-2 flex gap-2">
-                            <input
-                                type="text"
-                                value={sizeInput}
-                                onChange={(e) => setSizeInput(e.target.value)}
-                                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
-                                placeholder="사이즈를 입력하세요"
-                                onKeyPress={(e) =>
-                                    e.key === "Enter" &&
-                                    (e.preventDefault(), addSize())
+                        <input
+                            type="text"
+                            name="price"
+                            value={
+                                formData.price
+                                    ? Number(formData.price).toLocaleString(
+                                          "ko-KR",
+                                      )
+                                    : ""
+                            }
+                            onChange={handleInputChange}
+                            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            placeholder="0"
+                        />
+                    </div>
+                    <div>
+                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                            할인율 (%)
+                        </label>
+                        <input
+                            type="text"
+                            name="discount"
+                            value={formData.discount}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                // 숫자만 허용하고 100 이하로 제한
+                                if (
+                                    value === "" ||
+                                    (/^\d+$/.test(value) &&
+                                        parseInt(value) <= 100)
+                                ) {
+                                    handleInputChange(e);
                                 }
-                            />
-                            <button
-                                type="button"
-                                onClick={addSize}
-                                className="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
-                            >
-                                추가
-                            </button>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {formData.size.map((size, index) => (
-                                <span
-                                    key={index}
-                                    className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-sm"
-                                >
-                                    {size}
-                                    <button
-                                        type="button"
-                                        onClick={() => removeSize(size)}
-                                        className="text-gray-400 hover:text-red-500"
-                                    >
-                                        ×
-                                    </button>
-                                </span>
-                            ))}
-                        </div>
+                            }}
+                            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            placeholder="100 이하만 가능"
+                        />
                     </div>
+                </div>
 
-                    {/* 버튼 영역 */}
-                    <div className="flex gap-3 pt-4">
+                {/* 색상 입력 */}
+                <div>
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                        색상 *
+                    </label>
+                    <div className="mb-2 flex gap-2">
+                        <input
+                            type="text"
+                            value={colorInput}
+                            onChange={(e) => setColorInput(e.target.value)}
+                            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            placeholder="색상을 입력하세요"
+                            onKeyPress={(e) =>
+                                e.key === "Enter" &&
+                                (e.preventDefault(), addColor())
+                            }
+                        />
                         <button
                             type="button"
-                            onClick={onClose}
-                            className="flex-1 rounded-lg border border-gray-300 py-2 text-gray-700 hover:bg-gray-50"
+                            onClick={addColor}
+                            className="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
                         >
-                            닫기
-                        </button>
-                        <button
-                            type="button"
-                            onClick={resetAll}
-                            className="flex-1 rounded-lg border border-gray-300 bg-red-500 py-2 text-white hover:bg-red-400"
-                        >
-                            {mode === "update" ? "초기값으로" : "초기화"}
-                        </button>
-                        <button
-                            type="submit"
-                            className="flex-1 rounded-lg bg-gray-800 py-2 text-white hover:bg-gray-700"
-                        >
-                            {mode === "update" ? "상품 수정" : "상품 등록"}
+                            추가
                         </button>
                     </div>
-                </form>
-            </motion.div>
-        </div>
+                    <div className="flex flex-wrap gap-2">
+                        {formData.colors.map((color, index) => (
+                            <span
+                                key={index}
+                                className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-sm"
+                            >
+                                {color}
+                                <button
+                                    type="button"
+                                    onClick={() => removeColor(color)}
+                                    className="text-gray-400 hover:text-red-500"
+                                >
+                                    ×
+                                </button>
+                            </span>
+                        ))}
+                    </div>
+                </div>
+
+                {/* 사이즈 입력 */}
+                <div>
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                        사이즈 *
+                    </label>
+                    <div className="mb-2 flex gap-2">
+                        <input
+                            type="text"
+                            value={sizeInput}
+                            onChange={(e) => setSizeInput(e.target.value)}
+                            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            placeholder="사이즈를 입력하세요"
+                            onKeyPress={(e) =>
+                                e.key === "Enter" &&
+                                (e.preventDefault(), addSize())
+                            }
+                        />
+                        <button
+                            type="button"
+                            onClick={addSize}
+                            className="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
+                        >
+                            추가
+                        </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {formData.size.map((size, index) => (
+                            <span
+                                key={index}
+                                className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-sm"
+                            >
+                                {size}
+                                <button
+                                    type="button"
+                                    onClick={() => removeSize(size)}
+                                    className="text-gray-400 hover:text-red-500"
+                                >
+                                    ×
+                                </button>
+                            </span>
+                        ))}
+                    </div>
+                </div>
+
+                {/* 버튼 영역 */}
+                <div className="flex gap-3 pt-4">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="flex-1 rounded-lg border border-gray-300 py-2 text-gray-700 hover:bg-gray-50"
+                    >
+                        닫기
+                    </button>
+                    <button
+                        type="button"
+                        onClick={resetAll}
+                        className="flex-1 rounded-lg border border-gray-300 bg-red-500 py-2 text-white hover:bg-red-400"
+                    >
+                        {mode === "update" ? "초기값으로" : "초기화"}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setOpenproductModal(true)}
+                        className="flex-1 rounded-lg border border-gray-300 bg-blue-500 py-2 text-white hover:bg-blue-400"
+                    >
+                        미리보기
+                    </button>
+                    <button
+                        type="submit"
+                        className="flex-1 rounded-lg bg-gray-800 py-2 text-white hover:bg-gray-700"
+                    >
+                        {mode === "update" ? "상품 수정" : "상품 등록"}
+                    </button>
+                </div>
+            </form>
+            {openProductModal && (
+                <PreviewProductModal
+                    product={formData}
+                    onClose={() => setOpenproductModal(false)}
+                />
+            )}
+        </Modal>
     );
 };
 
