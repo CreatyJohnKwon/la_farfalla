@@ -124,80 +124,73 @@ const UpdateProductModal = ({
                 files: [],
                 existingUrls: descriptionImages,
             });
+        } else {
+            resetAll();
         }
     }, [mode, product, setFormData]);
 
     // 수정된 resetAll 함수
     const resetAll = () => {
-        const confirmMessage =
-            mode === "update"
-                ? "정말 초기값으로 되돌리시겠습니까?"
-                : "정말 모두 초기화하시겠습니까?";
+        if (mode === "update" && product) {
+            // 업데이트 모드: 원본 데이터로 리셋
+            setFormData({
+                title: product.title,
+                description: product.description,
+                price: product.price,
+                discount: product.discount || "",
+                image: product.image,
+                colors: product.colors,
+                seasonName: product.seasonName,
+                size: product.size,
+            });
 
-        if (confirm(confirmMessage)) {
-            if (mode === "update" && product) {
-                // 업데이트 모드: 원본 데이터로 리셋
-                setFormData({
-                    title: product.title,
-                    description: product.description,
-                    price: product.price,
-                    discount: product.discount || "",
-                    image: product.image,
-                    colors: product.colors,
-                    seasonName: product.seasonName,
-                    size: product.size,
-                });
+            setImageData({
+                previews: product.image || [],
+                files: [],
+                existingUrls: product.image || [],
+            });
 
-                setImageData({
-                    previews: product.image || [],
-                    files: [],
-                    existingUrls: product.image || [],
-                });
+            const descriptionImages = Array.isArray(product.description.images)
+                ? product.description.images
+                : product.description.images
+                  ? [product.description.images]
+                  : [];
 
-                const descriptionImages = Array.isArray(
-                    product.description.images,
-                )
-                    ? product.description.images
-                    : product.description.images
-                      ? [product.description.images]
-                      : [];
+            setDescriptionImageData({
+                previews: descriptionImages,
+                files: [],
+                existingUrls: descriptionImages,
+            });
+        } else {
+            // 생성 모드: 빈 값으로 리셋
+            setFormData({
+                title: { kr: "", eg: "" },
+                description: { images: [], text: "" },
+                price: "",
+                discount: "",
+                image: [],
+                colors: [],
+                seasonName: "",
+                size: [],
+            });
 
-                setDescriptionImageData({
-                    previews: descriptionImages,
-                    files: [],
-                    existingUrls: descriptionImages,
-                });
-            } else {
-                // 생성 모드: 빈 값으로 리셋
-                setFormData({
-                    title: { kr: "", eg: "" },
-                    description: { images: [], text: "" },
-                    price: "",
-                    discount: "",
-                    image: [],
-                    colors: [],
-                    seasonName: "",
-                    size: [],
-                });
+            setImageData({
+                previews: [],
+                files: [],
+                existingUrls: [],
+            });
 
-                setImageData({
-                    previews: [],
-                    files: [],
-                    existingUrls: [],
-                });
-
-                setDescriptionImageData({
-                    previews: [],
-                    files: [],
-                    existingUrls: [],
-                });
-            }
-
-            setColorInput("");
-            setSizeInput("");
-            setHasImageChanges(false);
-            setHasDescriptionImageChanges(false);
+            setDescriptionImageData({
+                previews: [],
+                files: [],
+                existingUrls: [],
+            });
         }
+
+        setColorInput("");
+        setSizeInput("");
+        setHasImageChanges(false);
+        setHasDescriptionImageChanges(false);
     };
 
     const handleInputChange = (
@@ -887,13 +880,24 @@ const UpdateProductModal = ({
                     >
                         닫기
                     </button>
-                    <button
-                        type="button"
-                        onClick={resetAll}
-                        className="flex-1 rounded-lg border border-gray-300 bg-red-500 py-2 text-white hover:bg-red-400"
-                    >
-                        {mode === "update" ? "초기값으로" : "초기화"}
-                    </button>
+                    {mode === "create" ? (
+                        <>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const confirmMessage =
+                                        "정말 초기값으로 되돌리시겠습니까?";
+
+                                    if (confirm(confirmMessage)) resetAll();
+                                }}
+                                className="flex-1 rounded-lg border border-gray-300 bg-red-500 py-2 text-white hover:bg-red-400"
+                            >
+                                초기화
+                            </button>
+                        </>
+                    ) : (
+                        <></>
+                    )}
                     <button
                         type="button"
                         onClick={() => setOpenproductModal(true)}
