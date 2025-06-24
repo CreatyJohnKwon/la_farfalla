@@ -134,6 +134,7 @@ const Cart = () => {
                                 setCartDatas([]); // 장바구니 비우기
                                 setCartView(false); // 팝업 닫기
                             }}
+                            disabled={cartDatas.length === 0}
                         >
                             buy now
                         </button>

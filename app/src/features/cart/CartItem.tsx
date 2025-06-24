@@ -46,7 +46,7 @@ const CartItem = ({ item }: { item: SelectedItem }) => {
                 alt={`${product.title}_img`}
                 width={500}
                 height={500}
-                src={product.image[0] ? product.image[0] : DefaultImg}
+                src={product.image ? product.image[0] : DefaultImg}
                 objectFit="cover"
                 onClick={() => handleRouteProduct(product._id)}
             />

@@ -1,8 +1,6 @@
 import { useRouter } from "next/navigation";
 import useUser from "@src/shared/hooks/useUsers";
 import {
-    ICoupon,
-    IUserCoupon,
     IUserCouponPopulated,
     SelectedItem,
 } from "@src/entities/type/interfaces";
@@ -11,7 +9,7 @@ import { orderDatasAtom } from "../lib/atom";
 import { useState, useEffect } from "react";
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 import {
-    useCouponsQuery,
+    useCouponsListQuery,
     useSpendCouponMutation,
 } from "@src/shared/hooks/react-query/useBenefitQuery";
 import { MileageItem, OrderData } from "@/src/entities/type/interfaces";
@@ -26,9 +24,7 @@ const useOrder = () => {
     const { data: user, isLoading } = useUserQuery();
 
     // ✅ IUserCouponPopulated 배열로 타입 지정
-    const { data: coupons, isLoading: isCouponsLoading } = useCouponsQuery(
-        user?._id,
-    ) as {
+    const { data: coupons, isLoading: isCouponsLoading } = useCouponsListQuery("user") as {
         data: IUserCouponPopulated[] | undefined;
         isLoading: boolean;
     };

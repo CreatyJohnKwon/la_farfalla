@@ -352,7 +352,7 @@ const Order = () => {
                                     </option>
                                     {!isCouponsLoading &&
                                         coupons
-                                            ?.filter((userCoupon) => {
+                                            ?.filter((userCoupon: IUserCouponPopulated) => {
                                                 // 사용 가능한 쿠폰만 필터링
                                                 if (
                                                     userCoupon.isUsed ||

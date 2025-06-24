@@ -121,10 +121,14 @@ const getMileage = async (userId: string) => {
     return await res.json();
 };
 
-const getCoupon = async (userId?: string) => {
-    const res = await fetch(
-        `/api/user/coupon${userId ? "?userId=" + userId : ""}`,
-    );
+const getCouponList = async () => {
+    const res = await fetch(`/api/admin/list/coupons`);
+    if (!res.ok) throw new Error("쿠폰 불러오기 실패");
+    return await res.json();
+};
+
+const getMyCoupon = async () => {
+    const res = await fetch(`/api/user/coupon`);
     if (!res.ok) throw new Error("쿠폰 불러오기 실패");
     return await res.json();
 };
@@ -135,7 +139,8 @@ export {
     updateUser,
     getUser,
     getMileage,
-    getCoupon,
+    getCouponList,
+    getMyCoupon,
     getUserbyId,
     getUserList,
 };

@@ -92,7 +92,7 @@ const EditProfile = () => {
                                 value={form.password}
                                 onChange={handleChange}
                                 placeholder="비밀번호 (8자 이상, 변경 시 입력)"
-                                className="h-10 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                                className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                             />
                             {form.password.length > 0 && (
                                 <p
@@ -117,7 +117,7 @@ const EditProfile = () => {
                                     setConfirmPassword(e.target.value)
                                 }
                                 placeholder="비밀번호 확인"
-                                className="h-10 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                                className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                             />
                             {confirmPassword.length > 0 && (
                                 <p
@@ -142,7 +142,7 @@ const EditProfile = () => {
                         onChange={handleChange}
                         placeholder={"주소"}
                         readOnly
-                        className="h-10 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none"
+                        className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none"
                     />
                     <input
                         name="postcode"
@@ -174,7 +174,7 @@ const EditProfile = () => {
                     value={form.detailAddress}
                     onChange={handleChange}
                     placeholder={"상세주소"}
-                    className="h-10 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                    className="h-12 w-full border border-gray-200 bg-white px-4 pr-36 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                 />
 
                 <button

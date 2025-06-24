@@ -1,5 +1,4 @@
-import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
-import { useCouponsQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
+import { useCouponsListQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import SkeletonList from "./SkeletonList";
 import {
     CouponResponse,
@@ -7,19 +6,18 @@ import {
 } from "@/src/entities/type/interfaces";
 
 const CouponList = () => {
-    const { data: user, isLoading: isUserLoading } = useUserQuery();
     const {
         data: couponResponse,
         isLoading: isCouponsLoading,
         isError,
-    } = useCouponsQuery(user?._id) as {
+    } = useCouponsListQuery("user") as {
         data: CouponResponse | undefined;
         isLoading: boolean;
         isError: boolean;
     };
 
     // 로딩 중엔 스켈레톤만
-    if (isUserLoading || isCouponsLoading) {
+    if (isCouponsLoading) {
         return (
             <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
                 <SkeletonList />
@@ -31,7 +29,7 @@ const CouponList = () => {
     if (isError) {
         return (
             <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
-                <li className="text-center text-red-500">쿠폰 로딩 실패</li>
+                <li className="text-center text-red-400 font-pretendard font-[300] text-2xl mt-10">쿠폰 로딩 실패</li>
             </ul>
         );
     }
@@ -71,7 +69,7 @@ const CouponList = () => {
                     return (
                         <li
                             key={userCoupon._id}
-                            className="shadow-xs rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-sm"
+                            className="shadow-sm rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md"
                         >
                             {/* 쿠폰 헤더 */}
                             <div className="mb-3 flex items-start justify-between">
