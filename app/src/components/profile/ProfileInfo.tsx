@@ -27,10 +27,12 @@ const ProfileInfo = () => {
                                 </span>
                                 <span className="font-pretendard text-sm sm:text-base c_xl:text-xl">
                                     누적 구매금액:
-                                    <span className="font-amstel">{` ${user?.reward.toLocaleString()} KRW`}</span>
+                                    <span className="font-amstel">
+                                        {` ${(user?.reward ?? 0).toLocaleString()} KRW`}
+                                    </span>
                                 </span>
                                 <span className="font-amstel text-sm text-gray-600 underline sm:text-base c_xl:text-xl">
-                                    {user?.email || "이메일 정보 없음"}
+                                    {user?.email ?? "이메일 정보 없음"}
                                 </span>
                             </div>
                         </>
@@ -58,7 +60,7 @@ const ProfileInfo = () => {
                             Mileage : <div className="h-6 w-16 bg-slate-200" />
                         </div>
                     ) : (
-                        <span>{`Mileage : ${user?.mileage.toLocaleString()}`}</span>
+                        <span>{`Mileage : ${(user?.mileage ?? 0).toLocaleString()}`}</span>
                     )}
                 </div>
 
@@ -69,7 +71,7 @@ const ProfileInfo = () => {
                             Coupon : <div className="h-6 w-16 bg-slate-200" />
                         </div>
                     ) : (
-                        <span>{`Coupon : ${user?.coupon}`}</span>
+                        <span>{`Coupon : ${user?.coupon ?? 0}`}</span>
                     )}
                 </div>
             </div>

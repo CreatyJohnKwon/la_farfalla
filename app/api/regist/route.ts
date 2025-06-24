@@ -1,3 +1,5 @@
+"use server";
+
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
 import { benefitWelcomeCoupon } from "@/src/features/benefit/coupon";

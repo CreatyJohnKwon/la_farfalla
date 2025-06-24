@@ -31,7 +31,7 @@ const AdminDrop = () => {
             </button>
             {open && (
                 <ul
-                    className={`mt-2 overflow-hidden bg-transparent font-pretendard text-xl font-[300] sm:absolute sm:text-base ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
+                    className={`font-amstel mt-2 overflow-hidden bg-transparent text-xl font-[300] sm:absolute sm:text-base ${open ? "max-h-40 opacity-100" : "max-h-0 opacity-0"} `}
                 >
                     <li key={"admin-orders"} className="py-1">
                         <button
@@ -41,7 +41,7 @@ const AdminDrop = () => {
                                 setOpen(false);
                             }}
                         >
-                            주문 목록
+                            Order
                         </button>
                     </li>
                     <li key={"admin-products"} className="py-1">
@@ -52,7 +52,7 @@ const AdminDrop = () => {
                                 setOpen(false);
                             }}
                         >
-                            상품 목록
+                            Product
                         </button>
                     </li>
                     <li key={"admin-users"} className="py-1">
@@ -63,7 +63,18 @@ const AdminDrop = () => {
                                 setOpen(false);
                             }}
                         >
-                            유저 목록
+                            User
+                        </button>
+                    </li>
+                    <li key={"admin-coupons"} className="py-1">
+                        <button
+                            onClick={() => {
+                                router.push("/admin/list/coupons");
+                                setOpenSidebar(false);
+                                setOpen(false);
+                            }}
+                        >
+                            Coupon
                         </button>
                     </li>
                 </ul>

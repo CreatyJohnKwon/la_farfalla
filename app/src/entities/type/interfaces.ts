@@ -110,22 +110,6 @@ interface MileageItem {
     createdAt: string;
 }
 
-interface Coupon {
-    _id: string;
-    userId: string;
-    name: string;
-    code: string;
-    discountType: "fixed" | "percentage";
-    discountValue: number;
-    isUsed: boolean;
-    usedAt?: string;
-    issuedAt: string;
-    expiredAt: string;
-    description?: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
 interface OrderItem {
     productId: string;
     productNm: string;
@@ -179,7 +163,81 @@ interface ModalProps {
     containerClassName?: string; // 컨테이너용 추가
 }
 
+interface ICoupon {
+    _id?: string;
+    code: string;
+    name: string;
+    description?: string;
+    type: "common" | "personal" | "event";
+    discountType: "fixed" | "percentage";
+    discountValue: number;
+    startAt: Date;
+    endAt: Date;
+    allowDuplicate: boolean;
+    isActive: boolean;
+    maxUsage: number | null; // null로 명시적 정의
+    maxUsagePerUser: number;
+    currentUsage: number;
+    minOrderAmount: number;
+    maxDiscountAmount: number | null; // null로 명시적 정의
+    applicableCategories?: string[];
+    applicableProducts?: string[];
+    excludeCategories?: string[];
+    excludeProducts?: string[];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+interface IUserCoupon {
+    _id?: string;
+    userId: string;
+    couponId: string;
+    isUsed: boolean;
+    usedAt?: Date;
+    usedOrderId?: string;
+    discountAmount?: number;
+    assignedAt: Date;
+    assignmentType: "manual" | "auto" | "event" | "signup";
+    createdAt: Date;
+    updatedAt: Date;
+}
+interface ICouponDocument extends ICoupon, Document {
+    isValid: boolean;
+}
+
+interface IUserCouponDocument extends IUserCoupon, Document {
+    isExpired: boolean;
+}
+
+interface IUserCouponPopulated extends Omit<IUserCoupon, "couponId"> {
+    couponId: ICoupon; // populate된 쿠폰 정보
+}
+
+// 쿠폰 API 조회 정보
+interface CouponResponse {
+    type: "userCoupons" | "allCoupons";
+    data: UserCouponWithPopulate[];
+    count: number;
+}
+
+interface UserCouponWithPopulate {
+    _id: string;
+    userId: string;
+    couponId: ICoupon; // populate된 쿠폰 정보
+    isUsed: boolean;
+    usedAt?: Date;
+    assignedAt: Date;
+    assignmentType: string;
+}
+
 export type {
+    ICoupon,
+    IUserCoupon,
+    IUserCouponDocument,
+    IUserCouponPopulated,
+    ICouponDocument,
+    CouponResponse,
+    UserCouponWithPopulate,
     ModalProps,
     profNavDataProps,
     CustomButtonProps,
@@ -197,7 +255,6 @@ export type {
     MenuItem,
     Product,
     MileageItem,
-    Coupon,
     AddressModalProps,
     AddressData,
     ShippingStatus,

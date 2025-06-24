@@ -4,10 +4,9 @@ import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
 import { UserProfileData } from "@src/entities/type/interfaces";
 import bcrypt from "bcryptjs";
-import { Coupon } from "@src/entities/models/Coupon";
-import { Mileage } from "@src/entities/models/Mileage";
+import { UserCoupon } from "@/src/entities/models/UserCoupon";
 
-// GET: 유저 정보 조회
+// GET: 유저 정보 조회 (UserCoupon 기반)
 export async function GET() {
     const session = await getAuthSession();
     if (!session?.user?.email) {
@@ -15,6 +14,7 @@ export async function GET() {
     }
 
     await connectDB();
+
     const user = await User.findOne({
         email: session.user.email,
     }).lean<UserProfileData>();
@@ -25,12 +25,24 @@ export async function GET() {
 
     const now = new Date();
 
-    // ✅ 사용하지 않았고, 아직 유효한 쿠폰들
-    const availableCoupons = await Coupon.find({
+    // ✅ 수정된 구조: 유저 발급 쿠폰 조회 (스키마에 맞춰 수정)
+    const userCoupons = await UserCoupon.find({
         userId: user._id,
         isUsed: false,
-        expiredAt: { $gt: now },
-    }).lean();
+    })
+        .populate({
+            path: "couponId",
+            match: {
+                endAt: { $gt: now }, // DB 레벨에서 만료된 쿠폰 필터링
+            },
+        })
+        .lean();
+
+    // 유효 기간 체크 (정의된 endAt 기준) - 기존 로직 그대로 유지
+    const availableCoupons = userCoupons.filter((uc) => {
+        const coupon = uc.couponId as any;
+        return coupon.endAt && coupon.endAt > now;
+    });
 
     const result: UserProfileData = {
         _id: user._id,
@@ -44,7 +56,7 @@ export async function GET() {
         provider: user.provider,
         reward: user.reward || 0,
         mileage: user.mileage || 0,
-        coupon: availableCoupons.length || 0,
+        coupon: availableCoupons.length,
     };
 
     return NextResponse.json(result);

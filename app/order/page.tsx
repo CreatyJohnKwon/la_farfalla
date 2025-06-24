@@ -7,6 +7,7 @@ import useOrder from "@src/shared/hooks/useOrder";
 import DefaultImage from "../../public/images/chill.png";
 import { useAddress } from "@/src/shared/hooks/useAddress";
 import AddressModal from "@/src/features/address/AddressModal";
+import { IUserCouponPopulated } from "@/src/entities/type/interfaces";
 
 const Order = () => {
     const { orderDatas } = useOrder();
@@ -326,13 +327,21 @@ const Order = () => {
                                     value={couponMemo}
                                     onChange={(e) => {
                                         const selectedName = e.target.value;
-                                        const selectedCoupon = coupons?.find(
-                                            (c) => c.name === selectedName,
-                                        );
-                                        if (selectedCoupon) {
+                                        // ✅ IUserCouponPopulated 구조에서 찾기
+                                        const selectedUserCoupon =
+                                            coupons?.find(
+                                                (uc: IUserCouponPopulated) =>
+                                                    uc.couponId?.name ===
+                                                    selectedName,
+                                            );
+                                        if (
+                                            selectedUserCoupon &&
+                                            selectedUserCoupon.couponId
+                                        ) {
                                             setCouponMemo(e.target.value);
                                             setUseCoupon(
-                                                +selectedCoupon.discountValue,
+                                                +selectedUserCoupon.couponId
+                                                    .discountValue,
                                             );
                                         }
                                     }}
@@ -342,21 +351,80 @@ const Order = () => {
                                         적용할 쿠폰을 선택해주세요.
                                     </option>
                                     {!isCouponsLoading &&
-                                        coupons?.map((items, index) => (
-                                            <option
-                                                key={`cp_${index}`}
-                                                value={items.name}
-                                            >
-                                                {items.name}
-                                            </option>
-                                        ))}
+                                        coupons
+                                            ?.filter((userCoupon) => {
+                                                // 사용 가능한 쿠폰만 필터링
+                                                if (
+                                                    userCoupon.isUsed ||
+                                                    !userCoupon.couponId
+                                                )
+                                                    return false;
+
+                                                const coupon =
+                                                    userCoupon.couponId;
+                                                const now = new Date();
+                                                const currentOrderAmount =
+                                                    orderDatas.reduce(
+                                                        (acc, p) =>
+                                                            acc +
+                                                            p.discountPrice *
+                                                                p.quantity,
+                                                        0,
+                                                    );
+
+                                                return (
+                                                    coupon.isActive &&
+                                                    new Date(coupon.startAt) <=
+                                                        now &&
+                                                    new Date(coupon.endAt) >=
+                                                        now &&
+                                                    coupon.minOrderAmount <=
+                                                        currentOrderAmount
+                                                );
+                                            })
+                                            ?.map(
+                                                (
+                                                    userCoupon: IUserCouponPopulated,
+                                                    index: number,
+                                                ) => {
+                                                    const coupon =
+                                                        userCoupon.couponId;
+                                                    return (
+                                                        <option
+                                                            key={`cp_${index}`}
+                                                            value={coupon.name}
+                                                        >
+                                                            {coupon.name}
+                                                            {/* ✅ ICoupon 구조에 맞춘 할인 정보 표시 */}
+                                                            {coupon.discountType ===
+                                                            "percentage"
+                                                                ? ` (${coupon.discountValue}% 할인)`
+                                                                : ` (${coupon.discountValue.toLocaleString()}원 할인)`}
+                                                            {/* 최대 할인 금액 정보 */}
+                                                            {coupon.discountType ===
+                                                                "percentage" &&
+                                                                coupon.maxDiscountAmount &&
+                                                                ` [최대 ${coupon.maxDiscountAmount.toLocaleString()}원]`}
+                                                        </option>
+                                                    );
+                                                },
+                                            )}
                                 </select>
                                 <button
                                     type="button"
                                     className="font-pretendard-bold absolute right-1 top-1/2 -translate-y-1/2 bg-black px-5 py-[0.7vh] text-sm text-white hover:bg-gray-800"
                                     onClick={() => {
-                                        setApplyCoupon(useCoupon);
-                                        setAppliedCouponName(couponMemo);
+                                        const selectedUserCoupon =
+                                            coupons?.find(
+                                                (uc: IUserCouponPopulated) =>
+                                                    uc.couponId?.name ===
+                                                    couponMemo,
+                                            );
+
+                                        if (selectedUserCoupon?.couponId) {
+                                            setApplyCoupon(useCoupon);
+                                            setAppliedCouponName(couponMemo);
+                                        }
                                     }}
                                     disabled={couponMemo === ""}
                                 >
@@ -364,15 +432,40 @@ const Order = () => {
                                 </button>
                             </div>
 
-                            {applyCoupon !== 0 && (
+                            {applyCoupon !== 0 && appliedCouponName && (
                                 <div className="mt-4 flex items-center justify-between border border-dashed border-gray-400 bg-gray-50 px-4 py-3 text-sm">
                                     <div>
                                         <span className="font-pretendard">
                                             {`${appliedCouponName} 쿠폰이 적용되었습니다.\t`}
                                         </span>
                                         <span className="text-gray-500">
-                                            ({applyCoupon.toLocaleString()}%
-                                            할인)
+                                            {(() => {
+                                                const selectedUserCoupon =
+                                                    coupons?.find(
+                                                        (
+                                                            uc: IUserCouponPopulated,
+                                                        ) =>
+                                                            uc.couponId
+                                                                ?.name ===
+                                                            appliedCouponName,
+                                                    );
+
+                                                if (
+                                                    selectedUserCoupon?.couponId
+                                                ) {
+                                                    const coupon =
+                                                        selectedUserCoupon.couponId;
+                                                    if (
+                                                        coupon.discountType ===
+                                                        "percentage"
+                                                    ) {
+                                                        return `(${applyCoupon}% 할인)`;
+                                                    } else {
+                                                        return `(${applyCoupon.toLocaleString()}원 할인)`;
+                                                    }
+                                                }
+                                                return `(${applyCoupon}% 할인)`;
+                                            })()}
                                         </span>
                                     </div>
                                     <button
@@ -381,6 +474,7 @@ const Order = () => {
                                             setCouponMemo("");
                                             setUseCoupon(0);
                                             setApplyCoupon(0);
+                                            setAppliedCouponName("");
                                         }}
                                         className="ml-4 text-xl text-gray-400 transition hover:text-red-500"
                                         aria-label="쿠폰 삭제"

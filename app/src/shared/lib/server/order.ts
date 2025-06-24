@@ -1,6 +1,4 @@
-import Order from "@/src/entities/models/Order";
 import axios from "axios";
-import mongoose from "mongoose";
 
 const updateCoupon = async (couponId: string) => {
     try {
