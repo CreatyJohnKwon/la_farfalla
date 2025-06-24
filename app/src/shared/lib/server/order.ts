@@ -2,7 +2,8 @@ import axios from "axios";
 
 const updateCoupon = async (couponId: string) => {
     try {
-        const res = await axios.patch(`/api/user/coupon/${couponId}`);
+        const payload: any = {};
+        const res = await axios.patch(`/api/user/coupon/${couponId}`, payload);
 
         if (!res.data) throw new Error("업데이트 실패");
 

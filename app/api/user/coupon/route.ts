@@ -9,7 +9,10 @@ export async function GET(req: NextRequest) {
     try {
         const session = await getAuthSession();
         if (!session?.user?.email) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 },
+            );
         }
 
         const user = await User.findOne({
@@ -17,8 +20,13 @@ export async function GET(req: NextRequest) {
         }).lean<UserProfileData>();
 
         if (!user) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 });
+            return NextResponse.json(
+                { error: "User not found" },
+                { status: 404 },
+            );
         }
+
+        await connectDB();
 
         const now = new Date();
 
@@ -35,17 +43,11 @@ export async function GET(req: NextRequest) {
             })
             .lean();
 
-        await connectDB();
-
         // 만료되지 않은 쿠폰만 필터링
         const availableCoupons = userCoupons.filter((uc) => {
             const coupon = uc.couponId as any;
             const isValid =
                 coupon && coupon.endAt && new Date(coupon.endAt) > now;
-            console.log(
-                `쿠폰 ${coupon?.name || "unknown"} 유효성:`,
-                isValid,
-            );
             return isValid;
         });
 
@@ -60,5 +62,5 @@ export async function GET(req: NextRequest) {
             { error: "쿠폰 조회 실패", details: error.message },
             { status: 500 },
         );
-    } 
+    }
 }

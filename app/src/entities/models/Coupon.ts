@@ -32,8 +32,8 @@ const couponSchema = new Schema<ICouponDocument>(
         startAt: { type: Date, required: true, index: true },
         endAt: { type: Date, required: true, index: true },
         allowDuplicate: { type: Boolean, default: false },
+        isActive: { type: Boolean, default: true, index: true, required: true },
 
-        isActive: { type: Boolean, default: true, index: true },
         maxUsage: { type: Number, default: null },
         maxUsagePerUser: { type: Number, default: 1 },
         currentUsage: { type: Number, default: 0 },

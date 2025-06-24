@@ -107,12 +107,12 @@ const StatusUpdateSelectedModal = ({
                     orderData.length === 1
                         ? {
                               orderId: orderData[0]._id,
-                              shippingStatus: radioValue,
+                              shippingStatus: "cancel",
                               trackingNumber: "",
                           }
                         : orderData.map((order) => ({
                               orderId: order._id,
-                              shippingStatus: radioValue,
+                              shippingStatus: "cancel",
                               trackingNumber: "",
                           }));
 

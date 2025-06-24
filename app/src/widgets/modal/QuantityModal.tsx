@@ -19,42 +19,51 @@ const QuantityModal = ({
     const decrease = () =>
         updateQuantity(item.quantity > 1 ? item.quantity - 1 : 1);
 
-    return (
-        <div className={`${custom} flex-wrap md:flex-nowrap`}>
-            {/* 상품명 + 옵션 표기 */}
-            <span className="min-w-0 flex-shrink-0 truncate text-xs md:text-sm lg:text-base">
-                {`${item.size} - ${item.color}`}
-            </span>
+    // originalPrice 사용하여 총 가격 계산
+    const unitPrice = item.discountPrice || item.originalPrice || 0;
+    const totalPrice = item.quantity * unitPrice;
 
-            {/* 수량 */}
-            <div className="flex flex-shrink-0 items-center justify-center gap-1 md:gap-2">
-                <div className="flex aspect-square w-6 items-center justify-center bg-gray-200 text-center text-xs md:w-8 md:text-sm lg:w-10">
-                    {item.quantity}
-                </div>
+    // 가격 포맷팅
+    const formatPrice = (price: number) => {
+        return price.toLocaleString();
+    };
+
+    return (
+        <div className={`flex items-center gap-3 ${custom}`}>
+            {/* 수량 조절 버튼들 */}
+            <div className="flex items-center gap-1">
                 <button
-                    className="flex aspect-square w-6 items-center justify-center bg-gray-200 text-center text-xs transition hover:bg-gray-300 active:scale-95 md:w-8 md:text-sm lg:w-10"
+                    className="flex h-6 w-6 items-center justify-center rounded-sm bg-gray-100 text-gray-700 transition-colors duration-150 hover:bg-gray-200"
+                    onClick={decrease}
+                    disabled={item.quantity <= 1}
+                >
+                    −
+                </button>
+
+                <span className="flex h-6 w-8 min-w-0 items-center justify-center font-medium text-gray-900">
+                    {item.quantity}
+                </span>
+
+                <button
+                    className="flex h-6 w-6 items-center justify-center rounded-sm bg-gray-100 text-gray-700 transition-colors duration-150 hover:bg-gray-200"
                     onClick={increase}
                 >
                     +
                 </button>
-                <button
-                    className="flex aspect-square w-6 items-center justify-center bg-gray-200 text-center text-xs transition hover:bg-gray-300 active:scale-95 md:w-8 md:text-sm lg:w-10"
-                    onClick={decrease}
-                >
-                    −
-                </button>
             </div>
 
-            {/* 개별 금액 */}
-            <div className="min-w-0 flex-shrink-0 text-right text-xs md:text-sm lg:text-base">
-                KRW {(item.quantity * item.discountPrice).toLocaleString()}
+            {/* 총 가격 */}
+            <div className="font-amstel min-w-0 font-light text-gray-900">
+                KRW {formatPrice(totalPrice)}
             </div>
 
+            {/* 삭제 버튼 */}
             <button
                 onClick={() => onDelete(id)}
-                className="ml-2 flex-shrink-0 text-lg font-thin text-black transition-colors hover:text-red-500 md:text-xl"
+                className="ml-1 flex h-6 w-6 items-center justify-center text-gray-400 transition-colors duration-200 hover:text-red-500"
+                aria-label="상품 삭제"
             >
-                &times;
+                ×
             </button>
         </div>
     );

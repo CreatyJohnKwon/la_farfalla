@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useCallback } from "react";
+import type { MouseEvent } from "react";
 import StatusUpdateSelectedModal from "@/src/widgets/modal/StatusUpdateSelectedModal";
 import StatusUpdateModal from "@/src/widgets/modal/StatusUpdateModal";
 import UserInfoModal from "@/src/widgets/modal/UserInfoModal";
@@ -35,6 +37,61 @@ const Orders = () => {
 
         refetch,
     } = useOrderList();
+
+    // Shift 키 범위 선택을 위한 상태
+    const [lastCheckedIndex, setLastCheckedIndex] = useState<number | null>(
+        null,
+    );
+
+    // 개별 체크박스 클릭 처리 (Shift 키 범위 선택 포함)
+    const handleToggleSingle = useCallback(
+        (
+            order: OrderData,
+            currentIndex: number,
+            event: React.MouseEvent<HTMLInputElement>,
+        ) => {
+            const isShiftPressed = event.shiftKey;
+
+            if (isShiftPressed && lastCheckedIndex !== null && orders) {
+                // Shift 키가 눌린 상태에서 범위 선택
+                const startIndex = Math.min(lastCheckedIndex, currentIndex);
+                const endIndex = Math.max(lastCheckedIndex, currentIndex);
+
+                // 현재 클릭한 주문의 선택 상태를 기준으로 결정
+                const isCurrentSelected = selectedOrder.some(
+                    (selected) => selected._id === order._id,
+                );
+                const shouldSelect = !isCurrentSelected;
+
+                // 범위 내의 모든 주문을 선택/해제 (현재 클릭한 항목 포함)
+                for (let i = startIndex; i <= endIndex; i++) {
+                    const targetOrder = orders[i];
+                    if (targetOrder) {
+                        const isTargetSelected = selectedOrder.some(
+                            (selected) => selected._id === targetOrder._id,
+                        );
+
+                        // 목표 상태와 현재 상태가 다르면 토글
+                        if (shouldSelect !== isTargetSelected) {
+                            setTimeout(() => toggleSingle(targetOrder), 0);
+                        }
+                    }
+                }
+            } else {
+                // 일반 클릭 - 단일 토글
+                toggleSingle(order);
+                setLastCheckedIndex(currentIndex);
+            }
+        },
+        [lastCheckedIndex, orders, selectedOrder, toggleSingle],
+    );
+
+    // 전체 선택 시 lastCheckedIndex 초기화
+    const handleToggleAll = useCallback(() => {
+        toggleAll();
+        setLastCheckedIndex(null);
+    }, [toggleAll]);
+
     return (
         <div className="w-full max-w-full overflow-x-auto border font-pretendard sm:p-16 md:overflow-x-visible">
             <div className="ms-5 mt-20 flex h-8 w-full items-center justify-between sm:ms-0">
@@ -67,9 +124,10 @@ const Orders = () => {
                     title="일괄 변경"
                     disabled={selectedOrder.length === 0}
                 >
-                    일괄 변경
+                    일괄 변경 ({selectedOrder.length})
                 </button>
             </div>
+
             <table className="ms-5 mt-5 h-full w-full min-w-[700px] table-auto text-left text-sm sm:ms-0">
                 <thead>
                     <tr className="border-b text-gray-600">
@@ -77,7 +135,7 @@ const Orders = () => {
                             <input
                                 type="checkbox"
                                 checked={isAllSelected}
-                                onChange={toggleAll}
+                                onChange={handleToggleAll}
                             />
                         </th>
                         <th className="w-[10%] px-2 py-2 text-xs sm:text-sm md:px-4">
@@ -102,10 +160,14 @@ const Orders = () => {
                 </thead>
                 {!orderListLoading && (
                     <tbody>
-                        {orders?.map((order: OrderData) => (
+                        {orders?.map((order: OrderData, index) => (
                             <tr
                                 key={order._id}
-                                className="border-b hover:bg-gray-50"
+                                className={`border-b hover:bg-gray-50 ${
+                                    lastCheckedIndex === index
+                                        ? "bg-blue-50 ring-1 ring-blue-200"
+                                        : ""
+                                }`}
                             >
                                 {/* 체크 박스 */}
                                 <td className="px-2 py-2 md:px-4">
@@ -116,7 +178,14 @@ const Orders = () => {
                                                 (selected) =>
                                                     selected._id === order._id,
                                             )}
-                                            onChange={() => toggleSingle(order)}
+                                            onClick={(e) => {
+                                                handleToggleSingle(
+                                                    order,
+                                                    index,
+                                                    e,
+                                                );
+                                            }}
+                                            onChange={() => {}} // 빈 함수로 onChange 경고 방지
                                         />
                                     )}
                                 </td>
@@ -130,6 +199,11 @@ const Orders = () => {
                                         }}
                                     >
                                         {order.userNm}
+                                        {lastCheckedIndex === index && (
+                                            <span className="ml-1 text-xs text-blue-500">
+                                                ●
+                                            </span>
+                                        )}
                                     </button>
                                 </td>
                                 {/* 주문자 번호 */}

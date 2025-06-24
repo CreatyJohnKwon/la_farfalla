@@ -22,7 +22,7 @@ const ProfileInfo = () => {
                         <>
                             {/* 프로필 세부정보 */}
                             <div className="flex flex-col items-start justify-center gap-2 text-center">
-                                <span className="font-pretendard text-xl text-gray-800 sm:text-2xl md:font-pretendard md:text-3xl c_xl:text-4xl">
+                                <span className="font-pretendard text-xl font-[300] text-gray-800 sm:text-2xl md:font-pretendard md:text-3xl c_xl:text-4xl">
                                     {`${user?.name || "Guest"} 님`}
                                 </span>
                                 <span className="font-pretendard text-sm sm:text-base c_xl:text-xl">

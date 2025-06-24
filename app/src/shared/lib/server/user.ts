@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
-import { RegistReqData } from "@src/entities/type/interfaces";
+import { CouponResponse, RegistReqData } from "@src/entities/type/interfaces";
 import { benefitWelcomeCoupon } from "@/src/features/benefit/coupon";
 
 const registUser = async (formData: RegistReqData) => {
@@ -121,13 +121,13 @@ const getMileage = async (userId: string) => {
     return await res.json();
 };
 
-const getCouponList = async () => {
+const getCouponList = async (): Promise<CouponResponse> => {
     const res = await fetch(`/api/admin/list/coupons`);
     if (!res.ok) throw new Error("쿠폰 불러오기 실패");
     return await res.json();
 };
 
-const getMyCoupon = async () => {
+const getMyCoupon = async (): Promise<CouponResponse> => {
     const res = await fetch(`/api/user/coupon`);
     if (!res.ok) throw new Error("쿠폰 불러오기 실패");
     return await res.json();

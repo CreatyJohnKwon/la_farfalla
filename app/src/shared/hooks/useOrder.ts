@@ -24,10 +24,8 @@ const useOrder = () => {
     const { data: user, isLoading } = useUserQuery();
 
     // ✅ IUserCouponPopulated 배열로 타입 지정
-    const { data: coupons, isLoading: isCouponsLoading } = useCouponsListQuery("user") as {
-        data: IUserCouponPopulated[] | undefined;
-        isLoading: boolean;
-    };
+    const { data: coupons, isLoading: isCouponsLoading } =
+        useCouponsListQuery("user");
 
     const updateCoupon = useSpendCouponMutation();
 
@@ -66,7 +64,7 @@ const useOrder = () => {
         // 쿠폰 할인 계산
         let couponDiscount = 0;
         if (applyCoupon !== 0 && couponMemo) {
-            const selectedUserCoupon = coupons?.find(
+            const selectedUserCoupon = coupons?.data?.find(
                 (uc) => uc.couponId.name === couponMemo,
             );
 
@@ -149,7 +147,7 @@ const useOrder = () => {
 
     // ✅ IUserCoupon 구조에 맞춘 쿠폰 사용 함수
     const useSpendCoupon = () => {
-        const userCoupons = coupons || [];
+        const userCoupons = coupons?.data || [];
 
         if (userCoupons.length === 0) {
             alert("사용 가능한 쿠폰이 없습니다.");
@@ -158,7 +156,7 @@ const useOrder = () => {
         }
 
         // IUserCouponPopulated 구조에서 쿠폰 찾기
-        const selected = userCoupons.find((uc: IUserCouponPopulated) => {
+        const selected = userCoupons.find((uc: any) => {
             if (!uc.couponId || typeof uc.couponId === "string") {
                 console.error("쿠폰 정보가 올바르게 로드되지 않았습니다.");
                 return false;
@@ -181,7 +179,8 @@ const useOrder = () => {
         // ICoupon 구조에 맞춰 검증
         const coupon = selected.couponId;
 
-        if (!coupon.isActive) {
+        // ✅ 수정: 명시적으로 true인지 확인
+        if (coupon.isActive !== true) {
             alert("비활성화된 쿠폰입니다.");
             setCouponMemo("");
             return;
@@ -222,7 +221,7 @@ const useOrder = () => {
         // IUserCoupon의 _id로 업데이트
         updateCoupon.mutate(selected._id, {
             onSuccess: () => {
-                alert(`${coupon.name} 쿠폰이 적용되었습니다!`);
+                console.log(`${coupon.name} coupons success`);
             },
             onError: (error) => {
                 console.error("쿠폰 사용 오류:", error);

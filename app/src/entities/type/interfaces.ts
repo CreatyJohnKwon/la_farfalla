@@ -226,6 +226,7 @@ interface UserCouponWithPopulate {
     couponId: ICoupon; // populate된 쿠폰 정보
     isUsed: boolean;
     usedAt?: Date;
+    isActive: boolean;
     assignedAt: Date;
     assignmentType: string;
 }

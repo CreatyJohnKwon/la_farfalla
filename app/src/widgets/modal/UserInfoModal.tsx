@@ -10,13 +10,11 @@ const UserInfoModal = ({
     orderData: OrderData | null;
     onClose: () => void;
 }) => {
-    const { data: userData, isLoading } = useOneUserQuery(orderData?.userId);
-
-    const totalQuantity = useMemo(() => {
-        return (
-            orderData?.items.reduce((acc, cur) => acc + cur.quantity, 0) || 0
-        );
-    }, [orderData?.items]);
+    const {
+        data: userData,
+        isLoading,
+        error,
+    } = useOneUserQuery(orderData?.userId);
 
     return (
         <div
@@ -37,39 +35,25 @@ const UserInfoModal = ({
 
                 {!isLoading ? (
                     <div className="space-y-4 text-base text-gray-700">
-                        <InfoRow label="이름" value={userData?.name} />
-                        <InfoRow label="이메일" value={userData?.email} />
+                        <InfoRow
+                            label="이름"
+                            value={error ? "탈퇴한 유저" : userData?.name}
+                        />
+                        <InfoRow
+                            label="이메일"
+                            value={error ? "탈퇴한 유저" : userData?.email}
+                        />
                         <InfoRow
                             label="전화번호"
-                            value={userData?.phoneNumber}
+                            value={
+                                error ? "탈퇴한 유저" : userData?.phoneNumber
+                            }
                         />
                         <InfoRow
                             label="결제방법"
                             value={orderData?.payMethod}
                         />
-                        <div className="rounded-md bg-gray-50 p-6">
-                            <p className="mb-5 border-b pb-2 text-base font-semibold text-gray-700">
-                                주문 상품 목록 (총 {totalQuantity}개)
-                            </p>
-                            <div className="space-y-4">
-                                {orderData?.items.map((item: OrderItem, i) => (
-                                    <div
-                                        key={i}
-                                        className="flex flex-col gap-1 rounded-md border border-gray-200 bg-white px-4 py-3"
-                                    >
-                                        <div className="text-sm font-medium text-gray-800">
-                                            {item.productNm}
-                                        </div>
-                                        <div className="text-sm text-gray-500">
-                                            색상: {item.color}
-                                        </div>
-                                        <div className="text-sm text-gray-500">
-                                            수량: {item.quantity}개
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+
                         <BoxElement
                             label={"배송 주소"}
                             value={`${orderData?.address}

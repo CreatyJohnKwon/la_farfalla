@@ -14,7 +14,9 @@ const CartItem = ({ item }: { item: SelectedItem }) => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await fetch(`/api/product?id=${item.productId}`);
+                const res = await fetch(
+                    `/api/product?productId=${item.productId}`,
+                );
                 const data = await res.json();
                 setProduct(data);
                 // 부드러운 전환을 위해 약간의 delay
@@ -40,9 +42,9 @@ const CartItem = ({ item }: { item: SelectedItem }) => {
     }
 
     return (
-        <div className="flex h-full w-[92%] animate-fade-in items-center justify-between opacity-0 transition-opacity duration-500 ease-in-out">
+        <div className="flex h-full w-[90%] animate-fade-in items-center opacity-0 transition-opacity duration-500 ease-in-out">
             <Image
-                className="h-auto w-[4.5em] transition-all duration-300 hover:scale-105 sm:w-[5em]"
+                className="h-[20vw] w-auto transition-all duration-300 hover:scale-105 sm:h-[8vw]"
                 alt={`${product.title}_img`}
                 width={500}
                 height={500}
