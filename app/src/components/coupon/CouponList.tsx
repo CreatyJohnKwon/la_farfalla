@@ -1,4 +1,4 @@
-import { useCouponsListQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
+import { useGetUserCouponsListQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import SkeletonList from "./SkeletonList";
 import {
     CouponResponse,
@@ -10,7 +10,7 @@ const CouponList = () => {
         data: couponResponse,
         isLoading: isCouponsLoading,
         isError,
-    } = useCouponsListQuery("user") as {
+    } = useGetUserCouponsListQuery("user") as {
         data: CouponResponse | undefined;
         isLoading: boolean;
         isError: boolean;
@@ -29,7 +29,9 @@ const CouponList = () => {
     if (isError) {
         return (
             <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
-                <li className="text-center text-red-400 font-pretendard font-[300] text-2xl mt-10">쿠폰 로딩 실패</li>
+                <li className="mt-10 text-center font-pretendard text-2xl font-[300] text-red-400">
+                    쿠폰 로딩 실패
+                </li>
             </ul>
         );
     }
@@ -69,7 +71,7 @@ const CouponList = () => {
                     return (
                         <li
                             key={userCoupon._id}
-                            className="shadow-sm rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md"
+                            className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
                         >
                             {/* 쿠폰 헤더 */}
                             <div className="mb-3 flex items-start justify-between">
@@ -107,11 +109,6 @@ const CouponList = () => {
                                 <p className="text-xs text-gray-500">
                                     {`쿠폰 코드: ${coupon.code}`}
                                 </p>
-                                {coupon.minOrderAmount > 0 && (
-                                    <span className="text-xs text-gray-400">
-                                        {`${coupon.minOrderAmount.toLocaleString()}원 이상`}
-                                    </span>
-                                )}
                             </div>
 
                             {/* 발급 정보 */}

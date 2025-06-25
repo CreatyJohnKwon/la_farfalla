@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Coupon } from "@src/entities/models/Coupon";
+import { UserCoupon } from "@/src/entities/models/UserCoupon";
 
 export async function GET(req: NextRequest) {
     try {
-        const allCoupons = await Coupon.find()
+        const allCoupons = await UserCoupon.find()
             .sort({ createdAt: -1 })
             .lean();
 

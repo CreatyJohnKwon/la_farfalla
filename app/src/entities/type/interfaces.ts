@@ -167,19 +167,16 @@ interface ICoupon {
     _id?: string;
     code: string;
     name: string;
-    description?: string;
+    description: string;
     type: "common" | "personal" | "event";
     discountType: "fixed" | "percentage";
     discountValue: number;
     startAt: Date;
     endAt: Date;
-    allowDuplicate: boolean;
     isActive: boolean;
     maxUsage: number | null; // null로 명시적 정의
-    maxUsagePerUser: number;
+    maxUsagePerUser: number | null;
     currentUsage: number;
-    minOrderAmount: number;
-    maxDiscountAmount: number | null; // null로 명시적 정의
     applicableCategories?: string[];
     applicableProducts?: string[];
     excludeCategories?: string[];
@@ -226,9 +223,17 @@ interface UserCouponWithPopulate {
     couponId: ICoupon; // populate된 쿠폰 정보
     isUsed: boolean;
     usedAt?: Date;
+    usedOrderId?: string;
+    discountAmount?: string;
     isActive: boolean;
     assignedAt: Date;
-    assignmentType: string;
+    assignmentType: "manual" | "auto" | "event" | "signup";
+    name?: string;
+    description?: string;
+    code?: string;
+    type?: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export type {

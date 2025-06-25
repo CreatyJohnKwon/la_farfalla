@@ -67,7 +67,7 @@ const Order = () => {
             0,
         );
 
-        const filtered = couponData.filter((userCoupon) => {
+        const filtered = couponData.filter((userCoupon: any) => {
             const coupon = userCoupon.couponId;
 
             // ✅ 조건 1: isActive가 명시적으로 true인 경우만 허용
@@ -100,7 +100,7 @@ const Order = () => {
         }
 
         const selectedUserCoupon = couponData.find(
-            (uc) => uc.couponId?.name === selectedName,
+            (uc: any) => uc.couponId?.name === selectedName,
         );
 
         if (selectedUserCoupon?.couponId) {
@@ -127,7 +127,7 @@ const Order = () => {
         }
 
         const selectedUserCoupon = couponData.find(
-            (uc) => uc.couponId?.name === couponMemo,
+            (uc: any) => uc.couponId?.name === couponMemo,
         );
 
         if (selectedUserCoupon?.couponId) {
@@ -156,7 +156,7 @@ const Order = () => {
         }
 
         const selectedUserCoupon = couponData.find(
-            (uc) => uc.couponId?.name === appliedCouponName,
+            (uc: any) => uc.couponId?.name === appliedCouponName,
         );
 
         if (!selectedUserCoupon?.couponId) {

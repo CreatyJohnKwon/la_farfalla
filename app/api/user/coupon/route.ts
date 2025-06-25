@@ -64,3 +64,33 @@ export async function GET(req: NextRequest) {
         );
     }
 }
+
+// DELETE - 쿠폰 삭제
+export async function DELETE(req: NextRequest) {
+    try {
+        const { _id } = await req.json();
+
+        if (!_id) {
+            return NextResponse.json(
+                { error: "쿠폰 ID가 필요합니다" },
+                { status: 400 },
+            );
+        }
+
+        const deletedUserCoupons = await UserCoupon.deleteOne({
+            _id,
+        });
+
+        if (!deletedUserCoupons) {
+            return NextResponse.json(
+                { error: "사용자 쿠폰 조회 결과가 없습니다" },
+                { status: 404 },
+            );
+        }
+
+        return NextResponse.json({ message: "쿠폰이 삭제되었습니다" });
+    } catch (error) {
+        console.error("쿠폰 삭제 오류:", error);
+        return NextResponse.json({ error: "쿠폰 삭제 실패" }, { status: 500 });
+    }
+}

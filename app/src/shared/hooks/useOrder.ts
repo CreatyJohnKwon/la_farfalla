@@ -9,8 +9,8 @@ import { orderDatasAtom } from "../lib/atom";
 import { useState, useEffect } from "react";
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 import {
-    useCouponsListQuery,
-    useSpendCouponMutation,
+    useGetUserCouponsListQuery,
+    useUpdateUserCouponMutation,
 } from "@src/shared/hooks/react-query/useBenefitQuery";
 import { MileageItem, OrderData } from "@/src/entities/type/interfaces";
 import { orderAccept } from "@/src/features/order/order";
@@ -25,9 +25,9 @@ const useOrder = () => {
 
     // ✅ IUserCouponPopulated 배열로 타입 지정
     const { data: coupons, isLoading: isCouponsLoading } =
-        useCouponsListQuery("user");
+        useGetUserCouponsListQuery("user");
 
-    const updateCoupon = useSpendCouponMutation();
+    const updateCoupon = useUpdateUserCouponMutation();
 
     const [orderDatas, setOrderDatas] = useAtom<SelectedItem[] | []>(
         orderDatasAtom,
@@ -73,12 +73,6 @@ const useOrder = () => {
 
                 if (coupon.discountType === "percentage") {
                     couponDiscount = basePrice * (applyCoupon / 100);
-                    if (
-                        coupon.maxDiscountAmount &&
-                        couponDiscount > coupon.maxDiscountAmount
-                    ) {
-                        couponDiscount = coupon.maxDiscountAmount;
-                    }
                 } else if (coupon.discountType === "fixed") {
                     couponDiscount = applyCoupon;
                     if (couponDiscount > basePrice) {
@@ -195,19 +189,6 @@ const useOrder = () => {
 
         if (new Date(coupon.endAt) < now) {
             alert("만료된 쿠폰입니다.");
-            setCouponMemo("");
-            return;
-        }
-
-        const currentOrderAmount = orderDatas.reduce(
-            (acc, p) => acc + p.discountPrice * p.quantity,
-            0,
-        );
-
-        if (coupon.minOrderAmount > currentOrderAmount) {
-            alert(
-                `최소 주문 금액 ${coupon.minOrderAmount.toLocaleString()}원 이상이어야 합니다.`,
-            );
             setCouponMemo("");
             return;
         }
