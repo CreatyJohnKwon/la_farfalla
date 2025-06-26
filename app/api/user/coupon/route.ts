@@ -4,6 +4,7 @@ import { UserCoupon } from "@/src/entities/models/UserCoupon";
 import { getAuthSession } from "@/src/shared/lib/session";
 import User from "@/src/entities/models/User";
 import { UserProfileData } from "@/src/entities/type/interfaces";
+import { Coupon } from "@/src/entities/models/Coupon";
 
 export async function GET(req: NextRequest) {
     try {
@@ -65,6 +66,134 @@ export async function GET(req: NextRequest) {
     }
 }
 
+export async function POST(req: NextRequest) {
+    try {
+        await connectDB();
+
+        const session = await getAuthSession();
+        if (!session?.user?.email) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 },
+            );
+        }
+
+        const user = await User.findOne({
+            email: session.user.email,
+        }).lean<UserProfileData>();
+
+        if (!user) {
+            return NextResponse.json(
+                { error: "User not found" },
+                { status: 404 },
+            );
+        }
+
+        const { couponId, assignmentType = "manual" } = await req.json();
+
+        if (!couponId) {
+            return NextResponse.json(
+                { error: "쿠폰 ID가 필요합니다" },
+                { status: 400 },
+            );
+        }
+
+        // 쿠폰 존재 여부 확인
+        const coupon = await Coupon.findById(couponId);
+
+        if (!coupon) {
+            return NextResponse.json(
+                { error: "존재하지 않는 쿠폰입니다" },
+                { status: 404 },
+            );
+        }
+
+        // 쿠폰 유효성 검사
+        const now = new Date();
+        if (
+            !coupon.isActive ||
+            new Date(coupon.startAt) > now ||
+            new Date(coupon.endAt) < now
+        ) {
+            return NextResponse.json(
+                { error: "유효하지 않은 쿠폰입니다" },
+                { status: 400 },
+            );
+        }
+
+        // 최대 사용량 확인
+        if (
+            coupon.maxUsage !== null &&
+            coupon.currentUsage >= coupon.maxUsage
+        ) {
+            return NextResponse.json(
+                { error: "쿠폰 발급 한도에 도달했습니다" },
+                { status: 400 },
+            );
+        }
+
+        // 이미 발급받았는지 확인
+        const existingUserCoupon = await UserCoupon.findOne({
+            userId: user._id,
+            couponId: couponId,
+        });
+
+        if (existingUserCoupon) {
+            return NextResponse.json(
+                { error: "이미 발급받은 쿠폰입니다" },
+                { status: 400 },
+            );
+        }
+
+        // 사용자별 최대 발급 수량 확인
+        const userCouponCount = await UserCoupon.countDocuments({
+            userId: user._id,
+            couponId: couponId,
+        });
+
+        if (
+            coupon.maxUsagePerUser &&
+            userCouponCount >= coupon.maxUsagePerUser
+        ) {
+            return NextResponse.json(
+                { error: "사용자별 발급 한도에 도달했습니다" },
+                { status: 400 },
+            );
+        }
+
+        // 새 UserCoupon 생성
+        const newUserCoupon = new UserCoupon({
+            userId: user._id,
+            couponId: couponId,
+            assignmentType: assignmentType,
+            assignedAt: new Date(),
+        });
+
+        await newUserCoupon.save();
+
+        // 쿠폰 사용량 증가
+        await Coupon.findByIdAndUpdate(couponId, {
+            $inc: { currentUsage: 1 },
+        });
+
+        // populate된 데이터 반환
+        const populatedUserCoupon = await UserCoupon.findById(newUserCoupon._id)
+            .populate("couponId")
+            .lean();
+
+        return NextResponse.json({
+            message: "쿠폰이 발급되었습니다",
+            data: populatedUserCoupon,
+        });
+    } catch (error: any) {
+        console.error("쿠폰 발급 중 오류:", error);
+        return NextResponse.json(
+            { error: "쿠폰 발급 실패", details: error.message },
+            { status: 500 },
+        );
+    }
+}
+
 // DELETE - 쿠폰 삭제
 export async function DELETE(req: NextRequest) {
     try {
@@ -79,16 +208,32 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        const deletedUserCoupons = await UserCoupon.deleteOne({
-            _id,
-        });
+        // 삭제할 UserCoupon을 먼저 조회하여 couponId 가져오기
+        const userCouponToDelete = await UserCoupon.findById(_id);
 
-        if (!deletedUserCoupons) {
+        if (!userCouponToDelete) {
             return NextResponse.json(
                 { error: "사용자 쿠폰 조회 결과가 없습니다" },
                 { status: 404 },
             );
         }
+
+        // UserCoupon 삭제
+        const deletedUserCoupon = await UserCoupon.deleteOne({
+            _id,
+        });
+
+        if (deletedUserCoupon.deletedCount === 0) {
+            return NextResponse.json(
+                { error: "쿠폰 삭제에 실패했습니다" },
+                { status: 400 },
+            );
+        }
+
+        // 쿠폰 사용량 감소 (-1)
+        await Coupon.findByIdAndUpdate(userCouponToDelete.couponId, {
+            $inc: { currentUsage: -1 },
+        });
 
         return NextResponse.json({ message: "쿠폰이 삭제되었습니다" });
     } catch (error) {

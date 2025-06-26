@@ -251,21 +251,6 @@ const Order = () => {
     }, [orderDatas]);
 
     useEffect(() => {
-        if (!orderDatas) return;
-
-        const discountedPrice =
-            orderDatas.reduce(
-                (acc, p) => acc + p.discountPrice * p.quantity,
-                0,
-            ) *
-                (1 - applyCoupon / 100) -
-            usedMileage;
-
-        setTotalPrice(Math.floor(discountedPrice));
-        setTotalMileage(Math.floor(discountedPrice * 0.01));
-    }, [usedMileage, applyCoupon, orderDatas]);
-
-    useEffect(() => {
         if (!user) return;
 
         setPhoneNumber(user.phoneNumber);

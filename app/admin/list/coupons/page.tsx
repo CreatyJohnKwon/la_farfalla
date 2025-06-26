@@ -80,6 +80,7 @@ const CouponAdmin = () => {
             deleteUserCouponMutation.mutate(userCouponId, {
                 onSuccess: () => {
                     alert("쿠폰이 회수되었습니다.");
+                    manageCouponRefetch();
                     userCouponRefetch();
                 },
             });
@@ -106,9 +107,7 @@ const CouponAdmin = () => {
         }
     };
 
-    const formatDate = (date: Date) => {
-        return new Date(date).toLocaleDateString("ko-KR");
-    };
+    const formatDate = (date: Date) => new Date(date).toLocaleString("ko-KR");
 
     const getCouponStatus = (coupon: ICoupon) => {
         if (!coupon || !coupon.startAt || !coupon.endAt) {
@@ -137,6 +136,9 @@ const CouponAdmin = () => {
         };
         return typeMap[type as keyof typeof typeMap] || type;
     };
+
+    const getCouponId = (couponId: any): string | undefined =>
+        typeof couponId === "string" ? couponId : couponId?._id;
 
     // 선택된 쿠폰에 해당하는 사용자 쿠폰 필터링
     const selectedCouponUserCoupons = selectedCoupon
@@ -267,24 +269,35 @@ const CouponAdmin = () => {
                                                 >
                                                     <td className="px-4 py-3">
                                                         <div>
-                                                            <div className="font-medium text-gray-900">
-                                                                사용자 ID:{" "}
-                                                                {
-                                                                    userCoupon.userId
-                                                                }
+                                                            <div className="font-pretendard font-[500] text-gray-900">
+                                                                {`쿠폰명: ${
+                                                                    manageCoupons?.data.find(
+                                                                        (
+                                                                            coupon,
+                                                                        ) =>
+                                                                            coupon._id ===
+                                                                            getCouponId(
+                                                                                userCoupon.couponId,
+                                                                            ),
+                                                                    )?.name ||
+                                                                    "쿠폰명 없음"
+                                                                }`}
                                                             </div>
-                                                            <div className="text-xs text-gray-500">
-                                                                쿠폰 ID:{" "}
-                                                                {typeof userCoupon.couponId ===
-                                                                "string"
-                                                                    ? userCoupon.couponId
-                                                                    : userCoupon
-                                                                          .couponId
-                                                                          ?._id}
+                                                            <div className="font-pretendard text-xs text-gray-400">
+                                                                {`쿠폰 ID: ${
+                                                                    typeof userCoupon.couponId ===
+                                                                    "string"
+                                                                        ? userCoupon.couponId
+                                                                        : userCoupon
+                                                                              .couponId
+                                                                              ?._id
+                                                                }`}
                                                             </div>
-                                                            <div className="text-xs text-gray-400">
-                                                                발급 ID:{" "}
-                                                                {userCoupon._id}
+                                                            <div className="font-pretendard text-xs text-gray-400">
+                                                                {`사용자 ID: ${userCoupon.userId}`}
+                                                            </div>
+                                                            <div className="font-pretendard text-xs text-gray-400">
+                                                                {`발급 ID: ${userCoupon._id}`}
                                                             </div>
                                                         </div>
                                                     </td>
@@ -310,10 +323,9 @@ const CouponAdmin = () => {
                                                             </span>
 
                                                             <div className="mt-2">
-                                                                발급:{" "}
-                                                                {formatDate(
+                                                                {`발급: ${formatDate(
                                                                     userCoupon.assignedAt,
-                                                                )}
+                                                                )}`}
                                                             </div>
                                                         </div>
                                                     </td>
@@ -331,18 +343,14 @@ const CouponAdmin = () => {
                                                         </span>
                                                         {userCoupon.usedAt && (
                                                             <div className="mt-2 text-xs text-gray-500">
-                                                                사용일:{" "}
-                                                                {formatDate(
-                                                                    userCoupon.usedAt,
-                                                                )}
+                                                                {`사용일: ${formatDate(
+                                                                    userCoupon.assignedAt,
+                                                                )}`}
                                                             </div>
                                                         )}
                                                         {userCoupon.usedOrderId && (
                                                             <div className="mt-1 text-xs text-gray-400">
-                                                                주문 ID:{" "}
-                                                                {
-                                                                    userCoupon.usedOrderId
-                                                                }
+                                                                {`주문 ID: ${userCoupon.usedOrderId}`}
                                                             </div>
                                                         )}
                                                     </td>

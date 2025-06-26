@@ -6,6 +6,22 @@ const getMyCoupon = async (): Promise<CouponResponse> => {
     return await res.json();
 };
 
+const postUserCoupon = async (data: Partial<any>): Promise<any> => {
+    const res = await fetch("/api/user/coupon", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+        throw new Error("쿠폰 생성 실패");
+    }
+
+    return res.json();
+};
+
 const deleteUserCoupon = async (_id: string | undefined) => {
     if (!_id) throw new Error("Coupon id is undefined");
 
@@ -82,10 +98,11 @@ const deleteCoupon = async (_id: string | undefined) => {
 };
 
 export {
+    getMyCoupon,
     getCouponList,
     getManageCouponList,
-    getMyCoupon,
     postCoupon,
+    postUserCoupon,
     patchCoupon,
     deleteCoupon,
     deleteUserCoupon,
