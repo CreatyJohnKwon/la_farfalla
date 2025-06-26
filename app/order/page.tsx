@@ -74,18 +74,9 @@ const Order = () => {
             const isActive = coupon.isActive === true;
             const isStarted = new Date(coupon.startAt) <= now;
             const isNotExpired = new Date(coupon.endAt) >= now;
-            const meetsMinAmount =
-                !coupon.minOrderAmount ||
-                coupon.minOrderAmount <= currentOrderAmount;
             const isNotUsed = !userCoupon.isUsed;
 
-            return (
-                isActive &&
-                isStarted &&
-                isNotExpired &&
-                meetsMinAmount &&
-                isNotUsed
-            );
+            return isActive && isStarted && isNotExpired && isNotUsed;
         });
 
         return filtered;
@@ -637,11 +628,6 @@ const Order = () => {
                                                         now
                                                     )
                                                         reason = "만료됨";
-                                                    else if (
-                                                        coupon.minOrderAmount >
-                                                        currentOrderAmount
-                                                    )
-                                                        reason = `최소 ${coupon.minOrderAmount.toLocaleString()}원 이상`;
 
                                                     return (
                                                         <div
@@ -699,10 +685,6 @@ const Order = () => {
                                                             "percentage"
                                                                 ? ` (${coupon.discountValue}% 할인)`
                                                                 : ` (${coupon.discountValue.toLocaleString()}원 할인)`}
-                                                            {coupon.discountType ===
-                                                                "percentage" &&
-                                                                coupon.maxDiscountAmount &&
-                                                                ` [최대 ${coupon.maxDiscountAmount.toLocaleString()}원]`}
                                                         </option>
                                                     );
                                                 },
