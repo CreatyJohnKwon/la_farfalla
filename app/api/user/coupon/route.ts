@@ -7,6 +7,8 @@ import { UserProfileData } from "@/src/entities/type/interfaces";
 
 export async function GET(req: NextRequest) {
     try {
+        await connectDB();
+
         const session = await getAuthSession();
         if (!session?.user?.email) {
             return NextResponse.json(
@@ -25,8 +27,6 @@ export async function GET(req: NextRequest) {
                 { status: 404 },
             );
         }
-
-        await connectDB();
 
         const now = new Date();
 
@@ -68,6 +68,8 @@ export async function GET(req: NextRequest) {
 // DELETE - 쿠폰 삭제
 export async function DELETE(req: NextRequest) {
     try {
+        await connectDB();
+
         const { _id } = await req.json();
 
         if (!_id) {

@@ -651,7 +651,10 @@ const CouponAdmin = () => {
             {showCreateModal && (
                 <CouponCreateModal
                     isOpen={showCreateModal}
-                    onClose={() => setShowCreateModal(false)}
+                    onClose={() => {
+                        if (confirm("작성을 취소하시겠습니까?"))
+                            setShowCreateModal(false);
+                    }}
                     onRefetch={manageCouponRefetch}
                 />
             )}

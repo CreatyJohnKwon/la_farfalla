@@ -144,7 +144,7 @@ const Products = () => {
                                     : "All"}
                             </td>
                             <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
-                                {`${product.price}원`}
+                                {`${Number(product.price).toLocaleString()}원`}
                             </td>
                             <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
                                 {`${product.discount}%`}
@@ -222,14 +222,20 @@ const Products = () => {
             </table>
             {isOpenUpdateModal && (
                 <UpdateProductModal
-                    onClose={() => setIsOpenUpdateModal(false)}
+                    onClose={() => {
+                        if (confirm("작성을 취소하시겠습니까?"))
+                            setIsOpenUpdateModal(false);
+                    }}
                     product={editProduct}
                     mode={onStatus}
                 />
             )}
             {isOpenUpdateSeasonModal && (
                 <UpdateSeasonModal
-                    onClose={() => setIsOpenUpdateSeasonModal(false)}
+                    onClose={() => {
+                        if (confirm("작성을 취소하시겠습니까?"))
+                            setIsOpenUpdateSeasonModal(false);
+                    }}
                 />
             )}
         </div>

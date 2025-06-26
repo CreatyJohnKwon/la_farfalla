@@ -898,13 +898,13 @@ const UpdateProductModal = ({
                     ) : (
                         <></>
                     )}
-                    <button
+                    {/* <button
                         type="button"
                         onClick={() => setOpenproductModal(true)}
                         className="flex-1 rounded-lg border border-gray-300 bg-blue-500 py-2 text-white hover:bg-blue-400"
                     >
                         미리보기
-                    </button>
+                    </button> */}
                     <button
                         type="submit"
                         className="flex-1 rounded-lg bg-gray-800 py-2 text-white hover:bg-gray-700"
