@@ -1,8 +1,5 @@
-import {
-    usePostManageCouponMutation,
-    useUpdateManageCouponMutation,
-} from "@/src/shared/hooks/react-query/useBenefitQuery";
-import { useState } from "react";
+import { usePostManageCouponMutation } from "@/src/shared/hooks/react-query/useBenefitQuery";
+import { useEffect, useState } from "react";
 
 interface CouponCreateModalProps {
     isOpen: boolean;
@@ -18,6 +15,8 @@ const CouponCreateModal = ({
     if (!isOpen) return null;
 
     const [selectType, setSelectType] = useState("");
+    const [selectDiscountType, setSelectDiscountType] = useState("");
+    const [discountValue, setDiscountValue] = useState("");
     const mutation = usePostManageCouponMutation();
 
     const handleSubmit = async (formData: FormData) => {
@@ -52,6 +51,32 @@ const CouponCreateModal = ({
                 alert("쿠폰 생성에 실패했습니다. 다시 시도해주세요.");
             },
         });
+    };
+
+    const handleDiscountTypeChange = (
+        e: React.ChangeEvent<HTMLSelectElement>,
+    ) => {
+        setSelectDiscountType(e.target.value);
+        setDiscountValue("");
+    };
+
+    const handleDiscountValueChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        const val = e.target.value;
+        if (val === "") {
+            setDiscountValue("");
+            return;
+        }
+        const num = Number(val);
+        if (isNaN(num)) return;
+
+        const max = selectDiscountType === "percentage" ? 100 : 1000000;
+        const min = 0;
+
+        if (num >= min && num <= max) {
+            setDiscountValue(val);
+        }
     };
 
     return (
@@ -159,10 +184,11 @@ const CouponCreateModal = ({
                             <select
                                 name="discountType"
                                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                onChange={handleDiscountTypeChange}
                                 required
                             >
                                 <option value="">선택하세요</option>
-                                {/* <option value="fixed">고정금액</option> */}
+                                <option value="fixed">고정금액</option>
                                 <option value="percentage">퍼센트</option>
                             </select>
                         </div>
@@ -174,8 +200,19 @@ const CouponCreateModal = ({
                                 name="discountValue"
                                 type="number"
                                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                                placeholder="10"
-                                min="0"
+                                placeholder={
+                                    selectDiscountType === "percentage"
+                                        ? "50"
+                                        : "3,000"
+                                }
+                                min={0}
+                                max={
+                                    selectDiscountType === "percentage"
+                                        ? 100
+                                        : 1000000
+                                }
+                                value={discountValue}
+                                onChange={handleDiscountValueChange}
                                 required
                             />
                         </div>
@@ -211,14 +248,16 @@ const CouponCreateModal = ({
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="mb-1 block text-sm font-medium text-gray-700">
-                                유저당 사용 횟수
+                                유저당 사용 횟수 *
                             </label>
                             <input
                                 name="maxUsagePerUser"
                                 type="number"
                                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                placeholder="0"
                                 defaultValue="1"
                                 min="1"
+                                required
                             />
                         </div>
                         {selectType === "event" && (

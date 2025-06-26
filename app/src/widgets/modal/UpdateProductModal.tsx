@@ -913,12 +913,12 @@ const UpdateProductModal = ({
                     </button>
                 </div>
             </form>
-            {openProductModal && (
+            {/* {openProductModal && (
                 <PreviewProductModal
                     product={formData}
                     onClose={() => setOpenproductModal(false)}
                 />
-            )}
+            )} */}
         </Modal>
     );
 };
