@@ -70,14 +70,29 @@ const CouponList = () => {
     const userCoupons = couponResponse?.data || [];
     const allCoupons = couponManageResponse?.data || [];
 
-    // 사용자가 보유한 쿠폰 ID 목록 생성
+    // 1. 사용되지 않은 쿠폰만 필터링
+    const usableUserCoupons = userCoupons.filter(
+        (userCoupon: UserCouponWithPopulate) => !userCoupon.isUsed
+
+    );
+
+    // 2. 보유 중이지만 미사용한 쿠폰 ID들만 추출
     const userCouponIds = new Set(
-        userCoupons.map((userCoupon: UserCouponWithPopulate) =>
+        usableUserCoupons.map((userCoupon: UserCouponWithPopulate) =>
             typeof userCoupon.couponId === "string"
                 ? userCoupon.couponId
                 : userCoupon.couponId._id,
         ),
     );
+
+    // 사용자가 보유한 쿠폰 ID 목록 생성
+    // const userCouponIds = new Set(
+    //     userCoupons.map((userCoupon: UserCouponWithPopulate) =>
+    //         typeof userCoupon.couponId === "string"
+    //             ? userCoupon.couponId
+    //             : userCoupon.couponId._id,
+    //     ),
+    // );
 
     // 활성화된 쿠폰만 필터링 (현재 시간 기준으로 유효한 쿠폰)
     const validCoupons = allCoupons.filter((coupon: any) => {
@@ -96,7 +111,13 @@ const CouponList = () => {
             <ul className="flex h-[43vh] w-[90vw] flex-col gap-4 overflow-y-auto sm:w-auto">
                 {validCoupons.map((coupon: any) => {
                     const isUserOwned = userCouponIds.has(coupon._id);
-                    const userCoupon = userCoupons.find(
+                    // const userCoupon = userCoupons.find(
+                    //     (uc: UserCouponWithPopulate) =>
+                    //         (typeof uc.couponId === "string"
+                    //             ? uc.couponId
+                    //             : uc.couponId._id) === coupon._id,
+                    // );
+                    const userCoupon = usableUserCoupons.find(
                         (uc: UserCouponWithPopulate) =>
                             (typeof uc.couponId === "string"
                                 ? uc.couponId

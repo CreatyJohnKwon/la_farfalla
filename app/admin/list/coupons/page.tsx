@@ -107,7 +107,8 @@ const CouponAdmin = () => {
         }
     };
 
-    const formatDate = (date: Date) => new Date(date).toLocaleString("ko-KR");
+    const formatDateTime = (date: Date) => new Date(date).toLocaleString("ko-KR");
+    const formatDate = (date: Date) => new Date(date).toLocaleDateString("ko-KR");
 
     const getCouponStatus = (coupon: ICoupon) => {
         if (!coupon || !coupon.startAt || !coupon.endAt) {
@@ -323,7 +324,7 @@ const CouponAdmin = () => {
                                                             </span>
 
                                                             <div className="mt-2">
-                                                                {`발급: ${formatDate(
+                                                                {`발급: ${formatDateTime(
                                                                     userCoupon.assignedAt,
                                                                 )}`}
                                                             </div>
@@ -592,9 +593,7 @@ const CouponAdmin = () => {
                                                             >
                                                                 {/* 여기서는 div 써도 됨, td 안이라서 */}
                                                                 <h3 className="mb-2 text-sm font-medium text-gray-800">
-                                                                    선택된
-                                                                    템플릿 상세
-                                                                    정보
+                                                                    선택된 템플릿 상세 정보
                                                                 </h3>
                                                                 <div className="grid grid-cols-2 gap-4 text-xs">
                                                                     <div>

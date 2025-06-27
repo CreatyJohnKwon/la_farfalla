@@ -33,8 +33,7 @@ export async function GET(req: NextRequest) {
 
         // ✅ 수정된 구조: 유저 발급 쿠폰 조회 (스키마에 맞춰 수정)
         const userCoupons = await UserCoupon.find({
-            userId: user._id,
-            isUsed: false,
+            userId: user._id
         })
             .populate({
                 path: "couponId",
@@ -66,6 +65,7 @@ export async function GET(req: NextRequest) {
     }
 }
 
+// POST - 쿠폰 발급
 export async function POST(req: NextRequest) {
     try {
         await connectDB();
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
         if (!user) {
             return NextResponse.json(
                 { error: "User not found" },
-                { status: 404 },
+                { status: 402 },
             );
         }
 
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
         if (!couponId) {
             return NextResponse.json(
                 { error: "쿠폰 ID가 필요합니다" },
-                { status: 400 },
+                { status: 403 },
             );
         }
 
@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
         ) {
             return NextResponse.json(
                 { error: "유효하지 않은 쿠폰입니다" },
-                { status: 400 },
+                { status: 405 },
             );
         }
 
@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
         ) {
             return NextResponse.json(
                 { error: "쿠폰 발급 한도에 도달했습니다" },
-                { status: 400 },
+                { status: 406 },
             );
         }
 
@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
         if (existingUserCoupon) {
             return NextResponse.json(
                 { error: "이미 발급받은 쿠폰입니다" },
-                { status: 400 },
+                { status: 407 },
             );
         }
 
@@ -157,7 +157,7 @@ export async function POST(req: NextRequest) {
         ) {
             return NextResponse.json(
                 { error: "사용자별 발급 한도에 도달했습니다" },
-                { status: 400 },
+                { status: 408 },
             );
         }
 
