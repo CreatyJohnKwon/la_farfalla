@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
 
         // ✅ 수정된 구조: 유저 발급 쿠폰 조회 (스키마에 맞춰 수정)
         const userCoupons = await UserCoupon.find({
-            userId: user._id
+            userId: user._id,
         })
             .populate({
                 path: "couponId",
