@@ -12,7 +12,7 @@ import { UserProfileData } from "@/src/entities/type/interfaces";
 const useUserQuery = (enabled = true) => {
     const queryClient = useQueryClient();
 
-    const { data, error, isError, isLoading } = useQuery({
+    const { data, error, isError, isLoading, refetch } = useQuery({
         queryKey: ["user"],
         queryFn: fetchUser,
         enabled,
@@ -26,7 +26,7 @@ const useUserQuery = (enabled = true) => {
         }
     }, [error]);
 
-    return { data, error, isError, isLoading };
+    return { data, error, isError, isLoading, refetch };
 };
 
 const useUpdateUserMutation = () => {
@@ -59,4 +59,9 @@ const useUserListQuery = () => {
     });
 };
 
-export { useUserQuery, useUpdateUserMutation, useOneUserQuery, useUserListQuery };
+export {
+    useUserQuery,
+    useUpdateUserMutation,
+    useOneUserQuery,
+    useUserListQuery,
+};

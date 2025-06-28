@@ -130,7 +130,7 @@ interface OrderData {
     items: OrderItem[];
     totalPrice: number;
     createdAt?: string;
-    payMethod: "간편결제" | "신용카드";
+    payMethod: "EASY_PAY" | "CARD";
     paymentId?: string;
     shippingStatus: ShippingStatus;
     shippedAt?: string;

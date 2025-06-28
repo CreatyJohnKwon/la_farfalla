@@ -8,6 +8,7 @@ import {
     CouponResponse,
     UserCouponWithPopulate,
 } from "@/src/entities/type/interfaces";
+import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
 
 const CouponList = () => {
     // 유저가 가지고 있는 쿠폰 정보 (UserCoupon)
@@ -29,6 +30,7 @@ const CouponList = () => {
         isLoading: isCouponManageLoading,
         isError: isCouponManageError,
     } = useGetManageCouponsListQuery();
+    const { refetch: UserDataRefetch } = useUserQuery();
 
     const mutation = usePostUserCouponMutation();
 
@@ -40,6 +42,7 @@ const CouponList = () => {
             {
                 onSuccess: () => {
                     refetch();
+                    UserDataRefetch();
                     alert("쿠폰이 발급되었습니다.");
                 },
             },
@@ -95,13 +98,18 @@ const CouponList = () => {
         return (
             <ul className="flex h-[43vh] w-[90vw] flex-col gap-4 overflow-y-auto sm:w-auto">
                 {validCoupons.map((coupon: any) => {
-                    const isUsed = userCoupons.find((item) =>
-                        coupon.code === item.couponId.code ? item.isUsed : true,
+                    // 사용자가 보유한 쿠폰 중에서 현재 쿠폰과 매칭되는 것을 찾기
+                    const userCoupon = userCoupons.find(
+                        (item) => coupon.code === item.couponId.code,
                     );
-                    if (isUsed) return;
+
+                    // 사용자가 보유한 쿠폰이 있고, 그것이 사용되었다면 렌더링하지 않음
+                    if (userCoupon && userCoupon.isUsed) {
+                        return null; // 또는 return;
+                    }
 
                     const isUserOwned = userCouponIds.has(coupon._id);
-                    const userCoupon = userCoupons.find(
+                    const userCouponForDetails = userCoupons.find(
                         (uc: UserCouponWithPopulate) =>
                             (typeof uc.couponId === "string"
                                 ? uc.couponId
@@ -168,11 +176,11 @@ const CouponList = () => {
                                     </p>
 
                                     {/* 발급 정보 (보유 중인 쿠폰만) */}
-                                    {isUserOwned && userCoupon && (
+                                    {isUserOwned && userCouponForDetails && (
                                         <div className="mt-2 flex flex-col gap-1 border-t border-gray-100 pt-2">
                                             <span className="text-xs text-gray-500">
-                                                {`발급일: ${expiryDate(userCoupon.assignedAt)}`}
-                                                {userCoupon.assignmentType ===
+                                                {`발급일: ${expiryDate(userCouponForDetails.assignedAt)}`}
+                                                {userCouponForDetails.assignmentType ===
                                                     "signup" && " (가입 혜택)"}
                                             </span>
                                             <span className="text-xs text-red-400">

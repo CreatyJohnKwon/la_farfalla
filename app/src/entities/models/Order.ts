@@ -24,8 +24,8 @@ const orderSchema = new mongoose.Schema(
         // 결제 수단
         payMethod: {
             type: String,
-            enum: ["간편결제", "신용카드"], // 간편결제, 신용카드
-            default: "간편결제", // 주문 완료 직후
+            enum: ["EASY_PAY", "CARD"], // 간편결제, 신용카드
+            default: "EASY_PAY", // 주문 완료 직후
             require: true,
         },
         paymentId: {

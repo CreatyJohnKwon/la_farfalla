@@ -502,14 +502,12 @@ const Order = () => {
                             <h2 className="font-pretendard-bold mb-5 flex items-center justify-between">
                                 <span>쿠폰</span>
                                 <span className="text-sm font-normal text-gray-500">
-                                    {
-                                        couponData.reduce((a, c) => {
-                                            if (!c.isUsed) {
-                                                return a + 1;
-                                            }
-                                            return a;
-                                        }, 0)
-                                    }
+                                    {couponData.reduce((a, c) => {
+                                        if (!c.isUsed) {
+                                            return a + 1;
+                                        }
+                                        return a;
+                                    }, 0)}
                                     개 보유
                                 </span>
                             </h2>
@@ -1039,7 +1037,7 @@ const Order = () => {
                                         type="radio"
                                         name="payment"
                                         defaultChecked
-                                        onChange={() => setPayments("간편결제")}
+                                        onChange={() => setPayments("EASY_PAY")}
                                     />
                                     {"\t간편결제"}
                                 </label>
@@ -1047,7 +1045,7 @@ const Order = () => {
                                     <input
                                         type="radio"
                                         name="payment"
-                                        onChange={() => setPayments("신용카드")}
+                                        onChange={() => setPayments("CARD")}
                                     />
                                     {"\t신용카드"}
                                 </label>

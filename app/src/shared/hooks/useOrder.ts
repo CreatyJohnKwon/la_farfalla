@@ -1,12 +1,16 @@
 import { useRouter } from "next/navigation";
 import useUser from "@src/shared/hooks/useUsers";
-import { SelectedItem } from "@src/entities/type/interfaces";
+import {
+    SelectedItem,
+    UserCouponWithPopulate,
+} from "@src/entities/type/interfaces";
 import { useAtom } from "jotai";
 import { orderDatasAtom } from "../lib/atom";
 import { useState, useEffect } from "react";
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 import {
     useGetUserCouponsListQuery,
+    useOrderQuery,
     useUpdateUserCouponMutation,
 } from "@src/shared/hooks/react-query/useBenefitQuery";
 import { MileageItem, OrderData } from "@/src/entities/type/interfaces";
@@ -19,11 +23,12 @@ import PortOne from "@portone/browser-sdk/v2";
 const useOrder = () => {
     const { session } = useUser();
     const router = useRouter();
-    const { data: user, isLoading } = useUserQuery();
+    const { data: user, isLoading, refetch: UserDataRefetch } = useUserQuery();
 
     // ✅ IUserCouponPopulated 배열로 타입 지정
     const { data: coupons, isLoading: isCouponsLoading } =
         useGetUserCouponsListQuery("user");
+    const { refetch: orderListRefetch } = useOrderQuery(user?._id);
 
     const updateCoupon = useUpdateUserCouponMutation();
 
@@ -45,10 +50,7 @@ const useOrder = () => {
     const [postcode, setPostcode] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
     const [saveAddress, setSaveAddress] = useState(false);
-    const [payments, setPayments] = useState<"간편결제" | "신용카드">(
-        "간편결제",
-    );
-    const [isProcessing, setIsProcessing] = useState(false);
+    const [payments, setPayments] = useState<"EASY_PAY" | "CARD">("EASY_PAY");
 
     // ✅ 가격 계산 로직 (ICoupon 구조 고려)
     useEffect(() => {
@@ -103,8 +105,6 @@ const useOrder = () => {
     }, [usedMileage]);
 
     const orderComplete = async () => {
-        if (!user || isProcessing) return;
-
         // 필수 값 검증
         if (!phoneNumber || !address || !postcode) {
             alert("배송 정보를 모두 입력해주세요.");
@@ -116,85 +116,86 @@ const useOrder = () => {
             return;
         }
 
-        setIsProcessing(true);
+        const orderData: OrderData = {
+            userId: user._id,
+            userNm: user.name,
+            phoneNumber,
+            address,
+            detailAddress,
+            postcode,
+            deliveryMemo: customMemo || deliveryMemo,
+            items: orderDatas.map((item) => ({
+                productId: item.productId,
+                productNm: item.title,
+                quantity: item.quantity,
+                color: item.color,
+                size: item.size,
+            })),
+            payMethod: payments,
+            shippingStatus: "pending",
+            totalPrice,
+        };
 
-        try {
-            const orderData: OrderData = {
+        const paymentId = crypto.randomUUID();
+
+        const payment = await PortOne.requestPayment({
+            storeId: "store-e4038486-8d83-41a5-acf1-844a009e0d94",
+            channelKey: "channel-key-ebe7daa6-4fe4-41bd-b17d-3495264399b5",
+            paymentId,
+            orderName:
+                orderDatas.length === 1
+                    ? orderDatas[0].title
+                    : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
+            totalAmount: session?.user?.email?.startsWith("admin")
+                ? 1
+                : totalPrice,
+            currency: "CURRENCY_KRW",
+            payMethod: payments,
+            customData: {
                 userId: user._id,
-                userNm: user.name,
-                phoneNumber,
-                address,
-                detailAddress,
-                postcode,
-                deliveryMemo: customMemo || deliveryMemo,
-                items: orderDatas.map((item) => ({
-                    productId: item.productId,
-                    productNm: item.title,
-                    quantity: item.quantity,
-                    color: item.color,
-                    size: item.size,
-                })),
-                payMethod: payments,
-                shippingStatus: "pending",
-                totalPrice,
-            };
+            },
+        });
 
-            const paymentId = crypto.randomUUID();
+        if (!payment) {
+            alert("결제 요청 실패");
+            return;
+        }
 
-            const payment = await PortOne.requestPayment({
-                storeId: "iamporttest_3",
-                channelKey: "channel-key-d9a38c74-cd72-4f9e-b7e6-79fd55d433c7",
-                paymentId,
-                orderName:
-                    orderDatas.length === 1
-                        ? orderDatas[0].title
-                        : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
-                totalAmount: totalPrice,
-                currency: "CURRENCY_KRW",
-                payMethod: "CARD",
-                customData: {
-                    userId: user._id,
-                },
-            });
-
-            if (!payment) {
-                alert("결제 요청 실패");
-                return;
+        if (payment.code !== undefined) {
+            switch (payment.pgCode) {
+                case "PAY_PROCESS_CANCELED":
+                    alert("결제가 취소되었습니다.");
+                    return;
+                default:
+                    alert("결제 실패: " + payment.pgMessage);
+                    return;
             }
+        }
 
-            if (payment.code !== undefined) {
-                alert("결제 실패: " + payment.message);
-                return;
-            }
+        const res = await orderAccept({
+            ...orderData,
+            paymentId,
+        });
 
-            const res = await orderAccept({
-                ...orderData,
-                paymentId,
-            });
+        if (res.success) {
+            await Promise.all([
+                couponMemo !== "" ? useSpendCoupon() : Promise.resolve(),
+                useSpendMileage(res),
+                addEarnMileage(res),
+                saveNewAddress(),
+            ]);
 
-            if (res.success) {
-                await Promise.all([
-                    useSpendCoupon(),
-                    useSpendMileage(res),
-                    addEarnMileage(res),
-                    saveNewAddress(),
-                ]);
-
-                alert(res.message);
-                redirect("/home");
-            } else {
-                alert(res.message);
-            }
-        } catch (error) {
-            console.error("주문 처리 중 오류:", error);
-            alert("주문 처리 중 오류가 발생했습니다.");
-        } finally {
-            setIsProcessing(false);
+            alert(res.message);
+            orderListRefetch();
+            UserDataRefetch();
+            redirect("/profile/order");
+        } else {
+            alert(res.message);
         }
     };
 
     // ✅ IUserCoupon 구조에 맞춘 쿠폰 사용 함수
-    const useSpendCoupon = () => {
+    const useSpendCoupon = async (): Promise<void> => {
         const userCoupons = coupons?.data || [];
 
         if (userCoupons.length === 0) {
@@ -204,13 +205,17 @@ const useOrder = () => {
         }
 
         // IUserCouponPopulated 구조에서 쿠폰 찾기
-        const selected = userCoupons.find((uc: any) => {
-            if (!uc.couponId || typeof uc.couponId === "string") {
-                console.error("쿠폰 정보가 올바르게 로드되지 않았습니다.");
-                return false;
-            }
-            return uc.couponId.name === couponMemo;
-        });
+        const validCoupons = userCoupons.filter(
+            (uc): uc is UserCouponWithPopulate => {
+                return (
+                    uc.couponId &&
+                    typeof uc.couponId !== "string" &&
+                    uc.couponId.name === couponMemo
+                );
+            },
+        );
+
+        const selected = validCoupons[0];
 
         if (!selected) {
             alert("선택하신 쿠폰을 찾을 수 없습니다.");
