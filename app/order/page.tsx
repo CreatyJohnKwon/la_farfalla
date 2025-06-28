@@ -501,11 +501,17 @@ const Order = () => {
                         <section className="border bg-white p-4">
                             <h2 className="font-pretendard-bold mb-5 flex items-center justify-between">
                                 <span>쿠폰</span>
-                                {couponCount > 0 && (
-                                    <span className="text-sm font-normal text-gray-500">
-                                        {couponCount}개 보유
-                                    </span>
-                                )}
+                                <span className="text-sm font-normal text-gray-500">
+                                    {
+                                        couponData.reduce((a, c) => {
+                                            if (!c.isUsed) {
+                                                return a + 1;
+                                            }
+                                            return a;
+                                        }, 0)
+                                    }
+                                    개 보유
+                                </span>
                             </h2>
 
                             {/* 로딩 상태 */}
@@ -566,15 +572,15 @@ const Order = () => {
                                                 현재 주문에 사용 가능한 쿠폰이
                                                 없습니다.
                                             </p>
-                                            <p className="mt-1 text-xs text-gray-400">
+                                            {/* <p className="mt-1 text-xs text-gray-400">
                                                 (총 {couponData.length}개 쿠폰
                                                 보유 중)
-                                            </p>
+                                            </p> */}
                                         </div>
                                     </div>
 
                                     {/* 사용 불가능한 쿠폰들 표시 */}
-                                    <div className="rounded-lg bg-gray-50 p-3">
+                                    {/* <div className="rounded-lg bg-gray-50 p-3">
                                         <p className="mb-2 text-xs font-medium text-gray-600">
                                             💡 보유 중인 쿠폰들:
                                         </p>
@@ -635,7 +641,7 @@ const Order = () => {
                                                 </p>
                                             )}
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                             ) : (
                                 /* 쿠폰 선택 영역 */

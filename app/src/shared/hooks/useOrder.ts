@@ -142,8 +142,8 @@ const useOrder = () => {
             const paymentId = crypto.randomUUID();
 
             const payment = await PortOne.requestPayment({
-                storeId: "TC0ONETIME",
-                channelKey: "channel-key-1c5ba412-45fb-4a71-b779-9d79b31d58cb",
+                storeId: "iamporttest_3",
+                channelKey: "channel-key-d9a38c74-cd72-4f9e-b7e6-79fd55d433c7",
                 paymentId,
                 orderName:
                     orderDatas.length === 1
