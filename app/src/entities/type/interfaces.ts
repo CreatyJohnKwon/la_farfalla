@@ -131,6 +131,7 @@ interface OrderData {
     totalPrice: number;
     createdAt?: string;
     payMethod: "간편결제" | "신용카드";
+    paymentId?: string;
     shippingStatus: ShippingStatus;
     shippedAt?: string;
     trackingNumber?: string;

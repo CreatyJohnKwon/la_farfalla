@@ -28,6 +28,11 @@ const orderSchema = new mongoose.Schema(
             default: "간편결제", // 주문 완료 직후
             require: true,
         },
+        paymentId: {
+            type: String,
+            required: false,
+            default: "",
+        },
 
         // 배송 상태
         shippingStatus: {

@@ -1,9 +1,6 @@
 import { useRouter } from "next/navigation";
 import useUser from "@src/shared/hooks/useUsers";
-import {
-    IUserCouponPopulated,
-    SelectedItem,
-} from "@src/entities/type/interfaces";
+import { SelectedItem } from "@src/entities/type/interfaces";
 import { useAtom } from "jotai";
 import { orderDatasAtom } from "../lib/atom";
 import { useState, useEffect } from "react";
@@ -17,6 +14,7 @@ import { orderAccept } from "@/src/features/order/order";
 import { redirect } from "next/navigation";
 import { earnMileage, spendMileage } from "@/src/features/benefit/mileage";
 import { updateUser } from "../lib/server/user";
+import PortOne from "@portone/browser-sdk/v2";
 
 const useOrder = () => {
     const { session } = useUser();
@@ -32,24 +30,25 @@ const useOrder = () => {
     const [orderDatas, setOrderDatas] = useAtom<SelectedItem[] | []>(
         orderDatasAtom,
     );
-    const [mileage, setMileage] = useState<number>(0);
-    const [usedMileage, setUsedMileage] = useState<number>(0);
-    const [useCoupon, setUseCoupon] = useState<number>(0);
-    const [applyCoupon, setApplyCoupon] = useState<number>(0);
-    const [totalPrice, setTotalPrice] = useState<number>(0);
-    const [totalMileage, setTotalMileage] = useState<number>(0);
-    const [deliveryMemo, setDeliveryMemo] = useState<string>("");
-    const [customMemo, setCustomMemo] = useState<string>("");
-    const [couponMemo, setCouponMemo] = useState<string>("");
-    const [appliedCouponName, setAppliedCouponName] = useState<string>("");
-    const [phoneNumber, setPhoneNumber] = useState<string>("");
-    const [address, setAddress] = useState<string>("");
-    const [postcode, setPostcode] = useState<string>("");
-    const [detailAddress, setDetailAddress] = useState<string>("");
-    const [saveAddress, setSaveAddress] = useState<boolean>(false);
+    const [mileage, setMileage] = useState(0);
+    const [usedMileage, setUsedMileage] = useState(0);
+    const [useCoupon, setUseCoupon] = useState(0);
+    const [applyCoupon, setApplyCoupon] = useState(0);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [totalMileage, setTotalMileage] = useState(0);
+    const [deliveryMemo, setDeliveryMemo] = useState("");
+    const [customMemo, setCustomMemo] = useState("");
+    const [couponMemo, setCouponMemo] = useState("");
+    const [appliedCouponName, setAppliedCouponName] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [address, setAddress] = useState("");
+    const [postcode, setPostcode] = useState("");
+    const [detailAddress, setDetailAddress] = useState("");
+    const [saveAddress, setSaveAddress] = useState(false);
     const [payments, setPayments] = useState<"간편결제" | "신용카드">(
         "간편결제",
     );
+    const [isProcessing, setIsProcessing] = useState(false);
 
     // ✅ 가격 계산 로직 (ICoupon 구조 고려)
     useEffect(() => {
@@ -104,39 +103,94 @@ const useOrder = () => {
     }, [usedMileage]);
 
     const orderComplete = async () => {
-        if (!user) return;
+        if (!user || isProcessing) return;
 
-        const orderData: OrderData = {
-            userId: user._id,
-            userNm: user.name,
-            phoneNumber: phoneNumber,
-            address: address,
-            detailAddress: detailAddress,
-            postcode: postcode,
-            deliveryMemo: customMemo ? customMemo : deliveryMemo,
-            items: orderDatas.map((item) => ({
-                productId: item.productId,
-                productNm: item.title,
-                quantity: item.quantity,
-                color: item.color,
-                size: item.size,
-            })),
-            payMethod: payments,
-            shippingStatus: "pending",
-            totalPrice: totalPrice,
-        };
+        // 필수 값 검증
+        if (!phoneNumber || !address || !postcode) {
+            alert("배송 정보를 모두 입력해주세요.");
+            return;
+        }
 
-        const res = await orderAccept(orderData);
+        if (orderDatas.length === 0 || totalPrice <= 0) {
+            alert("주문 정보를 확인해주세요.");
+            return;
+        }
 
-        if (res.success) {
-            useSpendCoupon();
-            useSpendMileage(res);
-            addEarnMileage(res);
-            saveNewAddress();
+        setIsProcessing(true);
 
-            alert(res.message);
-            redirect(`/home`);
-        } else alert(res.message);
+        try {
+            const orderData: OrderData = {
+                userId: user._id,
+                userNm: user.name,
+                phoneNumber,
+                address,
+                detailAddress,
+                postcode,
+                deliveryMemo: customMemo || deliveryMemo,
+                items: orderDatas.map((item) => ({
+                    productId: item.productId,
+                    productNm: item.title,
+                    quantity: item.quantity,
+                    color: item.color,
+                    size: item.size,
+                })),
+                payMethod: payments,
+                shippingStatus: "pending",
+                totalPrice,
+            };
+
+            const paymentId = crypto.randomUUID();
+
+            const payment = await PortOne.requestPayment({
+                storeId: "TC0ONETIME",
+                channelKey: "channel-key-1c5ba412-45fb-4a71-b779-9d79b31d58cb",
+                paymentId,
+                orderName:
+                    orderDatas.length === 1
+                        ? orderDatas[0].title
+                        : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
+                totalAmount: totalPrice,
+                currency: "CURRENCY_KRW",
+                payMethod: "CARD",
+                customData: {
+                    userId: user._id,
+                },
+            });
+
+            if (!payment) {
+                alert("결제 요청 실패");
+                return;
+            }
+
+            if (payment.code !== undefined) {
+                alert("결제 실패: " + payment.message);
+                return;
+            }
+
+            const res = await orderAccept({
+                ...orderData,
+                paymentId,
+            });
+
+            if (res.success) {
+                await Promise.all([
+                    useSpendCoupon(),
+                    useSpendMileage(res),
+                    addEarnMileage(res),
+                    saveNewAddress(),
+                ]);
+
+                alert(res.message);
+                redirect("/home");
+            } else {
+                alert(res.message);
+            }
+        } catch (error) {
+            console.error("주문 처리 중 오류:", error);
+            alert("주문 처리 중 오류가 발생했습니다.");
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     // ✅ IUserCoupon 구조에 맞춘 쿠폰 사용 함수
