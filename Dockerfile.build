@@ -1,5 +1,8 @@
 FROM node:18
 
+# 💡 Node 메모리 한도 확장 (build 전에 선언해야 효과 있음)
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -7,7 +10,8 @@ RUN npm ci --legacy-peer-deps
 
 COPY . .
 
+# ✅ 메모리 제한 확장 후에 build 수행
 RUN npm run build
 
 # 빌드된 결과물만 따로 복사할 수 있게 준비
-CMD ["tar", "czf", "output.tar.gz", ".next", "public", "package.json", "package-lock.json", "next.config.js"]
+CMD ["tar", "czf", "o]()
