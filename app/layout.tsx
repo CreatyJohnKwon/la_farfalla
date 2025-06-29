@@ -10,6 +10,7 @@ import Navbar from "@src/widgets/navbar/Navbar";
 import Footer from "@src/widgets/footer/Footer";
 import { ScreenLoader } from "./src/widgets/loader/ScreenLoader";
 import { Provider as JotaiProvider } from "jotai";
+import DraggableFloatingButton from "./src/widgets/button/DraggableFloatingButton";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -46,6 +47,7 @@ const RootLayout = async ({
                             <Navbar />
                             <Footer />
                             <ScreenLoader />
+                            <DraggableFloatingButton />
                         </AuthProvider>
                     </RQProvider>
                 </JotaiProvider>
