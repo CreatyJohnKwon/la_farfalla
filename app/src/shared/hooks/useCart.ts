@@ -28,6 +28,7 @@ const useCart = () => {
         try {
             await postCart(selectedItems);
             alert("장바구니에 담겼습니다.");
+            
             // setSelectedItems initialization :  흐름 개선
             setSelectedItems([]);
             setCartDatas([]);

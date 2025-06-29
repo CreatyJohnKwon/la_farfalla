@@ -201,7 +201,7 @@ const CouponList = () => {
                                             onClick={() =>
                                                 handleClaimCoupon(coupon._id)
                                             }
-                                            className="rounded-full bg-black/60 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                                            className="z-50 rounded-full bg-black/60 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
                                         >
                                             발급받기
                                         </button>
