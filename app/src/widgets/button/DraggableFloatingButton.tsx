@@ -1,5 +1,6 @@
 "use client"; // 클라이언트 컴포넌트로 설정
 
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef, useCallback } from "react";
 
 interface Position {
@@ -28,6 +29,9 @@ const DraggableFloatingButton = () => {
         ICON_SIZE: 28,
     });
     const buttonRef = useRef<HTMLButtonElement>(null);
+
+    const pathname = usePathname();
+    const shouldHideButton = pathname === "/order";
 
     // 초기 위치 설정 및 반응형 값 업데이트
     const updatePositionAndValues = useCallback(() => {
@@ -208,7 +212,7 @@ const DraggableFloatingButton = () => {
         alert("아직 플러스 친구가 연동되지 않았습니다.");
     };
 
-    if (!mounted) return null;
+    if (!mounted || shouldHideButton) return null;
 
     return (
         <button
