@@ -209,7 +209,21 @@ const DraggableFloatingButton = () => {
             return;
         }
 
-        alert("아직 플러스 친구가 연동되지 않았습니다.");
+        const isMobile =
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                navigator.userAgent,
+            );
+        const channelId = "_Uxfaxin"; // 실제 채널 ID로 변경
+
+        const url = isMobile
+            ? `kakaotalk://plusfriend/home/${channelId}`
+            : `https://pf.kakao.com/${channelId}`;
+
+        if (isMobile) {
+            window.location.href = url;
+        } else {
+            window.open(url, "_blank");
+        }
     };
 
     if (!mounted || shouldHideButton) return null;
