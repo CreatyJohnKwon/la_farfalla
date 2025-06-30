@@ -135,7 +135,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
     if (isLoading) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                <div className="rounded-lg bg-white p-8">
+                <div className="rounded-md bg-white p-8">
                     <div className="text-center">로딩 중...</div>
                 </div>
             </div>
@@ -146,13 +146,13 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
     if (error) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                <div className="rounded-lg bg-white p-8">
+                <div className="rounded-md bg-white p-8">
                     <div className="text-center text-red-600">
                         데이터를 불러오는데 실패했습니다.
                     </div>
                     <button
                         onClick={onClose}
-                        className="mt-4 rounded-lg bg-gray-900 px-4 py-2 text-white"
+                        className="mt-4 rounded-md bg-gray-900 px-4 py-2 text-white"
                     >
                         닫기
                     </button>
@@ -171,7 +171,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6 shadow-2xl"
+                className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-md bg-white p-6 shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* 헤더 */}
@@ -181,7 +181,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                     </h2>
                     <button
                         onClick={onClose}
-                        className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                        className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                     >
                         <svg
                             className="h-5 w-5"
@@ -204,7 +204,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                     {!isAdding && !editingSeason ? (
                         <button
                             onClick={() => setIsAdding(true)}
-                            className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                            className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                             disabled={createMutation.isPending}
                         >
                             <svg
@@ -223,7 +223,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                             새 시즌 추가
                         </button>
                     ) : isAdding || editingSeason ? (
-                        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                        <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
                             <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div>
                                     <label className="mb-1 block text-sm font-medium text-gray-700">
@@ -242,7 +242,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                                                 e.target.value,
                                             )
                                         }
-                                        className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-none ${
+                                        className={`w-full rounded-md border px-3 py-2 text-sm focus:outline-none ${
                                             duplicateError
                                                 ? "border-red-300 focus:border-red-500"
                                                 : "border-gray-300 focus:border-gray-500"
@@ -267,7 +267,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                                                 e.target.value,
                                             )
                                         }
-                                        className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-none ${
+                                        className={`w-full rounded-md border px-3 py-2 text-sm focus:outline-none ${
                                             duplicateError
                                                 ? "border-red-300 focus:border-red-500"
                                                 : "border-gray-300 focus:border-gray-500"
@@ -279,7 +279,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
 
                             {/* 에러 메시지 */}
                             {duplicateError && (
-                                <div className="mb-4 rounded-lg bg-red-50 p-3">
+                                <div className="mb-4 rounded-md bg-red-50 p-3">
                                     <div className="flex items-center">
                                         <svg
                                             className="mr-2 h-4 w-4 text-red-400"
@@ -312,7 +312,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                                         createMutation.isPending ||
                                         updateMutation.isPending
                                     }
-                                    className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                                    className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
                                 >
                                     {createMutation.isPending ||
                                     updateMutation.isPending
@@ -334,7 +334,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                                             setDuplicateError("");
                                         }
                                     }}
-                                    className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                    className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                                 >
                                     취소
                                 </button>
@@ -350,7 +350,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                     </h3>
                     <div className="space-y-2">
                         {seasons.length === 0 ? (
-                            <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
+                            <div className="rounded-md border border-gray-200 bg-gray-50 p-8 text-center">
                                 <p className="text-sm text-gray-500">
                                     등록된 시즌이 없습니다.
                                 </p>
@@ -359,7 +359,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                             seasons.map((seasonItem) => (
                                 <div
                                     key={seasonItem._id}
-                                    className={`flex items-center justify-between rounded-lg border p-4 ${
+                                    className={`flex items-center justify-between rounded-md border p-4 ${
                                         editingSeason?._id === seasonItem._id
                                             ? "border-blue-300 bg-blue-50"
                                             : "border-gray-200 bg-white hover:bg-gray-50"
@@ -382,7 +382,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                                                 editingSeason?._id ===
                                                 seasonItem._id
                                             }
-                                            className="rounded-lg p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 disabled:opacity-50"
+                                            className="rounded-md p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 disabled:opacity-50"
                                         >
                                             <svg
                                                 className="h-4 w-4"
@@ -405,7 +405,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                                                 )
                                             }
                                             disabled={deleteMutation.isPending}
-                                            className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                                            className="rounded-md p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
                                         >
                                             <svg
                                                 className="h-4 w-4"
@@ -432,7 +432,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                 <div className="flex justify-end gap-3 border-t border-gray-200 pt-4">
                     <button
                         onClick={onClose}
-                        className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                     >
                         닫기
                     </button>

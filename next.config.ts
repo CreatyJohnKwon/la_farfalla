@@ -3,6 +3,11 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
     reactStrictMode: true, // React Strict Mode 활성화
     images: {
+        // 이미지 포맷 사용 : 이미지 랜더링 속도 향상 목적
+        formats: ["image/webp", "image/avif"],
+        deviceSizes: [640, 750, 828, 1080, 1200],
+        imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+
         remotePatterns: [
             {
                 protocol: "https",

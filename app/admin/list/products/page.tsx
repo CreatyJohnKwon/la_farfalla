@@ -168,7 +168,7 @@ const Products = () => {
                                             setOnStatus("update");
                                             setEditProduct(product);
                                         }}
-                                        className="rounded-lg p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600"
+                                        className="rounded-md p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600"
                                         title="수정"
                                     >
                                         <svg
@@ -197,7 +197,7 @@ const Products = () => {
                                                 deleteProduct(product);
                                             }
                                         }}
-                                        className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                                        className="rounded-md p-2 text-gray-400 hover:bg-red-50 hover:text-red-600"
                                         title="삭제"
                                     >
                                         <svg

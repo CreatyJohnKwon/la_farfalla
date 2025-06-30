@@ -29,8 +29,7 @@ const ProductClient = ({ id }: { id: string }) => {
                                 alt={`product_image_${id}_${index}`}
                                 width={500}
                                 height={500}
-                                style={{ objectFit: "contain" }}
-                                className="h-auto w-full"
+                                className="h-auto w-full object-cover"
                                 priority={index === 0} // 첫 번째 이미지만 priority
                             />
                         </div>
@@ -41,8 +40,7 @@ const ProductClient = ({ id }: { id: string }) => {
                         alt={`product_image_${id}_default`}
                         width={500}
                         height={500}
-                        style={{ objectFit: "contain" }}
-                        className="h-auto w-full"
+                        className="h-auto w-full object-cover"
                         priority
                     />
                 )}

@@ -65,7 +65,7 @@ const UpdateProductModal = ({
     if (isLoading) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                <div className="rounded-lg bg-white p-8">
+                <div className="rounded-md bg-white p-8">
                     <div className="text-center">로딩 중...</div>
                 </div>
             </div>
@@ -76,13 +76,13 @@ const UpdateProductModal = ({
     if (error) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                <div className="rounded-lg bg-white p-8">
+                <div className="rounded-md bg-white p-8">
                     <div className="text-center text-red-600">
                         데이터를 불러오는데 실패했습니다.
                     </div>
                     <button
                         onClick={onClose}
-                        className="mt-4 rounded-lg bg-gray-900 px-4 py-2 text-white"
+                        className="mt-4 rounded-md bg-gray-900 px-4 py-2 text-white"
                     >
                         닫기
                     </button>
@@ -563,15 +563,16 @@ const UpdateProductModal = ({
                         {Array.from({ length: 3 }).map((_, index) => (
                             <div
                                 key={index}
-                                className="relative flex aspect-square items-center justify-center rounded-lg border-2 border-dashed border-gray-300"
+                                className="relative flex aspect-square items-center justify-center rounded-md border-2 border-dashed border-gray-300"
                             >
                                 {imageData.previews[index] ? (
                                     <>
                                         <Image
                                             src={imageData.previews[index]}
                                             alt={`Preview ${index + 1}`}
-                                            fill
-                                            className="rounded-lg object-cover"
+                                            width={500}
+                                            height={500}
+                                            className="rounded-md object-cover"
                                         />
                                         <button
                                             type="button"
@@ -599,7 +600,7 @@ const UpdateProductModal = ({
                         accept="image/*"
                         multiple
                         onChange={handleImageUpload}
-                        className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
+                        className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
                     />
                     <p className="mt-1 text-xs text-gray-500">
                         현재 {imageData.previews.length}/3개
@@ -618,7 +619,7 @@ const UpdateProductModal = ({
                             name="titleKr"
                             value={formData.title.kr}
                             onChange={handleInputChange}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                             placeholder="한글 상품명을 입력하세요"
                             required
                         />
@@ -632,7 +633,7 @@ const UpdateProductModal = ({
                             name="titleEg"
                             value={formData.title.eg}
                             onChange={handleInputChange}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                             placeholder="English product name"
                             required
                         />
@@ -648,7 +649,7 @@ const UpdateProductModal = ({
                         name="descriptionText"
                         value={formData.description.text}
                         onChange={handleInputChange}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                         placeholder="상품 설명을 입력하세요"
                         rows={3}
                     />
@@ -667,12 +668,13 @@ const UpdateProductModal = ({
                                     (preview, index) => (
                                         <div
                                             key={index}
-                                            className="relative aspect-square overflow-visible rounded-lg border border-gray-200"
+                                            className="relative aspect-square overflow-visible rounded-md border border-gray-200"
                                         >
                                             <Image
                                                 src={preview}
                                                 alt={`설명 이미지 ${index + 1}`}
-                                                fill
+                                                width={500}
+                                                height={500}
                                                 className="object-cover"
                                             />
                                             <button
@@ -693,7 +695,7 @@ const UpdateProductModal = ({
                         )}
 
                         {/* 설명 이미지 업로드 버튼 */}
-                        <div className="rounded-lg border-gray-300 p-4">
+                        <div className="rounded-md border-gray-300 p-4">
                             <div className="text-center">
                                 <div className="mb-2 text-sm text-gray-600">
                                     설명 이미지를 업로드하세요 (세로로 연결될
@@ -705,7 +707,7 @@ const UpdateProductModal = ({
                                     accept="image/*"
                                     multiple
                                     onChange={handleDescriptionImageUpload}
-                                    className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
+                                    className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
                                 />
                                 <p className="mt-2 text-xs text-gray-500">
                                     JPG, PNG, GIF 파일을 지원합니다. 현재{" "}
@@ -726,7 +728,7 @@ const UpdateProductModal = ({
                             name="seasonName"
                             value={formData.seasonName}
                             onChange={handleInputChange}
-                            className="h-[42px] w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            className="h-[42px] w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                         >
                             <option key={"default"} value="">
                                 시즌 선택
@@ -754,7 +756,7 @@ const UpdateProductModal = ({
                                     : ""
                             }
                             onChange={handleInputChange}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                             placeholder="0"
                         />
                     </div>
@@ -777,7 +779,7 @@ const UpdateProductModal = ({
                                     handleInputChange(e);
                                 }
                             }}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                             placeholder="100 이하만 가능"
                         />
                     </div>
@@ -793,7 +795,7 @@ const UpdateProductModal = ({
                             type="text"
                             value={colorInput}
                             onChange={(e) => setColorInput(e.target.value)}
-                            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                             placeholder="색상을 입력하세요"
                             onKeyPress={(e) =>
                                 e.key === "Enter" &&
@@ -803,7 +805,7 @@ const UpdateProductModal = ({
                         <button
                             type="button"
                             onClick={addColor}
-                            className="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
+                            className="rounded-md bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
                         >
                             추가
                         </button>
@@ -837,7 +839,7 @@ const UpdateProductModal = ({
                             type="text"
                             value={sizeInput}
                             onChange={(e) => setSizeInput(e.target.value)}
-                            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                             placeholder="사이즈를 입력하세요"
                             onKeyPress={(e) =>
                                 e.key === "Enter" &&
@@ -847,7 +849,7 @@ const UpdateProductModal = ({
                         <button
                             type="button"
                             onClick={addSize}
-                            className="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
+                            className="rounded-md bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
                         >
                             추가
                         </button>
@@ -876,7 +878,7 @@ const UpdateProductModal = ({
                     <button
                         type="button"
                         onClick={onClose}
-                        className="flex-1 rounded-lg border border-gray-300 py-2 text-gray-700 hover:bg-gray-50"
+                        className="flex-1 rounded-md border border-gray-300 py-2 text-gray-700 hover:bg-gray-50"
                     >
                         닫기
                     </button>
@@ -890,7 +892,7 @@ const UpdateProductModal = ({
 
                                     if (confirm(confirmMessage)) resetAll();
                                 }}
-                                className="flex-1 rounded-lg border border-gray-300 bg-red-500 py-2 text-white hover:bg-red-400"
+                                className="flex-1 rounded-md border border-gray-300 bg-red-500 py-2 text-white hover:bg-red-400"
                             >
                                 초기화
                             </button>
@@ -901,13 +903,13 @@ const UpdateProductModal = ({
                     {/* <button
                         type="button"
                         onClick={() => setOpenproductModal(true)}
-                        className="flex-1 rounded-lg border border-gray-300 bg-blue-500 py-2 text-white hover:bg-blue-400"
+                        className="flex-1 rounded-md border border-gray-300 bg-blue-500 py-2 text-white hover:bg-blue-400"
                     >
                         미리보기
                     </button> */}
                     <button
                         type="submit"
-                        className="flex-1 rounded-lg bg-gray-800 py-2 text-white hover:bg-gray-700"
+                        className="flex-1 rounded-md bg-gray-800 py-2 text-white hover:bg-gray-700"
                     >
                         {mode === "update" ? "상품 수정" : "상품 등록"}
                     </button>

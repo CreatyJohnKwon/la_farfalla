@@ -146,7 +146,7 @@ const StatusUpdateSelectedModal = ({
 
                 {/* 내용 영역 */}
                 <div className="space-y-6 text-gray-700">
-                    <div className="rounded-lg bg-gray-50 p-6 shadow-sm transition">
+                    <div className="rounded-md bg-gray-50 p-6 shadow-sm transition">
                         {/* 라디오 버튼 그룹 */}
                         {Object.entries(statusResult).map(([key, label]) => {
                             if (key === "cancel") {
@@ -167,7 +167,7 @@ const StatusUpdateSelectedModal = ({
                                 return (
                                     <label
                                         key={key}
-                                        className="flex cursor-pointer items-center space-x-4 rounded-lg p-3 transition hover:bg-gray-100"
+                                        className="flex cursor-pointer items-center space-x-4 rounded-md p-3 transition hover:bg-gray-100"
                                     >
                                         <input
                                             type="radio"
@@ -200,7 +200,7 @@ const StatusUpdateSelectedModal = ({
                                 type="text"
                                 name="waybill"
                                 placeholder="운송장번호 입력 (숫자만 입력하세요)"
-                                className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-300"
                                 value={waybillNumber ? waybillNumber : ""}
                                 onChange={(e) => {
                                     const value = e.target.value;
@@ -220,13 +220,13 @@ const StatusUpdateSelectedModal = ({
                 <div className="mt-6 flex gap-3 text-lg text-white">
                     <button
                         onClick={() => handleUpdate()}
-                        className="w-full rounded-lg bg-gray-800 py-2 hover:bg-gray-700"
+                        className="w-full rounded-md bg-gray-800 py-2 hover:bg-gray-700"
                     >
                         변경
                     </button>
                     <button
                         onClick={onClose}
-                        className="w-full rounded-lg bg-slate-200 py-2 text-black hover:bg-slate-100"
+                        className="w-full rounded-md bg-slate-200 py-2 text-black hover:bg-slate-100"
                     >
                         닫기
                     </button>

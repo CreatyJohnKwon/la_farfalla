@@ -78,7 +78,7 @@ const ProductInfoModal = ({
 
                 <button
                     onClick={onClose}
-                    className="mt-6 w-full rounded-lg bg-gray-800 py-2 text-lg text-white hover:bg-gray-700"
+                    className="mt-6 w-full rounded-md bg-gray-800 py-2 text-lg text-white hover:bg-gray-700"
                 >
                     닫기
                 </button>

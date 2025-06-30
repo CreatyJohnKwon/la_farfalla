@@ -38,7 +38,7 @@ const MileageList = () => {
                 {mileage.map((item: MileageItem) => (
                     <li
                         key={item._id}
-                        className={`border p-4 ${
+                        className={`rounded-md border p-4 ${
                             item.type === "earn"
                                 ? "border-gray-200 bg-transparent"
                                 : "border-red-200 bg-red-50"

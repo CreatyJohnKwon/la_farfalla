@@ -107,8 +107,10 @@ const CouponAdmin = () => {
         }
     };
 
-    const formatDateTime = (date: Date) => new Date(date).toLocaleString("ko-KR");
-    const formatDate = (date: Date) => new Date(date).toLocaleDateString("ko-KR");
+    const formatDateTime = (date: Date) =>
+        new Date(date).toLocaleString("ko-KR");
+    const formatDate = (date: Date) =>
+        new Date(date).toLocaleDateString("ko-KR");
 
     const getCouponStatus = (coupon: ICoupon) => {
         if (!coupon || !coupon.startAt || !coupon.endAt) {
@@ -203,7 +205,7 @@ const CouponAdmin = () => {
             <div className="ms-5 mt-5 flex gap-6 sm:ms-0">
                 {/* 좌측: 발급된 사용자 쿠폰 목록 */}
                 <div className="w-1/2">
-                    <div className="rounded-lg border bg-white">
+                    <div className="rounded-md border bg-white">
                         <div className="flex items-center justify-between border-b px-4 py-3">
                             <div>
                                 <h2 className="text-lg font-medium text-gray-800">
@@ -387,7 +389,7 @@ const CouponAdmin = () => {
 
                 {/* 우측: 쿠폰 템플릿 관리 */}
                 <div className="w-1/2">
-                    <div className="rounded-lg border bg-white">
+                    <div className="rounded-md border bg-white">
                         <div className="border-b px-4 py-3">
                             <h2 className="text-lg font-medium text-gray-800">
                                 쿠폰 템플릿 관리
@@ -593,7 +595,9 @@ const CouponAdmin = () => {
                                                             >
                                                                 {/* 여기서는 div 써도 됨, td 안이라서 */}
                                                                 <h3 className="mb-2 text-sm font-medium text-gray-800">
-                                                                    선택된 템플릿 상세 정보
+                                                                    선택된
+                                                                    템플릿 상세
+                                                                    정보
                                                                 </h3>
                                                                 <div className="grid grid-cols-2 gap-4 text-xs">
                                                                     <div>

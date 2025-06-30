@@ -84,7 +84,7 @@ const UserInfoModal = ({
 
                 <button
                     onClick={onClose}
-                    className="mt-6 w-full rounded-lg bg-gray-800 py-2 text-lg text-white hover:bg-gray-700"
+                    className="mt-6 w-full rounded-md bg-gray-800 py-2 text-lg text-white hover:bg-gray-700"
                 >
                     닫기
                 </button>
@@ -101,7 +101,7 @@ const InfoRow = ({ label, value }: { label: string; value?: string }) => (
 );
 
 const BoxElement = ({ label, value }: { label: string; value?: string }) => (
-    <div className="mt-4 rounded-lg bg-gray-100 p-4">
+    <div className="mt-4 rounded-md bg-gray-100 p-4">
         <p className="mb-2 text-sm font-semibold text-gray-500">{label}</p>
         <p className="text-sm text-gray-800">{value}</p>
     </div>
