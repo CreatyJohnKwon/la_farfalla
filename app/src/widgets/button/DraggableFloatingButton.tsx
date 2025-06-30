@@ -179,7 +179,7 @@ const DraggableFloatingButton = () => {
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
-        e.preventDefault();
+        // e.preventDefault(); // 모바일 터치 오류로 이벤트 전이 다시 활성화
         endDrag();
     };
 
@@ -215,15 +215,9 @@ const DraggableFloatingButton = () => {
             );
         const channelId = "_Uxfaxin"; // 실제 채널 ID로 변경
 
-        const url = isMobile
-            ? `kakaotalk://plusfriend/home/${channelId}`
-            : `https://pf.kakao.com/${channelId}`;
+        const url = `https://pf.kakao.com/${channelId}`;
 
-        if (isMobile) {
-            window.location.href = url;
-        } else {
-            window.open(url, "_blank");
-        }
+        isMobile ? (window.location.href = url) : window.open(url, "_blank");
     };
 
     if (!mounted || shouldHideButton) return null;
