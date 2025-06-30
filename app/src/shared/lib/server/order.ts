@@ -21,7 +21,7 @@ const updateCoupon = async (couponId: string) => {
 const updateAdminOrder = async (
     orderId: string | undefined,
     shippingStatus: string,
-    trackingNumber: string,
+    trackingNumber: string | undefined,
 ) => {
     const res = await fetch("/api/admin/list/order", {
         method: "POST",

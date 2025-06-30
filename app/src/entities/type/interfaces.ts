@@ -150,7 +150,7 @@ interface AddressData {
 interface OrderUpdateInput {
     orderId: string | undefined;
     shippingStatus: string;
-    trackingNumber: string;
+    trackingNumber: string | undefined;
 }
 
 interface IDProps {

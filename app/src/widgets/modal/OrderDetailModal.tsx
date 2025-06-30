@@ -1,4 +1,7 @@
 import { OrderData, ShippingStatus } from "@/src/entities/type/interfaces";
+import { useSmartUpdateOrderMutation } from "@/src/shared/hooks/react-query/useOrderQuery";
+import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
+import { useOrderQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import {
     CheckCircle,
     Clock,
@@ -21,6 +24,32 @@ const OrderDetailModal = ({
     order: OrderData;
 }) => {
     if (!isOpen) return null;
+
+    const { data: user } = useUserQuery();
+    const { mutateAsync: smartUpdateOrder } = useSmartUpdateOrderMutation();
+    const { refetch: orderListRefetch } = useOrderQuery(user?._id);
+
+    const handleUpdate = async (
+        id: string,
+        status: string,
+        waybillNumber: string | undefined,
+    ) => {
+        if (
+            confirm("구매를 확정하시겠습니까?\n환불/교환을 할 수 없게됩니다.")
+        ) {
+            try {
+                await smartUpdateOrder({
+                    orderId: id,
+                    shippingStatus: status,
+                    trackingNumber: waybillNumber,
+                });
+                orderListRefetch();
+                onClose();
+            } catch (err) {
+                alert("변경 중 오류 발생!");
+            }
+        }
+    };
 
     // 배송 상태 정보 함수
     const getShippingStatusInfo = (status: ShippingStatus) => {
@@ -348,6 +377,18 @@ const OrderDetailModal = ({
                             주문일시: {formatDate(order.createdAt)}
                         </span>
                     </div>
+
+                    {/* 구매확정 버튼 */}
+                    {order.shippingStatus !== "confirm" && (
+                        <button
+                            onClick={() =>
+                                handleUpdate(order._id || "", "confirm", "")
+                            }
+                            className="cursor-pointer rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:px-6 sm:py-3 sm:text-base"
+                        >
+                            구매확정하기
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
