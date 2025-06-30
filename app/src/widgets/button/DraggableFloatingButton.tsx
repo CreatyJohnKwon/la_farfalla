@@ -209,15 +209,19 @@ const DraggableFloatingButton = () => {
             return;
         }
 
-        const isMobile =
-            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-                navigator.userAgent,
-            );
+        const userAgent = navigator.userAgent.toLowerCase();
+        const isAndroid = /android/.test(userAgent);
         const channelId = "_Uxfaxin"; // 실제 채널 ID로 변경
 
-        const url = `https://pf.kakao.com/${channelId}`;
-
-        isMobile ? (window.location.href = url) : window.open(url, "_blank");
+        if (isAndroid) {
+            // Android 딥링크: intent
+            const intentUrl = `intent://plusfriend/home/${channelId}#Intent;scheme=kakaotalk;package=com.kakao.talk;end`;
+            window.location.href = intentUrl;
+        } else {
+            // iOS 또는 PC 등: 일반 링크
+            const webUrl = `https://pf.kakao.com/${channelId}`;
+            window.open(webUrl, "_blank");
+        }
     };
 
     if (!mounted || shouldHideButton) return null;
