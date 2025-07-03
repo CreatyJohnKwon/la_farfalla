@@ -8,26 +8,11 @@ const Shop = () => {
     const { section } = useProduct();
     const { data: product, isLoading: productsLoading } = useProductListQuery();
 
-    if (productsLoading) {
-        return (
-            <div className="flex h-screen w-screen items-center justify-center">
-                <ul className="grid w-full grid-cols-2 gap-2 sm:gap-2 md:grid-cols-4">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                        <li
-                            key={i}
-                            className="mb-32 hidden aspect-square animate-pulse bg-neutral-100 md:block"
-                        />
-                    ))}
-                </ul>
-            </div>
-        );
-    }
-
     return (
-        product && (
+        !productsLoading && product && (
             <div className="h-screen w-screen">
                 <main className="flex h-full w-full flex-col items-center justify-center">
-                    <ul className="grid w-full animate-fade-in grid-cols-2 gap-2 sm:gap-2 md:grid-cols-4">
+                    <ul className="grid w-[95vw] md:w-[92vw] animate-fade-in grid-cols-2 gap-2 sm:gap-2 md:grid-cols-3 md:mt-36 overflow-y-auto">
                         {product
                             .filter(
                                 (item) =>

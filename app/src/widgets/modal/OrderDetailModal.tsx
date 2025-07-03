@@ -379,15 +379,21 @@ const OrderDetailModal = ({
                     </div>
 
                     {/* 구매확정 버튼 */}
-                    {order.shippingStatus !== "confirm" && (
-                        <button
-                            onClick={() =>
-                                handleUpdate(order._id || "", "confirm", "")
-                            }
-                            className="cursor-pointer rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:px-6 sm:py-3 sm:text-base"
-                        >
-                            구매확정하기
-                        </button>
+                    {order.shippingStatus === "shipped" && (
+                        <div className="flex mt-5 items-end font-pretendard">
+                            <button
+                                onClick={() =>
+                                    handleUpdate(order._id || "", "confirm", "")
+                                }
+                                className="cursor-pointer rounded-md bg-black px-4 py-2 text-sm text-white transition-colors hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:px-6 sm:py-3 sm:text-base"
+                            >
+                                구매확정하기
+                            </button>
+                            <div className="text-xs text-red-400 text-start ms-5">
+                                <p >구매확정 이후에는 단순 변심에 의한 교환 및 반품이 불가합니다.</p>
+                                <p>제품에 이상이 있는 경우에는 구매확정 전 반드시 채널톡으로 문의주세요.</p>
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>

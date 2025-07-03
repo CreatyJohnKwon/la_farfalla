@@ -19,7 +19,6 @@ import { redirect } from "next/navigation";
 import { earnMileage, spendMileage } from "@/src/features/benefit/mileage";
 import { updateUser } from "../lib/server/user";
 import PortOne from "@portone/browser-sdk/v2";
-import { WindowType } from "node_modules/@portone/browser-sdk/dist/v2/entity";
 
 const useOrder = () => {
     const { session } = useUser();
@@ -51,7 +50,7 @@ const useOrder = () => {
     const [postcode, setPostcode] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
     const [saveAddress, setSaveAddress] = useState(false);
-    const [payments, setPayments] = useState<"NAVER_PAY" | "KAKAO_PAY" | "CARD">("CARD");
+    const [payments, setPayments] = useState<"NAVER_PAY" | "KAKAO_PAY" | "CARD">("NAVER_PAY");
 
     // ✅ 가격 계산 로직 (ICoupon 구조 고려)
     useEffect(() => {
@@ -108,11 +107,12 @@ const useOrder = () => {
     const returnStoreId = async (payments: string): Promise<string> => {
         switch (payments) {
             case "NAVER_PAY":
-                return "store-f8bba69a-c4d7-4754-aeae-c483519aa061"; // 네이버 페이 테스트 채널 키
+                // return "store-f8bba69a-c4d7-4754-aeae-c483519aa061"; // 네이버 페이 테스트 채널 키
+                return ""
             case "KAKAO_PAY":
                 return "channel-key-a2d29b8e-d463-4089-9f23-fefb2f08ca46"; // 카카오 페이 테스트 채널 키
             case "CARD":
-                return "store-f8bba69a-c4d7-4754-aeae-c483519aa061"; // 카드 결제 테스트 채널 키
+                return "channel-key-06834a08-f7fa-46d4-9a9c-4ac1f494f1f3"; // 카드 결제 테스트 채널 키
             default:
                 return ""; // 기본 테스트 상점 ID
         }
@@ -166,10 +166,6 @@ const useOrder = () => {
             customData: {
                 userId: user._id,
             },
-            windowType: {
-                "pc": "POPUP",
-                "mobile": "REDIRECTION"
-            }
         });
 
         console.log("결제 결과:", paymentRes);
@@ -180,13 +176,9 @@ const useOrder = () => {
         }
 
         if (paymentRes.code !== undefined) {
-            switch (paymentRes.pgCode) {
-                case "PAY_PROCESS_CANCELED":
-                    alert("결제가 취소되었습니다.");
-                    return;
-                default:
-                    alert("결제 실패: " + paymentRes.pgMessage);
-                    return;
+            if (paymentRes.pgCode === "PAY_PROCESS_CANCELED" || "CANCEL") {
+                alert("결제가 취소되었습니다.");
+                return;
             }
         }
 

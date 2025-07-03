@@ -19,15 +19,15 @@ const ProductsList = ({
     return (
         <li
             key={product._id}
-            className="animate-fade-in pt-10 text-center opacity-0"
+            className="animate-fade-in text-center opacity-0 pb-10 md:pb-0"
             style={{ animationDelay: `${index * 50}ms` }}
         >
             <Link href={`/products/${product._id}`}>
                 <div className="relative w-full overflow-hidden">
-                    <div className="pb-[100%]"></div> {/* 1:1 비율 확보 */}
+                    <div className="pb-[133.33%]"></div> {/* 3:4 비율 (4/3 * 100% = 133.33%) */}
                     {/* 스켈레톤 로딩 */}
                     {!imageLoaded && (
-                        <div className="animate-shimmer absolute left-0 top-0 h-full w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]">
+                        <div className="absolute left-0 top-0 h-full w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] animate-shimmer">
                             <div className="h-full w-full bg-gray-200"></div>
                         </div>
                     )}
@@ -52,7 +52,7 @@ const ProductsList = ({
                 </div>
 
                 {product.discount === "0" || !product.discount ? (
-                    <span className="font-amstel-thin sm:font-amstel text-base c_xl:text-xl">
+                    <span className="font-amstel-thin sm:font-amstel text-[0.60rem] sm:text-lg">
                         {`KRW ${priceResult(product)}`}
                     </span>
                 ) : (

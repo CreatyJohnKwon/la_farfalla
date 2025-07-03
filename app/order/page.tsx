@@ -429,7 +429,7 @@ const Order = () => {
                                                 setPostcode(value.zonecode);
                                             })
                                         }
-                                        className="font-pretendard-bold absolute right-1 top-1/3 bg-black px-5 py-[0.7vh] text-sm text-white hover:bg-gray-800"
+                                        className="font-pretendard-bold absolute right-1 top-1/3 bg-black px-5 py-[0.9vh] text-sm text-white hover:bg-gray-800"
                                     >
                                         주소찾기
                                     </button>
