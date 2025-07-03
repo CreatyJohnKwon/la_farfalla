@@ -9,10 +9,11 @@ const Shop = () => {
     const { data: product, isLoading: productsLoading } = useProductListQuery();
 
     return (
-        !productsLoading && product && (
+        !productsLoading &&
+        product && (
             <div className="h-screen w-screen">
                 <main className="flex h-full w-full flex-col items-center justify-center">
-                    <ul className="grid w-[95vw] md:w-[92vw] animate-fade-in grid-cols-2 gap-2 sm:gap-2 md:grid-cols-3 md:mt-36 overflow-y-auto">
+                    <ul className="grid w-[90vw] animate-fade-in grid-cols-2 gap-2 overflow-y-auto sm:gap-3 md:mt-36 md:w-[88vw] md:grid-cols-3">
                         {product
                             .filter(
                                 (item) =>

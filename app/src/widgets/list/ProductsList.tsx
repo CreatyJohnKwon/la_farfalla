@@ -19,15 +19,17 @@ const ProductsList = ({
     return (
         <li
             key={product._id}
-            className="animate-fade-in text-center opacity-0 pb-10 md:pb-0"
+            className="group animate-fade-in pb-8 text-center opacity-0 md:pb-0"
             style={{ animationDelay: `${index * 50}ms` }}
         >
-            <Link href={`/products/${product._id}`}>
-                <div className="relative w-full overflow-hidden">
-                    <div className="pb-[133.33%]"></div> {/* 3:4 비율 (4/3 * 100% = 133.33%) */}
+            <Link href={`/products/${product._id}`} className="block h-full">
+                <div className="relative overflow-hidden transition-all duration-300 md:group-hover:scale-[1.01]">
+                    {/* 3:4 비율 (4/3 * 100% = 133.33%) */}
+                    <div className="pb-[133.33%]"></div>
+
                     {/* 스켈레톤 로딩 */}
                     {!imageLoaded && (
-                        <div className="absolute left-0 top-0 h-full w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] animate-shimmer">
+                        <div className="animate-shimmer absolute left-0 top-0 h-full w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]">
                             <div className="h-full w-full bg-gray-200"></div>
                         </div>
                     )}
@@ -36,38 +38,51 @@ const ProductsList = ({
                         alt={product.title.eg || ""}
                         width={500}
                         height={500}
-                        className={`absolute left-0 top-0 h-full w-full object-cover transition-opacity duration-300 ${
+                        className={`absolute left-0 top-0 h-full w-full object-cover transition-all duration-500 ${
                             imageLoaded ? "opacity-100" : "opacity-0"
                         }`}
                         sizes="(max-width: 768px) 100vw, 50vw"
                         onLoad={() => setImageLoaded(true)}
-                        onError={() => setImageLoaded(true)} // 에러 시에도 스켈레톤 제거
+                        onError={() => setImageLoaded(true)}
                     />
+
+                    {/* 호버 오버레이 */}
+                    <div className="absolute inset-0 bg-black bg-opacity-0 transition-all duration-300 group-hover:bg-opacity-10"></div>
                 </div>
 
-                <div className="pt-2 text-[0.60rem] transition-all duration-700 ease-in-out sm:pt-6 sm:text-[1.05rem] c_xl:text-xl">
-                    <p className="font-amstel-thin sm:font-amstel">{`[${product.title.eg}]`}</p>
-                    <p className="font-pretendard">{`${product.title.kr}`}</p>
-                    <p className="font-amstel-thin sm:font-amstel">{`${product.colors.length} colors`}</p>
+                <div className="pt-3 text-xs transition-all duration-700 ease-in-out sm:text-lg c_xl:text-xl">
+                    <p className="font-amstel-thin sm:font-amstel text-black transition-colors duration-300 group-hover:text-gray-900">
+                        {`[${product.title.eg}]`}
+                    </p>
+                    <p className="font-pretendard font-medium text-black">
+                        {`${product.title.kr}`}
+                    </p>
+                    <p className="font-amstel-thin sm:font-amstel text-gray-600">
+                        {`${product.colors.length} colors`}
+                    </p>
                 </div>
 
-                {product.discount === "0" || !product.discount ? (
-                    <span className="font-amstel-thin sm:font-amstel text-[0.60rem] sm:text-lg">
-                        {`KRW ${priceResult(product)}`}
-                    </span>
-                ) : (
-                    <div className="font-amstel-thin sm:font-amstel">
-                        <p className="text-[0.60rem] text-gray-600 line-through transition-all duration-300 ease-in-out sm:text-lg c_xl:ms-2">
+                <div>
+                    {product.discount === "0" || !product.discount ? (
+                        <span className="font-amstel-thin sm:font-amstel text-xs font-semibold text-gray-900 sm:text-lg">
                             {`KRW ${priceResult(product)}`}
-                        </p>
-                        <span className="me-1 text-[0.60rem] text-black transition-all duration-300 ease-in-out sm:me-2 sm:text-base c_xl:text-xl">
-                            {`${product.discount}%`}
                         </span>
-                        <span className="text-[0.60rem] transition-all duration-300 ease-in-out sm:text-base c_xl:text-xl">
-                            {`KRW ${priceDiscount(product)}`}
-                        </span>
-                    </div>
-                )}
+                    ) : (
+                        <div className="font-amstel-thin sm:font-amstel space-y-1">
+                            <p className="text-xs text-gray-500 line-through transition-all duration-300 ease-in-out sm:text-base">
+                                {`KRW ${priceResult(product)}`}
+                            </p>
+                            <div className="flex items-center justify-center space-x-2">
+                                <span className="rounded-full bg-red-500 px-2 py-1 text-xs font-bold text-white sm:px-3 sm:py-1 sm:text-sm">
+                                    {`${product.discount}%`}
+                                </span>
+                                <span className="text-xs font-bold text-red-600 sm:text-lg">
+                                    {`KRW ${priceDiscount(product)}`}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </Link>
         </li>
     );
