@@ -19,6 +19,7 @@ import { redirect } from "next/navigation";
 import { earnMileage, spendMileage } from "@/src/features/benefit/mileage";
 import { updateUser } from "../lib/server/user";
 import PortOne from "@portone/browser-sdk/v2";
+import { WindowType } from "node_modules/@portone/browser-sdk/dist/v2/entity";
 
 const useOrder = () => {
     const { session } = useUser();
@@ -50,7 +51,7 @@ const useOrder = () => {
     const [postcode, setPostcode] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
     const [saveAddress, setSaveAddress] = useState(false);
-    const [payments, setPayments] = useState<"EASY_PAY" | "CARD">("EASY_PAY");
+    const [payments, setPayments] = useState<"NAVER_PAY" | "KAKAO_PAY" | "CARD">("CARD");
 
     // ✅ 가격 계산 로직 (ICoupon 구조 고려)
     useEffect(() => {
@@ -104,6 +105,19 @@ const useOrder = () => {
         setMileage(user.mileage - usedMileage);
     }, [usedMileage]);
 
+    const returnStoreId = async (payments: string): Promise<string> => {
+        switch (payments) {
+            case "NAVER_PAY":
+                return "store-f8bba69a-c4d7-4754-aeae-c483519aa061"; // 네이버 페이 테스트 채널 키
+            case "KAKAO_PAY":
+                return "channel-key-a2d29b8e-d463-4089-9f23-fefb2f08ca46"; // 카카오 페이 테스트 채널 키
+            case "CARD":
+                return "store-f8bba69a-c4d7-4754-aeae-c483519aa061"; // 카드 결제 테스트 채널 키
+            default:
+                return ""; // 기본 테스트 상점 ID
+        }
+    }
+
     const orderComplete = async () => {
         // 필수 값 검증
         if (!phoneNumber || !address || !postcode) {
@@ -137,37 +151,41 @@ const useOrder = () => {
         };
 
         const paymentId = crypto.randomUUID();
-
-        const payment = await PortOne.requestPayment({
-            storeId: "store-e4038486-8d83-41a5-acf1-844a009e0d94",
-            channelKey: "channel-key-ebe7daa6-4fe4-41bd-b17d-3495264399b5",
+        const paymentRes = await PortOne.requestPayment({
+            storeId: "store-f8bba69a-c4d7-4754-aeae-c483519aa061", // 테스트 상점 ID
+            channelKey: await returnStoreId(payments), // 테스트 채널 키
             paymentId,
-            orderName:
-                orderDatas.length === 1
-                    ? orderDatas[0].title
-                    : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
+            orderName: orderDatas.length === 1
+                ? orderDatas[0].title
+                : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
             totalAmount: session?.user?.email?.startsWith("admin")
                 ? 1
                 : totalPrice,
             currency: "CURRENCY_KRW",
-            payMethod: payments,
+            payMethod: payments === "NAVER_PAY" || "KAKAO_PAY" ? "EASY_PAY" : "CARD",
             customData: {
                 userId: user._id,
             },
+            windowType: {
+                "pc": "POPUP",
+                "mobile": "REDIRECTION"
+            }
         });
 
-        if (!payment) {
+        console.log("결제 결과:", paymentRes);
+
+        if (!paymentRes) {
             alert("결제 요청 실패");
             return;
         }
 
-        if (payment.code !== undefined) {
-            switch (payment.pgCode) {
+        if (paymentRes.code !== undefined) {
+            switch (paymentRes.pgCode) {
                 case "PAY_PROCESS_CANCELED":
                     alert("결제가 취소되었습니다.");
                     return;
                 default:
-                    alert("결제 실패: " + payment.pgMessage);
+                    alert("결제 실패: " + paymentRes.pgMessage);
                     return;
             }
         }

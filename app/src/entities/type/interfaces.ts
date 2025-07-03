@@ -130,7 +130,7 @@ interface OrderData {
     items: OrderItem[];
     totalPrice: number;
     createdAt?: string;
-    payMethod: "EASY_PAY" | "CARD";
+    payMethod: "NAVER_PAY" | "KAKAO_PAY" | "CARD";
     paymentId?: string;
     shippingStatus: ShippingStatus;
     shippedAt?: string;

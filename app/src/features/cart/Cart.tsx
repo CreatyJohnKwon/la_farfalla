@@ -78,7 +78,7 @@ const Cart = () => {
             return (
                 <li
                     key={"unknown_datas"}
-                    className="font-pretendard-thin text-[0.8em] text-black sm:text-[1em]"
+                    className="font-pretendard font-[300] text-[0.8em] text-black sm:text-[1em]"
                 >
                     장바구니가 비었습니다
                 </li>
