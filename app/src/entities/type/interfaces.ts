@@ -237,6 +237,20 @@ interface UserCouponWithPopulate {
     updatedAt: Date;
 }
 
+interface SMSOrderData {
+    orderNumber: string;
+    customerName: string;
+    totalAmount: number;
+    itemCount: number;
+}
+
+interface SMSResult {
+    success: boolean;
+    requestId?: string;
+    statusCode?: string;
+    statusName?: string;
+}
+
 export type {
     ICoupon,
     IUserCoupon,
@@ -267,4 +281,6 @@ export type {
     ShippingStatus,
     OrderUpdateInput,
     IDProps,
+    SMSOrderData,
+    SMSResult,
 };
