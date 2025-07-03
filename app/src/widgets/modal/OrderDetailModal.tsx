@@ -106,8 +106,8 @@ const OrderDetailModal = ({
     };
 
     // 결제 방법 한글 변환
-    const getPayMethodText = (method: "EASY_PAY" | "CARD") => {
-        return method === "EASY_PAY" ? "간편결제" : "신용카드";
+    const getPayMethodText = (method: "NAVER_PAY" | "KAKAO_PAY" | "CARD") => {
+        return method === "NAVER_PAY" || "KAKAO_PAY" ? "간편결제" : "신용카드";
     };
 
     // 날짜 포맷팅
