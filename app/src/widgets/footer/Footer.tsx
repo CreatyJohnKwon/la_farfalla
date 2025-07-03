@@ -30,13 +30,18 @@ const Footer = () => {
 
     return (
         <div
-            className={`${hidden ? "hidden" : "block"} ${textColor} font-amstel fixed bottom-0 w-screen text-center text-[10px] sm:text-sm`}
+            className={`${hidden ? "hidden" : "block"} ${textColor} fixed bottom-0 w-screen text-center text-[10px] sm:text-sm`}
         >
-            <p className="-mb-1">business license : lafarfalla</p>
-            <p className="-mb-1">
+            <div className="-mb-1">
+                <span className="font-amstel">business license : lafarfalla</span>
+                <span className="ms-1 font-pretendard font-[300]">(라파팔라)</span>
+                <span className="font-amstel">{"\t|\t177-24-01663"}</span>
+                <span className="font-amstel">{"\t|\tYOO HYEON JU"}</span>
+            </div>
+            <p className="-mb-1 font-amstel">
                 address: 15-5, Jangwol-ro 2-gil, Seongbuk-gu SEOUL, 02773, KOREA
             </p>
-            <p className="mb-2">mon to fri 9:00 - 19:00</p>
+            <p className="mb-2 font-amstel">mon to fri 9:00 - 19:00</p>
         </div>
     );
 };

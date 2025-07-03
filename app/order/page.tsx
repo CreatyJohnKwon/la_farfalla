@@ -33,9 +33,7 @@ const Order = () => {
         applyCoupon,
         setApplyCoupon,
         totalPrice,
-        setTotalPrice,
         totalMileage,
-        setTotalMileage,
         appliedCouponName,
         setAppliedCouponName,
         phoneNumber,
@@ -1037,9 +1035,17 @@ const Order = () => {
                                         type="radio"
                                         name="payment"
                                         defaultChecked
-                                        onChange={() => setPayments("EASY_PAY")}
+                                        onChange={() => setPayments("NAVER_PAY")}
                                     />
-                                    {"\t간편결제"}
+                                    {"\t네이버 페이"}
+                                </label>
+                                <label className="flex items-center gap-2 text-sm">
+                                    <input
+                                        type="radio"
+                                        name="payment"
+                                        onChange={() => setPayments("KAKAO_PAY")}
+                                    />
+                                    {"\t카카오 페이"}
                                 </label>
                                 <label className="flex items-center gap-2 text-sm">
                                     <input
