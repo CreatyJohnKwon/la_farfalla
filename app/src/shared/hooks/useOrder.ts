@@ -112,7 +112,7 @@ const useOrder = () => {
             case "KAKAO_PAY":
                 return "channel-key-a2d29b8e-d463-4089-9f23-fefb2f08ca46"; // 카카오 페이 테스트 채널 키
             case "CARD":
-                return "channel-key-06834a08-f7fa-46d4-9a9c-4ac1f494f1f3"; // 카드 결제 테스트 채널 키
+                return "channel-key-a22d3086-a2ec-4294-a886-093fe1f5e0b3"; // 카드 결제 테스트 채널 키
             default:
                 return ""; // 기본 테스트 상점 ID
         }
@@ -150,9 +150,9 @@ const useOrder = () => {
             totalPrice,
         };
 
-        const paymentId = crypto.randomUUID();
+        const paymentId = `payment-${crypto.randomUUID()}`;
         const paymentRes = await PortOne.requestPayment({
-            storeId: "store-f8bba69a-c4d7-4754-aeae-c483519aa061", // 테스트 상점 ID
+            storeId: "store-f8bba69a-c4d7-4754-aeae-c483519aa061",
             channelKey: await returnStoreId(payments), // 테스트 채널 키
             paymentId,
             orderName: orderDatas.length === 1
@@ -162,7 +162,7 @@ const useOrder = () => {
                 ? 1
                 : totalPrice,
             currency: "CURRENCY_KRW",
-            payMethod: payments === "NAVER_PAY" || "KAKAO_PAY" ? "EASY_PAY" : "CARD",
+            payMethod: payments === "NAVER_PAY" || payments === "KAKAO_PAY" ? "EASY_PAY" : "CARD",
             customData: {
                 userId: user._id,
             },
