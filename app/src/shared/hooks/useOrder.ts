@@ -18,7 +18,7 @@ import { orderAccept } from "@/src/features/order/order";
 import { redirect } from "next/navigation";
 import { earnMileage, spendMileage } from "@/src/features/benefit/mileage";
 import { updateUser } from "../lib/server/user";
-import PortOne from "@portone/browser-sdk/v2";
+import * as PortOne from "@portone/browser-sdk/v2";
 
 const useOrder = () => {
     const { session } = useUser();
@@ -112,7 +112,7 @@ const useOrder = () => {
             case "KAKAO_PAY":
                 return "channel-key-a2d29b8e-d463-4089-9f23-fefb2f08ca46"; // 카카오 페이 테스트 채널 키
             case "CARD":
-                return "channel-key-a22d3086-a2ec-4294-a886-093fe1f5e0b3"; // 카드 결제 테스트 채널 키
+                return "channel-key-29f71c8c-faf6-4066-b022-7d09e02107db"; // 카드 결제 테스트 채널 키
             default:
                 return ""; // 기본 테스트 상점 ID
         }
@@ -150,57 +150,95 @@ const useOrder = () => {
             totalPrice,
         };
 
-        const paymentId = `payment-${crypto.randomUUID()}`;
-        const paymentRes = await PortOne.requestPayment({
-            storeId: "store-f8bba69a-c4d7-4754-aeae-c483519aa061",
-            channelKey: await returnStoreId(payments), // 테스트 채널 키
-            paymentId,
-            orderName: orderDatas.length === 1
-                ? orderDatas[0].title
-                : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
-            totalAmount: session?.user?.email?.startsWith("admin")
-                ? 1
-                : totalPrice,
-            currency: "CURRENCY_KRW",
-            payMethod: payments === "NAVER_PAY" || payments === "KAKAO_PAY" ? "EASY_PAY" : "CARD",
-            customData: {
-                userId: user._id,
-            },
-        });
+        const storeId = "store-f8bba69a-c4d7-4754-aeae-c483519aa061";
+        const channelKey = await returnStoreId(payments);
+        const paymentId = crypto.randomUUID();
 
-        console.log("결제 결과:", paymentRes);
-
-        if (!paymentRes) {
-            alert("결제 요청 실패");
+        if (!channelKey || channelKey === "") {
+            alert("결제 채널이 설정되지 않았습니다.");
             return;
         }
 
-        if (paymentRes.code !== undefined) {
-            if (paymentRes.pgCode === "PAY_PROCESS_CANCELED" || "CANCEL") {
-                alert("결제가 취소되었습니다.");
+        try {
+            let response = await PortOne.requestPayment({
+                storeId,
+                channelKey, 
+                paymentId,
+                orderName: orderDatas.length === 1
+                    ? orderDatas[0].title
+                    : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
+                totalAmount: session?.user?.email?.startsWith("admin") ? 1 : totalPrice,
+                currency: "CURRENCY_KRW",
+                payMethod: payments === "NAVER_PAY" ? "EASY_PAY" : 
+                        payments === "KAKAO_PAY" ? "EASY_PAY" : "CARD",
+                customer: {
+                    fullName: user.name,
+                    phoneNumber: user.phoneNumber,
+                    email: user.email,
+                },
+                // 🔥 모바일 대응을 위한 redirectUrl 추가
+                redirectUrl: `${window.location.origin}/payment/redirect`,
+            });
+
+            // ✅ 응답이 없는 경우 처리
+            if (!response) {
+                alert("결제 요청 실패");
                 return;
             }
-        }
 
-        const res = await orderAccept({
-            ...orderData,
-            paymentId,
-        });
+            // ✅ 에러 코드가 있는 경우 처리
+            if (response.code !== undefined) {
+                if (response.code === "PAY_PROCESS_CANCELED") {
+                    alert("결제가 취소되었습니다.");
+                } else {
+                    alert(`결제 실패: ${response.message || '알 수 없는 오류'}`);
+                }
+                return;
+            }
 
-        if (res.success) {
-            await Promise.all([
-                couponMemo !== "" ? useSpendCoupon() : Promise.resolve(),
-                useSpendMileage(res),
-                addEarnMileage(res),
-                saveNewAddress(),
-            ]);
+            // 🔥 서버에서 결제 검증 (보안상 필수)
+            const verificationResponse = await fetch('/api/payment/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    paymentId: response.paymentId,
+                    expectedAmount: totalPrice,
+                    orderData
+                }),
+            });
 
-            alert(res.message);
-            orderListRefetch();
-            UserDataRefetch();
-            redirect("/profile/order");
-        } else {
-            alert(res.message);
+            const verificationResult = await verificationResponse.json();
+
+            if (!verificationResult.success) {
+                alert("결제 검증에 실패했습니다. 고객센터에 문의해주세요.");
+                return;
+            }
+
+            // ✅ 검증 성공 후 주문 처리
+            const res = await orderAccept({
+                ...orderData,
+                paymentId: response.paymentId, // response에서 받은 paymentId 사용
+            });
+
+            if (res.success) {
+                await Promise.all([
+                    couponMemo !== "" ? useSpendCoupon() : Promise.resolve(),
+                    useSpendMileage(res),
+                    addEarnMileage(res),
+                    saveNewAddress(),
+                ]);
+
+                alert(res.message);
+                orderListRefetch();
+                UserDataRefetch();
+                redirect("/profile/order");
+            } else {
+                alert(res.message);
+            }
+
+        } catch (error) {
+            console.error("결제 처리 중 오류:", error);
+            alert("결제 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
         }
     };
 

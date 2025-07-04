@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { OrderData, OrderUpdateInput } from "@src/entities/type/interfaces";
 import { getOrderList, updateAdminOrder } from "../../lib/server/order";
 import useProduct from "../useProduct";
+import { useSetAtom } from "jotai";
+import { resetProductFormAtom } from "../../lib/atom";
 
 const useAllOrderQuery = () => {
     return useQuery<OrderData[], Error>({
@@ -15,6 +17,7 @@ const useAllOrderQuery = () => {
 const useSmartUpdateOrderMutation = () => {
     const queryClient = useQueryClient();
     const { setFormData } = useProduct();
+    const resetProductForm = useSetAtom(resetProductFormAtom);
 
     return useMutation({
         mutationFn: async (input: OrderUpdateInput | OrderUpdateInput[]) => {
@@ -54,23 +57,7 @@ const useSmartUpdateOrderMutation = () => {
             // 배열인지 단일인지에 따른 메시지 구분
             const count = Array.isArray(variables) ? variables.length : 1;
             alert(`${count}개 주문 상태 업데이트 완료!`);
-
-            setFormData({
-                title: {
-                    kr: "",
-                    eg: "",
-                },
-                description: {
-                    images: [],
-                    text: "",
-                },
-                price: "",
-                discount: "",
-                image: [],
-                colors: [],
-                seasonName: "",
-                size: [],
-            });
+            resetProductForm();
         },
 
         onError: (error, variables) => {

@@ -67,7 +67,6 @@ const RootLayout = async ({
                 {/* 포트원 SDK */}
                 <Script
                     src="https://cdn.portone.io/v2/browser-sdk.js"
-                    strategy="beforeInteractive"
                 />
             </body>
         </html>

@@ -11,9 +11,9 @@ const Shop = () => {
     return (
         !productsLoading &&
         product && (
-            <div className="h-screen w-screen">
+            <div className="h-screen w-screen mb-10">
                 <main className="flex h-full w-full flex-col items-center justify-center">
-                    <ul className="grid w-[90vw] animate-fade-in grid-cols-2 gap-2 overflow-y-auto sm:gap-3 md:mt-36 md:w-[88vw] md:grid-cols-3">
+                    <ul className="grid w-[90vw] animate-fade-in grid-cols-2 gap-2 overflow-y-auto sm:gap-3 md:mt-32 md:w-[85vw] md:grid-cols-3">
                         {product
                             .filter(
                                 (item) =>

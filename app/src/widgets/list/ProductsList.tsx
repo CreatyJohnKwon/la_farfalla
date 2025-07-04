@@ -50,7 +50,7 @@ const ProductsList = ({
                     <div className="absolute inset-0 bg-black bg-opacity-0 transition-all duration-300 group-hover:bg-opacity-10"></div>
                 </div>
 
-                <div className="pt-3 text-xs transition-all duration-700 ease-in-out sm:text-lg c_xl:text-xl">
+                <div className="pt-2 text-xs transition-all duration-700 ease-in-out sm:text-base">
                     <p className="font-amstel-thin sm:font-amstel text-black transition-colors duration-300 group-hover:text-gray-900">
                         {`[${product.title.eg}]`}
                     </p>
@@ -64,7 +64,7 @@ const ProductsList = ({
 
                 <div>
                     {product.discount === "0" || !product.discount ? (
-                        <span className="font-amstel-thin sm:font-amstel text-xs font-semibold text-gray-900 sm:text-lg">
+                        <span className="font-amstel-thin sm:font-amstel text-xs font-semibold text-gray-900 sm:text-base">
                             {`KRW ${priceResult(product)}`}
                         </span>
                     ) : (
@@ -76,7 +76,7 @@ const ProductsList = ({
                                 <span className="rounded-full bg-red-500 px-2 py-1 text-xs font-bold text-white sm:px-3 sm:py-1 sm:text-sm">
                                     {`${product.discount}%`}
                                 </span>
-                                <span className="text-xs font-bold text-red-600 sm:text-lg">
+                                <span className="text-xs font-bold text-red-600 sm:text-base">
                                     {`KRW ${priceDiscount(product)}`}
                                 </span>
                             </div>

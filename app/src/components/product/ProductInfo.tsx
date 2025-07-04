@@ -8,7 +8,7 @@ import {
 import { Product } from "@src/entities/type/interfaces";
 import ProductDrop from "@src/widgets/drop/ProductDrop";
 import QuantityModal from "@src/widgets/modal/QuantityModal";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useCart from "@src/shared/hooks/useCart";
 import useUser from "@src/shared/hooks/useUsers";
 import { redirect } from "next/navigation";
@@ -29,6 +29,8 @@ const ProductInfo = ({ product }: { product: Product }) => {
         handleSelect,
         handleAddToCart,
     } = useCart();
+    const [activeTab, setActiveTab] = useState(null);
+
     const { session } = useUser();
 
     useEffect(() => {
@@ -48,12 +50,40 @@ const ProductInfo = ({ product }: { product: Product }) => {
         setResult(tempCalc.toLocaleString());
     }, [selectedItems]);
 
+    const toggleTab = (tabName: any) => {
+        setActiveTab(activeTab === tabName ? null : tabName);
+    };
+    
+    const detailsContent = (
+        <div className="sm:mt-2 p-4 text-black text-[0.9rem]">
+            {product.description.detail ? product.description.detail : "상품에 대한 자세한 설명이 없습니다."}
+        </div>
+    );
+    
+    const shippingContent = (
+        <div className="sm:mt-2 p-4 text-black text-xs sm:text-[0.9rem] gap-2 flex flex-col w-8/11 place-self-center">
+        <span className="leading-relaxed">고객님의 만족스러운 쇼핑을 위해 다음과 같은 교환·반품 정책을 운영합니다.</span>
+        <span className="leading-relaxed">1. 교환/반품 가능 기간<br />
+            - 상품 수령일로부터 7일 이내 신청 가능합니다.<br />
+            - 단순변심으로 인한 접수는 24시간 이내 C/S(카카오톡 채널톡)으로 접수 바랍니다.</span>
+        <span className="leading-relaxed">2. 교환/반품이 불가능한 경우<br />
+            - 상품의 라벨이 훼손됐거나, 세탁한 경우<br />
+            - 상품의 가치가 현저히 감소한 경우(오염, 사용 흔적, 향수 냄새 등)</span>
+        <span className="leading-relaxed">3. 교환/반품 절차<br />
+            - [카카오톡 채널톡] 으로 접수 바랍니다.<br />
+            - 단순 변심의 경우 왕복 택배비 6,000원이 발생됩니다.</span>
+        <span className="leading-relaxed">4. 환불 안내<br />
+            - 반품 상품 수령 및 검수 후, 3영업일 이내 환불이 진행됩니다.<br />
+            - 결제 수단별 환불 소요 시간은 다를 수 있으며, 카드사 정책에 따라 3~7일이 소요될 수 있습니다.</span>
+        </div>
+    );
+
     return (
         <div className="w-full md:w-1/2">
             <div className="mt-3 flex h-full flex-col items-center justify-center gap-3 md:mt-0 md:gap-3 lg:gap-3 xl:gap-4">
                 {/* title */}
                 <div className="flex flex-col items-center gap-2 text-center md:gap-3 lg:gap-4 xl:gap-5">
-                    <span className="font-amstel w-[90vw] text-3xl md:text-4xl c_xl:text-6xl">
+                    <span className="font-amstel w-[90vw] text-3xl md:text-4xl xl:text-5xl">
                         {product.title.eg}
                     </span>
                     <span className="-mt-1 font-pretendard text-lg font-[300] md:text-xl xl:text-2xl">
@@ -62,13 +92,13 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 </div>
 
                 {/* Description text */}
-                <span className="w-full px-2 text-center font-pretendard text-sm font-[200] c_xl:text-base">
+                <span className="w-full px-2 text-center font-pretendard text-sm font-[200] xl:text-base">
                     {product.description.text}
                 </span>
 
                 {/* price */}
                 {product.discount === "0" || !product.discount ? (
-                    <div className="font-amstel text-base md:text-lg">{`KRW ${priceResult(product)}`}</div>
+                    <div className="font-amstel text-lg md:text-xl">{`KRW ${priceResult(product)}`}</div>
                 ) : (
                     <>
                         <div className="font-amstel text-base md:text-lg">
@@ -137,7 +167,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
 
                 <div className="font-amstel flex w-full justify-between gap-4 px-2 md:w-5/6 md:gap-6 md:px-0 lg:gap-8 xl:gap-10">
                     <button
-                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 md:py-3 md:text-lg lg:text-xl"
+                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 md:py-3 sm:text-base md:text-lg lg:text-lg"
                         disabled={selectedItems.length === 0}
                         onClick={() => {
                             if (!session) {
@@ -150,12 +180,37 @@ const ProductInfo = ({ product }: { product: Product }) => {
                         buy now
                     </button>
                     <button
-                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 md:py-3 md:text-lg lg:text-xl"
+                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 md:py-3 sm:text-base md:text-lg lg:text-lg"
                         disabled={selectedItems.length === 0}
                         onClick={() => handleAddToCart()}
                     >
                         cart
                     </button>
+                </div>
+
+                <div className="h-[20vh] flex flex-col text-center font-pretendard font-[500] text-[1.3rem] mt-10 gap-4">
+                    <div>
+                        <button 
+                            className={`transition-colors duration-200 ${
+                            activeTab === 'details' ? 'text-black' : 'text-gray-300 hover:text-black'
+                            }`}
+                            onClick={() => toggleTab('details')}
+                        >
+                            DETAILS
+                        </button>
+                        {activeTab === 'details' && detailsContent}
+                    </div>                            
+                    <div>
+                        <button 
+                            className={`transition-colors duration-200 ${
+                            activeTab === 'shipping' ? 'text-black' : 'text-gray-300 hover:text-black'
+                            }`}
+                            onClick={() => toggleTab('shipping')}
+                        >
+                            SHIPPING RETURNS
+                        </button>
+                        {activeTab === 'shipping' && shippingContent}
+                    </div>
                 </div>
             </div>
         </div>

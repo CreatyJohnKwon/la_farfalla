@@ -13,7 +13,6 @@ import useProduct from "@/src/shared/hooks/useProduct";
 import { useSetAtom } from "jotai";
 import { loadingAtom } from "@/src/shared/lib/atom";
 import { useSeasonQuery } from "@/src/shared/hooks/react-query/useSeasonQuery";
-import PreviewProductModal from "./PreviewProductModal";
 import Modal from "./Modal";
 
 const UpdateProductModal = ({
@@ -54,7 +53,6 @@ const UpdateProductModal = ({
     const fileInputRef = useRef<HTMLInputElement>(null);
     const descriptionFileInputRef = useRef<HTMLInputElement>(null);
     const { formData, setFormData } = useProduct();
-    const [openProductModal, setOpenproductModal] = useState(false);
 
     const { data: season, isLoading, error } = useSeasonQuery();
     const { mutateAsync: createProduct } = usePostProductMutation();
@@ -81,7 +79,7 @@ const UpdateProductModal = ({
                         데이터를 불러오는데 실패했습니다.
                     </div>
                     <button
-                        onClick={onClose}
+                        onClick={() => confirm("작성을 취소하시겠습니까?") && onClose()}
                         className="mt-4 rounded-md bg-gray-900 px-4 py-2 text-white"
                     >
                         닫기
@@ -165,7 +163,7 @@ const UpdateProductModal = ({
             // 생성 모드: 빈 값으로 리셋
             setFormData({
                 title: { kr: "", eg: "" },
-                description: { images: [], text: "" },
+                description: { images: [], text: "", detail: "" },
                 price: "",
                 discount: "",
                 image: [],
@@ -214,6 +212,11 @@ const UpdateProductModal = ({
             setFormData((prev) => ({
                 ...prev,
                 description: { ...prev.description, text: value },
+            }));
+        } else if (name === "descriptionDetailText") {
+            setFormData((prev) => ({
+                ...prev,
+                description: { ...prev.description, detail: value },
             }));
         } else if (name === "price" || name === "discount") {
             // 쉼표 제거하고 숫자만 허용
@@ -517,21 +520,15 @@ const UpdateProductModal = ({
                     description: {
                         images: uploadedDescriptionImageUrls,
                         text: formData.description.text,
+                        detail: formData.description.detail,
                     },
                 };
 
                 // 업데이트 모드인 경우 ID 포함
-                if (mode === "update" && product?._id) {
-                    finalData._id = product._id;
-                }
+                if (mode === "update" && product?._id) finalData._id = product._id;
 
-                console.log(finalData);
-
-                if (mode === "update") {
-                    await updateProduct(finalData);
-                } else {
-                    await createProduct(finalData);
-                }
+                if (mode === "update") await updateProduct(finalData);
+                else await createProduct(finalData);
 
                 onClose();
             }
@@ -547,7 +544,7 @@ const UpdateProductModal = ({
     };
 
     return (
-        <Modal onClose={onClose}>
+        <Modal onClose={() => confirm("작성을 취소하시겠습니까?") && onClose()}>
             <h1 className="mb-6 text-center font-pretendard text-2xl font-semibold text-gray-800">
                 {mode === "update" ? "상품 수정" : "상품 등록"}
             </h1>
@@ -649,9 +646,23 @@ const UpdateProductModal = ({
                         name="descriptionText"
                         value={formData.description.text}
                         onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
-                        placeholder="상품 설명을 입력하세요"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none mb-2"
+                        placeholder="상품 설명을 입력하세요 (최대 500자)"
                         rows={3}
+                        maxLength={500}
+                    />
+
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                        추가 상세설명 *
+                    </label>
+                    <textarea
+                        name="descriptionDetailText"
+                        value={formData.description.detail}
+                        onChange={handleInputChange}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none mb-4"
+                        placeholder="상품 설명을 입력하세요 (최대 150자)"
+                        rows={3}
+                        maxLength={150}
                     />
 
                     {/* 설명 이미지 섹션 */}
@@ -877,7 +888,7 @@ const UpdateProductModal = ({
                 <div className="flex gap-3 pt-4">
                     <button
                         type="button"
-                        onClick={onClose}
+                        onClick={() => confirm("작성을 취소하시겠습니까?") && onClose()}
                         className="flex-1 rounded-md border border-gray-300 py-2 text-gray-700 hover:bg-gray-50"
                     >
                         닫기
@@ -900,13 +911,6 @@ const UpdateProductModal = ({
                     ) : (
                         <></>
                     )}
-                    {/* <button
-                        type="button"
-                        onClick={() => setOpenproductModal(true)}
-                        className="flex-1 rounded-md border border-gray-300 bg-blue-500 py-2 text-white hover:bg-blue-400"
-                    >
-                        미리보기
-                    </button> */}
                     <button
                         type="submit"
                         className="flex-1 rounded-md bg-gray-800 py-2 text-white hover:bg-gray-700"
@@ -915,12 +919,6 @@ const UpdateProductModal = ({
                     </button>
                 </div>
             </form>
-            {/* {openProductModal && (
-                <PreviewProductModal
-                    product={formData}
-                    onClose={() => setOpenproductModal(false)}
-                />
-            )} */}
         </Modal>
     );
 };

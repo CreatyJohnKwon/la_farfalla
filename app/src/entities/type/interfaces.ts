@@ -14,6 +14,7 @@ interface Product {
 interface ProductDescription {
     images: string[];
     text: string;
+    detail: string;
 }
 
 interface ProductTitleLanguage {

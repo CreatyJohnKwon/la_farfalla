@@ -14,7 +14,7 @@ const ProductClient = ({ id }: { id: string }) => {
 
     return (
         <div className="flex h-full w-full flex-col items-center justify-center overflow-x-hidden">
-            <div className="mx-auto flex h-full w-full flex-col gap-3 pt-12 transition-all duration-300 ease-in-out md:w-[90%] md:flex-row md:gap-8 md:pt-16 lg:w-[85%] lg:gap-12 lg:pt-24 xl:w-[75%] xl:gap-20 xl:pt-32">
+            <div className="mx-auto items-center flex h-full w-full flex-col gap-3 mt-16 sm:mt-24 md:mt-32 transition-all duration-300 ease-in-out md:w-[90%] md:flex-row md:gap-8 lg:w-[70%] lg:gap-16 lg:mt-32">
                 <Slider images={product.image} />
                 <ProductInfo product={product} />
             </div>
@@ -45,6 +45,7 @@ const ProductClient = ({ id }: { id: string }) => {
                     />
                 )}
             </div>
+            asdfsdf
         </div>
     );
 };

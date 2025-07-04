@@ -222,20 +222,14 @@ const Products = () => {
             </table>
             {isOpenUpdateModal && (
                 <UpdateProductModal
-                    onClose={() => {
-                        if (confirm("작성을 취소하시겠습니까?"))
-                            setIsOpenUpdateModal(false);
-                    }}
+                    onClose={() => setIsOpenUpdateModal(false)}
                     product={editProduct}
                     mode={onStatus}
                 />
             )}
             {isOpenUpdateSeasonModal && (
                 <UpdateSeasonModal
-                    onClose={() => {
-                        if (confirm("작성을 취소하시겠습니까?"))
-                            setIsOpenUpdateSeasonModal(false);
-                    }}
+                    onClose={() => setIsOpenUpdateSeasonModal(false)}
                 />
             )}
         </div>

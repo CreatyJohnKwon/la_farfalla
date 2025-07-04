@@ -10,6 +10,7 @@ export const pagesAtom = atom<"o" | "e" | "m" | "c" | string>("");
 export const sidebarAtom = atom<boolean>(false);
 export const cartViewAtom = atom<boolean>(false);
 export const cartDatasAtom = atom<SelectedItem[] | []>([]);
+export const loadingAtom = atom(false);
 export const orderDatasAtom = atomWithStorage<SelectedItem[] | []>(
     "orderData",
     [],
@@ -22,6 +23,7 @@ export const productFormDatasAtom = atom<Product>({
     description: {
         images: [],
         text: "",
+        detail: "",
     },
     price: "",
     discount: "",
@@ -30,4 +32,23 @@ export const productFormDatasAtom = atom<Product>({
     seasonName: "",
     size: [],
 });
-export const loadingAtom = atom(false);
+export const resetProductFormAtom = atom(null, (get, set) => {
+    set(productFormDatasAtom, { ...INITIAL_PRODUCT_FORM_DATA });
+});
+const INITIAL_PRODUCT_FORM_DATA: Product = {
+    title: {
+        kr: "",
+        eg: "",
+    },
+    description: {
+        images: [],
+        text: "",
+        detail: "",
+    },
+    price: "",
+    discount: "",
+    image: [],
+    colors: [],
+    seasonName: "",
+    size: [],
+};

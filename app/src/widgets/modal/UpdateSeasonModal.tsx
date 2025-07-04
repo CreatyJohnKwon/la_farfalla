@@ -151,7 +151,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                         데이터를 불러오는데 실패했습니다.
                     </div>
                     <button
-                        onClick={onClose}
+                        onClick={() => confirm("작성을 취소하시겠습니까?") && onClose()}
                         className="mt-4 rounded-md bg-gray-900 px-4 py-2 text-white"
                     >
                         닫기
@@ -164,7 +164,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-            onClick={onClose}
+            onClick={() => confirm("작성을 취소하시겠습니까?") && onClose()}
         >
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -180,7 +180,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                         시즌 관리
                     </h2>
                     <button
-                        onClick={onClose}
+                        onClick={() => confirm("작성을 취소하시겠습니까?") && onClose()}
                         className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                     >
                         <svg
@@ -431,7 +431,7 @@ const UpdateSeasonModal = ({ onClose }: { onClose: () => void }) => {
                 {/* 푸터 버튼 */}
                 <div className="flex justify-end gap-3 border-t border-gray-200 pt-4">
                     <button
-                        onClick={onClose}
+                        onClick={() => confirm("작성을 취소하시겠습니까?") && onClose()}
                         className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                     >
                         닫기
