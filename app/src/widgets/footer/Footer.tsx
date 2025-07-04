@@ -32,11 +32,16 @@ const Footer = () => {
         <div
             className={`${hidden ? "hidden" : "block"} ${textColor} font-amstel fixed bottom-0 w-screen text-center text-[10px] sm:text-sm`}
         >
-            <p className="tracking-wide">© lafarfalla 라파팔라 010-6788-3834 YOO HYEON JU</p>
             <p className="tracking-wide">
-                address: 15-5, Jangwol-ro 2-gil, Seongbuk-gu SEOUL, 02773, KOREA
+                © lafarfalla 라파팔라 010-6788-3834 YOO HYEON JU
             </p>
-            <span className="tracking-wide">사업자번호 177-24-01663 통신판매번호 2024-서울성북-1347</span>
+            <p className="tracking-wide">
+                address: 12-22 Hancheon-ro 78-gil, Seongbuk-gu, Seoul 02727,
+                Korea
+            </p>
+            <span className="tracking-wide">
+                사업자번호 177-24-01663 통신판매번호 2024-서울성북-1347
+            </span>
         </div>
     );
 };
