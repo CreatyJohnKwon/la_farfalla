@@ -53,28 +53,48 @@ const ProductInfo = ({ product }: { product: Product }) => {
     const toggleTab = (tabName: any) => {
         setActiveTab(activeTab === tabName ? null : tabName);
     };
-    
+
     const detailsContent = (
-        <div className="sm:mt-2 p-4 text-black text-[0.9rem]">
-            {product.description.detail ? product.description.detail : "상품에 대한 자세한 설명이 없습니다."}
+        <div className="p-4 font-pretendard text-[0.9rem] font-[200] text-black sm:mt-2">
+            {product.description.detail
+                ? product.description.detail
+                : "상품에 대한 자세한 설명이 없습니다."}
         </div>
     );
-    
+
     const shippingContent = (
-        <div className="sm:mt-2 p-4 text-black text-xs sm:text-[0.9rem] gap-2 flex flex-col w-8/11 place-self-center">
-        <span className="leading-relaxed">고객님의 만족스러운 쇼핑을 위해 다음과 같은 교환·반품 정책을 운영합니다.</span>
-        <span className="leading-relaxed">1. 교환/반품 가능 기간<br />
-            - 상품 수령일로부터 7일 이내 신청 가능합니다.<br />
-            - 단순변심으로 인한 접수는 24시간 이내 C/S(카카오톡 채널톡)으로 접수 바랍니다.</span>
-        <span className="leading-relaxed">2. 교환/반품이 불가능한 경우<br />
-            - 상품의 라벨이 훼손됐거나, 세탁한 경우<br />
-            - 상품의 가치가 현저히 감소한 경우(오염, 사용 흔적, 향수 냄새 등)</span>
-        <span className="leading-relaxed">3. 교환/반품 절차<br />
-            - [카카오톡 채널톡] 으로 접수 바랍니다.<br />
-            - 단순 변심의 경우 왕복 택배비 6,000원이 발생됩니다.</span>
-        <span className="leading-relaxed">4. 환불 안내<br />
-            - 반품 상품 수령 및 검수 후, 3영업일 이내 환불이 진행됩니다.<br />
-            - 결제 수단별 환불 소요 시간은 다를 수 있으며, 카드사 정책에 따라 3~7일이 소요될 수 있습니다.</span>
+        <div className="w-8/11 flex flex-col gap-2 place-self-center p-4 font-pretendard text-xs font-[200] text-black sm:mt-2 sm:text-[0.9rem]">
+            <span className="leading-relaxed">
+                고객님의 만족스러운 쇼핑을 위해 다음과 같은 교환·반품 정책을
+                운영합니다.
+            </span>
+            <span className="leading-relaxed">
+                1. 교환/반품 가능 기간
+                <br />
+                - 상품 수령일로부터 7일 이내 신청 가능합니다.
+                <br />- 단순변심으로 인한 접수는 24시간 이내 C/S(카카오톡
+                채널톡)으로 접수 바랍니다.
+            </span>
+            <span className="leading-relaxed">
+                2. 교환/반품이 불가능한 경우
+                <br />
+                - 상품의 라벨이 훼손됐거나, 세탁한 경우
+                <br />- 상품의 가치가 현저히 감소한 경우(오염, 사용 흔적, 향수
+                냄새 등)
+            </span>
+            <span className="leading-relaxed">
+                3. 교환/반품 절차
+                <br />
+                - [카카오톡 채널톡] 으로 접수 바랍니다.
+                <br />- 단순 변심의 경우 왕복 택배비 6,000원이 발생됩니다.
+            </span>
+            <span className="leading-relaxed">
+                4. 환불 안내
+                <br />
+                - 반품 상품 수령 및 검수 후, 3영업일 이내 환불이 진행됩니다.
+                <br />- 결제 수단별 환불 소요 시간은 다를 수 있으며, 카드사
+                정책에 따라 3~7일이 소요될 수 있습니다.
+            </span>
         </div>
     );
 
@@ -167,7 +187,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
 
                 <div className="font-amstel flex w-full justify-between gap-4 px-2 md:w-5/6 md:gap-6 md:px-0 lg:gap-8 xl:gap-10">
                     <button
-                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 md:py-3 sm:text-base md:text-lg lg:text-lg"
+                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 sm:text-base md:py-3 md:text-lg lg:text-lg"
                         disabled={selectedItems.length === 0}
                         onClick={() => {
                             if (!session) {
@@ -180,7 +200,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                         buy now
                     </button>
                     <button
-                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 md:py-3 sm:text-base md:text-lg lg:text-lg"
+                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 sm:text-base md:py-3 md:text-lg lg:text-lg"
                         disabled={selectedItems.length === 0}
                         onClick={() => handleAddToCart()}
                     >
@@ -188,28 +208,32 @@ const ProductInfo = ({ product }: { product: Product }) => {
                     </button>
                 </div>
 
-                <div className="h-[20vh] flex flex-col text-center font-pretendard font-[500] text-[1.3rem] mt-10 gap-4">
+                <div className="mt-10 flex h-[20vh] flex-col gap-4 text-center text-[1.3rem] font-[500]">
                     <div>
-                        <button 
-                            className={`transition-colors duration-200 ${
-                            activeTab === 'details' ? 'text-black' : 'text-gray-300 hover:text-black'
+                        <button
+                            className={`font-amstel transition-colors duration-200 ${
+                                activeTab === "details"
+                                    ? "text-black"
+                                    : "text-gray-300 hover:text-black"
                             }`}
-                            onClick={() => toggleTab('details')}
+                            onClick={() => toggleTab("details")}
                         >
                             DETAILS
                         </button>
-                        {activeTab === 'details' && detailsContent}
-                    </div>                            
+                        {activeTab === "details" && detailsContent}
+                    </div>
                     <div>
-                        <button 
-                            className={`transition-colors duration-200 ${
-                            activeTab === 'shipping' ? 'text-black' : 'text-gray-300 hover:text-black'
+                        <button
+                            className={`font-amstel transition-colors duration-200 ${
+                                activeTab === "shipping"
+                                    ? "text-black"
+                                    : "text-gray-300 hover:text-black"
                             }`}
-                            onClick={() => toggleTab('shipping')}
+                            onClick={() => toggleTab("shipping")}
                         >
                             SHIPPING RETURNS
                         </button>
-                        {activeTab === 'shipping' && shippingContent}
+                        {activeTab === "shipping" && shippingContent}
                     </div>
                 </div>
             </div>
