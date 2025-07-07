@@ -36,6 +36,7 @@ jobs:
                   echo "R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}" >> .env.production
                   echo "R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}" >> .env.production
                   echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.production
+                  echo "NEXT_IMAGE_OPTIMIZATION_TIMEOUT=${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}" >> .env.production
 
             - name: Archive app source (exclude node_modules)
               run: |

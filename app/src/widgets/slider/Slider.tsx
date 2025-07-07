@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useRef } from "react";
-import DefaultImage from "../../../../public/images/chill.png";
+import DefaultImage from "../../../../public/images/sample_file.jpeg";
 import { motion, useMotionValue, useAnimation } from "framer-motion";
 
 const Slider = ({ images }: { images: string[] }) => {

@@ -18,8 +18,8 @@ const Home = () => {
                 <Image
                     src={BackgroundImg}
                     alt="background"
-                    height={1000}
-                    width={1000}
+                    height={1080}
+                    width={1920}
                     className="h-full w-full object-cover object-[70%_center] sm:object-left"
                 />
             </div>

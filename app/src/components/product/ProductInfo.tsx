@@ -208,7 +208,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                     </button>
                 </div>
 
-                <div className="mt-10 flex h-[20vh] flex-col gap-4 text-center text-[1.3rem] font-[500]">
+                <div className="mt-10 flex h-[5vh] flex-col gap-4 text-center text-[1.3rem] font-[500]">
                     <div>
                         <button
                             className={`font-amstel transition-colors duration-200 ${

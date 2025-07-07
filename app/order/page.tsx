@@ -1035,7 +1035,9 @@ const Order = () => {
                                         type="radio"
                                         name="payment"
                                         defaultChecked
-                                        onChange={() => setPayments("NAVER_PAY")}
+                                        onChange={() =>
+                                            setPayments("NAVER_PAY")
+                                        }
                                     />
                                     {"\t네이버 페이"}
                                 </label>
@@ -1043,7 +1045,9 @@ const Order = () => {
                                     <input
                                         type="radio"
                                         name="payment"
-                                        onChange={() => setPayments("KAKAO_PAY")}
+                                        onChange={() =>
+                                            setPayments("KAKAO_PAY")
+                                        }
                                     />
                                     {"\t카카오 페이"}
                                 </label>

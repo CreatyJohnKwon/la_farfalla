@@ -5,8 +5,12 @@ const nextConfig: NextConfig = {
     images: {
         // 이미지 포맷 사용 : 이미지 랜더링 속도 향상 목적
         formats: ["image/webp", "image/avif"],
-        deviceSizes: [640, 750, 828, 1080, 1200],
+        deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+        // 타임아웃 시간 증가
+        minimumCacheTTL: 60,
+        // 이미지 최적화 비활성화 (임시 해결책)
+        unoptimized: true,
 
         remotePatterns: [
             {

@@ -2,54 +2,81 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { memo } from "react";
 import DefaultImage from "../../../../public/images/chill.png";
 import { Product } from "@src/entities/type/interfaces";
 import { priceResult, priceDiscount } from "@src/features/calculate";
+import { useOptimizedImage } from "@/src/shared/hooks/useOptimizedImage";
 
-const ProductsList = ({
-    product,
-    index = 0,
-}: {
+interface ProductsListProps {
     product: Product;
     index?: number;
-}) => {
-    const [imageLoaded, setImageLoaded] = useState(false);
+}
+
+const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
+    // 최적화된 이미지 훅 사용
+    const {
+        ref,
+        src: optimizedSrc,
+        isLoaded,
+        isLoading,
+        shouldLoad,
+    } = useOptimizedImage({
+        src: product.image?.[0] || DefaultImage.src,
+        fallbackSrc: DefaultImage.src,
+        priority: index < 4, // 처음 4개만 우선순위
+        quality: index < 4 ? 85 : 75,
+        width: 500,
+    });
 
     return (
         <li
-            key={product._id}
             className="group animate-fade-in pb-8 text-center opacity-0 md:pb-0"
             style={{ animationDelay: `${index * 50}ms` }}
         >
             <Link href={`/products/${product._id}`} className="block h-full">
-                <div className="relative overflow-hidden transition-all duration-300 md:group-hover:scale-[1.01]">
+                <div
+                    ref={ref as any}
+                    className="relative overflow-hidden transition-all duration-300 md:group-hover:scale-[1.01]"
+                >
                     {/* 3:4 비율 (4/3 * 100% = 133.33%) */}
                     <div className="pb-[133.33%]"></div>
 
-                    {/* 스켈레톤 로딩 */}
-                    {!imageLoaded && (
-                        <div className="animate-shimmer absolute left-0 top-0 h-full w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]">
-                            <div className="h-full w-full bg-gray-200"></div>
+                    {/* 향상된 스켈레톤 로딩 */}
+                    {(!isLoaded || isLoading) && shouldLoad && (
+                        <div className="absolute left-0 top-0 h-full w-full bg-gray-100">
+                            <div className="animate-shimmer h-full w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]">
+                                <div className="flex h-full w-full items-center justify-center">
+                                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"></div>
+                                </div>
+                            </div>
                         </div>
                     )}
-                    <Image
-                        src={product.image ? product.image[0] : DefaultImage}
-                        alt={product.title.eg || ""}
-                        width={500}
-                        height={500}
-                        className={`absolute left-0 top-0 h-full w-full object-cover transition-all duration-500 ${
-                            imageLoaded ? "opacity-100" : "opacity-0"
-                        }`}
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        onLoad={() => setImageLoaded(true)}
-                        onError={() => setImageLoaded(true)}
-                    />
+
+                    {/* 최적화된 이미지 렌더링 */}
+                    {shouldLoad && (
+                        <Image
+                            src={optimizedSrc}
+                            alt={product.title.eg || ""}
+                            width={500}
+                            height={667}
+                            className={`absolute left-0 top-0 h-full w-full object-cover transition-all duration-500 ${
+                                isLoaded ? "opacity-100" : "opacity-0"
+                            }`}
+                            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                            priority={index < 2} // 처음 2개만 priority
+                            quality={index < 4 ? 85 : 75}
+                            loading={index < 4 ? "eager" : "lazy"}
+                            placeholder="blur"
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                        />
+                    )}
 
                     {/* 호버 오버레이 */}
                     <div className="absolute inset-0 bg-black bg-opacity-0 transition-all duration-300 group-hover:bg-opacity-10"></div>
                 </div>
 
+                {/* 상품 정보 */}
                 <div className="pt-2 text-xs transition-all duration-700 ease-in-out sm:text-base">
                     <p className="font-amstel-thin sm:font-amstel text-black transition-colors duration-300 group-hover:text-gray-900">
                         {`[${product.title.eg}]`}
@@ -62,6 +89,7 @@ const ProductsList = ({
                     </p>
                 </div>
 
+                {/* 가격 정보 */}
                 <div>
                     {product.discount === "0" || !product.discount ? (
                         <span className="font-amstel-thin sm:font-amstel text-xs font-semibold text-gray-900 sm:text-base">
@@ -86,6 +114,8 @@ const ProductsList = ({
             </Link>
         </li>
     );
-};
+});
+
+ProductsList.displayName = "ProductsList";
 
 export default ProductsList;
