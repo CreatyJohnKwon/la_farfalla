@@ -62,6 +62,17 @@ const ProductInfo = ({ product }: { product: Product }) => {
         </div>
     );
 
+    const deliveryContent = (
+        <div className="w-8/11 flex flex-col gap-2 place-self-center p-4 font-pretendard text-xs text-black sm:mt-2 sm:text-[0.9rem]">
+            <span className="font-[200] leading-relaxed">
+                주문 확인 후 최대 7일 이내 제공 완료됩니다.
+            </span>
+            <span className="font-[100] leading-relaxed">
+                * 택배사 사정에 따라 공휴일과 주말 제외
+            </span>
+        </div>
+    );
+
     const shippingContent = (
         <div className="w-8/11 flex flex-col gap-2 place-self-center p-4 font-pretendard text-xs font-[200] text-black sm:mt-2 sm:text-[0.9rem]">
             <span className="leading-relaxed">
@@ -221,6 +232,19 @@ const ProductInfo = ({ product }: { product: Product }) => {
                             DETAILS
                         </button>
                         {activeTab === "details" && detailsContent}
+                    </div>
+                    <div>
+                        <button
+                            className={`font-amstel transition-colors duration-200 ${
+                                activeTab === "delivery"
+                                    ? "text-black"
+                                    : "text-gray-300 hover:text-black"
+                            }`}
+                            onClick={() => toggleTab("delivery")}
+                        >
+                            DELIVERY
+                        </button>
+                        {activeTab === "delivery" && deliveryContent}
                     </div>
                     <div>
                         <button
