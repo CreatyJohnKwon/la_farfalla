@@ -82,29 +82,37 @@ const ProductInfo = ({ product }: { product: Product }) => {
             <span className="leading-relaxed">
                 1. 교환/반품 가능 기간
                 <br />
-                - 상품 수령일로부터 7일 이내 신청 가능합니다.
-                <br />- 단순변심으로 인한 접수는 24시간 이내 C/S(카카오톡
-                채널톡)으로 접수 바랍니다.
+                <span className="font-[100]">
+                    - 상품 수령일로부터 7일 이내 신청 가능합니다.
+                    <br />- 단순변심으로 인한 접수는 24시간 이내 C/S(카카오톡
+                    채널톡)으로 접수 바랍니다.
+                </span>
             </span>
             <span className="leading-relaxed">
                 2. 교환/반품이 불가능한 경우
                 <br />
-                - 상품의 라벨이 훼손됐거나, 세탁한 경우
-                <br />- 상품의 가치가 현저히 감소한 경우(오염, 사용 흔적, 향수
-                냄새 등)
+                <span className="font-[100]">
+                    - 상품의 라벨이 훼손됐거나, 세탁한 경우
+                    <br />- 상품의 가치가 현저히 감소한 경우(오염, 사용 흔적,
+                    향수 냄새 등)
+                </span>
             </span>
             <span className="leading-relaxed">
                 3. 교환/반품 절차
                 <br />
-                - [카카오톡 채널톡] 으로 접수 바랍니다.
-                <br />- 단순 변심의 경우 왕복 택배비 6,000원이 발생됩니다.
+                <span className="font-[100]">
+                    - [카카오톡 채널톡] 으로 접수 바랍니다.
+                    <br />- 단순 변심의 경우 왕복 택배비 6,000원이 발생됩니다.
+                </span>
             </span>
             <span className="leading-relaxed">
                 4. 환불 안내
                 <br />
-                - 반품 상품 수령 및 검수 후, 3영업일 이내 환불이 진행됩니다.
-                <br />- 결제 수단별 환불 소요 시간은 다를 수 있으며, 카드사
-                정책에 따라 3~7일이 소요될 수 있습니다.
+                <span className="font-[100]">
+                    - 반품 상품 수령 및 검수 후, 3영업일 이내 환불이 진행됩니다.
+                    <br />- 결제 수단별 환불 소요 시간은 다를 수 있으며, 카드사
+                    정책에 따라 3~7일이 소요될 수 있습니다.
+                </span>
             </span>
         </div>
     );
@@ -219,7 +227,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                     </button>
                 </div>
 
-                <div className="mt-10 flex h-[5vh] flex-col gap-4 text-center text-[1.3rem] font-[500]">
+                <div className="mt-10 flex h-[10vh] flex-col gap-4 text-center text-[1rem] font-[500] md:text-[1.3rem]">
                     <div>
                         <button
                             className={`font-amstel transition-colors duration-200 ${
