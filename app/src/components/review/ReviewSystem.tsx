@@ -169,7 +169,7 @@ const ReviewSystem: React.FC = () => {
             : 0;
 
     return (
-        <div className="min-w-screen mx-auto max-h-screen bg-white p-8">
+        <div className="mx-auto min-h-screen bg-white p-8">
             <div className="mb-12 border border-gray-100 bg-white p-8 shadow-sm">
                 <div className="mb-8 flex items-center justify-between">
                     <div>

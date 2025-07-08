@@ -23,7 +23,7 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
 
     const handleAddComment = () => {
         if (commentContent.trim()) {
-            onAddComment(review.id, commentContent);
+            onAddComment(review._id, commentContent);
             setCommentContent("");
             setIsCommenting(false);
             setShowComments(true);
@@ -32,17 +32,17 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
 
     const handleEditReview = () => {
         if (editContent.trim()) {
-            onEditReview(review.id, editContent, editRating);
+            onEditReview(review._id, editContent, editRating);
             setIsEditing(false);
         }
     };
 
     const handleLikeReview = () => {
-        onLikeReview(review.id);
+        onLikeReview(review._id);
     };
 
     const handleDeleteReview = () => {
-        onDeleteReview(review.id);
+        onDeleteReview(review._id);
     };
 
     return (
