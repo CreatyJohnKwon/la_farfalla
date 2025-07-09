@@ -2,175 +2,212 @@ import { useState } from "react";
 import StarRating from "./StarRating";
 import ReviewItem from "./ReviewItem";
 import { Star } from "lucide-react";
+import { Review, ReviewComment } from "./interface";
+import {
+    useGetReviewsListQuery,
+    usePostReviewMutation,
+    useUpdateReviewMutation,
+    useDeleteReviewMutation,
+    useToggleReviewLikeMutation,
+    usePostCommentMutation,
+    useUpdateCommentMutation,
+    useDeleteCommentMutation,
+    useToggleCommentLikeMutation,
+} from "@src/shared/hooks/react-query/useReviewQuery";
 
-const ReviewSystem: React.FC = () => {
-    const [reviews, setReviews] = useState<Review[]>([
-        {
-            _id: "1",
-            author: "김철수",
-            content:
-                "정말 훌륭한 서비스입니다! 직원분들이 매우 친절하고 전문적이었어요. 다음에도 꼭 이용하고 싶습니다.",
-            timestamp: "2시간 전",
-            likes: 15,
-            isLiked: false,
-            rating: 4.5,
-            comments: [
-                {
-                    id: "2",
-                    author: "관리자",
-                    content:
-                        "소중한 리뷰 감사합니다! 앞으로도 더 나은 서비스로 보답하겠습니다.",
-                    timestamp: "1시간 전",
-                    likes: 3,
-                    isLiked: false,
-                    parentId: "1",
-                },
-            ],
-        },
-        {
-            _id: "3",
-            author: "이영희",
-            content:
-                "전체적으로 만족스러웠지만 대기시간이 조금 길었어요. 그래도 결과는 매우 좋았습니다.",
-            timestamp: "5시간 전",
-            likes: 8,
-            isLiked: true,
-            rating: 4.0,
-            comments: [],
-        },
-    ]);
+interface ReviewSystemProps {
+    productId?: string;
+}
 
+const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
+    // React Query 훅들
+    const {
+        data: reviewsData,
+        isLoading,
+        error,
+    } = useGetReviewsListQuery(productId);
+    const postReviewMutation = usePostReviewMutation();
+    const updateReviewMutation = useUpdateReviewMutation();
+    const deleteReviewMutation = useDeleteReviewMutation();
+    const toggleReviewLikeMutation = useToggleReviewLikeMutation();
+    const postCommentMutation = usePostCommentMutation();
+    const updateCommentMutation = useUpdateCommentMutation();
+    const deleteCommentMutation = useDeleteCommentMutation();
+    const toggleCommentLikeMutation = useToggleCommentLikeMutation();
+
+    // 로컬 상태
     const [newReview, setNewReview] = useState("");
     const [newRating, setNewRating] = useState(5);
 
-    const addReview = (content: string, rating: number) => {
-        const review: Review = {
-            _id: Date.now().toString(),
-            author: "사용자",
-            content,
-            timestamp: "방금 전",
-            likes: 0,
-            isLiked: false,
-            rating,
-            comments: [],
-        };
-        setReviews([review, ...reviews]);
+    // 데이터 추출
+    const reviews = reviewsData?.data || [];
+
+    // 리뷰 작성
+    const handleSubmitReview = async () => {
+        if (newReview.trim()) {
+            try {
+                await postReviewMutation.mutateAsync({
+                    content: newReview,
+                    rating: newRating,
+                    productId,
+                });
+                setNewReview("");
+                setNewRating(5);
+            } catch (error) {
+                // 에러는 mutation에서 처리됨
+            }
+        }
     };
 
-    const addComment = (reviewId: string, content: string) => {
-        const comment: ReviewComment = {
-            id: Date.now().toString(),
-            author: "사용자",
-            content,
-            timestamp: "방금 전",
-            likes: 0,
-            isLiked: false,
-            parentId: reviewId,
-        };
+    // 댓글 추가
+    const addComment = async (reviewId: string, content: string) => {
+        try {
+            await postCommentMutation.mutateAsync({
+                reviewId,
+                content,
+            });
+        } catch (error) {
+            // 에러는 mutation에서 처리됨
+        }
+    };
 
-        setReviews(
-            reviews.map((review) =>
-                review._id === reviewId
-                    ? { ...review, comments: [...review.comments, comment] }
-                    : review,
-            ),
+    // 리뷰 좋아요 토글
+    const toggleLikeReview = async (reviewId: string) => {
+        try {
+            await toggleReviewLikeMutation.mutateAsync(reviewId);
+        } catch (error) {
+            // 에러는 mutation에서 처리됨
+        }
+    };
+
+    // 댓글 좋아요 토글
+    const toggleLikeComment = async (commentId: string) => {
+        // 댓글이 속한 리뷰 찾기
+        const review = reviews.find((r) =>
+            r.comments.some((c) => c.id === commentId),
         );
+        if (review) {
+            try {
+                await toggleCommentLikeMutation.mutateAsync({
+                    reviewId: review._id,
+                    commentId,
+                });
+            } catch (error) {
+                // 에러는 mutation에서 처리됨
+            }
+        }
     };
 
-    const toggleLikeReview = (reviewId: string) => {
-        setReviews(
-            reviews.map((review) =>
-                review._id === reviewId
-                    ? {
-                          ...review,
-                          isLiked: !review.isLiked,
-                          likes: review.isLiked
-                              ? review.likes - 1
-                              : review.likes + 1,
-                      }
-                    : review,
-            ),
-        );
-    };
-
-    const toggleLikeComment = (commentId: string) => {
-        setReviews(
-            reviews.map((review) => ({
-                ...review,
-                comments: review.comments.map((comment) =>
-                    comment.id === commentId
-                        ? {
-                              ...comment,
-                              isLiked: !comment.isLiked,
-                              likes: comment.isLiked
-                                  ? comment.likes - 1
-                                  : comment.likes + 1,
-                          }
-                        : comment,
-                ),
-            })),
-        );
-    };
-
-    const editReview = (
+    // 리뷰 수정
+    const editReview = async (
         reviewId: string,
         newContent: string,
         newRating: number,
     ) => {
-        setReviews(
-            reviews.map((review) =>
-                review._id === reviewId
-                    ? { ...review, content: newContent, rating: newRating }
-                    : review,
-            ),
-        );
-    };
-
-    const editComment = (commentId: string, newContent: string) => {
-        setReviews(
-            reviews.map((review) => ({
-                ...review,
-                comments: review.comments.map((comment) =>
-                    comment.id === commentId
-                        ? { ...comment, content: newContent }
-                        : comment,
-                ),
-            })),
-        );
-    };
-
-    const deleteReview = (reviewId: string) => {
-        setReviews(reviews.filter((review) => review._id !== reviewId));
-    };
-
-    const deleteComment = (commentId: string) => {
-        setReviews(
-            reviews.map((review) => ({
-                ...review,
-                comments: review.comments.filter(
-                    (comment) => comment.id !== commentId,
-                ),
-            })),
-        );
-    };
-
-    const handleSubmitReview = () => {
-        if (newReview.trim()) {
-            addReview(newReview, newRating);
-            setNewReview("");
-            setNewRating(5);
+        try {
+            await updateReviewMutation.mutateAsync({
+                reviewId,
+                content: newContent,
+                rating: newRating,
+            });
+        } catch (error) {
+            // 에러는 mutation에서 처리됨
         }
     };
 
+    // 댓글 수정
+    const editComment = async (commentId: string, newContent: string) => {
+        const review = reviews.find((r) =>
+            r.comments.some((c) => c.id === commentId),
+        );
+        if (review) {
+            try {
+                await updateCommentMutation.mutateAsync({
+                    reviewId: review._id,
+                    commentId,
+                    content: newContent,
+                });
+            } catch (error) {
+                // 에러는 mutation에서 처리됨
+            }
+        }
+    };
+
+    // 리뷰 삭제
+    const deleteReview = async (reviewId: string) => {
+        if (confirm("정말로 이 리뷰를 삭제하시겠습니까?")) {
+            try {
+                await deleteReviewMutation.mutateAsync(reviewId);
+            } catch (error) {
+                // 에러는 mutation에서 처리됨
+            }
+        }
+    };
+
+    // 댓글 삭제
+    const deleteComment = async (commentId: string) => {
+        const review = reviews.find((r) =>
+            r.comments.some((c) => c.id === commentId),
+        );
+        if (review && confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
+            try {
+                await deleteCommentMutation.mutateAsync({
+                    reviewId: review._id,
+                    commentId,
+                });
+            } catch (error) {
+                // 에러는 mutation에서 처리됨
+            }
+        }
+    };
+
+    // 평균 별점 계산
     const averageRating =
         reviews.length > 0
             ? reviews.reduce((sum, review) => sum + review.rating, 0) /
               reviews.length
             : 0;
 
+    // 로딩 상태
+    if (isLoading) {
+        return (
+            <div className="mx-auto min-h-screen bg-white p-8">
+                <div className="py-20 text-center">
+                    <div className="mx-auto mb-4 h-8 w-8 animate-spin border-2 border-gray-300 border-t-black"></div>
+                    <p className="text-gray-500">리뷰를 불러오는 중...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // 에러 상태
+    if (error) {
+        return (
+            <div className="mx-auto min-h-screen bg-white p-8">
+                <div className="py-20 text-center">
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center bg-red-100">
+                        <Star className="h-8 w-8 text-red-400" />
+                    </div>
+                    <p className="text-lg text-red-500">
+                        리뷰를 불러오는데 실패했습니다
+                    </p>
+                    <p className="mt-2 text-sm text-gray-400">
+                        {error.message}
+                    </p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="mt-4 bg-black px-6 py-2 text-white hover:bg-gray-800"
+                    >
+                        다시 시도
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="mx-auto min-h-screen bg-white p-8">
-            <div className="mb-12 border border-gray-100 bg-white p-8 shadow-sm">
+            <div className="mb-12 border border-gray-100 bg-white p-8">
                 <div className="mb-8 flex items-center justify-between">
                     <div>
                         <h2 className="mb-2 text-2xl font-bold text-gray-900">
@@ -204,16 +241,23 @@ const ReviewSystem: React.FC = () => {
                     <textarea
                         value={newReview}
                         onChange={(e) => setNewReview(e.target.value)}
-                        className="w-full resize-none rounded-xl border border-gray-300 bg-white/80 p-5 text-gray-800 placeholder-gray-500 backdrop-blur-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-black/20"
+                        className="w-full resize-none border border-gray-300 bg-white p-5 text-gray-800 placeholder-gray-500 focus:border-black focus:outline-none"
                         rows={4}
                         placeholder="서비스에 대한 리뷰를 작성해주세요..."
+                        disabled={postReviewMutation.isPending}
                     />
                     <div className="flex justify-end">
                         <button
                             onClick={handleSubmitReview}
-                            className="rounded-xl bg-black px-8 py-3 font-semibold text-white transition-colors duration-200 hover:bg-gray-800"
+                            disabled={
+                                postReviewMutation.isPending ||
+                                !newReview.trim()
+                            }
+                            className="bg-black px-8 py-3 font-semibold text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
                         >
-                            리뷰 작성
+                            {postReviewMutation.isPending
+                                ? "작성 중..."
+                                : "리뷰 작성"}
                         </button>
                     </div>
                 </div>
@@ -235,9 +279,9 @@ const ReviewSystem: React.FC = () => {
                 ))}
             </div>
 
-            {reviews.length === 0 && (
+            {reviews.length === 0 && !isLoading && (
                 <div className="py-20 text-center">
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-black/10">
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center bg-gray-100">
                         <Star className="h-8 w-8 text-gray-400" />
                     </div>
                     <p className="text-lg text-gray-500">

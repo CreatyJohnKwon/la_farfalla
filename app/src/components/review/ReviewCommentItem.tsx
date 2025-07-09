@@ -1,5 +1,6 @@
 import { Edit3, Heart, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { ReviewCommentItemProps } from "./interface";
 
 const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
     comment,

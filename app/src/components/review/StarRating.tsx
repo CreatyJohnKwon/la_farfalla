@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Star } from "lucide-react";
+import { StarRatingProps } from "./interface";
 
 const StarRating: React.FC<StarRatingProps> = ({
     rating,

@@ -2,6 +2,7 @@ import { Edit3, Heart, MenuSquare, MoreVertical, Trash2 } from "lucide-react";
 import ReviewCommentItem from "./ReviewCommentItem";
 import StarRating from "./StarRating";
 import { useState } from "react";
+import { ReviewItemProps } from "./interface";
 
 const ReviewItem: React.FC<ReviewItemProps> = ({
     review,
