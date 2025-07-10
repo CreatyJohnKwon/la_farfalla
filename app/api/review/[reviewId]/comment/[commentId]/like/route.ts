@@ -3,46 +3,51 @@ import { connectDB } from "@src/entities/models/db/mongoose";
 import { ReviewComment } from "@/src/entities/models/ReviewComment";
 import { getAuthSession } from "@/src/shared/lib/session";
 
-export async function POST(
-    req: NextRequest,
-    { params }: { params: { reviewId: string; commentId: string } },
-) {
-    try {
-        await connectDB();
+// ✅ Next.js가 기대하는 형태의 타입
+interface Context {
+  params: {
+    reviewId: string;
+    commentId: string;
+  };
+}
 
-        const session = await getAuthSession();
-        if (!session?.user?.email) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 },
-            );
-        }
+export async function POST(req: NextRequest, context: Context) {
+  try {
+    await connectDB();
 
-        const commentId = params.commentId;
-        const comment = await ReviewComment.findById(commentId);
-
-        if (!comment) {
-            return NextResponse.json(
-                { error: "댓글을 찾을 수 없습니다" },
-                { status: 404 },
-            );
-        }
-
-        // 좋아요 토글
-        comment.isLiked = !comment.isLiked;
-        comment.likes += comment.isLiked ? 1 : -1;
-
-        await comment.save();
-
-        return NextResponse.json({
-            message: "좋아요가 처리되었습니다",
-            data: comment,
-        });
-    } catch (error: any) {
-        console.error("댓글 좋아요 처리 중 오류:", error);
-        return NextResponse.json(
-            { error: "좋아요 처리 실패", details: error.message },
-            { status: 500 },
-        );
+    const session = await getAuthSession();
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 },
+      );
     }
+
+    const { commentId } = context.params;
+    const comment = await ReviewComment.findById(commentId);
+
+    if (!comment) {
+      return NextResponse.json(
+        { error: "댓글을 찾을 수 없습니다" },
+        { status: 404 },
+      );
+    }
+
+    // 좋아요 토글
+    comment.isLiked = !comment.isLiked;
+    comment.likes = Math.max(0, comment.likes + (comment.isLiked ? 1 : -1));
+
+    await comment.save();
+
+    return NextResponse.json({
+      message: "좋아요가 처리되었습니다",
+      data: comment,
+    });
+  } catch (error: any) {
+    console.error("댓글 좋아요 처리 중 오류:", error);
+    return NextResponse.json(
+      { error: "좋아요 처리 실패", details: error.message },
+      { status: 500 },
+    );
+  }
 }
