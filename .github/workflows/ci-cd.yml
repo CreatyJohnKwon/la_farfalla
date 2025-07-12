@@ -58,10 +58,6 @@ jobs:
                     docker-compose down --remove-orphans || true
                     docker system prune -af --volumes
                     
-                    echo "🗑️  Removing existing la_farfalla directory..."
-                    cd /home/ec2-user
-                    rm -rf la_farfalla
-                    
                     echo "📁 Creating new la_farfalla directory..."
                     mkdir -p la_farfalla
                     cd la_farfalla
