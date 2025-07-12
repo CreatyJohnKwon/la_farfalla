@@ -60,10 +60,6 @@ const Order = () => {
         if (!couponData.length || !orderDatas.length) return [];
 
         const now = new Date();
-        const currentOrderAmount = orderDatas.reduce(
-            (acc, p) => acc + p.discountPrice * p.quantity,
-            0,
-        );
 
         const filtered = couponData.filter((userCoupon: any) => {
             const coupon = userCoupon.couponId;

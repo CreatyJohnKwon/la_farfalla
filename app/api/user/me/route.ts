@@ -41,7 +41,7 @@ export async function GET() {
     // 유효 기간 체크 (정의된 endAt 기준) - 기존 로직 그대로 유지
     const availableCoupons = userCoupons.filter((uc) => {
         const coupon = uc.couponId as any;
-        return coupon.endAt && coupon.endAt > now;
+        return coupon && coupon.endAt && coupon.endAt > now;
     });
 
     const result: UserProfileData = {

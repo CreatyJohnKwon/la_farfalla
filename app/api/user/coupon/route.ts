@@ -46,9 +46,7 @@ export async function GET(req: NextRequest) {
         // 만료되지 않은 쿠폰만 필터링
         const availableCoupons = userCoupons.filter((uc) => {
             const coupon = uc.couponId as any;
-            const isValid =
-                coupon && coupon.endAt && new Date(coupon.endAt) > now;
-            return isValid;
+            return coupon && coupon.endAt && coupon.endAt > now;
         });
 
         return NextResponse.json({

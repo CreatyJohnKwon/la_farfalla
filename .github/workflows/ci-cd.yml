@@ -44,7 +44,7 @@ jobs:
 
             - name: Upload artifact to EC2
               run: |
-                  scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa build-artifact.zip ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/home/ec2-user/la_farfalla/
+                  scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa build-artifact.zip ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/home/ec2-user/
 
             - name: Remote Deploy
               run: |
@@ -52,26 +52,35 @@ jobs:
                       -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa \
                       ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
                     set -e
-                    cd /home/ec2-user/la_farfalla
-
-                    echo "🧹 rm docker Cashe & Cleaning up disk space..."
+                    
+                    echo "🧹 Stopping containers and cleaning up..."
+                    cd /home/ec2-user/la_farfalla || true
                     docker-compose down --remove-orphans || true
                     docker system prune -af --volumes
-
-                    find . -maxdepth 1 -name "build-artifact*.zip" -mtime +7 -delete
-
+                    
+                    echo "🗑️  Removing existing la_farfalla directory..."
+                    cd /home/ec2-user
+                    rm -rf la_farfalla
+                    
+                    echo "📁 Creating new la_farfalla directory..."
+                    mkdir -p la_farfalla
+                    cd la_farfalla
+                    
+                    echo "📦 Unpacking build artifact..."
+                    unzip -q /home/ec2-user/build-artifact.zip
+                    rm /home/ec2-user/build-artifact.zip
+                    
+                    echo "🧹 Cleaning up old build artifacts..."
+                    find /home/ec2-user -maxdepth 1 -name "build-artifact*.zip" -mtime +7 -delete || true
+                    
+                    echo "🧹 Cleaning up system logs..."
                     sudo journalctl --vacuum-time=7d
-
-                    echo "📦  Unpacking build artifact..."
-                    unzip -o build-artifact.zip
-                    rm build-artifact.zip
-
-                    echo "🚀  Starting containers..."
+                    
+                    echo "🚀 Starting containers..."
                     docker-compose up -d --build --force-recreate
-
-                    echo "✅  Deployment complete"
+                    
+                    echo "✅ Deployment complete"
                   EOF
-
               env:
                   AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
                   EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
