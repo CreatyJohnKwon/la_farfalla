@@ -18,6 +18,10 @@ jobs:
                   mkdir -p ~/.ssh
                   echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
+                  # SSH 호스트 키 검증 비활성화 (보안상 주의)
+                  echo "Host *" >> ~/.ssh/config
+                  echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+                  echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
               env:
                   AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
@@ -40,43 +44,115 @@ jobs:
 
             - name: Archive app source (exclude node_modules)
               run: |
-                  zip -r build-artifact.zip . -x "node_modules/*" -x ".git/*"
+                  # 타임스탬프 추가로 고유한 파일명 생성
+                  TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+                  zip -r build-artifact-${TIMESTAMP}.zip . -x "node_modules/*" -x ".git/*" -x ".github/*" -x "*.log"
+                  echo "ARTIFACT_NAME=build-artifact-${TIMESTAMP}.zip" >> $GITHUB_ENV
 
             - name: Upload artifact to EC2
               run: |
-                  scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa build-artifact.zip ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/home/ec2-user/
+                  scp -i ~/.ssh/id_rsa ${{ env.ARTIFACT_NAME }} ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/home/ec2-user/
 
             - name: Remote Deploy
               run: |
                   ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=3 \
-                      -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa \
+                      -i ~/.ssh/id_rsa \
                       ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-                    set -e
+                    set -e  # 에러 발생 시 즉시 중단
                     
-                    echo "🧹 Stopping containers and cleaning up..."
-                    cd /home/ec2-user/la_farfalla || true
-                    docker-compose down --remove-orphans || true
-                    docker system prune -af --volumes
+                    DEPLOY_DIR="la_farfalla"
+                    BACKUP_DIR="la_farfalla_backup_$(date +%Y%m%d_%H%M%S)"
+                    ARTIFACT_FILE="/home/ec2-user/${{ env.ARTIFACT_NAME }}"
                     
-                    echo "📁 Creating new la_farfalla directory..."
-                    mkdir -p la_farfalla
-                    cd la_farfalla
+                    echo "🔄 Starting deployment process..."
                     
-                    echo "📦 Unpacking build artifact..."
-                    unzip -q /home/ec2-user/build-artifact.zip
-                    rm /home/ec2-user/build-artifact.zip
+                    # 1. 기존 컨테이너 중지
+                    echo "🛑 Stopping existing containers..."
+                    if [ -d "$DEPLOY_DIR" ]; then
+                        cd "$DEPLOY_DIR"
+                        docker-compose down --remove-orphans || true
+                        cd /home/ec2-user
+                        # 백업 생성
+                        echo "📦 Creating backup..."
+                        mv "$DEPLOY_DIR" "$BACKUP_DIR"
+                    fi
                     
-                    echo "🧹 Cleaning up old build artifacts..."
+                    # 2. Docker 시스템 정리
+                    echo "🧹 Cleaning Docker system..."
+                    docker system prune -af --volumes || true
+                    
+                    # 3. 새 디렉토리 생성
+                    echo "📁 Creating new deployment directory..."
+                    mkdir -p "$DEPLOY_DIR"
+                    cd "$DEPLOY_DIR"
+                    
+                    # 4. 아티팩트 압축 해제 (자동 덮어쓰기)
+                    echo "📦 Extracting build artifact..."
+                    if ! unzip -o -q "$ARTIFACT_FILE"; then
+                        echo "❌ Failed to extract build artifact"
+                        cd /home/ec2-user
+                        rm -rf "$DEPLOY_DIR"
+                        if [ -d "$BACKUP_DIR" ]; then
+                            echo "🔄 Rolling back to previous version..."
+                            mv "$BACKUP_DIR" "$DEPLOY_DIR"
+                        fi
+                        exit 1
+                    fi
+                    
+                    # 5. 업로드된 아티팩트 파일 삭제
+                    rm -f "$ARTIFACT_FILE"
+                    
+                    # 6. Docker 컨테이너 시작
+                    echo "🚀 Starting Docker containers..."
+                    if ! docker-compose up -d --build --force-recreate; then
+                        echo "❌ Failed to start containers"
+                        cd /home/ec2-user
+                        rm -rf "$DEPLOY_DIR"
+                        if [ -d "$BACKUP_DIR" ]; then
+                            echo "🔄 Rolling back to previous version..."
+                            mv "$BACKUP_DIR" "$DEPLOY_DIR"
+                            cd "$DEPLOY_DIR"
+                            docker-compose up -d || true
+                        fi
+                        exit 1
+                    fi
+                    
+                    # 7. 헬스체크 (선택사항)
+                    echo "🏥 Performing health check..."
+                    sleep 10
+                    if ! docker-compose ps | grep -q "Up"; then
+                        echo "⚠️ Warning: Some containers may not be running properly"
+                        docker-compose ps
+                    else
+                        echo "✅ All containers are running"
+                    fi
+                    
+                    # 8. 백업 정리 (성공 시에만)
+                    cd /home/ec2-user
+                    if [ -d "$BACKUP_DIR" ]; then
+                        echo "🗑️ Removing backup (deployment successful)..."
+                        rm -rf "$BACKUP_DIR"
+                    fi
+                    
+                    # 9. 오래된 백업 및 로그 정리
+                    echo "🧹 Cleaning up old files..."
+                    find /home/ec2-user -maxdepth 1 -name "la_farfalla_backup_*" -mtime +3 -exec rm -rf {} \; || true
                     find /home/ec2-user -maxdepth 1 -name "build-artifact*.zip" -mtime +7 -delete || true
+                    sudo journalctl --vacuum-time=7d || true
                     
-                    echo "🧹 Cleaning up system logs..."
-                    sudo journalctl --vacuum-time=7d
-                    
-                    echo "🚀 Starting containers..."
-                    docker-compose up -d --build --force-recreate
-                    
-                    echo "✅ Deployment complete"
+                    echo "✅ Deployment completed successfully!"
+                    echo "🌐 Application should be available at: ${{ secrets.NEXTAUTH_URL }}"
                   EOF
               env:
                   AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
                   EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+
+            - name: Deployment Status
+              if: always()
+              run: |
+                  if [ ${{ job.status }} == 'success' ]; then
+                      echo "✅ Deployment completed successfully!"
+                  else
+                      echo "❌ Deployment failed. Check logs above."
+                      exit 1
+                  fi
