@@ -4,9 +4,8 @@ import { connectDB } from "@src/entities/models/db/mongoose";
 import { Review } from "@/src/entities/models/Review";
 import { getAuthSession } from "@/src/shared/lib/session";
 import User from "@/src/entities/models/User";
-import { v4 as uuidv4 } from "uuid";
 
-// POST - 댓글 생성
+// app/api/review/[reviewId]/comment/route.ts
 export async function POST(
     req: NextRequest,
     { params }: { params: Promise<{ reviewId: string }> },
@@ -42,7 +41,6 @@ export async function POST(
             );
         }
 
-        // 🔄 리뷰 존재 확인
         const review = await Review.findById(reviewId);
         if (!review) {
             return NextResponse.json(
@@ -51,18 +49,20 @@ export async function POST(
             );
         }
 
-        // 🔄 새 댓글 객체 생성
+        // 🔄 간단하고 안전한 ID 생성
+        const commentId = `comment_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+
         const newComment = {
-            id: uuidv4,
+            id: commentId, // 🔄 명확한 변수 사용
             author: user.name || session.user.name || session.user.email,
             content: content.trim(),
             userId: user._id,
-            likes: 0,
-            isLiked: false,
+            likesCount: 0,
+            likedUsers: [],
             timestamp: new Date(),
         };
 
-        // 🔄 Review의 comments 배열에 댓글 추가
+        // 🔄 실제로 데이터베이스에 저장!
         const updatedReview = await Review.findByIdAndUpdate(
             reviewId,
             { $push: { comments: newComment } },

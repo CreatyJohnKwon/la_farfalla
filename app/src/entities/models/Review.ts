@@ -1,7 +1,7 @@
 // src/entities/models/Review.ts
 import { IReviewDocument } from "@/src/components/review/interface";
+import { randomBytes } from "crypto";
 import { Schema, model, models } from "mongoose";
-import { v4 as uuidv4 } from "uuid";
 
 // 🆕 댓글 스키마 정의
 const CommentSchema = new Schema(
@@ -9,15 +9,15 @@ const CommentSchema = new Schema(
         id: {
             type: String,
             required: true,
-            default: uuidv4, // UUID 생성
+            default: () =>
+                Date.now().toString() + randomBytes(4).toString("hex"), // 8자리 hex
         },
         author: { type: String, required: true },
         content: { type: String, required: true, trim: true },
         userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-        likesCount: { type: Number, default: 0 }, // 🔄 likes → likesCount
+        likesCount: { type: Number, default: 0 },
         likedUsers: [
             {
-                // 🆕 좋아요 누른 사용자들
                 type: Schema.Types.ObjectId,
                 ref: "User",
             },
@@ -38,11 +38,29 @@ const ReviewSchema = new Schema<IReviewDocument>(
             required: true,
             trim: true,
         },
+        // 🆕 이미지 URL 배열 - 순서대로 저장
+        images: {
+            type: [String],
+            default: [],
+            validate: {
+                validator: function (images: string[]) {
+                    return images.length <= 5; // 최대 5개 제한
+                },
+                message: "이미지는 최대 5개까지 업로드할 수 있습니다.",
+            },
+        },
         likesCount: {
             type: Number,
             default: 0,
-            required: true, // 🔄 오타 수정: require -> required
+            required: true,
         },
+        // 🆕 좋아요 누른 사용자들 추가
+        likedUsers: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
         userId: {
             type: Schema.Types.ObjectId,
             ref: "User",
@@ -54,17 +72,78 @@ const ReviewSchema = new Schema<IReviewDocument>(
             ref: "Product",
             index: true,
         },
-        comments: [CommentSchema], // 🆕 댓글 배열 추가
+        comments: [CommentSchema],
+        // 🆕 추가 메타데이터 (선택사항)
+        isEdited: { type: Boolean, default: false }, // 수정 여부
+        editedAt: { type: Date }, // 수정 시간
+        status: {
+            type: String,
+            enum: ["active", "hidden", "deleted"],
+            default: "active",
+        }, // 상태 관리
     },
     {
         timestamps: true,
     },
 );
 
+// 🆕 가상 필드 추가
+ReviewSchema.virtual("imageCount").get(function () {
+    return this.images?.length || 0;
+});
+
+ReviewSchema.virtual("hasImages").get(function () {
+    return this.images && this.images.length > 0;
+});
+
+// 🆕 인스턴스 메서드 추가
+ReviewSchema.methods.addImage = function (imageUrl: string) {
+    if (this.images.length >= 5) {
+        throw new Error("최대 5개의 이미지만 추가할 수 있습니다.");
+    }
+    this.images.push(imageUrl);
+    return this.save();
+};
+
+ReviewSchema.methods.removeImage = function (imageUrl: string) {
+    this.images = this.images.filter((url: string) => url !== imageUrl);
+    return this.save();
+};
+
+ReviewSchema.methods.toggleLike = function (userId: string) {
+    const userIndex = this.likedUsers.findIndex(
+        (id: any) => id.toString() === userId,
+    );
+
+    if (userIndex > -1) {
+        // 이미 좋아요를 누른 경우 - 제거
+        this.likedUsers.splice(userIndex, 1);
+        this.likesCount = Math.max(0, this.likesCount - 1);
+    } else {
+        // 좋아요 추가
+        this.likedUsers.push(userId);
+        this.likesCount += 1;
+    }
+
+    return this.save();
+};
+
+// 🆕 정적 메서드 추가
+ReviewSchema.statics.findByProductWithImages = function (productId: string) {
+    return this.find({
+        productId,
+        status: "active",
+        images: { $exists: true, $not: { $size: 0 } }, // 이미지가 있는 리뷰만
+    }).populate("userId", "name email");
+};
+
 // 인덱스
 ReviewSchema.index({ productId: 1, createdAt: -1 });
 ReviewSchema.index({ userId: 1, createdAt: -1 });
-ReviewSchema.index({ "comments.userId": 1 }); // 🆕 댓글 사용자 인덱스 추가
+ReviewSchema.index({ "comments.userId": 1 });
+ReviewSchema.index({ images: 1 }); // 🆕 이미지 검색을 위한 인덱스
+ReviewSchema.index({ likesCount: -1 }); // 🆕 좋아요 수 정렬을 위한 인덱스
+ReviewSchema.index({ status: 1, createdAt: -1 }); // 🆕 상태별 정렬 인덱스
 
 export const Review =
     models.Review || model<IReviewDocument>("Review", ReviewSchema);

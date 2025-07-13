@@ -26,7 +26,24 @@ const useGetReviewsListQuery = (productId?: string) => {
 const usePostReviewMutation = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: postReview,
+        // 🆕 새로운 함수 사용 (기존 파라미터와 호환)
+        mutationFn: (data: {
+            content: string;
+            productId?: string;
+            images?: string[]; // 🆕 이미지 URL 배열
+            imageFiles?: File[]; // 🆕 파일 객체 배열
+        }) => {
+            // imageFiles가 있으면 파일 업로드 포함 함수 사용
+            if (data.imageFiles && data.imageFiles.length > 0) {
+                return postReview(data);
+            }
+            // 기존 방식과 동일하게 작동
+            return postReview({
+                content: data.content,
+                productId: data.productId,
+                images: data.images,
+            });
+        },
         onSuccess: (data, variables) => {
             queryClient.invalidateQueries({
                 queryKey: ["reviews", variables.productId],

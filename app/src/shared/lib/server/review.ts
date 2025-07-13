@@ -2,6 +2,7 @@ import {
     Review,
     ToggleReviewLikeResponse,
 } from "@/src/components/review/interface";
+import { uploadImagesToServer } from "../uploadToR2";
 
 const BASE_URL =
     process.env.NODE_ENV === "production"
@@ -31,6 +32,34 @@ const getReviewList = async (
 const postReview = async (data: {
     content: string;
     productId?: string;
+    imageFiles?: File[]; // 파일 객체 배열
+    images?: string[]; // 또는 이미 업로드된 URL 배열
+}): Promise<{ message: string; data: Review }> => {
+    let imageUrls: string[] = data.images || [];
+
+    // 파일이 있으면 먼저 업로드
+    if (data.imageFiles && data.imageFiles.length > 0) {
+        try {
+            const uploadedUrls = await uploadImagesToServer(data.imageFiles);
+            imageUrls = uploadedUrls || [];
+        } catch (error) {
+            throw new Error("이미지 업로드에 실패했습니다");
+        }
+    }
+
+    // 리뷰 생성
+    return submitReviewToAPI({
+        content: data.content,
+        productId: data.productId,
+        images: imageUrls,
+    });
+};
+
+// 🆕 기본 API 호출만 하는 함수 (이름 변경)
+const submitReviewToAPI = async (data: {
+    content: string;
+    productId?: string;
+    images?: string[];
 }): Promise<{ message: string; data: Review }> => {
     const response = await fetch(`${BASE_URL}/api/review`, {
         method: "POST",
@@ -49,11 +78,15 @@ const postReview = async (data: {
 const patchReview = async (data: {
     reviewId: string;
     content: string;
+    images?: string[]; // 🆕 이미지 배열 추가
 }): Promise<{ message: string; data: Review }> => {
     const response = await fetch(`${BASE_URL}/api/review/${data.reviewId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: data.content }),
+        body: JSON.stringify({
+            content: data.content,
+            images: data.images, // 🆕 이미지 데이터 포함
+        }),
     });
 
     if (!response.ok) {

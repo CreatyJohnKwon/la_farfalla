@@ -6,10 +6,14 @@ interface Review {
     userId: string;
     author: string;
     content: string;
+    images: string[]; // 🆕 이미지 URL 배열 추가
     timestamp: Date;
     likesCount: number;
     isLiked: boolean;
     comments: IComment[];
+    // 🆕 이미지 관련 가상 필드
+    imageCount?: number;
+    hasImages?: boolean;
 }
 
 interface IComment {
@@ -28,6 +32,7 @@ interface IReviewDocument extends Document {
     _id: Types.ObjectId;
     author: string;
     content: string;
+    images: string[]; // 🆕 이미지 URL 배열 추가
     likesCount: number;
     isLiked: boolean;
     userId: Types.ObjectId;
@@ -35,6 +40,17 @@ interface IReviewDocument extends Document {
     comments: IComment[];
     createdAt: Date;
     updatedAt: Date;
+
+    // 🆕 추가 메타데이터
+    isEdited?: boolean;
+    editedAt?: Date;
+    status?: "active" | "hidden" | "deleted";
+    likedUsers?: Types.ObjectId[];
+
+    // 🆕 인스턴스 메서드
+    addImage?(imageUrl: string): Promise<IReviewDocument>;
+    removeImage?(imageUrl: string): Promise<IReviewDocument>;
+    toggleLike?(userId: string): Promise<IReviewDocument>;
 }
 
 interface IReviewCommentDocument extends Document {
@@ -67,7 +83,11 @@ interface ReviewItemProps {
     onLikeComment: (reviewId: string, commentId: string) => void;
     onLikePending: boolean;
     onLikeCommentPending: boolean;
-    onEditReview: (reviewId: string, content: string) => void;
+    onEditReview: (
+        reviewId: string,
+        content: string,
+        images?: string[],
+    ) => void; // 🆕 images 파라미터 추가 (선택적)
     onEditComment: (commentId: string, content: string) => void;
     onDeleteReview: (reviewId: string) => void;
     onDeleteComment: (commentId: string) => void;
@@ -83,6 +103,32 @@ interface ToggleReviewLikeResponse {
     likesCount: number;
 }
 
+// 🆕 이미지 관련 인터페이스 추가
+interface CreateReviewRequest {
+    content: string;
+    productId: string;
+    images?: string[]; // 🆕 이미지 URL 배열
+}
+
+interface UpdateReviewRequest {
+    reviewId: string;
+    content?: string;
+    images?: string[]; // 🆕 이미지 업데이트
+}
+
+interface ImageUploadResponse {
+    success: boolean;
+    urls: string[];
+    errors?: string[];
+}
+
+// 🆕 타입 가드 및 유틸리티
+interface ReviewWithImages extends Review {
+    images: string[];
+    imageCount: number;
+    hasImages: true;
+}
+
 export type {
     Review,
     IReviewDocument,
@@ -91,4 +137,9 @@ export type {
     ReviewItemProps,
     ReviewSystemProps,
     ToggleReviewLikeResponse,
+    // 🆕 새로 추가된 타입들
+    CreateReviewRequest,
+    UpdateReviewRequest,
+    ImageUploadResponse,
+    ReviewWithImages,
 };

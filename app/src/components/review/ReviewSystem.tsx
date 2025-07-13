@@ -32,21 +32,103 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
 
     // 로컬 상태
     const [newReview, setNewReview] = useState("");
+    const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
+    const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+    const [isDragOver, setIsDragOver] = useState(false);
 
     // 데이터 추출
     const reviews = reviewsData?.data || [];
 
-    // 리뷰 작성
+    // 파일 업로드 처리
+    const handleFiles = (files: FileList | null) => {
+        if (!files) return;
+
+        const newFiles: File[] = [];
+
+        Array.from(files).forEach((file) => {
+            // 파일 타입 검증
+            if (!file.type.startsWith("image/")) {
+                alert("이미지 파일만 업로드 가능합니다.");
+                return;
+            }
+
+            // 파일 크기 검증 (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert("파일 크기는 5MB 이하만 가능합니다.");
+                return;
+            }
+
+            // 최대 5개 제한
+            if (uploadedPhotos.length + newFiles.length >= 5) {
+                alert("최대 5개의 사진만 업로드할 수 있습니다.");
+                return;
+            }
+
+            newFiles.push(file);
+
+            // 미리보기 생성 - 타입 안전하게 수정
+            const reader = new FileReader();
+            reader.onload = (e: ProgressEvent<FileReader>) => {
+                // 🔥 타입 안전한 처리
+                const target = e.target;
+                if (
+                    target &&
+                    target.result &&
+                    typeof target.result === "string"
+                ) {
+                    setPhotoPreviews((prev) => [
+                        ...prev,
+                        target.result as string,
+                    ]);
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+
+        setUploadedPhotos((prev) => [...prev, ...newFiles]);
+    };
+
+    // 드래그 앤 드롭 이벤트
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragOver(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragOver(false);
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragOver(false);
+        handleFiles(e.dataTransfer.files);
+    };
+
+    // 사진 제거
+    const removePhoto = (index: number) => {
+        setUploadedPhotos((prev) => prev.filter((_, i) => i !== index));
+        setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    // 리뷰 작성 - 기존 훅과 완전 호환
     const handleSubmitReview = async () => {
         if (newReview.trim()) {
             try {
+                // 🆕 기존 방식에 imageFiles만 추가
                 await postReviewMutation.mutateAsync({
                     content: newReview,
                     productId,
+                    imageFiles: uploadedPhotos, // 🆕 파일 객체 배열 추가
                 });
+
+                // 폼 초기화
                 setNewReview("");
+                setUploadedPhotos([]);
+                setPhotoPreviews([]);
             } catch (error) {
-                // 에러는 mutation에서 처리됨
+                console.error("리뷰 작성 중 오류:", error);
+                // 에러는 mutation에서 alert로 처리됨
             }
         }
     };
@@ -85,11 +167,16 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
     };
 
     // 리뷰 수정
-    const editReview = async (reviewId: string, newContent: string) => {
+    const editReview = async (
+        reviewId: string,
+        newContent: string,
+        images?: string[],
+    ) => {
         try {
             await updateReviewMutation.mutateAsync({
                 reviewId,
                 content: newContent,
+                images,
             });
         } catch (error) {
             // 에러는 mutation에서 처리됨
@@ -193,14 +280,78 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
                 </div>
 
                 <div className="space-y-5">
+                    {/* 사진 첨부 영역 - textarea 위에 위치 */}
+                    <div className="flex items-start gap-3">
+                        {/* 사진 추가 버튼 (정사각형) */}
+                        <div
+                            className={`relative flex h-16 w-16 cursor-pointer items-center justify-center rounded-md border border-dashed border-gray-300 transition-colors hover:border-gray-400 ${
+                                isDragOver ? "border-black bg-gray-50" : ""
+                            } ${uploadedPhotos.length >= 5 ? "pointer-events-none opacity-50" : ""}`}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                        >
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={(e) => handleFiles(e.target.files)}
+                                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                disabled={uploadedPhotos.length >= 5}
+                            />
+                            <svg
+                                className="h-6 w-6 text-gray-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={1.5}
+                                    d="M12 4v16m8-8H4"
+                                />
+                            </svg>
+                        </div>
+
+                        {/* 업로드된 사진들 - 우측으로 하나씩 생성 */}
+                        {photoPreviews.map((preview, index) => (
+                            <div key={index} className="group relative">
+                                <img
+                                    src={preview}
+                                    alt={`미리보기 ${index + 1}`}
+                                    className="h-16 w-16 rounded-md border border-gray-200 object-cover"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removePhoto(index)}
+                                    className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        ))}
+
+                        {/* 사진 개수 표시 */}
+                        {uploadedPhotos.length > 0 && (
+                            <div className="ml-2 flex items-center">
+                                <span className="text-xs text-gray-400">
+                                    {uploadedPhotos.length}/5
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
                     <textarea
                         value={newReview}
                         onChange={(e) => setNewReview(e.target.value)}
                         className="w-full resize-none border border-gray-300 bg-white p-5 text-gray-800 placeholder-gray-500 focus:border-black focus:outline-none"
                         rows={4}
-                        placeholder="서비스에 대한 리뷰를 작성해주세요."
+                        placeholder="서비스에 대한 리뷰를 작성해주세요. (최대 1000자)"
                         disabled={postReviewMutation.isPending}
+                        maxLength={1000}
                     />
+
                     <div className="flex justify-end">
                         <button
                             onClick={handleSubmitReview}

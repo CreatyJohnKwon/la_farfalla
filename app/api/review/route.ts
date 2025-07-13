@@ -1,13 +1,13 @@
-// app/api/review/route.ts (기존 파일 수정)
+// app/api/review/route.ts (이미지 지원 버전)
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import { getAuthSession } from "@/src/shared/lib/session";
 import User from "@/src/entities/models/User";
 import { Review } from "@/src/entities/models/Review";
-import { UserLike } from "@/src/entities/models/UserLike"; // 🆕 추가
+import { UserLike } from "@/src/entities/models/UserLike";
 import { UserProfileData } from "@/src/entities/type/interfaces";
 
-// GET - 리뷰 목록 조회 (사용자별 좋아요 상태 포함)
+// GET - 리뷰 목록 조회 (이미지 포함, 사용자별 좋아요 상태 포함)
 export async function GET(req: NextRequest) {
     try {
         await connectDB();
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
             .sort({ createdAt: -1 })
             .lean()) as any[];
 
-        // 🔄 각 리뷰에 현재 사용자의 좋아요 상태 추가
+        // 🔄 각 리뷰에 현재 사용자의 좋아요 상태 추가 + 이미지 포함
         const reviewsWithLikeStatus = await Promise.all(
             reviews.map(async (review) => {
                 let isLiked = false;
@@ -64,6 +64,9 @@ export async function GET(req: NextRequest) {
                     ...review,
                     isLiked,
                     likesCount: review.likesCount || 0,
+                    images: review.images || [], // 🆕 이미지 배열 포함
+                    imageCount: review.images?.length || 0, // 🆕 이미지 개수
+                    hasImages: review.images && review.images.length > 0, // 🆕 이미지 존재 여부
                     timestamp: review.createdAt,
                     comments: commentsWithLikeStatus,
                 };
@@ -84,18 +87,45 @@ export async function GET(req: NextRequest) {
     }
 }
 
-// POST - 리뷰 생성 (기존 코드에서 likesCount 추가)
+// POST - 리뷰 생성 (이미지 포함)
 export async function POST(req: NextRequest) {
     try {
         await connectDB();
 
-        const { content, productId } = await req.json();
+        const { content, productId, images } = await req.json();
 
         if (!content) {
             return NextResponse.json(
                 { error: "내용이 필요합니다" },
                 { status: 400 },
             );
+        }
+
+        // 🆕 이미지 배열 검증
+        if (images && Array.isArray(images)) {
+            if (images.length > 5) {
+                return NextResponse.json(
+                    { error: "이미지는 최대 5개까지 업로드할 수 있습니다" },
+                    { status: 400 },
+                );
+            }
+
+            // URL 형식 검증 (선택사항)
+            const invalidUrls = images.filter((url) => {
+                try {
+                    new URL(url);
+                    return false;
+                } catch {
+                    return true;
+                }
+            });
+
+            if (invalidUrls.length > 0) {
+                return NextResponse.json(
+                    { error: "유효하지 않은 이미지 URL이 포함되어 있습니다" },
+                    { status: 400 },
+                );
+            }
         }
 
         const session = await getAuthSession();
@@ -118,17 +148,18 @@ export async function POST(req: NextRequest) {
         }
 
         const newReview = new Review({
-            author: user.name || session.user.name || session.user.email, // 🔄 이름 저장
+            author: user.name || session.user.name || session.user.email,
             content,
             productId,
-            userId: user._id, // ObjectId 저장
+            userId: user._id,
             likesCount: 0,
+            images: images || [], // 🆕 이미지 배열 저장
             comments: [],
         });
 
         await newReview.save();
 
-        // 🔄 populate 제거하고 바로 반환
+        // 🔄 저장된 리뷰 반환 (이미지 포함)
         const savedReview = newReview.toObject();
 
         return NextResponse.json({
@@ -136,6 +167,8 @@ export async function POST(req: NextRequest) {
             data: {
                 ...savedReview,
                 isLiked: false,
+                imageCount: savedReview.images?.length || 0, // 🆕 이미지 개수
+                hasImages: savedReview.images && savedReview.images.length > 0, // 🆕 이미지 존재 여부
                 timestamp: savedReview.createdAt,
             },
         });
