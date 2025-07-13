@@ -1,8 +1,6 @@
 import { useState } from "react";
-import StarRating from "./StarRating";
 import ReviewItem from "./ReviewItem";
-import { Star } from "lucide-react";
-import { Review, ReviewComment } from "./interface";
+import { ReviewSystemProps } from "./interface";
 import {
     useGetReviewsListQuery,
     usePostReviewMutation,
@@ -15,16 +13,13 @@ import {
     useToggleCommentLikeMutation,
 } from "@src/shared/hooks/react-query/useReviewQuery";
 
-interface ReviewSystemProps {
-    productId?: string;
-}
-
 const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
     // React Query 훅들
     const {
         data: reviewsData,
         isLoading,
         error,
+        refetch,
     } = useGetReviewsListQuery(productId);
     const postReviewMutation = usePostReviewMutation();
     const updateReviewMutation = useUpdateReviewMutation();
@@ -37,7 +32,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
 
     // 로컬 상태
     const [newReview, setNewReview] = useState("");
-    const [newRating, setNewRating] = useState(5);
 
     // 데이터 추출
     const reviews = reviewsData?.data || [];
@@ -48,11 +42,9 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
             try {
                 await postReviewMutation.mutateAsync({
                     content: newReview,
-                    rating: newRating,
                     productId,
                 });
                 setNewReview("");
-                setNewRating(5);
             } catch (error) {
                 // 에러는 mutation에서 처리됨
             }
@@ -81,34 +73,23 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
     };
 
     // 댓글 좋아요 토글
-    const toggleLikeComment = async (commentId: string) => {
-        // 댓글이 속한 리뷰 찾기
-        const review = reviews.find((r) =>
-            r.comments.some((c) => c.id === commentId),
-        );
-        if (review) {
-            try {
-                await toggleCommentLikeMutation.mutateAsync({
-                    reviewId: review._id,
-                    commentId,
-                });
-            } catch (error) {
-                // 에러는 mutation에서 처리됨
-            }
+    const toggleLikeComment = async (reviewId: string, commentId: string) => {
+        try {
+            await toggleCommentLikeMutation.mutateAsync({
+                reviewId,
+                commentId,
+            });
+        } catch (error) {
+            // 에러는 mutation에서 처리됨
         }
     };
 
     // 리뷰 수정
-    const editReview = async (
-        reviewId: string,
-        newContent: string,
-        newRating: number,
-    ) => {
+    const editReview = async (reviewId: string, newContent: string) => {
         try {
             await updateReviewMutation.mutateAsync({
                 reviewId,
                 content: newContent,
-                rating: newRating,
             });
         } catch (error) {
             // 에러는 mutation에서 처리됨
@@ -161,13 +142,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
         }
     };
 
-    // 평균 별점 계산
-    const averageRating =
-        reviews.length > 0
-            ? reviews.reduce((sum, review) => sum + review.rating, 0) /
-              reviews.length
-            : 0;
-
     // 로딩 상태
     if (isLoading) {
         return (
@@ -185,9 +159,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
         return (
             <div className="mx-auto min-h-screen bg-white p-8">
                 <div className="py-20 text-center">
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center bg-red-100">
-                        <Star className="h-8 w-8 text-red-400" />
-                    </div>
                     <p className="text-lg text-red-500">
                         리뷰를 불러오는데 실패했습니다
                     </p>
@@ -195,7 +166,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
                         {error.message}
                     </p>
                     <button
-                        onClick={() => window.location.reload()}
+                        onClick={() => refetch()}
                         className="mt-4 bg-black px-6 py-2 text-white hover:bg-gray-800"
                     >
                         다시 시도
@@ -206,19 +177,14 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
     }
 
     return (
-        <div className="mx-auto min-h-screen bg-white p-8">
-            <div className="mb-12 border border-gray-100 bg-white p-8">
+        <div className="mx-auto min-h-screen w-full bg-white p-6">
+            <div className="mb-12 border border-gray-100 bg-white p-6">
                 <div className="mb-8 flex items-center justify-between">
                     <div>
                         <h2 className="mb-2 text-2xl font-bold text-gray-900">
                             고객 리뷰
                         </h2>
                         <div className="flex items-center space-x-4">
-                            <StarRating
-                                rating={averageRating}
-                                size="lg"
-                                readonly
-                            />
                             <span className="text-gray-600">
                                 {reviews.length}개의 리뷰
                             </span>
@@ -227,23 +193,12 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
                 </div>
 
                 <div className="space-y-5">
-                    <div>
-                        <label className="mb-3 block text-sm font-medium text-gray-700">
-                            별점을 선택하세요
-                        </label>
-                        <StarRating
-                            rating={newRating}
-                            onRatingChange={setNewRating}
-                            size="lg"
-                        />
-                    </div>
-
                     <textarea
                         value={newReview}
                         onChange={(e) => setNewReview(e.target.value)}
                         className="w-full resize-none border border-gray-300 bg-white p-5 text-gray-800 placeholder-gray-500 focus:border-black focus:outline-none"
                         rows={4}
-                        placeholder="서비스에 대한 리뷰를 작성해주세요..."
+                        placeholder="서비스에 대한 리뷰를 작성해주세요."
                         disabled={postReviewMutation.isPending}
                     />
                     <div className="flex justify-end">
@@ -271,6 +226,10 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
                         onAddComment={addComment}
                         onLikeReview={toggleLikeReview}
                         onLikeComment={toggleLikeComment}
+                        onLikePending={toggleReviewLikeMutation.isPending}
+                        onLikeCommentPending={
+                            toggleCommentLikeMutation.isPending
+                        }
                         onEditReview={editReview}
                         onEditComment={editComment}
                         onDeleteReview={deleteReview}
@@ -281,9 +240,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
 
             {reviews.length === 0 && !isLoading && (
                 <div className="py-20 text-center">
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center bg-gray-100">
-                        <Star className="h-8 w-8 text-gray-400" />
-                    </div>
                     <p className="text-lg text-gray-500">
                         아직 리뷰가 없습니다.
                     </p>

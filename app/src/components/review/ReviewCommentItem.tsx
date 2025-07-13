@@ -7,6 +7,9 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
     onLike,
     onEdit,
     onDelete,
+    userId,
+    reviewId,
+    onLikePending,
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editContent, setEditContent] = useState(comment.content);
@@ -19,8 +22,8 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
         }
     };
 
-    const handleLike = () => {
-        onLike(comment.id);
+    const handleLike = (commentId: string) => async () => {
+        onLike(reviewId, commentId);
     };
 
     const handleDelete = () => {
@@ -36,27 +39,40 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
                             {comment.author}
                         </h5>
                         <p className="text-xs text-gray-500">
-                            {comment.timestamp}
+                            {new Date(comment.timestamp).toLocaleDateString(
+                                "ko-KR",
+                                {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                },
+                            )}
                         </p>
                     </div>
                 </div>
 
                 <div className="relative">
-                    <button
-                        onClick={() => setShowMenu(!showMenu)}
-                        className="rounded-full p-1.5 transition-colors duration-200 hover:bg-black/5"
-                    >
-                        <MoreVertical className="h-3 w-3 text-gray-600" />
-                    </button>
+                    {comment.userId === userId && (
+                        <>
+                            <button
+                                onClick={() => setShowMenu(!showMenu)}
+                                className="p-1.5 transition-colors duration-200 hover:bg-black/5"
+                            >
+                                <MoreVertical className="h-3 w-3 text-gray-600" />
+                            </button>
+                        </>
+                    )}
 
                     {showMenu && (
-                        <div className="absolute right-0 z-10 mt-2 w-32 rounded-xl border border-gray-200/50 bg-white shadow-2xl">
+                        <div className="absolute right-0 z-10 mt-2 w-32 border border-gray-200/50 bg-white shadow-2xl">
                             <button
                                 onClick={() => {
                                     setIsEditing(true);
                                     setShowMenu(false);
                                 }}
-                                className="flex w-full items-center space-x-2 rounded-t-xl px-3 py-2 text-left text-xs transition-colors duration-200 hover:bg-black/5"
+                                className="flex w-full items-center space-x-2 px-3 py-2 text-left text-xs transition-colors duration-200 hover:bg-black/5"
                             >
                                 <Edit3 className="h-3 w-3 text-gray-600" />
                                 <span className="text-gray-700">수정</span>
@@ -66,7 +82,7 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
                                     handleDelete();
                                     setShowMenu(false);
                                 }}
-                                className="flex w-full items-center space-x-2 rounded-b-xl px-3 py-2 text-left text-xs text-gray-700 transition-colors duration-200 hover:bg-black/5"
+                                className="flex w-full items-center space-x-2 px-3 py-2 text-left text-xs text-gray-700 transition-colors duration-200 hover:bg-black/5"
                             >
                                 <Trash2 className="h-3 w-3 text-gray-600" />
                                 <span>삭제</span>
@@ -82,14 +98,14 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
                         <textarea
                             value={editContent}
                             onChange={(e) => setEditContent(e.target.value)}
-                            className="w-full resize-none rounded-lg border border-gray-300 bg-white/80 p-3 text-sm backdrop-blur-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-black/20"
+                            className="order w-full resize-none border-gray-300 bg-white/80 p-3 text-sm backdrop-blur-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-black/20"
                             rows={2}
                             placeholder="댓글을 수정하세요..."
                         />
                         <div className="flex space-x-2">
                             <button
                                 onClick={handleEdit}
-                                className="rounded-lg bg-black px-4 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-gray-800"
+                                className="bg-black px-4 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-gray-800"
                             >
                                 수정 완료
                             </button>
@@ -98,7 +114,7 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
                                     setIsEditing(false);
                                     setEditContent(comment.content);
                                 }}
-                                className="rounded-lg bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-200"
+                                className="bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-200"
                             >
                                 취소
                             </button>
@@ -111,19 +127,33 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
                 )}
             </div>
 
-            <div className="mt-3 flex items-center">
+            <div className="mt-5 flex items-center space-x-6">
                 <button
-                    onClick={handleLike}
-                    className={`flex items-center space-x-1 rounded-full px-3 py-1.5 transition-all duration-200 ${
-                        comment.isLiked
-                            ? "bg-red-50 text-red-500 hover:bg-red-100"
-                            : "text-gray-600 hover:bg-black/5"
+                    onClick={handleLike(comment.id)} // 댓글 ID 전달
+                    disabled={onLikePending} // 로딩 중 비활성화
+                    className={`flex items-center space-x-2 px-4 py-2 transition-all duration-200 ${
+                        comment.likedUsers.includes(userId)
+                            ? "scale-110 text-red-500" // 🔄 채워진 빨간색
+                            : "text-gray-600 hover:text-red-400" // 🔄 호버 시 연한 빨간색
+                    } ${
+                        onLikePending
+                            ? "cursor-not-allowed opacity-50"
+                            : "hover:scale-105" // 호버 효과 추가
                     }`}
                 >
-                    <Heart
-                        className={`h-3 w-3 ${comment.isLiked ? "fill-current" : ""}`}
-                    />
-                    <span className="text-xs font-medium">{comment.likes}</span>
+                    {/* 로딩 중일 때 스피너 표시 */}
+                    {onLikePending ? (
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-red-500" />
+                    ) : (
+                        <Heart
+                            className={`h-4 w-4 transition-all duration-200 ${
+                                comment.isLiked ? "scale-110" : ""
+                            }`}
+                        />
+                    )}
+                    <span className="text-sm font-medium">
+                        {comment.likesCount}
+                    </span>
                 </button>
             </div>
         </div>

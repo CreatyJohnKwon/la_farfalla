@@ -1,42 +1,43 @@
 import { Document, Types } from "mongoose";
 
 // ============= 클라이언트용 인터페이스 =============
-export interface Review {
+interface Review {
     _id: string;
+    userId: string;
     author: string;
     content: string;
-    timestamp: string;
-    likes: number;
+    timestamp: Date;
+    likesCount: number;
     isLiked: boolean;
-    rating: number;
-    comments: ReviewComment[];
+    comments: IComment[];
 }
 
-export interface ReviewComment {
+interface IComment {
     id: string;
     author: string;
     content: string;
-    timestamp: string;
-    likes: number;
+    userId: string;
+    likesCount: number;
+    likedUsers: string[];
     isLiked: boolean;
-    parentId: string; // reviewId
+    timestamp: Date;
 }
 
 // ============= Mongoose Document용 인터페이스 =============
-export interface IReviewDocument extends Document {
+interface IReviewDocument extends Document {
     _id: Types.ObjectId;
     author: string;
     content: string;
-    rating: number;
-    likes: number;
+    likesCount: number;
     isLiked: boolean;
     userId: Types.ObjectId;
     productId?: Types.ObjectId;
+    comments: IComment[];
     createdAt: Date;
     updatedAt: Date;
 }
 
-export interface IReviewCommentDocument extends Document {
+interface IReviewCommentDocument extends Document {
     _id: Types.ObjectId;
     author: string;
     content: string;
@@ -49,27 +50,45 @@ export interface IReviewCommentDocument extends Document {
 }
 
 // ============= 컴포넌트 Props 인터페이스 =============
-export interface StarRatingProps {
-    rating: number;
-    onRatingChange?: (rating: number) => void;
-    size?: "sm" | "md" | "lg";
-    readonly?: boolean;
-}
-
-export interface ReviewCommentItemProps {
-    comment: ReviewComment;
-    onLike: (commentId: string) => void;
+interface ReviewCommentItemProps {
+    comment: IComment;
+    onLike: (reviewId: string, commentId: string) => void;
     onEdit: (commentId: string, content: string) => void;
     onDelete: (commentId: string) => void;
+    userId: string;
+    reviewId: string;
+    onLikePending: boolean;
 }
 
-export interface ReviewItemProps {
+interface ReviewItemProps {
     review: Review;
     onAddComment: (reviewId: string, content: string) => void;
     onLikeReview: (reviewId: string) => void;
-    onLikeComment: (commentId: string) => void;
-    onEditReview: (reviewId: string, content: string, rating: number) => void;
+    onLikeComment: (reviewId: string, commentId: string) => void;
+    onLikePending: boolean;
+    onLikeCommentPending: boolean;
+    onEditReview: (reviewId: string, content: string) => void;
     onEditComment: (commentId: string, content: string) => void;
     onDeleteReview: (reviewId: string) => void;
     onDeleteComment: (commentId: string) => void;
 }
+
+interface ReviewSystemProps {
+    productId?: string;
+}
+
+interface ToggleReviewLikeResponse {
+    reviewId: string;
+    isLiked: boolean;
+    likesCount: number;
+}
+
+export type {
+    Review,
+    IReviewDocument,
+    IReviewCommentDocument,
+    ReviewCommentItemProps,
+    ReviewItemProps,
+    ReviewSystemProps,
+    ToggleReviewLikeResponse,
+};

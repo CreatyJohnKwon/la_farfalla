@@ -1,4 +1,7 @@
-import { Review } from "@/src/components/review/interface";
+import {
+    Review,
+    ToggleReviewLikeResponse,
+} from "@/src/components/review/interface";
 
 const BASE_URL =
     process.env.NODE_ENV === "production"
@@ -6,7 +9,7 @@ const BASE_URL =
         : "http://localhost:3000";
 
 // 리뷰 목록 조회
-export const getReviewList = async (
+const getReviewList = async (
     productId?: string,
 ): Promise<{
     type: string;
@@ -14,8 +17,8 @@ export const getReviewList = async (
     count: number;
 }> => {
     const url = productId
-        ? `${BASE_URL}/api/reviews?productId=${productId}`
-        : `${BASE_URL}/api/reviews`;
+        ? `${BASE_URL}/api/review?productId=${productId}`
+        : `${BASE_URL}/api/review`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -25,12 +28,11 @@ export const getReviewList = async (
 };
 
 // 리뷰 생성
-export const postReview = async (data: {
+const postReview = async (data: {
     content: string;
-    rating: number;
     productId?: string;
 }): Promise<{ message: string; data: Review }> => {
-    const response = await fetch(`${BASE_URL}/api/reviews`, {
+    const response = await fetch(`${BASE_URL}/api/review`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -44,18 +46,14 @@ export const postReview = async (data: {
 };
 
 // 리뷰 수정
-export const patchReview = async (data: {
+const patchReview = async (data: {
     reviewId: string;
     content: string;
-    rating: number;
 }): Promise<{ message: string; data: Review }> => {
-    const response = await fetch(`${BASE_URL}/api/reviews/${data.reviewId}`, {
+    const response = await fetch(`${BASE_URL}/api/review/${data.reviewId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            content: data.content,
-            rating: data.rating,
-        }),
+        body: JSON.stringify({ content: data.content }),
     });
 
     if (!response.ok) {
@@ -66,10 +64,8 @@ export const patchReview = async (data: {
 };
 
 // 리뷰 삭제
-export const deleteReview = async (
-    reviewId: string,
-): Promise<{ message: string }> => {
-    const response = await fetch(`${BASE_URL}/api/reviews/${reviewId}`, {
+const deleteReview = async (reviewId: string): Promise<{ message: string }> => {
+    const response = await fetch(`${BASE_URL}/api/review/${reviewId}`, {
         method: "DELETE",
     });
 
@@ -81,13 +77,10 @@ export const deleteReview = async (
 };
 
 // 리뷰 좋아요 토글
-export const toggleReviewLike = async (
+const toggleReviewLike = async (
     reviewId: string,
-): Promise<{
-    message: string;
-    data: Review;
-}> => {
-    const response = await fetch(`${BASE_URL}/api/reviews/${reviewId}/like`, {
+): Promise<ToggleReviewLikeResponse> => {
+    const response = await fetch(`${BASE_URL}/api/review/${reviewId}/like`, {
         method: "POST",
     });
 
@@ -95,26 +88,26 @@ export const toggleReviewLike = async (
         const errorData = await response.json();
         throw new Error(errorData.error || "좋아요 처리에 실패했습니다");
     }
-    return response.json();
+
+    const result = await response.json();
+    return result.data;
 };
 
 // 댓글 관련 함수들
-export const getReviewComments = async (reviewId: string) => {
-    const response = await fetch(
-        `${BASE_URL}/api/reviews/${reviewId}/comments`,
-    );
+const getReviewComments = async (reviewId: string) => {
+    const response = await fetch(`${BASE_URL}/api/review/${reviewId}/comment`);
     if (!response.ok) {
         throw new Error("댓글 조회에 실패했습니다");
     }
     return response.json();
 };
 
-export const postReviewComment = async (data: {
+const postReviewComment = async (data: {
     reviewId: string;
     content: string;
 }) => {
     const response = await fetch(
-        `${BASE_URL}/api/reviews/${data.reviewId}/comments`,
+        `${BASE_URL}/api/review/${data.reviewId}/comment`,
         {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -129,13 +122,13 @@ export const postReviewComment = async (data: {
     return response.json();
 };
 
-export const patchReviewComment = async (data: {
+const patchReviewComment = async (data: {
     reviewId: string;
     commentId: string;
     content: string;
 }) => {
     const response = await fetch(
-        `${BASE_URL}/api/reviews/${data.reviewId}/comments/${data.commentId}`,
+        `${BASE_URL}/api/review/${data.reviewId}/comment/${data.commentId}`,
         {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -150,12 +143,12 @@ export const patchReviewComment = async (data: {
     return response.json();
 };
 
-export const deleteReviewComment = async (data: {
+const deleteReviewComment = async (data: {
     reviewId: string;
     commentId: string;
 }) => {
     const response = await fetch(
-        `${BASE_URL}/api/reviews/${data.reviewId}/comments/${data.commentId}`,
+        `${BASE_URL}/api/review/${data.reviewId}/comment/${data.commentId}`,
         {
             method: "DELETE",
         },
@@ -168,12 +161,16 @@ export const deleteReviewComment = async (data: {
     return response.json();
 };
 
-export const toggleReviewCommentLike = async (data: {
-    reviewId: string;
+const toggleReviewCommentLike = async (
+    reviewId: string,
+    commentId: string,
+): Promise<{
     commentId: string;
-}) => {
+    isLiked: boolean;
+    likesCount: number;
+}> => {
     const response = await fetch(
-        `${BASE_URL}/api/reviews/${data.reviewId}/comments/${data.commentId}/like`,
+        `${BASE_URL}/api/review/${reviewId}/comment/${commentId}/like`,
         {
             method: "POST",
         },
@@ -181,7 +178,22 @@ export const toggleReviewCommentLike = async (data: {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "좋아요 처리에 실패했습니다");
+        throw new Error(errorData.error || "댓글 좋아요 처리에 실패했습니다");
     }
-    return response.json();
+
+    const result = await response.json();
+    return result.data;
+};
+
+export {
+    getReviewList,
+    getReviewComments,
+    postReview,
+    postReviewComment,
+    patchReview,
+    patchReviewComment,
+    deleteReview,
+    deleteReviewComment,
+    toggleReviewCommentLike,
+    toggleReviewLike,
 };

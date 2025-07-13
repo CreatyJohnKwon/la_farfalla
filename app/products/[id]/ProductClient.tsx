@@ -141,27 +141,31 @@ const ProductClient = ({ id }: { id: string }) => {
 
     return (
         <div className="flex h-full w-full flex-col items-center justify-center overflow-x-hidden">
-            <div className="mx-auto mt-16 flex h-full w-full flex-col items-center gap-3 transition-all duration-300 ease-in-out sm:mt-24 md:mt-32 md:w-[90%] md:flex-row md:gap-8 lg:mt-32 lg:w-[70%] lg:gap-16">
+            <div className="mx-auto mt-16 flex h-full w-full flex-col items-center gap-3 pb-[50vh] transition-all duration-300 ease-in-out sm:mt-24 md:mt-32 md:w-[90%] md:flex-row md:gap-8 md:pb-[80vh] lg:mt-32 lg:w-[70%] lg:gap-16">
                 <Slider images={product.image} />
                 <ProductInfo product={product} />
             </div>
 
             {/* description 이미지들 */}
-            <div
-                ref={descriptionSectionRef as Ref<HTMLDivElement | null>}
-                className="mt-[50vh] flex w-full flex-col md:mt-[80vh] md:w-2/5"
-            >
-                <DescriptionImage
-                    product={product}
-                    visibleImages={visibleImages}
-                    setVisibleImages={setVisibleImages}
-                    checkContentHeight={checkContentHeight}
-                    descriptionRef={descriptionRef}
-                    needsToggle={needsToggle}
-                />
+            <div className="flex h-full w-full flex-col md:w-2/5">
+                <div
+                    ref={descriptionSectionRef as Ref<HTMLDivElement | null>}
+                    className="h-auto w-full"
+                >
+                    <DescriptionImage
+                        product={product}
+                        visibleImages={visibleImages}
+                        setVisibleImages={setVisibleImages}
+                        checkContentHeight={checkContentHeight}
+                        descriptionRef={descriptionRef}
+                        needsToggle={needsToggle}
+                    />
+                </div>
             </div>
 
-            <ReviewSystem />
+            <div className="w-screen md:w-2/5">
+                <ReviewSystem />
+            </div>
         </div>
     );
 };
