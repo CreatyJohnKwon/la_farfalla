@@ -15,6 +15,7 @@ jobs:
 
             - name: Set up SSH key
               run: |
+                  # Set up SSH key
                   mkdir -p ~/.ssh
                   echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
