@@ -139,6 +139,9 @@ const Orders = () => {
                             />
                         </th>
                         <th className="w-[10%] px-2 py-2 text-xs sm:text-sm md:px-4">
+                            주문번호
+                        </th>
+                        <th className="w-[10%] px-2 py-2 text-xs sm:text-sm md:px-4">
                             주문자
                         </th>
                         <th className="w-[12%] px-2 py-2 text-xs sm:text-sm md:px-4">
@@ -188,6 +191,10 @@ const Orders = () => {
                                             onChange={() => {}} // 빈 함수로 onChange 경고 방지
                                         />
                                     )}
+                                </td>
+                                {/* 주문자 번호 */}
+                                <td className="px-2 py-2 font-mono text-xs sm:text-sm md:px-4">
+                                    {order._id}
                                 </td>
                                 {/* 주문자 명 */}
                                 <td className="px-2 py-2 text-xs sm:text-sm md:px-4">

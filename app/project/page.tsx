@@ -1,6 +1,6 @@
 "use client";
 
-const Cart = () => {
+const Project = () => {
     return (
         <div className="h-screen w-screen items-center justify-center">
             project
@@ -8,4 +8,4 @@ const Cart = () => {
     );
 };
 
-export default Cart;
+export default Project;

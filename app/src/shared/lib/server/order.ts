@@ -1,3 +1,4 @@
+import { OrderData } from "@/src/entities/type/interfaces";
 import axios from "axios";
 
 const updateCoupon = async (couponId: string) => {
@@ -45,4 +46,11 @@ const getOrderList = async () => {
     return await res.json();
 };
 
-export { updateCoupon, getOrder, getOrderList, updateAdminOrder };
+const sendMail = async (body: any) =>
+    await fetch("/api/orders/notification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+    });
+
+export { updateCoupon, getOrder, getOrderList, updateAdminOrder, sendMail };

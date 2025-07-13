@@ -39,7 +39,7 @@ const AboutDrop = () => {
                             introduce
                         </button>
                     </li>
-                    <li key={"move-project"} className="py-1">
+                    {/* <li key={"move-project"} className="py-1">
                         <button
                             onClick={() => {
                                 router.push("/project");
@@ -50,7 +50,7 @@ const AboutDrop = () => {
                         >
                             project
                         </button>
-                    </li>
+                    </li> */}
                 </ul>
             )}
         </div>

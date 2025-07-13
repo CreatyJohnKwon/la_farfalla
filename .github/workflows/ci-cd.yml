@@ -41,6 +41,13 @@ jobs:
                   echo "R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}" >> .env.production
                   echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.production
                   echo "NEXT_IMAGE_OPTIMIZATION_TIMEOUT=${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}" >> .env.production
+                  echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env.production
+                  echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> .env.production
+                  echo "SMTP_SECURE=${{ secrets.SMTP_SECURE }}" >> .env.production
+                  echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env.production
+                  echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env.production
+                  echo "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> .env.production
+                  echo "STORE_NAME=${{ secrets.STORE_NAME }}" >> .env.production
 
             - name: Archive app source (exclude node_modules)
               run: |

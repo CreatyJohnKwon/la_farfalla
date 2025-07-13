@@ -117,6 +117,7 @@ interface OrderItem {
     size: string;
     color: string;
     quantity: number;
+    price?: number;
 }
 
 interface OrderData {
