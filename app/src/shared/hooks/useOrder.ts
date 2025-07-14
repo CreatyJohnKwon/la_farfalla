@@ -258,13 +258,12 @@ const useOrder = () => {
                     );
                 }
 
-                console.log("success", res);
                 alert(res.message);
                 orderListRefetch();
                 UserDataRefetch();
                 router.replace("/profile/order");
             } else {
-                console.log("error", res);
+                console.error("error", res);
                 alert(res.message);
             }
         } catch (error) {

@@ -43,7 +43,7 @@ const DescriptionImage = ({
                 className={`overflow-hidden transition-all duration-500 ease-in-out ${
                     showFullDescription || !needsToggle
                         ? "max-h-none"
-                        : "max-h-[500px]"
+                        : "max-h-[700px]"
                 }`}
             >
                 {optimizedDescriptionImages.length > 0 ? (

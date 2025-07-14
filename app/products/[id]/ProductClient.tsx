@@ -7,6 +7,7 @@ import { useProductQuery } from "@/src/shared/hooks/react-query/useProductQuery"
 import { useIntersectionObserver } from "@/src/shared/hooks/useIntersectionObserver";
 import DescriptionImage from "@/src/components/product/DescriptionImage";
 import ReviewSystem from "@/src/components/review/ReviewSystem";
+import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 
 const ProductClient = ({ id }: { id: string }) => {
     const {
@@ -17,8 +18,16 @@ const ProductClient = ({ id }: { id: string }) => {
     const [visibleImages, setVisibleImages] = useState<Set<number>>(
         new Set([0, 1]),
     ); // 처음 2개는 기본으로 보이게
+    const [activeTab, setActiveTab] = useState("description");
     const [needsToggle, setNeedsToggle] = useState(false);
     const descriptionRef = useRef<HTMLDivElement>(null);
+
+    // 탭 데이터
+    const tabs = [
+        { id: "description", label: "상세정보" },
+        { id: "reviews", label: "구매평", count: 2 },
+        // { id: "qna", label: "Q&A", count: 0 },
+    ];
 
     // 콘텐츠 높이 체크 함수
     const checkContentHeight = () => {
@@ -113,16 +122,7 @@ const ProductClient = ({ id }: { id: string }) => {
 
     // 로딩 중
     if (productLoading) {
-        return (
-            <div className="flex h-screen w-full items-center justify-center">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-black"></div>
-                    <p className="font-amstel text-lg font-[400] text-gray-700">
-                        Loading...
-                    </p>
-                </div>
-            </div>
-        );
+        return <LoadingSpinner size="md" message="Loading..." />;
     }
 
     // 상품 데이터가 없는 경우
@@ -141,30 +141,65 @@ const ProductClient = ({ id }: { id: string }) => {
 
     return (
         <div className="flex h-full w-full flex-col items-center justify-center overflow-x-hidden">
-            <div className="mx-auto mt-16 flex h-full w-full flex-col items-center gap-3 pb-[50vh] transition-all duration-300 ease-in-out sm:mt-24 md:mt-32 md:w-[90%] md:flex-row md:gap-8 md:pb-[80vh] lg:mt-32 lg:w-[70%] lg:gap-16">
+            <div className="mx-auto mt-16 flex h-full w-full flex-col items-center gap-3 pb-[50vh] transition-all duration-300 ease-in-out sm:mt-24 md:mt-32 md:w-[90%] md:flex-row md:gap-8 lg:mt-32 lg:w-[70%] lg:gap-16">
                 <Slider images={product.image} />
                 <ProductInfo product={product} />
             </div>
 
-            {/* description 이미지들 */}
-            <div className="flex h-full w-full flex-col md:w-2/5">
-                <div
-                    ref={descriptionSectionRef as Ref<HTMLDivElement | null>}
-                    className="h-auto w-full"
-                >
-                    <DescriptionImage
-                        product={product}
-                        visibleImages={visibleImages}
-                        setVisibleImages={setVisibleImages}
-                        checkContentHeight={checkContentHeight}
-                        descriptionRef={descriptionRef}
-                        needsToggle={needsToggle}
-                    />
+            <div className="mx-auto w-full max-w-4xl">
+                {/* 탭 헤더 */}
+                <div className="relative">
+                    <div className="absolute bottom-0 left-1/2 h-px w-[90vw] -translate-x-1/2 transform bg-gray-200"></div>
+                    <nav className="relative flex space-x-8 px-6">
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`border-b-2 px-1 py-4 text-sm font-medium transition-colors duration-200 ${
+                                    activeTab === tab.id
+                                        ? "border-gray-900 text-gray-900"
+                                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                                }`}
+                            >
+                                {tab.label}
+                                {tab.count !== undefined && (
+                                    <span className="ml-2 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+                                        {tab.count}
+                                    </span>
+                                )}
+                            </button>
+                        ))}
+                    </nav>
                 </div>
-            </div>
 
-            <div className="w-screen md:w-2/5">
-                <ReviewSystem />
+                {/* 탭 콘텐츠 */}
+                <div className="min-h-[500px] w-full">
+                    {activeTab === "description" && (
+                        <div className="flex h-full w-full flex-col items-center">
+                            <div
+                                ref={
+                                    descriptionSectionRef as Ref<HTMLDivElement | null>
+                                }
+                                className="h-auto w-full md:w-3/5"
+                            >
+                                <DescriptionImage
+                                    product={product}
+                                    visibleImages={visibleImages}
+                                    setVisibleImages={setVisibleImages}
+                                    checkContentHeight={checkContentHeight}
+                                    descriptionRef={descriptionRef}
+                                    needsToggle={needsToggle}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === "reviews" && (
+                        <div className="w-full">
+                            <ReviewSystem />
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

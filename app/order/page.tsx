@@ -7,6 +7,7 @@ import useOrder from "@src/shared/hooks/useOrder";
 import DefaultImage from "../../public/images/chill.png";
 import { useAddress } from "@/src/shared/hooks/useAddress";
 import AddressModal from "@/src/features/address/AddressModal";
+import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 
 const Order = () => {
     const { orderDatas } = useOrder();
@@ -508,14 +509,11 @@ const Order = () => {
 
                             {/* 로딩 상태 */}
                             {isCouponsLoading ? (
-                                <div className="flex items-center justify-center py-8">
-                                    <div className="text-center">
-                                        <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-black"></div>
-                                        <p className="mt-2 text-sm text-gray-500">
-                                            쿠폰 로딩 중...
-                                        </p>
-                                    </div>
-                                </div>
+                                <LoadingSpinner
+                                    size="sm"
+                                    fullScreen={false}
+                                    message="Loading..."
+                                />
                             ) : !couponData.length ? (
                                 /* 쿠폰 없음 상태 */
                                 <div className="flex items-center justify-center py-8">

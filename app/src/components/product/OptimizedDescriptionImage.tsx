@@ -5,6 +5,7 @@ import DefaultImage from "../../../../public/images/chill.png";
 import { useIntersectionObserver } from "../../shared/hooks/useIntersectionObserver";
 import { useEffect } from "react";
 import Image from "next/image";
+import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 
 // 개별 Description 이미지 컴포넌트
 const OptimizedDescriptionImage = ({
@@ -57,11 +58,11 @@ const OptimizedDescriptionImage = ({
         <div ref={combinedRef} className="w-full">
             {/* 스켈레톤 로딩 */}
             {(!isLoaded || isLoading) && shouldLoad && (
-                <div className="animate-shimmer aspect-[4/3] w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]">
-                    <div className="flex h-full items-center justify-center">
-                        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"></div>
-                    </div>
-                </div>
+                <LoadingSpinner
+                    size="md"
+                    fullScreen={false}
+                    message="Loading..."
+                />
             )}
 
             {/* 이미지 렌더링 */}

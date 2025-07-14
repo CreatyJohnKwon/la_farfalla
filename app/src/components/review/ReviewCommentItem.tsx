@@ -1,6 +1,7 @@
 import { Edit3, Heart, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { ReviewCommentItemProps } from "./interface";
+import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 
 const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
     comment,
@@ -143,7 +144,7 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
                 >
                     {/* 로딩 중일 때 스피너 표시 */}
                     {onLikePending ? (
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-red-500" />
+                        <LoadingSpinner size="sm" fullScreen={false} />
                     ) : (
                         <Heart
                             className={`h-4 w-4 transition-all duration-200 ${

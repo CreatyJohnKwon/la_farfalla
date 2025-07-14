@@ -7,6 +7,7 @@ import DefaultImage from "../../../../public/images/chill.png";
 import { Product } from "@src/entities/type/interfaces";
 import { priceResult, priceDiscount } from "@src/features/calculate";
 import { useOptimizedImage } from "@/src/shared/hooks/useOptimizedImage";
+import LoadingSpinner from "../../widgets/spinner/LoadingSpinner";
 
 interface ProductsListProps {
     product: Product;
@@ -45,11 +46,11 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                     {/* 향상된 스켈레톤 로딩 */}
                     {(!isLoaded || isLoading) && shouldLoad && (
                         <div className="absolute left-0 top-0 h-full w-full bg-gray-100">
-                            <div className="animate-shimmer h-full w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]">
-                                <div className="flex h-full w-full items-center justify-center">
-                                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"></div>
-                                </div>
-                            </div>
+                            <LoadingSpinner
+                                fullScreen={true}
+                                size="lg"
+                                message="Loading..."
+                            />
                         </div>
                     )}
 

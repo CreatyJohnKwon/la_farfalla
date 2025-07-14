@@ -11,6 +11,7 @@ import { useState } from "react";
 import { ReviewItemProps } from "./interface";
 import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
 import { uploadImagesToServer } from "@/src/shared/lib/uploadToR2";
+import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 
 const ReviewItem: React.FC<ReviewItemProps> = ({
     review,
@@ -472,7 +473,11 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                         }`}
                     >
                         {onLikePending ? (
-                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-red-500" />
+                            <LoadingSpinner
+                                fullScreen={false}
+                                size="sm"
+                                message="Loading..."
+                            />
                         ) : (
                             <Heart
                                 className={`h-4 w-4 transition-all duration-200 ${

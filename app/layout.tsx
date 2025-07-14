@@ -8,7 +8,6 @@ import RQProvider from "@src/features/providers/RQProvider";
 import Sidebar from "@src/features/sidebar/Sidebar";
 import Navbar from "@src/widgets/navbar/Navbar";
 import Footer from "@src/widgets/footer/Footer";
-import { ScreenLoader } from "./src/widgets/loader/ScreenLoader";
 import { Provider as JotaiProvider } from "jotai";
 import DraggableFloatingButton from "./src/widgets/button/DraggableFloatingButton";
 
@@ -46,28 +45,25 @@ const RootLayout = async ({
                             <Sidebar />
                             <Navbar />
                             <Footer />
-                            <ScreenLoader />
                             <DraggableFloatingButton />
                         </AuthProvider>
                     </RQProvider>
                 </JotaiProvider>
-                
+
                 {/* 네이버 로그인 SDK */}
                 <Script
                     src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"
                     strategy="beforeInteractive"
                 />
-                
+
                 {/* 네이버페이 SDK 추가 */}
                 <Script
                     src="https://nsp.pay.naver.com/sdk/js/naverpay.min.js"
                     strategy="beforeInteractive"
                 />
-                
+
                 {/* 포트원 SDK */}
-                <Script
-                    src="https://cdn.portone.io/v2/browser-sdk.js"
-                />
+                <Script src="https://cdn.portone.io/v2/browser-sdk.js" />
             </body>
         </html>
     );

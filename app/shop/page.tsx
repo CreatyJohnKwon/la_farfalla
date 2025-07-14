@@ -3,7 +3,7 @@
 import { useMemo, useCallback } from "react";
 import useProduct from "@/src/shared/hooks/useProduct";
 import { useProductListQuery } from "@/src/shared/hooks/react-query/useProductQuery";
-import ProductsList from "@/src/widgets/list/ProductsList";
+import ProductsList from "@/src/components/product/ProductsList";
 
 const Shop = () => {
     const { section } = useProduct();

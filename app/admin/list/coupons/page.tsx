@@ -10,6 +10,7 @@ import {
     useDeleteUserCouponMutation,
 } from "@/src/shared/hooks/react-query/useBenefitQuery";
 import CouponCreateModal from "@/src/widgets/modal/CouponCreateModal";
+import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 
 const CouponAdmin = () => {
     const [selectedCoupon, setSelectedCoupon] = useState<ICoupon | null>(null);
@@ -232,10 +233,11 @@ const CouponAdmin = () => {
 
                         <div className="overflow-hidden">
                             {isLoading ? (
-                                <div className="px-4 py-8 text-center text-gray-500">
-                                    <div className="mx-auto h-6 w-6 animate-spin rounded-full border-b-2 border-blue-300"></div>
-                                    <div className="mt-2">로딩 중...</div>
-                                </div>
+                                <LoadingSpinner
+                                    size="sm"
+                                    fullScreen={false}
+                                    message="Loading..."
+                                />
                             ) : filteredUserCoupons.length === 0 ? (
                                 <div className="px-4 py-8 text-center text-gray-500">
                                     {filterStatus === "all"
@@ -401,10 +403,11 @@ const CouponAdmin = () => {
 
                         <div className="overflow-hidden">
                             {isLoading ? (
-                                <div className="px-4 py-8 text-center text-gray-500">
-                                    <div className="mx-auto h-6 w-6 animate-spin rounded-full border-b-2 border-blue-300"></div>
-                                    <div className="mt-2">로딩 중...</div>
-                                </div>
+                                <LoadingSpinner
+                                    size="sm"
+                                    fullScreen={false}
+                                    message="Loading..."
+                                />
                             ) : !manageCoupons?.data ||
                               manageCoupons.data.length === 0 ? (
                                 <div className="px-4 py-8 text-center text-gray-500">

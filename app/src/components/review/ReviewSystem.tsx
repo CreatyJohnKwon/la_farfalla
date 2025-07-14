@@ -12,6 +12,7 @@ import {
     useDeleteCommentMutation,
     useToggleCommentLikeMutation,
 } from "@src/shared/hooks/react-query/useReviewQuery";
+import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 
 const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
     // React Query 훅들
@@ -232,12 +233,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
     // 로딩 상태
     if (isLoading) {
         return (
-            <div className="mx-auto min-h-screen bg-white p-8">
-                <div className="py-20 text-center">
-                    <div className="mx-auto mb-4 h-8 w-8 animate-spin border-2 border-gray-300 border-t-black"></div>
-                    <p className="text-gray-500">리뷰를 불러오는 중...</p>
-                </div>
-            </div>
+            <LoadingSpinner size="md" fullScreen={false} message="Loading..." />
         );
     }
 
