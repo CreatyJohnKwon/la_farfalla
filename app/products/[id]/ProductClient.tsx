@@ -8,6 +8,7 @@ import { useIntersectionObserver } from "@/src/shared/hooks/useIntersectionObser
 import DescriptionImage from "@/src/components/product/DescriptionImage";
 import ReviewSystem from "@/src/components/review/ReviewSystem";
 import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
+import { useGetReviewsListQuery } from "@/src/shared/hooks/react-query/useReviewQuery";
 
 const ProductClient = ({ id }: { id: string }) => {
     const {
@@ -15,6 +16,12 @@ const ProductClient = ({ id }: { id: string }) => {
         isLoading: productLoading,
         error,
     } = useProductQuery(id);
+    const {
+        data: reviewsData,
+        isLoading: reviewIsLoading,
+        error: reviewError,
+        refetch: reviewRefetch,
+    } = useGetReviewsListQuery(id);
     const [visibleImages, setVisibleImages] = useState<Set<number>>(
         new Set([0, 1]),
     ); // 처음 2개는 기본으로 보이게
@@ -22,11 +29,12 @@ const ProductClient = ({ id }: { id: string }) => {
     const [needsToggle, setNeedsToggle] = useState(false);
     const descriptionRef = useRef<HTMLDivElement>(null);
 
+    const reviews = reviewsData?.data || [];
+
     // 탭 데이터
     const tabs = [
         { id: "description", label: "상세정보" },
-        { id: "reviews", label: "구매평", count: 2 },
-        // { id: "qna", label: "Q&A", count: 0 },
+        { id: "reviews", label: "구매평" },
     ];
 
     // 콘텐츠 높이 체크 함수
@@ -162,11 +170,13 @@ const ProductClient = ({ id }: { id: string }) => {
                                 }`}
                             >
                                 {tab.label}
-                                {tab.count !== undefined && (
-                                    <span className="ml-2 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
-                                        {tab.count}
-                                    </span>
-                                )}
+                                {tab.id === "reviews" &&
+                                    reviews &&
+                                    reviews.length > 0 && (
+                                        <span className="ml-2 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+                                            {reviews && reviews.length}
+                                        </span>
+                                    )}
                             </button>
                         ))}
                     </nav>
@@ -196,7 +206,13 @@ const ProductClient = ({ id }: { id: string }) => {
 
                     {activeTab === "reviews" && (
                         <div className="w-full">
-                            <ReviewSystem />
+                            <ReviewSystem
+                                productId={id}
+                                reviews={reviews}
+                                isLoading={reviewIsLoading}
+                                error={reviewError}
+                                refetch={reviewRefetch}
+                            />
                         </div>
                     )}
                 </div>

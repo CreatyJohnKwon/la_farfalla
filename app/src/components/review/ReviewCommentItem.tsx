@@ -10,11 +10,11 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
     onDelete,
     userId,
     reviewId,
-    onLikePending,
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editContent, setEditContent] = useState(comment.content);
     const [showMenu, setShowMenu] = useState(false);
+    const [isLiking, setIsLiking] = useState(false); // 개별 좋아요 로딩 상태 추가
 
     const handleEdit = () => {
         if (editContent.trim()) {
@@ -24,7 +24,14 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
     };
 
     const handleLike = (commentId: string) => async () => {
-        onLike(reviewId, commentId);
+        if (isLiking) return; // 이미 로딩 중이면 중복 실행 방지
+
+        setIsLiking(true); // 로딩 시작
+        try {
+            await onLike(reviewId, commentId);
+        } finally {
+            setIsLiking(false); // 로딩 끝
+        }
     };
 
     const handleDelete = () => {
@@ -131,20 +138,20 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
             <div className="mt-5 flex items-center space-x-6">
                 <button
                     onClick={handleLike(comment.id)} // 댓글 ID 전달
-                    disabled={onLikePending} // 로딩 중 비활성화
+                    disabled={isLiking} // 개별 로딩 상태로 변경
                     className={`flex items-center space-x-2 px-4 py-2 transition-all duration-200 ${
                         comment.likedUsers.includes(userId)
                             ? "scale-110 text-red-500" // 🔄 채워진 빨간색
                             : "text-gray-600 hover:text-red-400" // 🔄 호버 시 연한 빨간색
                     } ${
-                        onLikePending
+                        isLiking // 개별 로딩 상태로 변경
                             ? "cursor-not-allowed opacity-50"
                             : "hover:scale-105" // 호버 효과 추가
                     }`}
                 >
-                    {/* 로딩 중일 때 스피너 표시 */}
-                    {onLikePending ? (
-                        <LoadingSpinner size="sm" fullScreen={false} />
+                    {/* 개별 로딩 상태로 변경 */}
+                    {isLiking ? (
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-red-500" />
                     ) : (
                         <Heart
                             className={`h-4 w-4 transition-all duration-200 ${

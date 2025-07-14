@@ -22,8 +22,7 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
     onEditComment,
     onDeleteReview,
     onDeleteComment,
-    onLikePending,
-    onLikeCommentPending,
+    // onLikePending, onLikeCommentPending 제거 - 개별 관리
 }) => {
     const [isCommenting, setIsCommenting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -32,6 +31,7 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
     const [showMenu, setShowMenu] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [isLikingReview, setIsLikingReview] = useState(false); // 개별 리뷰 좋아요 로딩 상태
 
     // 🆕 이미지 수정 관련 상태
     const [editImages, setEditImages] = useState<string[]>(review.images || []);
@@ -75,8 +75,16 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
         }
     };
 
+    // 개별 리뷰 좋아요 처리
     const handleLikeReview = (reviewId: string) => async () => {
-        onLikeReview(reviewId);
+        if (isLikingReview) return; // 이미 로딩 중이면 중복 실행 방지
+
+        setIsLikingReview(true);
+        try {
+            await onLikeReview(reviewId);
+        } finally {
+            setIsLikingReview(false);
+        }
     };
 
     const handleDeleteReview = () => {
@@ -312,7 +320,7 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                                     5 && (
                                     <div>
                                         <div
-                                            className={`relative rounded-md border border-dashed p-4 text-center transition-colors ${
+                                            className={`relative border border-dashed p-4 text-center transition-colors ${
                                                 isDragOver
                                                     ? "border-black bg-gray-50"
                                                     : "border-gray-300 hover:border-gray-400"
@@ -434,10 +442,10 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                                                 <img
                                                     src={imageUrl}
                                                     alt={`리뷰 이미지 ${index + 1}`}
-                                                    className="h-20 w-20 rounded-lg border border-gray-200 object-cover transition-transform duration-200 hover:scale-105 hover:shadow-lg sm:h-24 sm:w-24 md:h-28 md:w-28"
+                                                    className="h-20 w-20 border border-gray-200 object-cover transition-transform duration-200 hover:scale-105 hover:shadow-lg sm:h-24 sm:w-24 md:h-28 md:w-28"
                                                 />
                                                 {/* 🆕 호버 오버레이 */}
-                                                <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-0 transition-all duration-200 group-hover:bg-opacity-20">
+                                                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 transition-all duration-200 group-hover:bg-opacity-20">
                                                     <span className="text-xs font-medium text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                                                         확대보기
                                                     </span>
@@ -461,23 +469,19 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                 <div className="mt-5 flex items-center space-x-6">
                     <button
                         onClick={handleLikeReview(review._id)}
-                        disabled={onLikePending}
+                        disabled={isLikingReview} // 개별 로딩 상태로 변경
                         className={`flex items-center space-x-2 px-4 py-2 transition-all duration-200 ${
                             review.isLiked
                                 ? "scale-110 fill-transparent text-red-500"
                                 : "text-gray-600 hover:text-red-400"
                         } ${
-                            onLikePending
+                            isLikingReview // 개별 로딩 상태로 변경
                                 ? "cursor-not-allowed opacity-50"
                                 : "hover:scale-105"
                         }`}
                     >
-                        {onLikePending ? (
-                            <LoadingSpinner
-                                fullScreen={false}
-                                size="sm"
-                                message="Loading..."
-                            />
+                        {isLikingReview ? ( // 개별 로딩 상태로 변경
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-red-500" />
                         ) : (
                             <Heart
                                 className={`h-4 w-4 transition-all duration-200 ${
@@ -554,7 +558,6 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                                 onDelete={onDeleteComment}
                                 userId={session._id}
                                 reviewId={review._id}
-                                onLikePending={onLikeCommentPending}
                             />
                         ))}
                     </div>
@@ -577,7 +580,7 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                         <img
                             src={selectedImage}
                             alt="확대된 리뷰 이미지"
-                            className="max-h-full max-w-full rounded-lg object-contain"
+                            className="max-h-full max-w-full object-contain"
                             onClick={(e) => e.stopPropagation()}
                         />
                     </div>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import ReviewItem from "./ReviewItem";
 import { ReviewSystemProps } from "./interface";
 import {
-    useGetReviewsListQuery,
     usePostReviewMutation,
     useUpdateReviewMutation,
     useDeleteReviewMutation,
@@ -14,14 +13,13 @@ import {
 } from "@src/shared/hooks/react-query/useReviewQuery";
 import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 
-const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
-    // React Query 훅들
-    const {
-        data: reviewsData,
-        isLoading,
-        error,
-        refetch,
-    } = useGetReviewsListQuery(productId);
+const ReviewSystem: React.FC<ReviewSystemProps> = ({
+    productId,
+    reviews,
+    isLoading,
+    error,
+    refetch,
+}) => {
     const postReviewMutation = usePostReviewMutation();
     const updateReviewMutation = useUpdateReviewMutation();
     const deleteReviewMutation = useDeleteReviewMutation();
@@ -36,9 +34,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
     const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
     const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
     const [isDragOver, setIsDragOver] = useState(false);
-
-    // 데이터 추출
-    const reviews = reviewsData?.data || [];
 
     // 파일 업로드 처리
     const handleFiles = (files: FileList | null) => {
@@ -245,9 +240,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
                     <p className="text-lg text-red-500">
                         리뷰를 불러오는데 실패했습니다
                     </p>
-                    <p className="mt-2 text-sm text-gray-400">
-                        {error.message}
-                    </p>
                     <button
                         onClick={() => refetch()}
                         className="mt-4 bg-black px-6 py-2 text-white hover:bg-gray-800"
@@ -280,7 +272,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
                     <div className="flex items-start gap-3">
                         {/* 사진 추가 버튼 (정사각형) */}
                         <div
-                            className={`relative flex h-16 w-16 cursor-pointer items-center justify-center rounded-md border border-dashed border-gray-300 transition-colors hover:border-gray-400 ${
+                            className={`relative flex h-16 w-16 cursor-pointer items-center justify-center border border-dashed border-gray-300 transition-colors hover:border-gray-400 ${
                                 isDragOver ? "border-black bg-gray-50" : ""
                             } ${uploadedPhotos.length >= 5 ? "pointer-events-none opacity-50" : ""}`}
                             onDragOver={handleDragOver}
@@ -316,7 +308,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({ productId }) => {
                                 <img
                                     src={preview}
                                     alt={`미리보기 ${index + 1}`}
-                                    className="h-16 w-16 rounded-md border border-gray-200 object-cover"
+                                    className="h-16 w-16 border border-gray-200 object-cover"
                                 />
                                 <button
                                     type="button"

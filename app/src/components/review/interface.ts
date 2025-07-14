@@ -1,4 +1,6 @@
+import { SetStateAction } from "jotai";
 import { Document, Types } from "mongoose";
+import { Dispatch } from "react";
 
 // ============= 클라이언트용 인터페이스 =============
 interface Review {
@@ -73,7 +75,6 @@ interface ReviewCommentItemProps {
     onDelete: (commentId: string) => void;
     userId: string;
     reviewId: string;
-    onLikePending: boolean;
 }
 
 interface ReviewItemProps {
@@ -94,7 +95,11 @@ interface ReviewItemProps {
 }
 
 interface ReviewSystemProps {
-    productId?: string;
+    productId: string;
+    reviews: Review[];
+    isLoading: boolean;
+    error: unknown; // 또는 AxiosError 등으로 구체화 가능
+    refetch: () => void | Promise<unknown>; // 보통 Promise<void> 반환
 }
 
 interface ToggleReviewLikeResponse {
