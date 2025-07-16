@@ -1,7 +1,6 @@
 import { Edit3, Heart, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { ReviewCommentItemProps } from "./interface";
-import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 
 const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
     comment,

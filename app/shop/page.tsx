@@ -96,7 +96,7 @@ const Shop = () => {
     return (
         <div className="mb-10 h-screen w-screen">
             <main className="flex h-full w-full flex-col items-center justify-center">
-                <ul className="grid w-[90vw] animate-fade-in grid-cols-2 gap-2 overflow-y-auto sm:gap-3 md:mt-32 md:w-[85vw] md:grid-cols-3">
+                <ul className="mt-24 grid w-[90vw] animate-fade-in grid-cols-2 gap-2 overflow-y-auto sm:gap-3 md:mt-32 md:w-[85vw] md:grid-cols-3">
                     {filteredProducts.map((item, index) => (
                         <ProductsList
                             key={`${item._id}-${section}`} // section 변경 시 리렌더링 방지
