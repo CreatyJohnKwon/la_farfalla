@@ -48,6 +48,7 @@ const POST = async (req: NextRequest) => {
             colors,
             seasonName,
             size,
+            quantity,
         } = body;
 
         // 기본 필수 필드 검증
@@ -58,6 +59,7 @@ const POST = async (req: NextRequest) => {
             !image ||
             !colors ||
             size === undefined ||
+            quantity === undefined ||
             title.kr === undefined ||
             description.images === undefined ||
             description.text === undefined
@@ -94,6 +96,7 @@ const POST = async (req: NextRequest) => {
             colors,
             seasonName: seasonName ?? "",
             size,
+            quantity,
         });
 
         const savedProduct = await newProduct.save();
@@ -131,6 +134,7 @@ const PUT = async (req: NextRequest) => {
             colors,
             seasonName,
             size,
+            quantity,
         } = body;
 
         await connectDB();
@@ -146,6 +150,7 @@ const PUT = async (req: NextRequest) => {
                 colors,
                 seasonName: seasonName ?? "", // 빈 문자열 허용
                 size,
+                quantity,
             },
             {
                 new: true,

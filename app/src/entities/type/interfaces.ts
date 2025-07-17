@@ -9,6 +9,7 @@ interface Product {
     colors: Array<string>;
     seasonName: string;
     size: Array<string>;
+    quantity: string;
 }
 
 interface ProductDescription {

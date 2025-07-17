@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Product, Season } from "@/src/entities/type/interfaces";
@@ -79,7 +78,9 @@ const UpdateProductModal = ({
                         데이터를 불러오는데 실패했습니다.
                     </div>
                     <button
-                        onClick={() => confirm("작성을 취소하시겠습니까?") && onClose()}
+                        onClick={() =>
+                            confirm("작성을 취소하시겠습니까?") && onClose()
+                        }
                         className="mt-4 rounded-md bg-gray-900 px-4 py-2 text-white"
                     >
                         닫기
@@ -101,6 +102,7 @@ const UpdateProductModal = ({
                 colors: product.colors,
                 seasonName: product.seasonName,
                 size: product.size,
+                quantity: product.quantity,
             });
 
             // 기존 이미지 데이터 설정
@@ -140,6 +142,7 @@ const UpdateProductModal = ({
                 colors: product.colors,
                 seasonName: product.seasonName,
                 size: product.size,
+                quantity: product.quantity,
             });
 
             setImageData({
@@ -170,6 +173,7 @@ const UpdateProductModal = ({
                 colors: [],
                 seasonName: "",
                 size: [],
+                quantity: "",
             });
 
             setImageData({
@@ -218,7 +222,11 @@ const UpdateProductModal = ({
                 ...prev,
                 description: { ...prev.description, detail: value },
             }));
-        } else if (name === "price" || name === "discount") {
+        } else if (
+            name === "price" ||
+            name === "discount" ||
+            name === "quantity"
+        ) {
             // 쉼표 제거하고 숫자만 허용
             const numericValue = value.replace(/,/g, "");
             if (!/^\d*$/.test(numericValue)) return; // 숫자만 입력 가능
@@ -525,7 +533,8 @@ const UpdateProductModal = ({
                 };
 
                 // 업데이트 모드인 경우 ID 포함
-                if (mode === "update" && product?._id) finalData._id = product._id;
+                if (mode === "update" && product?._id)
+                    finalData._id = product._id;
 
                 if (mode === "update") await updateProduct(finalData);
                 else await createProduct(finalData);
@@ -646,7 +655,7 @@ const UpdateProductModal = ({
                         name="descriptionText"
                         value={formData.description.text}
                         onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none mb-2"
+                        className="mb-2 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                         placeholder="상품 설명을 입력하세요 (최대 500자)"
                         rows={3}
                         maxLength={500}
@@ -659,7 +668,7 @@ const UpdateProductModal = ({
                         name="descriptionDetailText"
                         value={formData.description.detail}
                         onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none mb-4"
+                        className="mb-4 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                         placeholder="상품 설명을 입력하세요 (최대 150자)"
                         rows={3}
                         maxLength={150}
@@ -730,7 +739,7 @@ const UpdateProductModal = ({
                 </div>
 
                 {/* 카테고리, 시즌, 가격, 할인율 */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                     <div>
                         <label className="mb-2 block text-sm font-medium text-gray-700">
                             시즌
@@ -792,6 +801,25 @@ const UpdateProductModal = ({
                             }}
                             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                             placeholder="100 이하만 가능"
+                        />
+                    </div>
+                    <div>
+                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                            수량 *
+                        </label>
+                        <input
+                            type="text"
+                            name="quantity"
+                            value={formData.quantity || "0"}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                // 숫자만 허용하고 100 이하로 제한
+                                if (value === "" || /^\d+$/.test(value)) {
+                                    handleInputChange(e);
+                                }
+                            }}
+                            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                            placeholder="0개는 품절"
                         />
                     </div>
                 </div>
@@ -888,7 +916,9 @@ const UpdateProductModal = ({
                 <div className="flex gap-3 pt-4">
                     <button
                         type="button"
-                        onClick={() => confirm("작성을 취소하시겠습니까?") && onClose()}
+                        onClick={() =>
+                            confirm("작성을 취소하시겠습니까?") && onClose()
+                        }
                         className="flex-1 rounded-md border border-gray-300 py-2 text-gray-700 hover:bg-gray-50"
                     >
                         닫기

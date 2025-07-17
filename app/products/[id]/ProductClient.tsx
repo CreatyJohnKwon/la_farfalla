@@ -149,7 +149,7 @@ const ProductClient = ({ id }: { id: string }) => {
 
     return (
         <div className="flex h-full w-full flex-col items-center justify-center overflow-x-hidden">
-            <div className="mx-auto mt-16 flex h-full w-full flex-col items-center gap-3 pb-[50vh] transition-all duration-300 ease-in-out sm:mt-24 md:mt-32 md:w-[90%] md:flex-row md:gap-8 lg:mt-32 lg:w-[70%] lg:gap-16">
+            <div className="mx-auto mt-16 flex h-full w-full flex-col items-center gap-3 pb-[15vh] transition-all duration-300 ease-in-out sm:mt-24 md:mt-32 md:w-[90%] md:flex-row md:gap-8 lg:mt-32 lg:w-[70%] lg:gap-16">
                 <Slider images={product.image} />
                 <ProductInfo product={product} />
             </div>
@@ -157,7 +157,6 @@ const ProductClient = ({ id }: { id: string }) => {
             <div className="mx-auto w-full max-w-4xl">
                 {/* 탭 헤더 */}
                 <div className="relative">
-                    <div className="absolute bottom-0 left-1/2 h-px w-[90vw] -translate-x-1/2 transform bg-gray-200"></div>
                     <nav className="relative flex space-x-8 px-6">
                         {tabs.map((tab) => (
                             <button
@@ -183,7 +182,7 @@ const ProductClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* 탭 콘텐츠 */}
-                <div className="min-h-[500px] w-full">
+                <div className="min-h-[600px] w-full">
                     {activeTab === "description" && (
                         <div className="flex h-full w-full flex-col items-center">
                             <div

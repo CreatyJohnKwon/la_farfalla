@@ -30,8 +30,8 @@ const Products = () => {
     if (!products) return <div>상품 리스트를 불러올 수 없습니다.</div>;
 
     return (
-        <div className="w-full max-w-full overflow-x-auto border font-pretendard sm:p-16 md:overflow-x-visible">
-            <div className="ms-5 mt-12 flex h-8 w-full items-center justify-between sm:ms-0">
+        <div className="w-full max-w-full overflow-x-auto border pt-16 font-pretendard sm:p-16 md:overflow-x-visible">
+            <div className="ms-5 mt-12 flex h-8 w-full items-center gap-6 sm:ms-0 sm:justify-between">
                 {/* 새로고침 버튼 */}
                 <button
                     onClick={() => refetch()}
@@ -95,11 +95,14 @@ const Products = () => {
                         <th className="w-[10%] px-2 py-2 text-xs sm:text-sm md:px-4">
                             할인율
                         </th>
-                        <th className="w-[20%] px-2 py-2 text-xs sm:text-sm md:px-4">
+                        <th className="w-[15%] px-2 py-2 text-xs sm:text-sm md:px-4">
                             색상
                         </th>
-                        <th className="w-[20%] px-2 py-2 text-xs sm:text-sm md:px-4">
+                        <th className="w-[15%] px-2 py-2 text-xs sm:text-sm md:px-4">
                             사이즈
+                        </th>
+                        <th className="w-[5%] px-2 py-2 text-xs sm:text-sm md:px-4">
+                            수량
                         </th>
                         <th className="w-[10%] whitespace-nowrap px-2 py-2 text-xs sm:text-sm md:px-4">
                             수정/삭제
@@ -128,7 +131,7 @@ const Products = () => {
                                     />
                                 </Link>
                             </td>
-                            <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
+                            <td className="text-xs sm:text-sm">
                                 <div className="w-[80%]">
                                     <p className="truncate">
                                         {product.title.kr}
@@ -138,28 +141,33 @@ const Products = () => {
                                     </p>
                                 </div>
                             </td>
-                            <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
+                            <td className="text-xs sm:text-sm">
                                 {product.seasonName !== ""
                                     ? product.seasonName
                                     : "All"}
                             </td>
-                            <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
+                            <td className="text-xs sm:text-sm">
                                 {`${Number(product.price).toLocaleString()}원`}
                             </td>
-                            <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
+                            <td className="text-xs sm:text-sm">
                                 {`${product.discount}%`}
                             </td>
-                            <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
+                            <td className="text-xs sm:text-sm">
                                 {product.colors.length > 0
                                     ? product.colors.join(", ")
                                     : "색상 정보 없음"}
                             </td>
-                            <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
+                            <td className="text-xs sm:text-sm">
                                 {product.size.length > 0
                                     ? product.size.join(", ")
                                     : "사이즈 정보 없음"}
                             </td>
-                            <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
+                            <td className="text-xs sm:text-sm">
+                                {product.quantity === "0"
+                                    ? "품절"
+                                    : product.quantity}
+                            </td>
+                            <td className="text-xs sm:text-sm">
                                 <div className="flex items-center gap-2">
                                     {/* 수정 버튼 */}
                                     <button

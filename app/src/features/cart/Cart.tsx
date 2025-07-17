@@ -78,7 +78,7 @@ const Cart = () => {
             return (
                 <li
                     key={"unknown_datas"}
-                    className="font-pretendard font-[300] text-[0.8em] text-black sm:text-[1em]"
+                    className="font-pretendard text-[0.8em] font-[300] text-black sm:text-[1em]"
                 >
                     장바구니가 비었습니다
                 </li>
@@ -92,26 +92,28 @@ const Cart = () => {
             onClick={() => setCartView(false)}
         >
             <div
-                className="relative h-4/5 w-11/12 bg-white shadow-xl sm:h-3/4 sm:w-5/6"
+                className="relative h-4/5 w-11/12 bg-white"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="mt-3 flex w-full items-center justify-between px-5 sm:mt-5 sm:px-8">
                     <div className="text-sm sm:text-gray-600">
+                        {/* Mobile */}
                         <span className="block sm:hidden">
                             총 {totalQuantity}개
                         </span>
-                        <span className="hidden text-[1.3em] sm:block">
+                        {/* PC */}
+                        <span className="hidden text-base sm:block">
                             총 주문 상품 {totalQuantity}개
                         </span>
                     </div>
 
-                    <p className="font-amstel absolute left-1/2 -translate-x-1/2 text-[1.5em] text-gray-600 sm:text-[2em]">
+                    <p className="font-amstel absolute left-1/2 -translate-x-1/2 text-base text-black sm:text-2xl">
                         Cart
                     </p>
 
                     <button
                         onClick={() => setCartView(false)}
-                        className="text-[1.5em] font-thin text-black sm:text-[2.2em]"
+                        className="text-xl font-thin text-black sm:text-3xl"
                     >
                         &times;
                     </button>
@@ -121,13 +123,13 @@ const Cart = () => {
                     {cartListView()}
                 </ul>
 
-                <div className="absolute bottom-10 w-full">
-                    <span className="font-amstel mb-5 flex w-full items-center justify-center text-[1.5em] sm:text-[3em]">
+                <div className="absolute bottom-6 w-full">
+                    <span className="font-amstel mb-5 flex w-full items-center justify-center text-base sm:text-3xl">
                         {`Total' KRW ${totalPrice.toLocaleString()}`}
                     </span>
-                    <div className="font-amstel flex flex-col items-center justify-center space-y-3 text-[1em] sm:flex-row sm:space-x-4 sm:space-y-0 sm:text-[1.2em]">
+                    <div className="font-amstel flex flex-col items-center justify-center space-y-3 text-base sm:flex-row sm:space-x-4 sm:space-y-0 sm:text-xl">
                         <button
-                            className="w-full max-w-[80vw] bg-black px-6 py-3 text-white hover:bg-black/70 sm:max-w-xs"
+                            className="w-[80vw] bg-black px-6 py-3 text-white hover:bg-black/70 sm:max-w-[30vw]"
                             onClick={() => {
                                 handleBuy(cartDatas); // 구매하기
                                 handleRemoveCartAll(); // 장바구니 아이템 전부 비우기

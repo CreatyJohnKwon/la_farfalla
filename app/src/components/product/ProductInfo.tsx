@@ -227,7 +227,8 @@ const ProductInfo = ({ product }: { product: Product }) => {
                     </button>
                 </div>
 
-                <div className="mt-10 flex h-[10vh] flex-col gap-4 text-center text-[1rem] font-[500] md:text-[1.3rem]">
+                {/* 개선된 하단 탭 섹션 - 아래로만 확장 */}
+                <div className="mt-10 flex flex-col gap-4 text-center text-[1rem] font-[500] md:text-[1.3rem]">
                     <div>
                         <button
                             className={`font-amstel transition-colors duration-200 ${
@@ -239,7 +240,15 @@ const ProductInfo = ({ product }: { product: Product }) => {
                         >
                             DETAILS
                         </button>
-                        {activeTab === "details" && detailsContent}
+                        <div
+                            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                activeTab === "details"
+                                    ? "max-h-96 opacity-100"
+                                    : "max-h-0 opacity-0"
+                            }`}
+                        >
+                            {detailsContent}
+                        </div>
                     </div>
                     <div>
                         <button
@@ -252,7 +261,15 @@ const ProductInfo = ({ product }: { product: Product }) => {
                         >
                             DELIVERY
                         </button>
-                        {activeTab === "delivery" && deliveryContent}
+                        <div
+                            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                activeTab === "delivery"
+                                    ? "max-h-96 opacity-100"
+                                    : "max-h-0 opacity-0"
+                            }`}
+                        >
+                            {deliveryContent}
+                        </div>
                     </div>
                     <div>
                         <button
@@ -265,7 +282,15 @@ const ProductInfo = ({ product }: { product: Product }) => {
                         >
                             SHIPPING RETURNS
                         </button>
-                        {activeTab === "shipping" && shippingContent}
+                        <div
+                            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                activeTab === "shipping"
+                                    ? "max-h-[600px] opacity-100"
+                                    : "max-h-0 opacity-0"
+                            }`}
+                        >
+                            {shippingContent}
+                        </div>
                     </div>
                 </div>
             </div>

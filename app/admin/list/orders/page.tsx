@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import type { MouseEvent } from "react";
 import StatusUpdateSelectedModal from "@/src/widgets/modal/StatusUpdateSelectedModal";
 import StatusUpdateModal from "@/src/widgets/modal/StatusUpdateModal";
 import UserInfoModal from "@/src/widgets/modal/UserInfoModal";
@@ -94,7 +93,7 @@ const Orders = () => {
 
     return (
         <div className="w-full max-w-full overflow-x-auto border font-pretendard sm:p-16 md:overflow-x-visible">
-            <div className="ms-5 mt-20 flex h-8 w-full items-center justify-between sm:ms-0">
+            <div className="ms-5 mt-20 flex h-8 w-full items-center gap-6 sm:ms-0 sm:justify-between">
                 {/* 새로고침 버튼 */}
                 <button
                     onClick={() => refetch()}
@@ -161,7 +160,7 @@ const Orders = () => {
                         </th>
                     </tr>
                 </thead>
-                {!orderListLoading && (
+                {!orderListLoading && orders && (
                     <tbody>
                         {orders?.map((order: OrderData, index) => (
                             <tr
@@ -208,7 +207,7 @@ const Orders = () => {
                                         {order.userNm}
                                         {lastCheckedIndex === index && (
                                             <span className="ml-1 text-xs text-blue-500">
-                                                ●
+                                                {`\t●`}
                                             </span>
                                         )}
                                     </button>

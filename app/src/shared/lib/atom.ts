@@ -31,6 +31,7 @@ export const productFormDatasAtom = atom<Product>({
     colors: [],
     seasonName: "",
     size: [],
+    quantity: "",
 });
 export const resetProductFormAtom = atom(null, (get, set) => {
     set(productFormDatasAtom, { ...INITIAL_PRODUCT_FORM_DATA });
@@ -51,4 +52,5 @@ const INITIAL_PRODUCT_FORM_DATA: Product = {
     colors: [],
     seasonName: "",
     size: [],
+    quantity: "",
 };
