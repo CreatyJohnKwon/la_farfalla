@@ -4,15 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { memo } from "react";
 import DefaultImage from "../../../../public/images/chill.png";
-import { Product } from "@src/entities/type/interfaces";
 import { priceResult, priceDiscount } from "@src/features/calculate";
 import { useOptimizedImage } from "@/src/shared/hooks/useOptimizedImage";
 import LoadingSpinner from "../../widgets/spinner/LoadingSpinner";
-
-interface ProductsListProps {
-    product: Product;
-    index?: number;
-}
+import { ProductsListProps } from "./interface";
 
 const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
     // 최적화된 이미지 훅 사용
@@ -85,14 +80,22 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                     <p className="font-pretendard font-medium text-black">
                         {`${product.title.kr}`}
                     </p>
-                    <p className="font-amstel-thin sm:font-amstel text-gray-600">
-                        {`${product.colors.length} colors`}
-                    </p>
+                    {product.options && (
+                        <p className="font-amstel-thin sm:font-amstel text-gray-600">
+                            {`${product.options.length} colors`}
+                        </p>
+                    )}
                 </div>
 
                 {/* 가격 정보 */}
                 <div>
-                    {product.discount === "0" || !product.discount ? (
+                    {product.quantity === "0" ? (
+                        <div className="text-center">
+                            <p className="font-amstel-bold text-base text-red-900">
+                                SOLD OUT
+                            </p>
+                        </div>
+                    ) : product.discount === "0" || !product.discount ? (
                         <span className="font-amstel-thin sm:font-amstel text-xs font-semibold text-gray-900 sm:text-base">
                             {`KRW ${priceResult(product)}`}
                         </span>

@@ -1,6 +1,5 @@
 "use client";
 
-import { Product } from "@/src/entities/type/interfaces";
 import {
     useDeleteProductMutation,
     useProductListQuery,
@@ -8,9 +7,10 @@ import {
 import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
 import { useState } from "react";
-import UpdateProductModal from "@/src/widgets/modal/UpdateProductModal";
+import UpdateProductModal from "@/src/widgets/modal/UpdateProduct/UpdateProductModal";
 import UpdateSeasonModal from "@/src/widgets/modal/UpdateSeasonModal";
 import Link from "next/link";
+import { Product } from "@/src/components/product/interface";
 
 const Products = () => {
     const {
@@ -102,7 +102,7 @@ const Products = () => {
                             사이즈
                         </th>
                         <th className="w-[5%] px-2 py-2 text-xs sm:text-sm md:px-4">
-                            수량
+                            총 수량
                         </th>
                         <th className="w-[10%] whitespace-nowrap px-2 py-2 text-xs sm:text-sm md:px-4">
                             수정/삭제
@@ -153,8 +153,14 @@ const Products = () => {
                                 {`${product.discount}%`}
                             </td>
                             <td className="text-xs sm:text-sm">
-                                {product.colors.length > 0
-                                    ? product.colors.join(", ")
+                                {product.options && product.options.length > 0
+                                    ? [
+                                          ...new Set(
+                                              product.options.map(
+                                                  (option) => option.colorName,
+                                              ),
+                                          ),
+                                      ].join(", ")
                                     : "색상 정보 없음"}
                             </td>
                             <td className="text-xs sm:text-sm">
@@ -162,7 +168,9 @@ const Products = () => {
                                     ? product.size.join(", ")
                                     : "사이즈 정보 없음"}
                             </td>
-                            <td className="text-xs sm:text-sm">
+                            <td
+                                className={`text-xs sm:text-sm ${product.quantity === "0" ? "text-red-600" : "text-black"}`}
+                            >
                                 {product.quantity === "0"
                                     ? "품절"
                                     : product.quantity}

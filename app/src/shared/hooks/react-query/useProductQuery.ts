@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Product } from "@/src/entities/type/interfaces";
 import {
     deleteProduct,
     getProduct,
@@ -9,6 +8,7 @@ import {
 } from "../../lib/server/product";
 import { useSetAtom } from "jotai";
 import { loadingAtom, resetProductFormAtom } from "../../lib/atom";
+import { Product } from "@/src/components/product/interface";
 
 const useProductListQuery = () => {
     return useQuery<Product[], Error>({

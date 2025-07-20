@@ -1,5 +1,21 @@
 import mongoose from "mongoose";
 
+const productOptionSchema = new mongoose.Schema(
+    {
+        colorName: {
+            type: String,
+            required: true,
+        },
+        stockQuantity: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 0,
+        },
+    },
+    { _id: false },
+);
+
 const productSchema = new mongoose.Schema(
     {
         title: {
@@ -49,7 +65,7 @@ const productSchema = new mongoose.Schema(
             default: "",
             validate: {
                 validator: function (v: string) {
-                    return typeof v === "string"; // 빈 문자열도 포함
+                    return typeof v === "string";
                 },
                 message: "seasonName은 문자열이어야 합니다.",
             },
@@ -59,12 +75,78 @@ const productSchema = new mongoose.Schema(
             required: true,
             default: [],
         },
+        // 🆕 여기에 options 필드 추가
+        options: {
+            type: [productOptionSchema],
+            required: false,
+            default: [],
+            validate: {
+                validator: function (v: any[]) {
+                    return !v || v.length === 0 || v.length > 0;
+                },
+                message: "옵션이 있다면 최소 1개 이상이어야 합니다.",
+            },
+        },
     },
     {
         timestamps: true,
         collection: "product",
     },
 );
+
+// 미들웨어
+productSchema.pre("save", function (next) {
+    if (
+        this.options &&
+        Array.isArray(this.options) &&
+        this.options.length > 0
+    ) {
+        this.colors = [
+            ...new Set(this.options.map((option: any) => option.colorName)),
+        ];
+
+        const totalQuantity = this.options.reduce(
+            (sum: number, option: any) => {
+                return sum + (Number(option.stockQuantity) || 0);
+            },
+            0,
+        );
+        this.quantity = totalQuantity.toString();
+
+        console.log(
+            `[Pre-save] 자동 계산 완료 - colors: ${this.colors}, quantity: ${this.quantity}`,
+        );
+    }
+    next();
+});
+
+productSchema.pre(["findOneAndUpdate", "updateOne"], function (next) {
+    const update = this.getUpdate() as any;
+
+    if (
+        update &&
+        update.options &&
+        Array.isArray(update.options) &&
+        update.options.length > 0
+    ) {
+        update.colors = [
+            ...new Set(update.options.map((option: any) => option.colorName)),
+        ];
+
+        const totalQuantity = update.options.reduce(
+            (sum: number, option: any) => {
+                return sum + (Number(option.stockQuantity) || 0);
+            },
+            0,
+        );
+        update.quantity = totalQuantity.toString();
+
+        console.log(
+            `[Pre-update] 자동 계산 완료 - colors: ${update.colors}, quantity: ${update.quantity}`,
+        );
+    }
+    next();
+});
 
 export default mongoose.models?.Product ||
     mongoose.model("Product", productSchema);

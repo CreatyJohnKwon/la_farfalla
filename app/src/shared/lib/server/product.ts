@@ -1,4 +1,4 @@
-import { Product } from "@/src/entities/type/interfaces";
+import { Product } from "@/src/components/product/interface";
 
 const getProductList = async () => {
     const res = await fetch(`/api/admin/list/product`);

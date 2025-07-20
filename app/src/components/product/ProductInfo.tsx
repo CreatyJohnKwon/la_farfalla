@@ -5,13 +5,13 @@ import {
     priceDiscount,
     justDiscount,
 } from "@src/features/calculate";
-import { Product } from "@src/entities/type/interfaces";
 import ProductDrop from "@src/widgets/drop/ProductDrop";
 import QuantityModal from "@src/widgets/modal/QuantityModal";
 import { useEffect, useState } from "react";
 import useCart from "@src/shared/hooks/useCart";
 import useUser from "@src/shared/hooks/useUsers";
 import { redirect } from "next/navigation";
+import { Product } from "./interface";
 
 const ProductInfo = ({ product }: { product: Product }) => {
     const {
@@ -155,12 +155,14 @@ const ProductInfo = ({ product }: { product: Product }) => {
                         items={product.size}
                         selected={selectedSize}
                         setSelected={setSelectedSize}
+                        type="size"
                     />
                     <ProductDrop
                         title={"color"}
-                        items={product.colors}
+                        items={product.options || []}
                         selected={selectedColor}
                         setSelected={setSelectedColor}
+                        type="color"
                     />
                 </div>
 

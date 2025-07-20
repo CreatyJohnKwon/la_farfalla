@@ -4,7 +4,7 @@ import DefaultImage from "../../../../public/images/chill.png";
 import { RefObject, useMemo, useState } from "react";
 import Image from "next/image";
 import OptimizedDescriptionImage from "./OptimizedDescriptionImage";
-import { Product } from "@/src/entities/type/interfaces";
+import { Product } from "./interface";
 
 // 개별 Description 이미지 컴포넌트
 const DescriptionImage = ({

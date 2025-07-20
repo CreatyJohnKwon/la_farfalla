@@ -1,5 +1,9 @@
 "use client";
 
+import {
+    DropdownItem,
+    ProductDropProps,
+} from "@/src/components/product/interface";
 import { useState, useEffect, useRef } from "react";
 import { IoChevronDown } from "react-icons/io5";
 
@@ -8,18 +12,50 @@ const ProductDrop = ({
     items,
     selected,
     setSelected,
-}: {
-    title: string;
-    items: string[];
-    selected: string;
-    setSelected: React.Dispatch<React.SetStateAction<string>>;
-}) => {
+    type = "size",
+}: ProductDropProps) => {
     const [open, setOpen] = useState(false);
-
     const dropRef = useRef<HTMLDivElement>(null);
 
-    const handleSelect = (value: string) => {
-        setSelected(value);
+    // 🆕 아이템에서 표시할 텍스트 가져오기
+    const getDisplayText = (item: DropdownItem): string => {
+        if (typeof item === "string") {
+            return item;
+        }
+        return item.colorName;
+    };
+
+    // 🆕 아이템에서 값 가져오기 (selected와 비교용)
+    const getValue = (item: DropdownItem): string => {
+        if (typeof item === "string") {
+            return item;
+        }
+        return item.colorName;
+    };
+
+    // 🆕 품절 여부 확인
+    const isOutOfStock = (item: DropdownItem): boolean => {
+        if (typeof item === "string") {
+            return false; // 사이즈는 품절 없음
+        }
+        return item.stockQuantity === 0;
+    };
+
+    // 🆕 재고량 가져오기
+    const getStockQuantity = (item: DropdownItem): number => {
+        if (typeof item === "string") {
+            return -1; // 사이즈는 재고량 표시 안함
+        }
+        return item.stockQuantity;
+    };
+
+    const handleSelect = (item: DropdownItem) => {
+        // 품절인 경우 선택 방지
+        if (isOutOfStock(item)) {
+            return;
+        }
+
+        setSelected(getValue(item));
         setOpen(false);
     };
 
@@ -53,15 +89,39 @@ const ProductDrop = ({
 
             {open && (
                 <ul className="absolute z-20 max-h-40 w-full overflow-y-auto border border-gray-200 bg-white shadow-md md:max-h-48">
-                    {items.map((item, index) => (
-                        <li
-                            key={index}
-                            onClick={() => handleSelect(item)}
-                            className="cursor-pointer px-3 py-2 text-xs transition-colors hover:bg-gray-100 md:px-4 md:text-sm"
-                        >
-                            {item}
-                        </li>
-                    ))}
+                    {items.map((item, index) => {
+                        const displayText = getDisplayText(item);
+                        const stockQuantity = getStockQuantity(item);
+                        const outOfStock = isOutOfStock(item);
+
+                        return (
+                            <li
+                                key={index}
+                                onClick={() => handleSelect(item)}
+                                className={`flex items-center justify-between px-3 py-2 text-xs transition-colors md:px-4 md:text-sm ${
+                                    outOfStock
+                                        ? "cursor-not-allowed bg-gray-100 text-gray-400"
+                                        : "cursor-pointer hover:bg-gray-100"
+                                } `}
+                            >
+                                <span
+                                    className={outOfStock ? "line-through" : ""}
+                                >
+                                    {displayText}
+                                </span>
+
+                                {type === "color" && (
+                                    <span className="text-right">
+                                        {outOfStock ? (
+                                            <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                                                품절
+                                            </span>
+                                        ) : null}
+                                    </span>
+                                )}
+                            </li>
+                        );
+                    })}
                 </ul>
             )}
         </div>

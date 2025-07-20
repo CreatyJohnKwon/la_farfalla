@@ -45,10 +45,9 @@ const POST = async (req: NextRequest) => {
             price,
             discount,
             image,
-            colors,
             seasonName,
             size,
-            quantity,
+            options, // 새로운 방식: options 배열 사용
         } = body;
 
         // 기본 필수 필드 검증
@@ -57,9 +56,8 @@ const POST = async (req: NextRequest) => {
             !description ||
             !price ||
             !image ||
-            !colors ||
+            !options ||
             size === undefined ||
-            quantity === undefined ||
             title.kr === undefined ||
             description.images === undefined ||
             description.text === undefined
@@ -73,19 +71,46 @@ const POST = async (req: NextRequest) => {
         // 배열 데이터 유효성 검사
         if (
             !Array.isArray(image) ||
-            !Array.isArray(colors) ||
             !Array.isArray(size) ||
-            !Array.isArray(description.images)
+            !Array.isArray(description.images) ||
+            !Array.isArray(options)
         ) {
             return NextResponse.json(
                 {
-                    error: "image, colors, size, description.images는 배열이어야 합니다.",
+                    error: "image, size, description.images, options는 배열이어야 합니다.",
                 },
                 { status: 400 },
             );
         }
 
+        // options 배열 검증
+        if (options.length === 0) {
+            return NextResponse.json(
+                { error: "최소 1개 이상의 옵션이 필요합니다." },
+                { status: 400 },
+            );
+        }
+
+        // ✅ options 배열 내용 검증 (optionNumber 제거)
+        for (const option of options) {
+            if (!option.colorName || option.stockQuantity === undefined) {
+                return NextResponse.json(
+                    {
+                        error: "옵션의 colorName, stockQuantity는 필수입니다.",
+                    },
+                    { status: 400 },
+                );
+            }
+        }
+
         await connectDB();
+
+        // options에서 총 수량과 색상 배열 계산
+        const totalQuantity = options.reduce((sum, option) => {
+            return sum + (Number(option.stockQuantity) || 0);
+        }, 0);
+
+        const colors = [...new Set(options.map((option) => option.colorName))];
 
         const newProduct = new Product({
             title,
@@ -93,10 +118,15 @@ const POST = async (req: NextRequest) => {
             price,
             discount: discount || "0",
             image,
-            colors,
             seasonName: seasonName ?? "",
             size,
-            quantity,
+
+            // 새로운 방식: options 배열 직접 저장
+            options,
+
+            // 호환성을 위한 기존 필드들
+            colors,
+            quantity: totalQuantity.toString(),
         });
 
         const savedProduct = await newProduct.save();
@@ -131,27 +161,69 @@ const PUT = async (req: NextRequest) => {
             price,
             discount,
             image,
-            colors,
             seasonName,
             size,
-            quantity,
+            options, // 새로운 방식: options 배열 사용
         } = body;
+
+        // options 배열이 있는 경우 검증
+        if (options && Array.isArray(options)) {
+            if (options.length === 0) {
+                return NextResponse.json(
+                    { error: "최소 1개 이상의 옵션이 필요합니다." },
+                    { status: 400 },
+                );
+            }
+
+            // ✅ options 배열 내용 검증 (optionNumber 제거)
+            for (const option of options) {
+                if (!option.colorName || option.stockQuantity === undefined) {
+                    return NextResponse.json(
+                        {
+                            error: "옵션의 colorName, stockQuantity는 필수입니다.",
+                        },
+                        { status: 400 },
+                    );
+                }
+            }
+        }
 
         await connectDB();
 
+        // 업데이트할 데이터 준비
+        const updateData: any = {
+            title,
+            description,
+            price,
+            discount: discount || "0",
+            image,
+            seasonName: seasonName ?? "",
+            size,
+        };
+
+        // options가 있으면 새로운 방식으로 처리
+        if (options && Array.isArray(options)) {
+            // options에서 총 수량과 색상 배열 계산
+            const totalQuantity = options.reduce((sum, option) => {
+                return sum + (Number(option.stockQuantity) || 0);
+            }, 0);
+
+            const colors = [
+                ...new Set(options.map((option) => option.colorName)),
+            ];
+
+            updateData.options = options;
+            updateData.colors = colors; // 호환성
+            updateData.quantity = totalQuantity.toString(); // 호환성
+        } else {
+            // options가 없으면 기존 방식 (하위 호환성)
+            if (body.colors) updateData.colors = body.colors;
+            if (body.quantity) updateData.quantity = body.quantity;
+        }
+
         const updatedProduct = await Product.findByIdAndUpdate(
             productId,
-            {
-                title,
-                description,
-                price,
-                discount: discount || "0",
-                image,
-                colors,
-                seasonName: seasonName ?? "", // 빈 문자열 허용
-                size,
-                quantity,
-            },
+            updateData,
             {
                 new: true,
                 runValidators: true,

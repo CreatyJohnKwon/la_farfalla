@@ -1,28 +1,3 @@
-// for server and datas
-interface Product {
-    _id?: string;
-    title: ProductTitleLanguage;
-    description: ProductDescription;
-    price: string;
-    discount: string;
-    image: string[];
-    colors: Array<string>;
-    seasonName: string;
-    size: Array<string>;
-    quantity: string;
-}
-
-interface ProductDescription {
-    images: string[];
-    text: string;
-    detail: string;
-}
-
-interface ProductTitleLanguage {
-    kr: string;
-    eg: string;
-}
-
 interface MenuItem {
     text: string;
     link: string;
@@ -277,7 +252,6 @@ export type {
     SelectedItem,
     Season,
     MenuItem,
-    Product,
     MileageItem,
     AddressModalProps,
     AddressData,

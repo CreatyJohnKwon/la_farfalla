@@ -1,4 +1,4 @@
-import { Product } from "@src/entities/type/interfaces";
+import { Product } from "../components/product/interface";
 
 const serialize = <T extends { _id: any }>(
     docs: T[],

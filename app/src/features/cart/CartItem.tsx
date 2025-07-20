@@ -1,9 +1,10 @@
-import { Product, SelectedItem } from "@src/entities/type/interfaces";
+import { SelectedItem } from "@src/entities/type/interfaces";
 import Image from "next/image";
 import DefaultImg from "../../../../public/images/chill.png";
 import { useEffect, useState, useCallback } from "react";
 import useCart from "@src/shared/hooks/useCart";
 import QuantityModal from "@src/widgets/modal/QuantityModal";
+import { Product } from "@/src/components/product/interface";
 
 const CartItem = ({ item }: { item: SelectedItem }) => {
     const [product, setProduct] = useState<Product | null>(null);
