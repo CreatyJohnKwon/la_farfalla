@@ -156,7 +156,7 @@ const ProductClient = ({ id }: { id: string }) => {
 
             <div className="mx-auto w-full max-w-4xl">
                 {/* 탭 헤더 */}
-                <div className="relative">
+                <div className="relative border-b">
                     <nav className="relative flex space-x-8 px-6">
                         {tabs.map((tab) => (
                             <button
@@ -182,14 +182,14 @@ const ProductClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* 탭 콘텐츠 */}
-                <div className="min-h-[600px] w-full">
+                <div className="min-h-[500px] w-full">
                     {activeTab === "description" && (
                         <div className="flex h-full w-full flex-col items-center">
                             <div
                                 ref={
                                     descriptionSectionRef as Ref<HTMLDivElement | null>
                                 }
-                                className="h-auto w-full md:w-3/5"
+                                className="h-auto w-full md:w-3/5 mt-20"
                             >
                                 <DescriptionImage
                                     product={product}
