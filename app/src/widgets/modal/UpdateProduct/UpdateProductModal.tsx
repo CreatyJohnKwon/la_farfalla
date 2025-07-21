@@ -79,7 +79,6 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 price: product.price,
                 discount: product.discount || "",
                 image: product.image,
-                colors: product.colors,
                 seasonName: product.seasonName,
                 size: product.size,
                 quantity: product.quantity,
@@ -117,21 +116,6 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                     }),
                 );
                 setVariants(existingVariants);
-            } else if (product.colors && product.colors.length > 0) {
-                // 하위 호환성을 위한 기존 방식
-                const existingVariants: ProductVariant[] = [];
-                const baseQuantity = Math.floor(
-                    parseInt(product.quantity || "0") / product.colors.length,
-                );
-
-                product.colors.forEach((color, colorIndex) => {
-                    existingVariants.push({
-                        id: `${color}-${colorIndex}`,
-                        colorName: color,
-                        stockQuantity: baseQuantity,
-                    });
-                });
-                setVariants(existingVariants);
             }
         } else {
             // 생성 모드: 빈 값으로 리셋
@@ -141,7 +125,6 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 price: "",
                 discount: "",
                 image: [],
-                colors: [],
                 seasonName: "",
                 size: [],
                 quantity: "",
@@ -181,7 +164,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 price: product.price,
                 discount: product.discount || "",
                 image: product.image,
-                colors: product.colors,
+
                 seasonName: product.seasonName,
                 size: product.size,
                 quantity: product.quantity,
@@ -221,21 +204,6 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                         stockQuantity: option.stockQuantity,
                     }),
                 );
-                setVariants(existingVariants);
-            } else if (product.colors && product.colors.length > 0) {
-                // options가 없으면 기존 colors로 variants 생성 (하위 호환성)
-                const existingVariants: ProductVariant[] = [];
-                const baseQuantity = Math.floor(
-                    parseInt(product.quantity || "0") / product.colors.length,
-                );
-
-                product.colors.forEach((color, colorIndex) => {
-                    existingVariants.push({
-                        id: `${color}-${colorIndex}`,
-                        colorName: color,
-                        stockQuantity: baseQuantity,
-                    });
-                });
                 setVariants(existingVariants);
             }
         } else {
@@ -412,7 +380,6 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                     options: options,
 
                     // 호환성을 위한 기존 필드들 (필요시 제거 가능)
-                    colors: uniqueColors,
                     size: formData.size,
                     quantity: totalStock.toString(),
                 };
