@@ -110,18 +110,8 @@ const useMileageQuery = (userId?: string) => {
     });
 };
 
-const useOrderQuery = (userId?: string) => {
-    return useQuery<OrderData[], Error>({
-        queryKey: ["order-list", userId],
-        queryFn: () => getOrder(userId!),
-        enabled: Boolean(userId), // userId 준비되면 요청
-        retry: false, // 실패 시 재시도 OFF
-    });
-};
-
 export {
     useMileageQuery,
-    useOrderQuery,
     useGetUserCouponsListQuery,
     usePostUserCouponMutation,
     useUpdateUserCouponMutation,

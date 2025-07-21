@@ -6,7 +6,6 @@ interface Product {
     price: string;
     discount: string;
     image: string[];
-    colors: Array<string>;
     seasonName: string;
     size: Array<string>;
     quantity: string;
@@ -14,6 +13,7 @@ interface Product {
 }
 
 interface ProductOption {
+    productId?: string;
     colorName: string;
     stockQuantity: number;
 }

@@ -52,9 +52,7 @@ const Order = () => {
     } = useOrder();
 
     // ✅ 쿠폰 데이터 추출 및 최적화
-    // ✅ 쿠폰 데이터 추출 및 최적화
     const couponData = useMemo(() => coupons?.data || [], [coupons]);
-    const couponCount = useMemo(() => coupons?.count || 0, [coupons]);
 
     // ✅ 조건 1: 활성화된 쿠폰만 필터링 (isActive === true인 것만)
     const availableCoupons = useMemo(() => {

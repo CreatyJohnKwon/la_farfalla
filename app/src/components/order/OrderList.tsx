@@ -1,9 +1,9 @@
 "use client";
 
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
-import { useOrderQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import SkeletonList from "./SkeletonList";
 import OrderItem from "./OrderItem";
+import { useOrderQuery } from "@/src/shared/hooks/react-query/useOrderQuery";
 
 const OrderList = () => {
     const { data: user, isLoading: isUserLoading } = useUserQuery();

@@ -10,16 +10,19 @@ import { useState, useEffect } from "react";
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 import {
     useGetUserCouponsListQuery,
-    useOrderQuery,
     useUpdateUserCouponMutation,
 } from "@src/shared/hooks/react-query/useBenefitQuery";
 import { MileageItem, OrderData } from "@/src/entities/type/interfaces";
 import { orderAccept } from "@/src/features/order/order";
-import { redirect } from "next/navigation";
 import { earnMileage, spendMileage } from "@/src/features/benefit/mileage";
 import { updateUser } from "../lib/server/user";
 import * as PortOne from "@portone/browser-sdk/v2";
 import { sendMail } from "../lib/server/order";
+import {
+    useOrderQuery,
+    useUpdateStockMutation,
+} from "./react-query/useOrderQuery";
+import { ProductOption } from "@/src/components/product/interface";
 
 const useOrder = () => {
     const { session } = useUser();
@@ -32,6 +35,7 @@ const useOrder = () => {
     const { refetch: orderListRefetch } = useOrderQuery(user?._id);
 
     const updateCoupon = useUpdateUserCouponMutation();
+    const updateStockMutation = useUpdateStockMutation();
 
     const [orderDatas, setOrderDatas] = useAtom<SelectedItem[] | []>(
         orderDatasAtom,
@@ -122,6 +126,7 @@ const useOrder = () => {
     };
 
     const orderComplete = async () => {
+        let stockItems: ProductOption[] = [];
         // 필수 값 검증
         if (!phoneNumber || !address || !postcode) {
             alert("배송 정보를 모두 입력해주세요.");
@@ -163,6 +168,17 @@ const useOrder = () => {
         }
 
         try {
+            stockItems = orderDatas.map((item) => ({
+                productId: item.productId,
+                colorName: item.color,
+                stockQuantity: item.quantity,
+            }));
+
+            await updateStockMutation.mutateAsync({
+                items: stockItems,
+                action: "reduce",
+            });
+
             let response = await PortOne.requestPayment({
                 storeId,
                 channelKey,
@@ -198,6 +214,11 @@ const useOrder = () => {
 
             // ✅ 에러 코드가 있는 경우 처리
             if (response.code !== undefined) {
+                await updateStockMutation.mutateAsync({
+                    items: stockItems,
+                    action: "restore",
+                });
+
                 if (response.code === "PAY_PROCESS_CANCELED") {
                     alert("결제가 취소되었습니다.");
                 } else {
@@ -257,6 +278,8 @@ const useOrder = () => {
                         notificationResult.error,
                     );
                 }
+
+                console.log(orderData);
 
                 alert(res.message);
                 orderListRefetch();

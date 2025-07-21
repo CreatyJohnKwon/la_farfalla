@@ -1,3 +1,4 @@
+import { ProductOption } from "@/src/components/product/interface";
 import { OrderData } from "@/src/entities/type/interfaces";
 import axios from "axios";
 
@@ -53,4 +54,51 @@ const sendMail = async (body: any) =>
         body,
     });
 
-export { updateCoupon, getOrder, getOrderList, updateAdminOrder, sendMail };
+const updateStock = async (
+    items: ProductOption[],
+    action: "reduce" | "restore",
+    productId?: string,
+) => {
+    try {
+        const response = await fetch("/api/orders/stock-update", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                items,
+                action, // "reduce" 또는 "restore"
+                productId,
+            }),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || "Failed to update stock");
+        }
+
+        const result = await response.json();
+        console.log(
+            `✅ 재고 ${action === "reduce" ? "차감" : "복구"} 성공:`,
+            result.updates,
+        );
+        return result;
+    } catch (error: any) {
+        console.error(
+            `❌ 재고 ${action === "reduce" ? "차감" : "복구"} 실패:`,
+            error.message,
+        );
+        throw new Error(
+            `재고 ${action === "reduce" ? "차감" : "복구"} 실패: ${error.message}`,
+        );
+    }
+};
+
+export {
+    updateCoupon,
+    getOrder,
+    getOrderList,
+    updateAdminOrder,
+    sendMail,
+    updateStock,
+};

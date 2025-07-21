@@ -1,9 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { OrderData, OrderUpdateInput } from "@src/entities/type/interfaces";
-import { getOrderList, updateAdminOrder } from "../../lib/server/order";
-import useProduct from "../useProduct";
+import {
+    getOrder,
+    getOrderList,
+    updateAdminOrder,
+    updateStock,
+} from "../../lib/server/order";
 import { useSetAtom } from "jotai";
 import { resetProductFormAtom } from "../../lib/atom";
+import { ProductOption } from "@/src/components/product/interface";
 
 const useAllOrderQuery = () => {
     return useQuery<OrderData[], Error>({
@@ -16,7 +21,6 @@ const useAllOrderQuery = () => {
 
 const useSmartUpdateOrderMutation = () => {
     const queryClient = useQueryClient();
-    const { setFormData } = useProduct();
     const resetProductForm = useSetAtom(resetProductFormAtom);
 
     return useMutation({
@@ -70,4 +74,61 @@ const useSmartUpdateOrderMutation = () => {
     });
 };
 
-export { useAllOrderQuery, useSmartUpdateOrderMutation };
+const useOrderQuery = (userId?: string) => {
+    return useQuery<OrderData[], Error>({
+        queryKey: ["order-list", userId],
+        queryFn: () => getOrder(userId!),
+        enabled: Boolean(userId), // userId 준비되면 요청
+        retry: false, // 실패 시 재시도 OFF
+    });
+};
+
+const useUpdateStockMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({
+            items,
+            action,
+            productId,
+        }: {
+            items: ProductOption[];
+            action: "reduce" | "restore";
+            productId?: string;
+        }) => {
+            return updateStock(items, action, productId);
+        },
+
+        onSuccess: (data) => {
+            // 관련 상품 데이터 무효화
+            data.updates.forEach((update: any) => {
+                queryClient.invalidateQueries({
+                    queryKey: ["product", update.productId],
+                });
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "product-stock",
+                        update.productId,
+                        update.colorName,
+                    ],
+                });
+            });
+
+            queryClient.invalidateQueries({ queryKey: ["products"] });
+
+            const actionText = data.action === "reduce" ? "차감" : "복구";
+            console.log(`✅ 재고 ${actionText} 완료, 캐시 업데이트됨`);
+        },
+
+        onError: (error) => {
+            console.error("❌ 재고 업데이트 실패:", error.message);
+        },
+    });
+};
+
+export {
+    useAllOrderQuery,
+    useSmartUpdateOrderMutation,
+    useOrderQuery,
+    useUpdateStockMutation,
+};

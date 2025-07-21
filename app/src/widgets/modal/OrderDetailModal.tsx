@@ -1,7 +1,9 @@
 import { OrderData, ShippingStatus } from "@/src/entities/type/interfaces";
-import { useSmartUpdateOrderMutation } from "@/src/shared/hooks/react-query/useOrderQuery";
+import {
+    useOrderQuery,
+    useSmartUpdateOrderMutation,
+} from "@/src/shared/hooks/react-query/useOrderQuery";
 import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
-import { useOrderQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import {
     CheckCircle,
     Clock,
@@ -380,7 +382,7 @@ const OrderDetailModal = ({
 
                     {/* 구매확정 버튼 */}
                     {order.shippingStatus === "shipped" && (
-                        <div className="flex mt-5 items-end font-pretendard">
+                        <div className="mt-5 flex items-end font-pretendard">
                             <button
                                 onClick={() =>
                                     handleUpdate(order._id || "", "confirm", "")
@@ -389,9 +391,15 @@ const OrderDetailModal = ({
                             >
                                 구매확정하기
                             </button>
-                            <div className="text-xs text-red-400 text-start ms-5">
-                                <p >구매확정 이후에는 단순 변심에 의한 교환 및 반품이 불가합니다.</p>
-                                <p>제품에 이상이 있는 경우에는 구매확정 전 반드시 채널톡으로 문의주세요.</p>
+                            <div className="ms-5 text-start text-xs text-red-400">
+                                <p>
+                                    구매확정 이후에는 단순 변심에 의한 교환 및
+                                    반품이 불가합니다.
+                                </p>
+                                <p>
+                                    제품에 이상이 있는 경우에는 구매확정 전
+                                    반드시 채널톡으로 문의주세요.
+                                </p>
                             </div>
                         </div>
                     )}
