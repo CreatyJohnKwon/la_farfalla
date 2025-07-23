@@ -48,7 +48,7 @@ const getOrderList = async () => {
 };
 
 const sendMail = async (body: any) =>
-    await fetch("/api/orders/notification", {
+    await fetch("/api/order/notification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body,
@@ -60,7 +60,7 @@ const updateStock = async (
     productId?: string,
 ) => {
     try {
-        const response = await fetch("/api/orders/stock-update", {
+        const response = await fetch("/api/order/stock-update", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

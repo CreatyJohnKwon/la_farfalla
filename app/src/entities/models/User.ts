@@ -17,10 +17,6 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: false, // 이메일 인증 여부
         },
-        isPrivateEmail: {
-            type: Boolean,
-            default: null, // 애플 프라이빗 릴레이 이메일 사용 여부
-        },
         name: {
             type: String,
             required: true, // 이름은 필수 값
@@ -39,12 +35,6 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: false,
             default: null, // 우편 번호는 선택 사항
-        },
-        image: {
-            type: String,
-            default: null, // 프로필 이미지 URL
-            readonly: true, // 프로필 이미지 URL은 읽기 전용
-            required: false,
         },
         phoneNumber: {
             type: String,
@@ -66,12 +56,19 @@ const userSchema = new mongoose.Schema(
             required: false,
             default: 0,
         },
+        deletedAt: {
+            type: Date,
+            default: null,
+        },
     },
     {
         timestamps: true,
         collection: "users",
     },
 );
+
+// TTL 유저 삭제 로직 (30일 유예)
+userSchema.index({ deletedAt: 1 }, { expireAfterSeconds: 0 });
 
 // 모델이 이미 정의되어 있으면 기존 모델을 반환, 없으면 새로 생성
 export default mongoose.models?.User || mongoose.model("User", userSchema);

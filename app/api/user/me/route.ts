@@ -1,10 +1,11 @@
 import { getAuthSession } from "@src/shared/lib/session";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
 import { UserProfileData } from "@src/entities/type/interfaces";
 import bcrypt from "bcryptjs";
 import { UserCoupon } from "@/src/entities/models/UserCoupon";
+import { isValidObjectId } from "mongoose";
 
 // GET: 유저 정보 조회 (UserCoupon 기반)
 export async function GET() {
@@ -48,7 +49,6 @@ export async function GET() {
         _id: user._id,
         name: user.name,
         email: user.email,
-        image: user.image || "",
         phoneNumber: user.phoneNumber || "000-0000-0000",
         address: user.address || "",
         detailAddress: user.detailAddress || "",
@@ -62,17 +62,21 @@ export async function GET() {
     return NextResponse.json(result);
 }
 
-export async function PATCH(req: Request) {
-    const session = await getAuthSession();
-    if (!session?.user?.email) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+export async function PATCH(req: NextRequest) {
     const body = await req.json();
-    const { name, address, detailAddress, postcode, password, mileage } = body;
+    const {
+        email,
+        name,
+        address,
+        detailAddress,
+        phoneNumber,
+        postcode,
+        password,
+        mileage,
+    } = body;
 
     await connectDB();
-    const user = await User.findOne({ email: session.user.email });
+    const user = await User.findOne({ email: email });
 
     if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -81,6 +85,7 @@ export async function PATCH(req: Request) {
     if (name) user.name = name;
     if (address) user.address = address;
     if (detailAddress) user.detailAddress = detailAddress;
+    if (phoneNumber) user.phoneNumber = phoneNumber;
     if (postcode) user.postcode = postcode;
     if (password) user.password = await bcrypt.hash(password, 10);
     if (mileage) user.mileage = mileage;
@@ -88,4 +93,36 @@ export async function PATCH(req: Request) {
     await user.save();
 
     return NextResponse.json({ success: true });
+}
+
+export async function DELETE(req: NextRequest) {
+    const userId = req.nextUrl.searchParams.get("userId");
+
+    if (!userId || !isValidObjectId(userId)) {
+        return NextResponse.json(
+            { error: "올바른 userId가 필요합니다." },
+            { status: 400 },
+        );
+    }
+
+    await connectDB();
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return NextResponse.json(
+            { error: "해당 유저를 찾을 수 없습니다." },
+            { status: 404 },
+        );
+    }
+
+    const deleteAfter = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+    user.deletedAt = deleteAfter;
+    await user.save();
+
+    return NextResponse.json({
+        message: "삭제 예약 완료 (30일 뒤 삭제 예정)",
+        deletedAt: deleteAfter,
+    });
 }

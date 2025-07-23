@@ -13,7 +13,6 @@ const StatusUpdateModal = ({
 }) => {
     const {
         statusResult,
-
         waybillNumber,
         setWaybillNumber,
         radioValue,

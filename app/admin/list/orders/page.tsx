@@ -92,7 +92,7 @@ const Orders = () => {
     }, [toggleAll]);
 
     return (
-        <div className="w-full max-w-full overflow-x-auto border font-pretendard sm:p-16 md:overflow-x-visible">
+        <div className="w-full max-w-full overflow-x-auto font-pretendard sm:p-16 md:overflow-x-visible">
             <div className="ms-5 mt-20 flex h-8 w-full items-center gap-6 sm:ms-0 sm:justify-between">
                 {/* 새로고침 버튼 */}
                 <button

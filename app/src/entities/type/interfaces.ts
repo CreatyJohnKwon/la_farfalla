@@ -67,7 +67,6 @@ interface UserProfileData {
     provider: string;
     email: string;
     name: string;
-    image?: string;
     address?: string;
     detailAddress?: string;
     postcode?: string;
@@ -75,6 +74,7 @@ interface UserProfileData {
     reward: number;
     mileage?: number;
     coupon?: number;
+    deletedAt?: Date;
 }
 
 interface MileageItem {

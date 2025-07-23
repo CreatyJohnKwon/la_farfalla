@@ -1,12 +1,7 @@
 import bcrypt from "bcryptjs";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
-import {
-    CouponResponse,
-    ICoupon,
-    ICouponDocument,
-    RegistReqData,
-} from "@src/entities/type/interfaces";
+import { RegistReqData } from "@src/entities/type/interfaces";
 import { benefitWelcomeCoupon } from "@/src/features/benefit/coupon";
 
 const registUser = async (formData: RegistReqData) => {
@@ -77,6 +72,7 @@ const fetchUser = async () => {
 };
 
 const updateUser = async (form: {
+    email?: string;
     name?: string;
     address?: string;
     detailAddress?: string;
@@ -90,6 +86,24 @@ const updateUser = async (form: {
         body: JSON.stringify(form),
     });
     if (!res.ok) throw new Error("업데이트 실패");
+    return res.json();
+};
+
+const deleteUser = async (userId: string) => {
+    const res = await fetch(`/api/user/me?userId=${userId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+    });
+    if (!res.ok) throw new Error("user delete failure");
+    return res.json();
+};
+
+const restoreUser = async (userId: string) => {
+    const res = await fetch(`/api/admin/user?userId=${userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+    });
+    if (!res.ok) throw new Error("user delete failure");
     return res.json();
 };
 
@@ -129,7 +143,9 @@ const getMileage = async (userId: string) => {
 export {
     registUser,
     fetchUser,
+    restoreUser,
     updateUser,
+    deleteUser,
     getUser,
     getMileage,
     getUserbyId,

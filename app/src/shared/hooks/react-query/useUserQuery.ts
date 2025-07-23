@@ -4,6 +4,8 @@ import {
     getUserbyId,
     getUserList,
     updateUser,
+    deleteUser,
+    restoreUser,
 } from "@src/shared/lib/server/user";
 import { signOut } from "next-auth/react";
 import { useEffect } from "react";
@@ -40,6 +42,28 @@ const useUpdateUserMutation = () => {
     });
 };
 
+const useDeleteUserMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: deleteUser,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["user"] }); // 리페치
+        },
+    });
+};
+
+const useRestoreUserMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: restoreUser,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["user"] }); // 리페치
+        },
+    });
+};
+
 const useOneUserQuery = (userId?: string) => {
     return useQuery<UserProfileData, Error>({
         queryKey: ["admin-get-user", userId],
@@ -62,6 +86,8 @@ const useUserListQuery = () => {
 export {
     useUserQuery,
     useUpdateUserMutation,
+    useDeleteUserMutation,
+    useRestoreUserMutation,
     useOneUserQuery,
     useUserListQuery,
 };

@@ -22,6 +22,7 @@ const EditProfile = () => {
 
     // 폼 제출 형식
     const [form, setForm] = useState({
+        email: "",
         name: "",
         address: "",
         detailAddress: "",
@@ -30,8 +31,9 @@ const EditProfile = () => {
     });
 
     useEffect(() => {
-        if (user) {
+        if (user && session) {
             setForm({
+                email: session?.user?.email ?? "",
                 name: user.name ?? "",
                 address: user.address ?? "",
                 detailAddress: user.detailAddress ?? "",
