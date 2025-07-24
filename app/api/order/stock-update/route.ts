@@ -115,7 +115,7 @@ export async function PUT(request: NextRequest) {
                 }
 
                 console.log(
-                    `📦 상품 조회 성공: ${product.title.kr} (ID: ${productObjectId})`,
+                    `📦 success to get product : ${product.title.kr} (ID: ${productObjectId})`,
                 );
 
                 // 🔍 options 배열에서 해당 colorName 찾기
@@ -127,7 +127,7 @@ export async function PUT(request: NextRequest) {
                     return NextResponse.json(
                         {
                             error: `Color option not found: ${item.colorName}`,
-                            details: `상품 '${product.title.kr}'에 '${item.colorName}' 색상 옵션이 없습니다`,
+                            details: `there's no '${item.colorName}' Color Option, on Product '${product.title.kr}'`,
                             availableColors: product.options.map(
                                 (opt: any) => opt.colorName,
                             ),
@@ -140,7 +140,7 @@ export async function PUT(request: NextRequest) {
                 const currentStock = currentOption.stockQuantity || 0;
 
                 console.log(
-                    `📊 현재 재고: ${item.colorName} = ${currentStock}`,
+                    `📊 less store : ${item.colorName} = ${currentStock}`,
                 );
 
                 let newStock;
@@ -162,13 +162,13 @@ export async function PUT(request: NextRequest) {
                     }
                     newStock = currentStock - quantity;
                     console.log(
-                        `⬇️ 재고 차감: ${currentStock} - ${quantity} = ${newStock}`,
+                        `⬇️ reduce product store : ${currentStock} - ${quantity} = ${newStock}`,
                     );
                 } else {
                     // 재고 복구
                     newStock = currentStock + quantity;
                     console.log(
-                        `⬆️ 재고 복구: ${currentStock} + ${quantity} = ${newStock}`,
+                        `⬆️ restore product store : ${currentStock} + ${quantity} = ${newStock}`,
                     );
                 }
 
@@ -192,11 +192,11 @@ export async function PUT(request: NextRequest) {
                     );
 
                     if (!updateResult) {
-                        throw new Error("상품 재고 업데이트에 실패했습니다");
+                        throw new Error("failure to update store: error | no updateResult Data");
                     }
 
                     console.log(
-                        `✅ 개별 재고 업데이트 성공: ${item.colorName} = ${newStock}`,
+                        `✅ less store update colorName: ${item.colorName}/ to newStock: ${newStock}`,
                     );
 
                     // 2단계: 전체 재고량(quantity) 재계산 및 업데이트
@@ -222,15 +222,10 @@ export async function PUT(request: NextRequest) {
                     );
 
                     if (!finalUpdateResult) {
-                        throw new Error("전체 수량 업데이트에 실패했습니다");
+                        throw new Error("❌ failure to update product store");
                     }
 
-                    console.log(
-                        `🔢 전체 수량 업데이트 성공: ${totalQuantity} (이전: ${updateResult.quantity})`,
-                    );
-
                     // 4단계: 각 색상별 재고 현황 로그 (디버깅용)
-                    console.log(`📊 색상별 재고 현황:`);
                     finalUpdateResult.options.forEach(
                         (opt: any, idx: number) => {
                             console.log(
@@ -239,10 +234,10 @@ export async function PUT(request: NextRequest) {
                         },
                     );
                     console.log(
-                        `📦 총 재고량: ${finalUpdateResult.quantity}개`,
+                        `📦 product store success : ${finalUpdateResult.quantity}개`,
                     );
                 } catch (updateError: any) {
-                    console.error("재고 업데이트 실패:", updateError);
+                    console.error("❌ product store failure:", updateError);
                     return NextResponse.json(
                         {
                             error: "Failed to update stock",
@@ -258,10 +253,10 @@ export async function PUT(request: NextRequest) {
                 try {
                     // StockLog 모델이 있다면 기록
                     console.log(
-                        `📝 재고 변경 로그: ${product.title.kr} ${item.colorName} ${action} ${quantity}`,
+                        `📝 product store changes success : ${product.title.kr} ${item.colorName} ${action} ${quantity}`,
                     );
                 } catch (logError: any) {
-                    console.warn("❌ 재고 로그 기록 실패:", logError.message);
+                    console.warn("❌ product store failure :", logError.message);
                 }
 
                 updates.push({

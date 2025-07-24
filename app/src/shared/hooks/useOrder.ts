@@ -111,19 +111,19 @@ const useOrder = () => {
         setMileage(user.mileage - usedMileage);
     }, [usedMileage]);
 
-    const returnStoreId = async (payments: string): Promise<string> => {
-        switch (payments) {
-            case "NAVER_PAY":
-                // return "store-f8bba69a-c4d7-4754-aeae-c483519aa061"; // 네이버 페이 테스트 채널 키
-                return "";
-            case "KAKAO_PAY":
-                return "channel-key-a2d29b8e-d463-4089-9f23-fefb2f08ca46"; // 카카오 페이 테스트 채널 키
-            case "CARD":
-                return "channel-key-29f71c8c-faf6-4066-b022-7d09e02107db"; // 카드 결제 테스트 채널 키
-            default:
-                return ""; // 기본 테스트 상점 ID
-        }
-    };
+    // const returnStoreId = async (payments: string): Promise<string> => {
+    //     switch (payments) {
+    //         case "NAVER_PAY":
+    //             // return "store-f8bba69a-c4d7-4754-aeae-c483519aa061"; // 네이버 페이 테스트 채널 키
+    //             return "";
+    //         case "KAKAO_PAY":
+    //             return "channel-key-a2d29b8e-d463-4089-9f23-fefb2f08ca46"; // 카카오 페이 테스트 채널 키
+    //         case "CARD":
+    //             return "channel-key-29f71c8c-faf6-4066-b022-7d09e02107db"; // 카드 결제 테스트 채널 키
+    //         default:
+    //             return ""; // 기본 테스트 상점 ID
+    //     }
+    // };
 
     const orderComplete = async () => {
         let stockItems: ProductOption[] = [];
@@ -159,13 +159,14 @@ const useOrder = () => {
         };
 
         const storeId = "store-f8bba69a-c4d7-4754-aeae-c483519aa061";
-        const channelKey = await returnStoreId(payments);
+        // const channelKey = await returnStoreId(payments);
+        const channelKey = "channel-key-29f71c8c-faf6-4066-b022-7d09e02107db"
         const paymentId = crypto.randomUUID();
 
-        if (!channelKey || channelKey === "") {
-            alert("결제 채널이 설정되지 않았습니다.");
-            return;
-        }
+        // if (!channelKey || channelKey === "") {
+        //     alert("결제 채널이 설정되지 않았습니다.");
+        //     return;
+        // }
 
         try {
             stockItems = orderDatas.map((item) => ({
@@ -188,15 +189,15 @@ const useOrder = () => {
                         ? orderDatas[0].title
                         : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
                 totalAmount: session?.user?.email?.startsWith("admin")
-                    ? 1
+                    ? 1000
                     : totalPrice,
                 currency: "CURRENCY_KRW",
-                payMethod:
-                    payments === "NAVER_PAY"
-                        ? "EASY_PAY"
-                        : payments === "KAKAO_PAY"
-                          ? "EASY_PAY"
-                          : "CARD",
+                payMethod: "CARD",
+                    // payments === "NAVER_PAY"
+                    //     ? "EASY_PAY"
+                    //     : payments === "KAKAO_PAY"
+                    //       ? "EASY_PAY"
+                    //       : "CARD",
                 customer: {
                     fullName: user.name,
                     phoneNumber: user.phoneNumber,
@@ -278,8 +279,6 @@ const useOrder = () => {
                         notificationResult.error,
                     );
                 }
-
-                console.log(orderData);
 
                 alert(res.message);
                 orderListRefetch();

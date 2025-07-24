@@ -5,27 +5,46 @@ import { isValidObjectId } from "mongoose";
 
 const GET = async (req: NextRequest) => {
     try {
-        const productId = req.nextUrl.searchParams.get("productId");
-
-        if (!productId || !isValidObjectId(productId)) {
-            return NextResponse.json(
-                { error: "올바른 productId가 필요합니다." },
-                { status: 400 },
-            );
-        }
-
         await connectDB();
 
-        const productItem = await Product.findById(productId).lean();
+        const productId = req.nextUrl.searchParams.get("productId");
+        const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
+        const limit = parseInt(req.nextUrl.searchParams.get("limit") || "10", 10);
 
-        if (!productItem) {
-            return NextResponse.json(
-                { error: "Product not found" },
-                { status: 404 },
-            );
+        if (productId) {
+            if (!isValidObjectId(productId)) {
+                return NextResponse.json(
+                    { error: "올바른 productId가 필요합니다." },
+                    { status: 400 },
+                );
+            }
+
+            const productItem = await Product.findById(productId).lean();
+    
+            if (!productItem) {
+                return NextResponse.json(
+                    { error: "Product not found" },
+                    { status: 404 },
+                );
+            }
+    
+            return NextResponse.json(productItem);
         }
 
-        return NextResponse.json(productItem);
+        const skip = (page - 1) * limit;
+
+        const products = await Product.find()
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        const total = await Product.countDocuments();
+        
+        return NextResponse.json({
+            data: products,
+            total,
+            hasMore: skip + products.length < total,
+        });
     } catch (err) {
         console.error("Error:", err);
         return NextResponse.json(

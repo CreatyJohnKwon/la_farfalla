@@ -165,8 +165,8 @@ const CouponAdmin = () => {
     return (
         <div className="w-full max-w-full overflow-x-auto border font-pretendard sm:p-16 md:overflow-x-visible">
             {/* 헤더 */}
-            <div className="ms-5 mt-20 flex h-8 w-full items-center justify-between sm:ms-0">
-                <div className="flex items-center gap-4">
+            <div className="ms-5 mt-[5vh] flex h-8 w-full items-center justify-between sm:ms-0">
+                <div className="flex items-center gap-4 h-full">
                     <h1 className="text-xl font-semibold text-gray-800">
                         쿠폰 관리
                     </h1>
@@ -175,7 +175,7 @@ const CouponAdmin = () => {
                             userCouponRefetch();
                             manageCouponRefetch();
                         }}
-                        className="flex h-8 w-8 items-center justify-center rounded border border-gray-300 bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800"
+                        className="flex h-full w-8 items-center justify-center rounded border border-gray-300 bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800"
                         title="새로고침"
                         disabled={isLoading}
                     >
@@ -247,7 +247,7 @@ const CouponAdmin = () => {
                             ) : (
                                 <table className="w-full text-left text-sm">
                                     <thead>
-                                        <tr className="border-b bg-gray-50 text-gray-600">
+                                        <tr className="border-b bg-gray-50 text-gray-600 whitespace-nowrap">
                                             <th className="px-4 py-3 text-xs sm:text-sm">
                                                 사용자 / 쿠폰 ID
                                             </th>
@@ -301,9 +301,9 @@ const CouponAdmin = () => {
                                                             <div className="font-pretendard text-xs text-gray-400">
                                                                 {`사용자 ID: ${userCoupon.userId}`}
                                                             </div>
-                                                            <div className="font-pretendard text-xs text-gray-400">
+                                                            {/* <div className="font-pretendard text-xs text-gray-400">
                                                                 {`발급 ID: ${userCoupon._id}`}
-                                                            </div>
+                                                            </div> */}
                                                         </div>
                                                     </td>
                                                     <td className="px-4 py-3">

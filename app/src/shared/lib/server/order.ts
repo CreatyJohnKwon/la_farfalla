@@ -1,5 +1,4 @@
 import { ProductOption } from "@/src/components/product/interface";
-import { OrderData } from "@/src/entities/type/interfaces";
 import axios from "axios";
 
 const updateCoupon = async (couponId: string) => {

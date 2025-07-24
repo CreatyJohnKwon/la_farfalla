@@ -1017,7 +1017,7 @@ const Order = () => {
                         </section>
 
                         {/* 결제수단 */}
-                        <section className="border bg-white p-4">
+                        {/* <section className="border bg-white p-4">
                             <h2 className="font-pretendard-bold mb-4">
                                 결제수단
                             </h2>
@@ -1052,7 +1052,7 @@ const Order = () => {
                                     {"\t신용카드"}
                                 </label>
                             </div>
-                        </section>
+                        </section> */}
 
                         {/* 약관 동의 */}
                         <section className="border bg-white p-4 font-pretendard">

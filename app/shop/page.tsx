@@ -1,22 +1,17 @@
 "use client";
 
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useEffect } from "react";
 import useProduct from "@/src/shared/hooks/useProduct";
-import { useProductListQuery } from "@/src/shared/hooks/react-query/useProductQuery";
 import ProductsList from "@/src/components/product/ProductsList";
 
 const Shop = () => {
-    const { section } = useProduct();
-    const { data: product, isLoading: productsLoading } = useProductListQuery();
-
-    // 필터링된 상품 메모이제이션
-    const filteredProducts = useMemo(() => {
-        if (!product) return [];
-
-        return product.filter(
-            (item) => section === "" || item.seasonName === section,
-        );
-    }, [product, section]);
+    const { 
+        products,
+        productsLoading,
+        filteredProducts,
+        section,
+        handleProductListScroll
+     } = useProduct();
 
     // 이미지 프리로드 함수
     const preloadImages = useCallback(() => {
@@ -79,7 +74,7 @@ const Shop = () => {
         return <LoadingSkeleton />;
     }
 
-    if (!product || filteredProducts.length === 0) {
+    if (!products || filteredProducts.length === 0) {
         return (
             <div className="mb-10 h-screen w-screen">
                 <main className="flex h-full w-full flex-col items-center justify-center">
@@ -96,15 +91,17 @@ const Shop = () => {
     return (
         <div className="mb-10 h-screen w-screen">
             <main className="flex h-full w-full flex-col items-center justify-center">
-                <ul className="mt-24 grid w-[90vw] animate-fade-in grid-cols-2 gap-2 overflow-y-auto sm:gap-3 md:mt-32 md:w-[85vw] md:grid-cols-3">
-                    {filteredProducts.map((item, index) => (
-                        <ProductsList
-                            key={`${item._id}-${section}`} // section 변경 시 리렌더링 방지
-                            product={item}
-                            index={index}
-                        />
-                    ))}
-                </ul>
+                <div className="h-full overflow-y-auto mt-6" onScroll={handleProductListScroll}>
+                    <ul className="mt-24 grid w-[90vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:mt-32 md:w-[85vw] md:grid-cols-3">
+                        {filteredProducts.map((item, index) => (
+                            <ProductsList
+                                key={`${item._id}-${section}`} // section 변경 시 리렌더링 방지
+                                product={item}
+                                index={index}
+                            />
+                        ))}
+                    </ul>
+                </div>
             </main>
         </div>
     );
