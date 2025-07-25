@@ -196,7 +196,7 @@ const CouponAdmin = () => {
                 </div>
                 <button
                     onClick={() => setShowCreateModal(true)}
-                    className="flex h-full items-center rounded bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+                    className="flex h-full items-center rounded border bg-gray-100 px-4 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-200"
                 >
                     새 쿠폰 템플릿 생성
                 </button>

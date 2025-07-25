@@ -17,7 +17,7 @@ userLikeSchema.index(
     }
 );
 
-// TTL 인덱스 추가 👇
-userLikeSchema.index({ deletedAt: 1 }, { expireAfterSeconds: 0 });
+// TTL 유저 삭제 로직 (30일 유예)
+userLikeSchema.index({ userId: 1, deletedAt: 1 });
 
 export const UserLike = models.UserLike || model("UserLike", userLikeSchema);

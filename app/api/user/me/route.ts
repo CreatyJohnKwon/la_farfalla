@@ -98,18 +98,6 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ success: true });
 }
 
-async function checkIndexes() {
-    // await mongoose.connect(process.env.MONGODB_URI!);
-
-    // const db = mongoose.connection.db; // 타입 안전하게 분리
-    // if (!db) throw new Error("DB 연결 안 됐음");
-
-    // const indexes1 = await db.UserCoupon.indexes();
-    // const indexes2 = await db.collection("userlikes").indexes();
-    // const indexes3 = await db.collection("order").indexes();
-    // console.log(indexes1, indexes2, indexes3);
-}
-
 export async function DELETE(req: NextRequest) {
     const userId = req.nextUrl.searchParams.get("userId");
 
@@ -131,8 +119,7 @@ export async function DELETE(req: NextRequest) {
         );
     }
 
-    // const deleteAfter = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-    const deleteAfter = new Date(Date.now() + 10 * 1000);
+    const deleteAfter = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
     user.deletedAt = deleteAfter;
     await user.save();
@@ -157,8 +144,6 @@ export async function DELETE(req: NextRequest) {
             { $set: { deletedAt: deleteAfter } },
         ),
     ]);
-
-    checkIndexes()
 
     return NextResponse.json({
         message: "삭제 예약 완료 (30일 뒤 삭제 예정)",

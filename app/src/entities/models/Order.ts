@@ -55,6 +55,6 @@ const orderSchema = new mongoose.Schema(
 );
 
 // TTL 유저 삭제 로직 (30일 유예)
-orderSchema.index({ deletedAt: 1 }, { expireAfterSeconds: 0 });
+orderSchema.index({ userId: 1, deletedAt: 1 });
 
 export const Order = mongoose.models?.Order || mongoose.model("Order", orderSchema);
