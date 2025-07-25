@@ -9,7 +9,7 @@ const GET = async (req: NextRequest) => {
 
         const productId = req.nextUrl.searchParams.get("productId");
         const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
-        const limit = parseInt(req.nextUrl.searchParams.get("limit") || "10", 10);
+        const limit = parseInt(req.nextUrl.searchParams.get("limit") || "9", 10);
 
         if (productId) {
             if (!isValidObjectId(productId)) {

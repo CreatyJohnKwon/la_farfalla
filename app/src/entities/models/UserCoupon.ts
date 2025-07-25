@@ -30,11 +30,18 @@ const userCouponSchema = new Schema(
             enum: ["manual", "auto", "event", "signup"],
             default: "manual",
         },
+        deletedAt: {
+            type: Date,
+            default: null,
+        },
     },
     {
         timestamps: true,
     },
 );
+
+// TTL 유저 삭제 로직 (30일 유예)
+userCouponSchema.index({ deletedAt: 1 }, { expireAfterSeconds: 0 });
 
 export const UserCoupon =
     models.UserCoupon ||

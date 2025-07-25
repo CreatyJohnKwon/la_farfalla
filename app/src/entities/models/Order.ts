@@ -43,6 +43,10 @@ const orderSchema = new mongoose.Schema(
         },
         shippedAt: { type: Date, required: false }, // 출고 일시
         trackingNumber: { type: String, required: false, default: "" }, // 운송장 번호
+        deletedAt: {
+            type: Date,
+            default: null, // 삭제 예약 일시
+        }
     },
     {
         timestamps: true,
@@ -50,4 +54,7 @@ const orderSchema = new mongoose.Schema(
     },
 );
 
-export default mongoose.models?.Order || mongoose.model("Order", orderSchema);
+// TTL 유저 삭제 로직 (30일 유예)
+orderSchema.index({ deletedAt: 1 }, { expireAfterSeconds: 0 });
+
+export const Order = mongoose.models?.Order || mongoose.model("Order", orderSchema);

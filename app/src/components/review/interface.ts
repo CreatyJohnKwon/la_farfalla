@@ -48,6 +48,7 @@ interface IReviewDocument extends Document {
     editedAt?: Date;
     status?: "active" | "hidden" | "deleted";
     likedUsers?: Types.ObjectId[];
+    deletedAt?: Date; // 🆕 삭제 예약 필드
 
     // 🆕 인스턴스 메서드
     addImage?(imageUrl: string): Promise<IReviewDocument>;

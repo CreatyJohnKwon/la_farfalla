@@ -1,9 +1,8 @@
 "use server";
 
-import Order from "@/src/entities/models/Order";
+import { Order } from "@/src/entities/models/Order";
 import User from "@/src/entities/models/User";
 import { OrderData } from "@/src/entities/type/interfaces";
-// import { sendOrderSMS } from "@/src/shared/lib/naverSmsService";
 import mongoose from "mongoose";
 
 const orderAccept = async (orderData: OrderData) => {

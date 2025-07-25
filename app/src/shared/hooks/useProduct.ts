@@ -38,11 +38,12 @@ const useProduct = () => {
         const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
 
         if (
-            scrollHeight - scrollTop <= clientHeight * 1.5 &&
+            // scrollHeight - scrollTop <= clientHeight * 1.5 &&
+            scrollTop > scrollHeight - clientHeight * 1.5 &&
             hasNextPage &&
             !isFetchingNextPage
         ) {
-            console.log("✅ fetchNextPage 조건 충족, 호출합니다");
+            // 추가 데이터 생성 (9개 씩)
             fetchNextPage();
         }
     };
@@ -62,6 +63,7 @@ const useProduct = () => {
 
         // 스크롤 이벤트 핸들러
         handleProductListScroll,
+        isFetchingNextPage,
 
         // 상품 리스트 쿼리
         products,

@@ -4,6 +4,7 @@ import { UserCoupon } from "@/src/entities/models/UserCoupon";
 export async function GET(req: NextRequest) {
     try {
         const allCoupons = await UserCoupon.find()
+            .populate("userId")
             .sort({ createdAt: -1 })
             .lean();
 

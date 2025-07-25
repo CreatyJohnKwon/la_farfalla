@@ -27,7 +27,7 @@ type InfiniteQueryResult = {
 };
 
 // 무한 스크롤 사용
-const useProductListQuery = (limit = 12) => {
+const useProductListQuery = (limit = 9) => {
     return useInfiniteQuery<    
         ProductPage,    // TData
         Error,                 // TError

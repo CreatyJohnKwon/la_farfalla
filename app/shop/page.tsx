@@ -3,6 +3,7 @@
 import { useMemo, useCallback, useEffect } from "react";
 import useProduct from "@/src/shared/hooks/useProduct";
 import ProductsList from "@/src/components/product/ProductsList";
+import ProductListSkeleton from "@/src/components/product/ProductListSkeleton";
 
 const Shop = () => {
     const { 
@@ -10,14 +11,15 @@ const Shop = () => {
         productsLoading,
         filteredProducts,
         section,
+        isFetchingNextPage,
         handleProductListScroll
      } = useProduct();
 
     // 이미지 프리로드 함수
     const preloadImages = useCallback(() => {
         if (filteredProducts.length > 0) {
-            // 처음 6개 이미지 프리로드
-            filteredProducts.slice(0, 6).forEach((item, index) => {
+            // 처음 3개 이미지 프리로드
+            filteredProducts.slice(0, 3).forEach((item, index) => {
                 if (item.image?.[0]) {
                     const img = new window.Image();
                     img.src = item.image[0];
@@ -44,34 +46,16 @@ const Shop = () => {
         }
     }, [productsLoading, filteredProducts, preloadImages]);
 
-    // 로딩 스켈레톤
-    const LoadingSkeleton = () => (
-        <div className="mb-10 h-screen w-screen">
-            <main className="flex h-full w-full flex-col items-center justify-center">
-                <ul className="grid w-[90vw] grid-cols-2 gap-2 sm:gap-3 md:mt-32 md:w-[85vw] md:grid-cols-3">
-                    {Array.from({ length: 12 }).map((_, index) => (
-                        <li key={index} className="pb-8 text-center md:pb-0">
-                            <div className="relative overflow-hidden">
-                                <div className="pb-[133.33%]"></div>
-                                <div className="absolute left-0 top-0 h-full w-full">
-                                    <div className="animate-shimmer h-full w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]"></div>
-                                </div>
-                            </div>
-                            <div className="space-y-2 pt-2">
-                                <div className="h-4 animate-pulse rounded bg-gray-200"></div>
-                                <div className="mx-auto h-4 w-3/4 animate-pulse rounded bg-gray-200"></div>
-                                <div className="mx-auto h-3 w-1/2 animate-pulse rounded bg-gray-200"></div>
-                                <div className="mx-auto h-4 w-2/3 animate-pulse rounded bg-gray-200"></div>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </main>
-        </div>
-    );
-
     if (productsLoading) {
-        return <LoadingSkeleton />;
+        return (
+            <div className="mb-10 h-screen w-screen">
+                <main className="flex h-full w-full flex-col items-center justify-center">
+                    <ul className="grid w-[90vw] grid-cols-2 gap-2 sm:gap-3 md:mt-32 md:w-[85vw] md:grid-cols-3">
+                        <ProductListSkeleton />
+                    </ul>
+                </main>
+            </div>
+        );
     }
 
     if (!products || filteredProducts.length === 0) {
@@ -90,17 +74,22 @@ const Shop = () => {
 
     return (
         <div className="mb-10 h-screen w-screen">
-            <main className="flex h-full w-full flex-col items-center justify-center">
-                <div className="h-full overflow-y-auto mt-6" onScroll={handleProductListScroll}>
-                    <ul className="mt-24 grid w-[90vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:mt-32 md:w-[85vw] md:grid-cols-3">
-                        {filteredProducts.map((item, index) => (
-                            <ProductsList
-                                key={`${item._id}-${section}`} // section 변경 시 리렌더링 방지
-                                product={item}
-                                index={index}
-                            />
-                        ))}
-                    </ul>
+            <main className="flex h-full w-full flex-col items-center">
+                <div className="h-full w-full overflow-y-auto" onScroll={handleProductListScroll}>
+                    <div className="flex min-h-full items-center justify-center">
+                        <ul className="mt-24 grid w-[90vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:mt-32 md:w-[85vw] md:grid-cols-3">
+                            {filteredProducts.map((item, index) => (
+                                <ProductsList
+                                    key={`${item._id}-${section}`}
+                                    product={item}
+                                    index={index}
+                                />
+                            ))}
+
+                            {/* 스켈레톤 */}
+                            {isFetchingNextPage && <ProductListSkeleton />}
+                        </ul>
+                    </div>
                 </div>
             </main>
         </div>

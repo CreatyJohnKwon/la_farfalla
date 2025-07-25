@@ -4,7 +4,7 @@ import { randomBytes } from "crypto";
 import { Schema, model, models } from "mongoose";
 
 // 🆕 댓글 스키마 정의
-const CommentSchema = new Schema(
+const commentSchema = new Schema(
     {
         id: {
             type: String,
@@ -27,7 +27,7 @@ const CommentSchema = new Schema(
     { _id: false },
 );
 
-const ReviewSchema = new Schema<IReviewDocument>(
+const reviewSchema = new Schema<IReviewDocument>(
     {
         author: {
             type: String,
@@ -72,7 +72,7 @@ const ReviewSchema = new Schema<IReviewDocument>(
             ref: "Product",
             index: true,
         },
-        comments: [CommentSchema],
+        comments: [commentSchema],
         // 🆕 추가 메타데이터 (선택사항)
         isEdited: { type: Boolean, default: false }, // 수정 여부
         editedAt: { type: Date }, // 수정 시간
@@ -81,23 +81,30 @@ const ReviewSchema = new Schema<IReviewDocument>(
             enum: ["active", "hidden", "deleted"],
             default: "active",
         }, // 상태 관리
+        deletedAt: {
+            type: Date,
+            default: null,
+        },
     },
     {
         timestamps: true,
     },
 );
 
+// TTL 유저 삭제 로직 (30일 유예)
+reviewSchema.index({ deletedAt: 1 }, { expireAfterSeconds: 0 });
+
 // 🆕 가상 필드 추가
-ReviewSchema.virtual("imageCount").get(function () {
+reviewSchema.virtual("imageCount").get(function (this: IReviewDocument) {
     return this.images?.length || 0;
 });
 
-ReviewSchema.virtual("hasImages").get(function () {
+reviewSchema.virtual("hasImages").get(function (this: IReviewDocument) {
     return this.images && this.images.length > 0;
 });
 
 // 🆕 인스턴스 메서드 추가
-ReviewSchema.methods.addImage = function (imageUrl: string) {
+reviewSchema.methods.addImage = function (imageUrl: string) {
     if (this.images.length >= 5) {
         throw new Error("최대 5개의 이미지만 추가할 수 있습니다.");
     }
@@ -105,12 +112,12 @@ ReviewSchema.methods.addImage = function (imageUrl: string) {
     return this.save();
 };
 
-ReviewSchema.methods.removeImage = function (imageUrl: string) {
+reviewSchema.methods.removeImage = function (imageUrl: string) {
     this.images = this.images.filter((url: string) => url !== imageUrl);
     return this.save();
 };
 
-ReviewSchema.methods.toggleLike = function (userId: string) {
+reviewSchema.methods.toggleLike = function (userId: string) {
     const userIndex = this.likedUsers.findIndex(
         (id: any) => id.toString() === userId,
     );
@@ -129,7 +136,7 @@ ReviewSchema.methods.toggleLike = function (userId: string) {
 };
 
 // 🆕 정적 메서드 추가
-ReviewSchema.statics.findByProductWithImages = function (productId: string) {
+reviewSchema.statics.findByProductWithImages = function (productId: string) {
     return this.find({
         productId,
         status: "active",
@@ -138,12 +145,12 @@ ReviewSchema.statics.findByProductWithImages = function (productId: string) {
 };
 
 // 인덱스
-ReviewSchema.index({ productId: 1, createdAt: -1 });
-ReviewSchema.index({ userId: 1, createdAt: -1 });
-ReviewSchema.index({ "comments.userId": 1 });
-ReviewSchema.index({ images: 1 }); // 🆕 이미지 검색을 위한 인덱스
-ReviewSchema.index({ likesCount: -1 }); // 🆕 좋아요 수 정렬을 위한 인덱스
-ReviewSchema.index({ status: 1, createdAt: -1 }); // 🆕 상태별 정렬 인덱스
+reviewSchema.index({ productId: 1, createdAt: -1 });
+reviewSchema.index({ userId: 1, createdAt: -1 });
+reviewSchema.index({ "comments.userId": 1 });
+reviewSchema.index({ images: 1 }); // 🆕 이미지 검색을 위한 인덱스
+reviewSchema.index({ likesCount: -1 }); // 🆕 좋아요 수 정렬을 위한 인덱스
+reviewSchema.index({ status: 1, createdAt: -1 }); // 🆕 상태별 정렬 인덱스
 
 export const Review =
-    models.Review || model<IReviewDocument>("Review", ReviewSchema);
+    models.Review || model<IReviewDocument>("Review", reviewSchema);

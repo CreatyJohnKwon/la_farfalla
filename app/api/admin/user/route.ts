@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
-import { isValidObjectId, Types } from "mongoose";
+import { isValidObjectId } from "mongoose";
+import { UserCoupon } from "@/src/entities/models/UserCoupon";
+import { Review } from "@/src/entities/models/Review";
+import { UserLike } from "@/src/entities/models/UserLike";
+import { Order } from "@/src/entities/models/Order";
 
 export async function GET(req: NextRequest) {
     const userId = req.nextUrl.searchParams.get("userId");
@@ -51,6 +55,26 @@ export async function PATCH(req: NextRequest) {
 
     user.deletedAt = null;
     await user.save();
+
+    await UserCoupon.updateMany(
+        { userId: user._id },
+        { $set: { deletedAt: null } }
+    );
+
+    await Review.updateMany(
+        { userId: user._id },
+        { $set: { deletedAt: null } }
+    );
+
+    await UserLike.updateMany(
+        { userId: user._id },
+        { $set: { deletedAt: null } }
+    );
+
+    await Order.updateMany(
+        { userId: user._id },
+        { $set: { deletedAt: null } }
+    );
 
     return NextResponse.json({
         message: "삭제 예약 완료 (30일 뒤 삭제 예정)",

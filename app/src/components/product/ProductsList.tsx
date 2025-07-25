@@ -27,7 +27,7 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
 
     return (
         <li
-            className="group animate-fade-in pb-8 text-center opacity-0 md:pb-0"
+            className="group animate-fade-in pb-8 text-center opacity-0 md:pb-10"
             style={{ animationDelay: `${index * 50}ms` }}
         >
             <Link href={`/products/${product._id}`} className="block h-full">

@@ -198,7 +198,7 @@ interface CouponResponse {
 
 interface UserCouponWithPopulate {
     _id: string;
-    userId: string;
+    userId: UserProfileData;
     couponId: ICoupon; // populate된 쿠폰 정보
     isUsed: boolean;
     usedAt?: Date;

@@ -1,6 +1,6 @@
 import { Product } from "@/src/components/product/interface";
 
-const getProductList = async (page: number, limit = 12) => {
+const getProductList = async (page: number, limit = 9) => {
     const res = await fetch(`/api/product?page=${page}&limit=${limit}`);
     if (!res.ok) throw new Error("상품 리스트 불러오기 실패");
     return await res.json();

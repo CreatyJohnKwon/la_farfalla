@@ -1,6 +1,6 @@
 import { Payment } from "@/src/entities/models/Payment";
 import { portone } from "./portone";
-import Order from "@/src/entities/models/Order";
+import { Order } from "@/src/entities/models/Order";
 
 const syncPayment = async (paymentId: string) => {
     const existing = await Payment.findOne({ paymentId });

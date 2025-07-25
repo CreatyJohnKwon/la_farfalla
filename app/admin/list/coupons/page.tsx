@@ -275,7 +275,7 @@ const CouponAdmin = () => {
                                                     <td className="px-4 py-3">
                                                         <div>
                                                             <div className="font-pretendard font-[500] text-gray-900">
-                                                                {`쿠폰명: ${
+                                                                {`쿠폰명 | ${
                                                                     manageCoupons?.data.find(
                                                                         (
                                                                             coupon,
@@ -288,8 +288,11 @@ const CouponAdmin = () => {
                                                                     "쿠폰명 없음"
                                                                 }`}
                                                             </div>
+                                                            <div className="font-pretendard font-[500] text-gray-900">
+                                                                {`사용자 | ${userCoupon.userId?.email ? userCoupon.userId.email : userCoupon.userId?._id ? userCoupon.userId._id : "탈퇴한 회원"}`}
+                                                            </div>
                                                             <div className="font-pretendard text-xs text-gray-400">
-                                                                {`쿠폰 ID: ${
+                                                                {`쿠폰 ID | ${
                                                                     typeof userCoupon.couponId ===
                                                                     "string"
                                                                         ? userCoupon.couponId
@@ -299,11 +302,8 @@ const CouponAdmin = () => {
                                                                 }`}
                                                             </div>
                                                             <div className="font-pretendard text-xs text-gray-400">
-                                                                {`사용자 ID: ${userCoupon.userId}`}
+                                                                {`발급 ID | ${userCoupon._id}`}
                                                             </div>
-                                                            {/* <div className="font-pretendard text-xs text-gray-400">
-                                                                {`발급 ID: ${userCoupon._id}`}
-                                                            </div> */}
                                                         </div>
                                                     </td>
                                                     <td className="px-4 py-3">

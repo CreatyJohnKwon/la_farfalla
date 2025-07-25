@@ -1,6 +1,5 @@
 "use client";
 
-import { useDeleteProductMutation } from "@/src/shared/hooks/react-query/useProductQuery";
 import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
 import { useState } from "react";
@@ -22,7 +21,8 @@ const Products = () => {
         useRefetchProducts,
         products,
         productsLoading,
-        filteredProducts
+        filteredProducts,
+        isFetchingNextPage
      } = useProduct();
 
     if (productsLoading) return <div>Loading...</div>;
@@ -81,8 +81,8 @@ const Products = () => {
                 </div>
             </div>
 
-            <div className="h-full overflow-y-auto mt-10 min-w-[700px]" onScroll={handleProductListScroll}>
-                <table className="ms-5 h-full w-full table-auto text-left text-sm sm:ms-0">
+            <div className="h-[75vh] overflow-y-auto mt-10 min-w-[700px]" onScroll={handleProductListScroll}>
+                <table className="ms-5 h-auto w-full table-fixed text-left text-sm sm:ms-0">
                     <thead>
                         <tr className="border-b text-gray-600 whitespace-nowrap">
                             <th className="w-[10%] px-2 py-2 text-xs sm:text-sm md:px-4">
@@ -239,6 +239,22 @@ const Products = () => {
                                 </td>
                             </tr>
                         ))}
+
+                        {isFetchingNextPage && (
+                            <>
+                                {[...Array(3)].map((_, index) => (
+                                    <tr key={`skeleton-${index}`} className="animate-pulse border-b">
+                                        <td className="px-2 py-2">
+                                            <div className="h-20 w-20 rounded bg-gray-200" />
+                                        </td>
+                                        <td colSpan={8}>
+                                            <div className="my-2 h-4 w-[80%] rounded bg-gray-200" />
+                                            <div className="my-2 h-4 w-[60%] rounded bg-gray-200" />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </>
+                        )}
                     </tbody>
                 </table>
             </div>
