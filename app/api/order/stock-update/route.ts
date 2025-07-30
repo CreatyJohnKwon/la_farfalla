@@ -35,7 +35,7 @@ class ObjectIdUtils {
 
 export async function PUT(request: NextRequest) {
     try {
-        const { items, action, productId, orderId } = await request.json();
+        const { items, action, productId } = await request.json();
 
         // 입력 데이터 검증
         if (!items || !Array.isArray(items) || items.length === 0) {
@@ -86,9 +86,9 @@ export async function PUT(request: NextRequest) {
 
                 productObjectId =
                     ObjectIdUtils.toObjectIdStrict(targetProductId);
-                console.log(
-                    `✅ ObjectId 변환 성공: ${targetProductId} → ${productObjectId}`,
-                );
+                // console.log(
+                //     `✅ ObjectId 변환 성공: ${targetProductId} → ${productObjectId}`,
+                // );
             } catch (objectIdError: any) {
                 console.error("ObjectId 변환 실패:", objectIdError);
                 return NextResponse.json(
@@ -114,9 +114,9 @@ export async function PUT(request: NextRequest) {
                     );
                 }
 
-                console.log(
-                    `📦 success to get product : ${product.title.kr} (ID: ${productObjectId})`,
-                );
+                // console.log(
+                //     `📦 success to get product : ${product.title.kr} (ID: ${productObjectId})`,
+                // );
 
                 // 🔍 options 배열에서 해당 colorName 찾기
                 const optionIndex = product.options.findIndex(
@@ -139,9 +139,9 @@ export async function PUT(request: NextRequest) {
                 const currentOption = product.options[optionIndex];
                 const currentStock = currentOption.stockQuantity || 0;
 
-                console.log(
-                    `📊 less store : ${item.colorName} = ${currentStock}`,
-                );
+                // console.log(
+                //     `📊 less store : ${item.colorName} = ${currentStock}`,
+                // );
 
                 let newStock;
 
@@ -161,15 +161,13 @@ export async function PUT(request: NextRequest) {
                         );
                     }
                     newStock = currentStock - quantity;
-                    console.log(
-                        `⬇️ reduce product store : ${currentStock} - ${quantity} = ${newStock}`,
-                    );
+                    // console.log(
+                    //     `⬇️ reduce product store : ${currentStock} - ${quantity} = ${newStock}`,
+                    // );
                 } else {
                     // 재고 복구
                     newStock = currentStock + quantity;
-                    console.log(
-                        `⬆️ restore product store : ${currentStock} + ${quantity} = ${newStock}`,
-                    );
+                    console.log(`⬆️ restore product store : ${quantity}`);
                 }
 
                 // 🔄 MongoDB 배열 요소 업데이트 (positional operator 사용)
@@ -192,12 +190,14 @@ export async function PUT(request: NextRequest) {
                     );
 
                     if (!updateResult) {
-                        throw new Error("failure to update store: error | no updateResult Data");
+                        throw new Error(
+                            "failure to update store: error | no updateResult Data",
+                        );
                     }
 
-                    console.log(
-                        `✅ less store update colorName: ${item.colorName}/ to newStock: ${newStock}`,
-                    );
+                    // console.log(
+                    //     `✅ less store update colorName: ${item.colorName}/ to newStock: ${newStock}`,
+                    // );
 
                     // 2단계: 전체 재고량(quantity) 재계산 및 업데이트
                     const totalQuantity = updateResult.options.reduce(
@@ -233,9 +233,9 @@ export async function PUT(request: NextRequest) {
                             );
                         },
                     );
-                    console.log(
-                        `📦 product store success : ${finalUpdateResult.quantity}개`,
-                    );
+                    // console.log(
+                    //     `📦 product store success : ${finalUpdateResult.quantity}개`,
+                    // );
                 } catch (updateError: any) {
                     console.error("❌ product store failure:", updateError);
                     return NextResponse.json(
@@ -252,11 +252,14 @@ export async function PUT(request: NextRequest) {
                 // 📝 재고 로그 기록 (선택사항)
                 try {
                     // StockLog 모델이 있다면 기록
-                    console.log(
-                        `📝 product store changes success : ${product.title.kr} ${item.colorName} ${action} ${quantity}`,
-                    );
+                    // console.log(
+                    //     `📝 product store changes success : ${product.title.kr} ${item.colorName} ${action} ${quantity}`,
+                    // );
                 } catch (logError: any) {
-                    console.warn("❌ product store failure :", logError.message);
+                    console.warn(
+                        "❌ product store failure :",
+                        logError.message,
+                    );
                 }
 
                 updates.push({
@@ -291,7 +294,7 @@ export async function PUT(request: NextRequest) {
             timestamp: new Date().toISOString(),
         };
 
-        console.log(`🎉 재고 업데이트 완료:`, response);
+        console.log(`store update success:`, response.message);
 
         return NextResponse.json(response);
     } catch (error: any) {

@@ -117,7 +117,7 @@ const useUpdateStockMutation = () => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
 
             const actionText = data.action === "reduce" ? "차감" : "복구";
-            console.log(`✅ 재고 ${actionText} 완료, 캐시 업데이트됨`);
+            // console.log(`✅ 재고 ${actionText} 완료, 캐시 업데이트됨`);
         },
 
         onError: (error) => {

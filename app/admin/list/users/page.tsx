@@ -33,9 +33,9 @@ const Users = () => {
     if (!users) return <div>유저 목록이 없습니다.</div>;
 
     return (
-        <div className="w-full max-w-full overflow-x-auto font-pretendard sm:p-16  md:overflow-x-visible">
-            <div className="ms-5 mt-[5vh] flex h-8 w-full items-center justify-between sm:ms-0 whitespace-nowrap">
-                <div className="flex items-center gap-4 h-full">
+        <div className="w-full max-w-full overflow-x-auto font-pretendard sm:p-16 md:overflow-x-visible">
+            <div className="ms-5 mt-[5vh] flex h-8 w-full items-center justify-between whitespace-nowrap sm:ms-0">
+                <div className="flex h-full items-center gap-4">
                     <h1 className="text-xl font-semibold text-gray-800">
                         유저 관리
                     </h1>
@@ -93,12 +93,16 @@ const Users = () => {
                             className="border-b hover:bg-gray-50"
                         >
                             <td className="px-2 py-2 text-xs sm:text-sm md:px-4">
-                                <span className={`text-xs sm:text-sm ${ user.deletedAt ? "text-red-300 line-through": "text-black"}`}>
+                                <span
+                                    className={`text-xs sm:text-sm ${user.deletedAt ? "text-red-300 line-through" : "text-black"}`}
+                                >
                                     {user.email}
                                 </span>
                             </td>
                             <td className="px-2 py-2 md:px-4">
-                                <span className={`text-xs sm:text-sm ${ user.deletedAt ? "text-black/50 line-through": "text-black"}`}>
+                                <span
+                                    className={`text-xs sm:text-sm ${user.deletedAt ? "text-black/50 line-through" : "text-black"}`}
+                                >
                                     {user.name}
                                 </span>
                             </td>

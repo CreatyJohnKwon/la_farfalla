@@ -94,7 +94,7 @@ const Orders = () => {
     return (
         <div className="w-full max-w-full overflow-x-auto font-pretendard sm:p-16 md:overflow-x-visible">
             <div className="ms-5 mt-[5vh] flex h-8 w-full items-center gap-6 sm:ms-0 sm:justify-between">
-                <div className="flex items-center gap-4 h-full">
+                <div className="flex h-full items-center gap-4">
                     <h1 className="text-xl font-semibold text-gray-800">
                         주문 관리
                     </h1>
@@ -134,7 +134,7 @@ const Orders = () => {
 
             <table className="ms-5 mt-5 h-full w-full min-w-[700px] table-auto text-left text-sm sm:ms-0">
                 <thead>
-                    <tr className="border-b text-gray-600 whitespace-nowrap">
+                    <tr className="whitespace-nowrap border-b text-gray-600">
                         <th className="w-[5%] px-2 py-2 md:px-4">
                             <input
                                 type="checkbox"

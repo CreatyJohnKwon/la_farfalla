@@ -77,10 +77,10 @@ const updateStock = async (
         }
 
         const result = await response.json();
-        console.log(
-            `✅ 재고 ${action === "reduce" ? "차감" : "복구"} 성공:`,
-            result.updates,
-        );
+        // console.log(
+        //     `✅ 재고 ${action === "reduce" ? "차감" : "복구"} 성공:`,
+        //     result.updates,
+        // );
         return result;
     } catch (error: any) {
         console.error(

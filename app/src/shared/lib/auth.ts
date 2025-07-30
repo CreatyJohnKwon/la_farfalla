@@ -15,7 +15,7 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.NAVER_CLIENT_SECRET as string,
             authorization: {
                 params: {
-                    scope: "name email nickname profile_image mobile",
+                    scope: "name email nickname mobile",
                 },
             },
         }),
@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
             authorization: {
                 params: {
                     // scope: "profile_nickname profile_image account_email phone_number", // 승인되면 전화번호 추가
-                    scope: "profile_nickname profile_image account_email",
+                    scope: "profile_nickname account_email phone_number",
                 },
             },
         }),

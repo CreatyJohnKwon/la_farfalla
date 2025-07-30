@@ -160,13 +160,13 @@ const useOrder = () => {
 
         const storeId = "store-f8bba69a-c4d7-4754-aeae-c483519aa061";
         // const channelKey = await returnStoreId(payments);
-        const channelKey = "channel-key-29f71c8c-faf6-4066-b022-7d09e02107db"
+        const channelKey = "channel-key-4d42f07d-23eb-4594-96a6-2cd6a583e8b4";
         const paymentId = crypto.randomUUID();
 
-        // if (!channelKey || channelKey === "") {
-        //     alert("결제 채널이 설정되지 않았습니다.");
-        //     return;
-        // }
+        if (!channelKey) {
+            alert("결제 채널이 설정되지 않았습니다.");
+            return;
+        }
 
         try {
             stockItems = orderDatas.map((item) => ({
@@ -193,11 +193,11 @@ const useOrder = () => {
                     : totalPrice,
                 currency: "CURRENCY_KRW",
                 payMethod: "CARD",
-                    // payments === "NAVER_PAY"
-                    //     ? "EASY_PAY"
-                    //     : payments === "KAKAO_PAY"
-                    //       ? "EASY_PAY"
-                    //       : "CARD",
+                // payments === "NAVER_PAY"
+                //     ? "EASY_PAY"
+                //     : payments === "KAKAO_PAY"
+                //       ? "EASY_PAY"
+                //       : "CARD",
                 customer: {
                     fullName: user.name,
                     phoneNumber: user.phoneNumber,
