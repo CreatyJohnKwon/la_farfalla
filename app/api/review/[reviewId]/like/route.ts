@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import { Review } from "@/src/entities/models/Review";
-import { UserLike } from "@/src/entities/models/UserLike";
 import { getAuthSession } from "@/src/shared/lib/session";
 import User from "@/src/entities/models/User";
 
@@ -43,43 +42,31 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
             );
         }
 
-        // 🔄 type 필드 추가하여 기존 좋아요 확인
-        const existingLike = await UserLike.findOne({
-            userId: currentUser._id,
-            reviewId,
-            type: "review", // 🆕 type 필드 추가
-        });
+        // ✅ likedUsers 배열에서 직접 확인
+        const isLiked = review.likedUsers.includes(currentUser._id);
 
-        let isLiked: boolean;
-
-        if (existingLike) {
+        if (isLiked) {
             // 좋아요 취소
-            await UserLike.deleteOne({
-                userId: currentUser._id,
-                reviewId,
-                type: "review", // 🆕 type 필드 추가
+            await Review.findByIdAndUpdate(reviewId, {
+                $pull: { likedUsers: currentUser._id },
             });
-            review.likesCount = Math.max(0, review.likesCount - 1);
-            isLiked = false;
         } else {
-            // 🔄 좋아요 추가 시 type 필드 포함
-            await UserLike.create({
-                userId: currentUser._id,
-                reviewId,
-                type: "review", // 🆕 type 필드 추가
+            // 좋아요 추가
+            await Review.findByIdAndUpdate(reviewId, {
+                $addToSet: { likedUsers: currentUser._id },
             });
-            review.likesCount += 1;
-            isLiked = true;
         }
 
-        await review.save();
+        // 업데이트된 정보 조회
+        const updatedReview = await Review.findById(reviewId);
+        const likesCount = updatedReview?.likedUsers?.length || 0;
 
         return NextResponse.json({
             message: "좋아요가 처리되었습니다",
             data: {
                 reviewId,
-                isLiked,
-                likesCount: review.likesCount,
+                isLiked: !isLiked,
+                likesCount, // ✅ likedUsers.length로 계산
             },
         });
     } catch (error: any) {

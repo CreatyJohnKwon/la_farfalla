@@ -4,7 +4,6 @@ import { connectDB } from "@src/entities/models/db/mongoose";
 import { getAuthSession } from "@/src/shared/lib/session";
 import User from "@/src/entities/models/User";
 import { Review } from "@/src/entities/models/Review";
-import { UserLike } from "@/src/entities/models/UserLike";
 import { UserProfileData } from "@/src/entities/type/interfaces";
 
 // GET - 리뷰 목록 조회 (이미지 포함, 사용자별 좋아요 상태 포함)
@@ -15,12 +14,10 @@ export async function GET(req: NextRequest) {
         const session = await getAuthSession();
         let currentUserId = null;
 
-        // 현재 로그인한 사용자 ID 가져오기
         if (session?.user?.email) {
             const currentUser = (await User.findOne({
                 email: session.user.email,
             }).lean()) as any;
-
             currentUserId = currentUser?._id;
         }
 
@@ -33,45 +30,42 @@ export async function GET(req: NextRequest) {
             .sort({ createdAt: -1 })
             .lean()) as any[];
 
-        // 🔄 각 리뷰에 현재 사용자의 좋아요 상태 추가 + 이미지 포함
-        const reviewsWithLikeStatus = await Promise.all(
-            reviews.map(async (review) => {
-                let isLiked = false;
+        // ✅ UserLike 없이 직접 확인
+        const reviewsWithLikeStatus = reviews.map((review) => {
+            // 리뷰 좋아요 상태
+            const isLiked = currentUserId
+                ? review.likedUsers?.some(
+                      (userId: any) =>
+                          userId.toString() === currentUserId.toString(),
+                  )
+                : false;
 
-                // 로그인한 사용자가 있는 경우에만 좋아요 상태 확인
-                if (currentUserId) {
-                    const userLike = await UserLike.findOne({
-                        userId: currentUserId,
-                        reviewId: review._id,
-                    });
-                    isLiked = !!userLike;
-                }
-
-                // 🔄 댓글 좋아요 상태 계산
-                const commentsWithLikeStatus = (review.comments || []).map(
-                    (comment: any) => ({
-                        ...comment,
-                        isLiked: currentUserId
-                            ? comment.likedUsers?.includes(
+            // 댓글 좋아요 상태
+            const commentsWithLikeStatus = (review.comments || []).map(
+                (comment: any) => ({
+                    ...comment,
+                    isLiked: currentUserId
+                        ? comment.likedUsers?.some(
+                              (userId: any) =>
+                                  userId.toString() ===
                                   currentUserId.toString(),
-                              )
-                            : false,
-                        likesCount: comment.likesCount || 0,
-                    }),
-                );
+                          )
+                        : false,
+                    likesCount: comment.likedUsers?.length || 0, // ✅ 배열 길이로 계산
+                }),
+            );
 
-                return {
-                    ...review,
-                    isLiked,
-                    likesCount: review.likesCount || 0,
-                    images: review.images || [], // 🆕 이미지 배열 포함
-                    imageCount: review.images?.length || 0, // 🆕 이미지 개수
-                    hasImages: review.images && review.images.length > 0, // 🆕 이미지 존재 여부
-                    timestamp: review.createdAt,
-                    comments: commentsWithLikeStatus,
-                };
-            }),
-        );
+            return {
+                ...review,
+                isLiked,
+                likesCount: review.likedUsers?.length || 0, // ✅ 배열 길이로 계산
+                images: review.images || [],
+                imageCount: review.images?.length || 0,
+                hasImages: review.images && review.images.length > 0,
+                timestamp: review.createdAt,
+                comments: commentsWithLikeStatus,
+            };
+        });
 
         return NextResponse.json({
             type: "reviews",

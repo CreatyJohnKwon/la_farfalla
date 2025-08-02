@@ -29,6 +29,13 @@ const Navbar = () => {
 
     const pathName = usePathname();
 
+    const adminEmails = [
+        "admin@admin.com",
+        "soun0551@naver.com",
+        "cofsl0411@naver.com",
+        "vmfodzl1125@naver.com",
+    ];
+
     useEffect(() => {
         if (category) setChildren(<ShopDrop category={category} />);
     }, [category]);
@@ -63,7 +70,8 @@ const Navbar = () => {
                             >
                                 {children}
                             </li>
-                            {session?.user?.email === "admin@admin.com" ? (
+                            {session &&
+                            adminEmails.includes(session?.user?.email ?? "") ? (
                                 <li
                                     className="block ps-4 sm:ps-6"
                                     key={"admin-menu"}

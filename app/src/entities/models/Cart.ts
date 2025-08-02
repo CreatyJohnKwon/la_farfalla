@@ -11,6 +11,10 @@ const cartSchema = new mongoose.Schema(
         quantity: { type: Number, required: true },
         discountPrice: { type: Number, required: true },
         originalPrice: { type: Number, required: true },
+        deletedAt: {
+            type: Date,
+            default: null,
+        },
     },
     {
         timestamps: true,
@@ -18,4 +22,7 @@ const cartSchema = new mongoose.Schema(
     },
 );
 
-export default mongoose.models?.Cart || mongoose.model("Cart", cartSchema);
+// TTL 유저 삭제 로직 (30일 유예)
+cartSchema.index({ deletedAt: 1 }, { expireAfterSeconds: 0 });
+
+export const Cart = mongoose.models?.Cart || mongoose.model("Cart", cartSchema);

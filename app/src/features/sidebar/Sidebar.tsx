@@ -42,6 +42,13 @@ const Sidebar = () => {
 
     if (!isVisible) return null;
 
+    const adminEmails = [
+        "admin@admin.com",
+        "soun0551@naver.com",
+        "cofsl0411@naver.com",
+        "vmfodzl1125@naver.com",
+    ];
+
     return (
         !isCategoryLoad &&
         category && (
@@ -93,7 +100,8 @@ const Sidebar = () => {
                             <ShopDrop category={category} />
                         </li>
                         <li className="relative">
-                            {session?.user?.email === "admin@admin.com" ? (
+                            {session &&
+                            adminEmails.includes(session?.user?.email ?? "") ? (
                                 <AdminDrop />
                             ) : (
                                 <AboutDrop />

@@ -4,8 +4,8 @@ import User from "@src/entities/models/User";
 import { isValidObjectId } from "mongoose";
 import { UserCoupon } from "@/src/entities/models/UserCoupon";
 import { Review } from "@/src/entities/models/Review";
-import { UserLike } from "@/src/entities/models/UserLike";
 import { Order } from "@/src/entities/models/Order";
+import { Cart } from "@/src/entities/models/Cart";
 
 export async function GET(req: NextRequest) {
     const userId = req.nextUrl.searchParams.get("userId");
@@ -54,30 +54,28 @@ export async function PATCH(req: NextRequest) {
     }
 
     user.deletedAt = null;
+    const objUserId = user._id;
     await user.save();
 
-    await UserCoupon.updateMany(
-        { userId: user._id },
-        { $set: { deletedAt: null } }
-    );
-
-    await Review.updateMany(
-        { userId: user._id },
-        { $set: { deletedAt: null } }
-    );
-
-    await UserLike.updateMany(
-        { userId: user._id },
-        { $set: { deletedAt: null } }
-    );
-
-    await Order.updateMany(
-        { userId: user._id },
-        { $set: { deletedAt: null } }
-    );
+    await Promise.all([
+        // 기존 컬렉션들 복구
+        UserCoupon.updateMany(
+            { userId: objUserId },
+            { $set: { deletedAt: null } },
+        ),
+        Review.updateMany({ userId: objUserId }, { $set: { deletedAt: null } }),
+        Review.updateMany(
+            { "comments.userId": objUserId },
+            { $set: { "comments.$[elem].deletedAt": null } },
+            { arrayFilters: [{ "elem.userId": objUserId }] },
+        ),
+        Order.updateMany({ userId: objUserId }, { $set: { deletedAt: null } }),
+        Cart.updateMany({ userId: objUserId }, { $set: { deletedAt: null } }),
+    ]);
 
     return NextResponse.json({
-        message: "삭제 예약 완료 (30일 뒤 삭제 예정)",
+        message: "유저 복구 완료",
         deletedAt: null,
+        warning: "좋아요 정보는 복구되지 않습니다",
     });
 }

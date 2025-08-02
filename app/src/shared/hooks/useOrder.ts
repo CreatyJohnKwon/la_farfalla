@@ -180,57 +180,57 @@ const useOrder = () => {
                 action: "reduce",
             });
 
-            let response = await PortOne.requestPayment({
-                storeId,
-                channelKey,
-                paymentId,
-                orderName:
-                    orderDatas.length === 1
-                        ? orderDatas[0].title
-                        : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
-                totalAmount: session?.user?.email?.startsWith("admin")
-                    ? 1000
-                    : totalPrice,
-                currency: "CURRENCY_KRW",
-                payMethod: "CARD",
-                // payments === "NAVER_PAY"
-                //     ? "EASY_PAY"
-                //     : payments === "KAKAO_PAY"
-                //       ? "EASY_PAY"
-                //       : "CARD",
-                customer: {
-                    fullName: user.name,
-                    phoneNumber: user.phoneNumber,
-                    email: user.email,
-                },
-                // 🔥 모바일 대응을 위한 redirectUrl 추가
-                redirectUrl: `${window.location.origin}/payment/redirect`,
-            });
+            // let response = await PortOne.requestPayment({
+            //     storeId,
+            //     channelKey,
+            //     paymentId,
+            //     orderName:
+            //         orderDatas.length === 1
+            //             ? orderDatas[0].title
+            //             : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
+            //     totalAmount: session?.user?.email?.startsWith("admin")
+            //         ? 1000
+            //         : totalPrice,
+            //     currency: "CURRENCY_KRW",
+            //     payMethod: "CARD",
+            //     // payments === "NAVER_PAY"
+            //     //     ? "EASY_PAY"
+            //     //     : payments === "KAKAO_PAY"
+            //     //       ? "EASY_PAY"
+            //     //       : "CARD",
+            //     customer: {
+            //         fullName: user.name,
+            //         phoneNumber: user.phoneNumber,
+            //         email: user.email,
+            //     },
+            //     // 🔥 모바일 대응을 위한 redirectUrl 추가
+            //     redirectUrl: `${window.location.origin}/payment/redirect`,
+            // });
 
-            // ✅ 응답이 없는 경우 처리
-            if (!response) {
-                alert("결제 요청 실패");
-                return;
-            }
+            // // ✅ 응답이 없는 경우 처리
+            // if (!response) {
+            //     alert("결제 요청 실패");
+            //     return;
+            // }
 
-            // ✅ 에러 코드가 있는 경우 처리
-            if (response.code !== undefined) {
-                await updateStockMutation.mutateAsync({
-                    items: stockItems,
-                    action: "restore",
-                });
+            // // ✅ 에러 코드가 있는 경우 처리
+            // if (response.code !== undefined) {
+            //     await updateStockMutation.mutateAsync({
+            //         items: stockItems,
+            //         action: "restore",
+            //     });
 
-                if (response.code === "PAY_PROCESS_CANCELED") {
-                    alert("결제가 취소되었습니다.");
-                } else {
-                    alert(
-                        `결제 실패: ${response.message || "알 수 없는 오류"}`,
-                    );
-                }
-                return;
-            }
+            //     if (response.code === "PAY_PROCESS_CANCELED") {
+            //         alert("결제가 취소되었습니다.");
+            //     } else {
+            //         alert(
+            //             `결제 실패: ${response.message || "알 수 없는 오류"}`,
+            //         );
+            //     }
+            //     return;
+            // }
 
-            // // 🔥 서버에서 결제 검증 (보안상 필수)
+            // // 🔥 서버에서 결제 검증 (보안상 필수) 추후 개선
             // const verificationResponse = await fetch("/api/payment/verify", {
             //     method: "POST",
             //     headers: { "Content-Type": "application/json" },
@@ -249,9 +249,13 @@ const useOrder = () => {
             // }
 
             // ✅ 검증 성공 후 주문 처리
+            // const res = await orderAccept({
+            //     ...orderData,
+            //     paymentId: response.paymentId, // response에서 받은 paymentId 사용
+            // });
             const res = await orderAccept({
                 ...orderData,
-                paymentId: response.paymentId, // response에서 받은 paymentId 사용
+                paymentId: "sdfaseji138f9o", // response에서 받은 paymentId 사용
             });
 
             if (res.success) {
@@ -265,7 +269,7 @@ const useOrder = () => {
                 const body = JSON.stringify({
                     ...orderData,
                     _id: res.orderId,
-                    paymentId: response.paymentId,
+                    paymentId: "sdfaseji138f9o",
                     createdAt: new Date().toISOString(),
                 });
 

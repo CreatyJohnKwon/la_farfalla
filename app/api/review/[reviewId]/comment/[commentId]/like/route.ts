@@ -1,3 +1,4 @@
+// app/api/review/[reviewId]/comment/[commentId]/like/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import { getAuthSession } from "@/src/shared/lib/session";
@@ -5,10 +6,9 @@ import { Review } from "@/src/entities/models/Review";
 import User from "@/src/entities/models/User";
 
 interface RouteParams {
-    params: Promise<{ reviewId: string; commentId: string }>; // Promise로 래핑
+    params: Promise<{ reviewId: string; commentId: string }>;
 }
 
-// app/api/review/[reviewId]/comment/[commentId]/like/route.ts
 export async function POST(req: NextRequest, { params }: RouteParams) {
     try {
         await connectDB();
@@ -49,7 +49,6 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
             );
         }
 
-        // 🔄 좋아요 상태 확인 및 토글
         const isLiked = comment.likedUsers.includes(currentUser._id);
 
         if (isLiked) {
@@ -58,7 +57,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
                 { _id: reviewId, "comments.id": commentId },
                 {
                     $pull: { "comments.$.likedUsers": currentUser._id },
-                    $inc: { "comments.$.likesCount": -1 },
+                    // ❌ likesCount 증감 제거
                 },
             );
         } else {
@@ -67,7 +66,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
                 { _id: reviewId, "comments.id": commentId },
                 {
                     $addToSet: { "comments.$.likedUsers": currentUser._id },
-                    $inc: { "comments.$.likesCount": 1 },
+                    // ❌ likesCount 증감 제거
                 },
             );
         }
@@ -77,13 +76,14 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
         const updatedComment = updatedReview?.comments.find(
             (c: any) => c.id === commentId,
         );
+        const likesCount = updatedComment?.likedUsers?.length || 0;
 
         return NextResponse.json({
             message: "댓글 좋아요가 처리되었습니다",
             data: {
                 commentId,
                 isLiked: !isLiked,
-                likesCount: updatedComment?.likesCount || 0,
+                likesCount, // ✅ likedUsers.length로 계산
             },
         });
     } catch (error: any) {

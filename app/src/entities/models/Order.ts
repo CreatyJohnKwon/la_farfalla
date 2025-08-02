@@ -46,7 +46,7 @@ const orderSchema = new mongoose.Schema(
         deletedAt: {
             type: Date,
             default: null, // 삭제 예약 일시
-        }
+        },
     },
     {
         timestamps: true,
@@ -55,6 +55,7 @@ const orderSchema = new mongoose.Schema(
 );
 
 // TTL 유저 삭제 로직 (30일 유예)
-orderSchema.index({ userId: 1, deletedAt: 1 });
+orderSchema.index({ deletedAt: 1 }, { expireAfterSeconds: 0 });
 
-export const Order = mongoose.models?.Order || mongoose.model("Order", orderSchema);
+export const Order =
+    mongoose.models?.Order || mongoose.model("Order", orderSchema);

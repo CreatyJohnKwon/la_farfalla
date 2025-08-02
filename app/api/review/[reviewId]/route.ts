@@ -5,8 +5,6 @@ import { connectDB } from "@src/entities/models/db/mongoose";
 import { getAuthSession } from "@/src/shared/lib/session";
 import User from "@/src/entities/models/User";
 import { Review } from "@/src/entities/models/Review";
-import { UserLike } from "@/src/entities/models/UserLike";
-import mongoose from "mongoose";
 
 // PUT - 리뷰 수정 (이미지 포함)
 export async function PUT(
@@ -146,8 +144,6 @@ export async function DELETE(
     req: NextRequest,
     { params }: { params: Promise<{ reviewId: string }> },
 ) {
-    const mongoSession = await mongoose.startSession();
-
     try {
         await connectDB();
 
@@ -172,44 +168,36 @@ export async function DELETE(
 
         const reviewId = (await params).reviewId;
 
-        // 🔄 트랜잭션으로 안전하게 처리
-        const result = await mongoSession.withTransaction(async () => {
-            // 리뷰 존재 및 권한 확인
-            const review =
-                await Review.findById(reviewId).session(mongoSession);
-            if (!review) {
-                throw new Error("리뷰를 찾을 수 없습니다");
-            }
-
-            if (review.userId.toString() !== currentUser._id.toString()) {
-                throw new Error("삭제 권한이 없습니다");
-            }
-
-            // 1. 관련된 모든 UserLike 삭제
-            const deletedLikes = await UserLike.deleteMany(
-                { reviewId },
-                { session: mongoSession },
+        // 리뷰 존재 및 권한 확인
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return NextResponse.json(
+                { error: "리뷰를 찾을 수 없습니다" },
+                { status: 404 },
             );
+        }
 
-            // 2. 리뷰 삭제 (🆕 이미지도 함께 삭제됨)
-            await Review.findByIdAndDelete(reviewId, { session: mongoSession });
+        if (review.userId.toString() !== currentUser._id.toString()) {
+            return NextResponse.json(
+                { error: "삭제 권한이 없습니다" },
+                { status: 403 },
+            );
+        }
 
-            return {
-                reviewId,
-                deletedLikesCount: deletedLikes.deletedCount,
-                // 🆕 삭제된 이미지 정보 (필요시)
-                deletedImagesCount: review.images?.length || 0,
-            };
-        });
+        // ✅ UserLike 삭제 로직 제거, 리뷰만 삭제
+        await Review.findByIdAndDelete(reviewId);
 
         return NextResponse.json({
-            message: "리뷰와 관련 데이터가 삭제되었습니다", // 🔄 메시지 수정
-            data: result,
+            message: "리뷰가 삭제되었습니다",
+            data: {
+                reviewId,
+                deletedImagesCount: review.images?.length || 0,
+            },
         });
     } catch (error: any) {
-        console.error("리뷰 삭제 중 오류:", error); // 🔄 로그 메시지 수정
+        console.error("리뷰 삭제 중 오류:", error);
         return NextResponse.json(
-            { error: "리뷰 삭제 실패", details: error.message }, // 🔄 에러 메시지 수정
+            { error: "리뷰 삭제 실패", details: error.message },
             { status: 500 },
         );
     }

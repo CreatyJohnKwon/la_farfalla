@@ -4,8 +4,6 @@ import { connectDB } from "@src/entities/models/db/mongoose";
 import { Review } from "@/src/entities/models/Review";
 import { getAuthSession } from "@/src/shared/lib/session";
 import User from "@/src/entities/models/User";
-import { UserLike } from "@/src/entities/models/UserLike";
-import mongoose from "mongoose";
 
 interface RouteParams {
     params: Promise<{ reviewId: string; commentId: string }>;
@@ -86,8 +84,6 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
 
 // DELETE - 댓글 삭제 (UserLike도 함께 삭제)
 export async function DELETE(req: NextRequest, { params }: RouteParams) {
-    const mongoSession = await mongoose.startSession(); // 🆕 트랜잭션 세션
-
     try {
         await connectDB();
 
@@ -111,69 +107,44 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
 
         const { reviewId, commentId } = await params;
 
-        // 🔄 트랜잭션으로 안전하게 처리
-        const result = await mongoSession.withTransaction(async () => {
-            // 리뷰 존재 확인
-            const review =
-                await Review.findById(reviewId).session(mongoSession);
-            if (!review) {
-                throw new Error("리뷰를 찾을 수 없습니다");
-            }
-
-            const comment = review.comments.find(
-                (c: any) => c.id === commentId,
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return NextResponse.json(
+                { error: "리뷰를 찾을 수 없습니다" },
+                { status: 404 },
             );
-            if (!comment) {
-                throw new Error("댓글을 찾을 수 없습니다");
-            }
+        }
 
-            // 작성자만 삭제 가능
-            if (comment.userId.toString() !== currentUser._id.toString()) {
-                throw new Error("삭제 권한이 없습니다");
-            }
-
-            // 🆕 1단계: 해당 댓글과 관련된 모든 UserLike 삭제
-            const deletedLikes = await UserLike.deleteMany(
-                {
-                    reviewId,
-                    commentId,
-                    type: "comment",
-                },
-                { session: mongoSession },
+        const comment = review.comments.find((c: any) => c.id === commentId);
+        if (!comment) {
+            return NextResponse.json(
+                { error: "댓글을 찾을 수 없습니다" },
+                { status: 404 },
             );
+        }
 
-            // 🆕 2단계: 댓글 삭제
-            await Review.findByIdAndUpdate(
-                reviewId,
-                { $pull: { comments: { id: commentId } } },
-                { session: mongoSession },
+        // 작성자만 삭제 가능
+        if (comment.userId.toString() !== currentUser._id.toString()) {
+            return NextResponse.json(
+                { error: "삭제 권한이 없습니다" },
+                { status: 403 },
             );
+        }
 
-            return {
-                commentId,
-                deletedLikesCount: deletedLikes.deletedCount,
-            };
+        // ✅ UserLike 삭제 로직 제거, 댓글만 삭제
+        await Review.findByIdAndUpdate(reviewId, {
+            $pull: { comments: { id: commentId } },
         });
 
         return NextResponse.json({
-            message: "댓글과 관련 좋아요가 삭제되었습니다",
-            data: result,
+            message: "댓글이 삭제되었습니다",
+            data: { commentId },
         });
     } catch (error: any) {
         console.error("댓글 삭제 중 오류:", error);
-
-        // 에러 상태 코드 구분
-        const status = error.message.includes("권한")
-            ? 403
-            : error.message.includes("찾을 수 없습니다")
-              ? 404
-              : 500;
-
         return NextResponse.json(
-            { error: error.message || "댓글 삭제 실패" },
-            { status },
+            { error: "댓글 삭제 실패", details: error.message },
+            { status: 500 },
         );
-    } finally {
-        await mongoSession.endSession();
     }
 }

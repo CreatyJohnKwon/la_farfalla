@@ -7,8 +7,8 @@ import bcrypt from "bcryptjs";
 import mongoose, { isValidObjectId } from "mongoose";
 import { UserCoupon } from "@/src/entities/models/UserCoupon";
 import { Review } from "@/src/entities/models/Review";
-import { UserLike } from "@/src/entities/models/UserLike";
 import { Order } from "@/src/entities/models/Order";
+import { Cart } from "@/src/entities/models/Cart";
 
 // GET: 유저 정보 조회 (UserCoupon 기반)
 export async function GET() {
@@ -119,7 +119,8 @@ export async function DELETE(req: NextRequest) {
         );
     }
 
-    const deleteAfter = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    // const deleteAfter = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    const deleteAfter = new Date(Date.now() + 10 * 1000); // 테스트용
 
     user.deletedAt = deleteAfter;
     await user.save();
@@ -127,6 +128,7 @@ export async function DELETE(req: NextRequest) {
     const objUserId = new mongoose.Types.ObjectId(userId);
 
     await Promise.all([
+        // 기존 컬렉션들 삭제 예약
         UserCoupon.updateMany(
             { userId: objUserId },
             { $set: { deletedAt: deleteAfter } },
@@ -135,14 +137,29 @@ export async function DELETE(req: NextRequest) {
             { userId: objUserId },
             { $set: { deletedAt: deleteAfter } },
         ),
-        UserLike.updateMany(
-            { userId: objUserId },
-            { $set: { deletedAt: deleteAfter } },
+        Review.updateMany(
+            { "comments.userId": objUserId },
+            { $set: { "comments.$[elem].deletedAt": deleteAfter } },
+            { arrayFilters: [{ "elem.userId": objUserId }] },
+        ),
+        Review.updateMany(
+            { likedUsers: objUserId },
+            { $pull: { likedUsers: objUserId } },
+        ),
+        Review.updateMany(
+            { "comments.likedUsers": objUserId },
+            { $pull: { "comments.$[].likedUsers": objUserId } },
         ),
         Order.updateMany(
             { userId: objUserId },
             { $set: { deletedAt: deleteAfter } },
         ),
+        Cart.updateMany(
+            { userId: objUserId },
+            { $set: { deletedAt: deleteAfter } },
+        ),
+
+        // ❌ UserLike 관련 로직 제거
     ]);
 
     return NextResponse.json({
