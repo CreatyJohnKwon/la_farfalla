@@ -140,6 +140,15 @@ const getMileage = async (userId: string) => {
     return await res.json();
 };
 
+const sendAuthMail = async (body: any) => {
+    const res = await fetch("/api/user/auth-mail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+    });
+    return await res.json();
+};
+
 export {
     registUser,
     fetchUser,
@@ -150,4 +159,5 @@ export {
     getMileage,
     getUserbyId,
     getUserList,
+    sendAuthMail,
 };

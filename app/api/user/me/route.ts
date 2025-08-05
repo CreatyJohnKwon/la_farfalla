@@ -119,8 +119,7 @@ export async function DELETE(req: NextRequest) {
         );
     }
 
-    // const deleteAfter = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-    const deleteAfter = new Date(Date.now() + 10 * 1000); // 테스트용
+    const deleteAfter = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
     user.deletedAt = deleteAfter;
     await user.save();

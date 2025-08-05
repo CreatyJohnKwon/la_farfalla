@@ -75,6 +75,7 @@ interface UserProfileData {
     mileage?: number;
     coupon?: number;
     deletedAt?: Date;
+    createdAt?: Date;
 }
 
 interface MileageItem {

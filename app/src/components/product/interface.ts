@@ -10,6 +10,7 @@ interface Product {
     size: Array<string>;
     quantity: string;
     options?: ProductOption[];
+    createdAt?: Date;
 }
 
 interface ProductOption {

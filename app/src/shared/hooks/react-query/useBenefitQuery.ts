@@ -6,7 +6,7 @@ import {
     MileageItem,
     OrderData,
 } from "@src/entities/type/interfaces";
-import { getOrder, updateCoupon } from "@src/shared/lib/server/order";
+import { updateCoupon } from "@src/shared/lib/server/order";
 import {
     deleteCoupon,
     deleteUserCoupon,

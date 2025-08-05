@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 import { useRouter } from "next/navigation";
@@ -16,6 +16,7 @@ import { FaRegEyeSlash } from "react-icons/fa6";
 import { X } from "lucide-react";
 import UserAgreeOne from "@/src/entities/UserAgreeOne";
 import UserAgreeTwo from "@/src/entities/UserAgreeTwo";
+import { sendAuthMail } from "@/src/shared/lib/server/user";
 
 const RegisterClient = () => {
     const router = useRouter();
@@ -35,8 +36,118 @@ const RegisterClient = () => {
     const [isOpenUserAgreeTwo, setIsOpenUserAgreeTwo] =
         useState<boolean>(false);
 
+    // 이메일 인증 관련 상태
+    const [emailVerificationCode, setEmailVerificationCode] =
+        useState<string>("");
+    const [authNumber, setAuthNumber] = useState<string>("");
+    const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
+    const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
+    const [timeLeft, setTimeLeft] = useState<number>(0);
+    const [showVerificationInput, setShowVerificationInput] =
+        useState<boolean>(false);
+
     const { isOpen, openModal, closeModal, onComplete, formatPhoneNumber } =
         useAddress();
+
+    // 타이머 효과
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (timeLeft > 0) {
+            interval = setInterval(() => {
+                setTimeLeft((time) => time - 1);
+            }, 1000);
+        } else if (timeLeft === 0 && isEmailSent) {
+            // 시간 만료 시 정리
+            setIsEmailSent(false);
+            setShowVerificationInput(false);
+            setEmailVerificationCode("");
+
+            // 세션 스토리지 정리
+            sessionStorage.removeItem("verificationCode");
+            sessionStorage.removeItem("verificationEmail");
+            sessionStorage.removeItem("verificationExpires");
+
+            console.log("인증 시간이 만료되었습니다.");
+        }
+        return () => clearInterval(interval);
+    }, [timeLeft, isEmailSent]);
+
+    // 시간 포맷팅 함수
+    const formatTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+    };
+
+    // 이메일 인증 코드 발송
+    const sendEmailVerification = async () => {
+        if (!email.trim()) {
+            alert("이메일을 입력해주세요.");
+            return;
+        }
+
+        try {
+            // 이메일 발송 API 호출
+            const verificationCode = Math.floor(
+                100000 + Math.random() * 900000,
+            ).toString(); // 6자리 랜덤 코드 생성
+
+            const body = {
+                authNumber: verificationCode,
+                email: email,
+            };
+
+            const response = await sendAuthMail(body);
+
+            if (response.success) {
+                // 임시로 생성된 코드를 세션 스토리지에 저장 (실제로는 서버에서 관리)
+                sessionStorage.setItem("verificationCode", verificationCode);
+                sessionStorage.setItem("verificationEmail", email);
+                sessionStorage.setItem(
+                    "verificationExpires",
+                    (Date.now() + 180000).toString(),
+                ); // 3분 후
+
+                setAuthNumber(verificationCode);
+                setIsEmailSent(true);
+                setShowVerificationInput(true);
+                setTimeLeft(180); // 3분 = 180초
+                setError(null);
+                alert("인증번호가 발송되었습니다. 이메일을 확인해주세요.");
+            } else {
+                alert("인증번호 발송에 실패했습니다. 채널로 문의해주세요.");
+            }
+        } catch (error) {
+            console.error("이메일 발송 중 오류:", error);
+            setError("이메일 발송에 실패했습니다. 다시 시도해주세요.");
+        }
+    };
+
+    // 이메일 인증 코드 확인
+    const verifyEmailCode = async () => {
+        if (!emailVerificationCode.trim()) {
+            alert("인증번호를 입력해주세요.");
+            return;
+        }
+
+        try {
+            // 임시로 성공 처리 (실제로는 서버에서 검증)
+            if (emailVerificationCode === authNumber) {
+                // 임시 테스트 코드
+                setIsEmailVerified(true);
+                setIsEmailSent(false);
+                setShowVerificationInput(false);
+                setTimeLeft(0);
+                setError(null);
+                alert("이메일 인증이 완료되었습니다");
+            } else {
+                setError("인증번호가 올바르지 않습니다.");
+                alert("인증번호가 올바르지 않습니다");
+            }
+        } catch (error) {
+            setError("인증 확인에 실패했습니다. 다시 시도해주세요.");
+        }
+    };
 
     const mutation: any = useMutation({
         mutationFn: (formData: FormData) => registUserAction(formData),
@@ -71,6 +182,7 @@ const RegisterClient = () => {
     const isValidForm =
         name.trim() &&
         email.trim() &&
+        isEmailVerified && // 이메일 인증 완료 필수
         isPasswordSafe &&
         isPasswordMatch &&
         phoneNumber.replace(/\D/g, "").length >= 10 &&
@@ -78,9 +190,9 @@ const RegisterClient = () => {
         detailAddress.trim();
 
     return (
-        <div className="z-30 flex h-screen flex-col items-center justify-center text-center">
+        <div className="z-30 flex h-screen flex-col items-center justify-start overflow-y-auto py-8 text-center">
             <form
-                className="flex w-[90vw] flex-col items-center justify-center gap-4 p-0 pb-10 sm:w-1/2 sm:gap-6 sm:pt-40"
+                className="mt-5 flex w-[90vw] flex-col items-center justify-start gap-4 p-0 py-8 pb-10 sm:w-1/2 sm:gap-6 sm:pt-20"
                 onSubmit={handleSubmit}
             >
                 <div className="flex w-full flex-col gap-4 text-base md:text-lg c_xl:text-xl">
@@ -93,15 +205,118 @@ const RegisterClient = () => {
                         placeholder="이름"
                         className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                     />
+
                     {/* 이메일 */}
-                    <input
-                        type="email"
-                        name="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="이메일"
-                        className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                    />
+                    <div className="relative w-full">
+                        <input
+                            type="email"
+                            name="email"
+                            value={email}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                // 이메일이 변경되면 인증 상태 초기화
+                                if (isEmailVerified) {
+                                    setIsEmailVerified(false);
+                                    setIsEmailSent(false);
+                                    setShowVerificationInput(false);
+                                    setTimeLeft(0);
+                                }
+                            }}
+                            placeholder="이메일"
+                            className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 pr-28 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            disabled={isEmailVerified}
+                        />
+                        {!isEmailVerified && (
+                            <button
+                                type="button"
+                                onClick={sendEmailVerification}
+                                disabled={isEmailSent || !email.trim()}
+                                className={`absolute right-1 top-1/2 -translate-y-1/2 px-4 py-[1.3vh] text-sm text-white ${
+                                    isEmailSent || !email.trim()
+                                        ? "cursor-not-allowed bg-gray-400"
+                                        : "bg-black hover:bg-gray-800"
+                                }`}
+                            >
+                                {isEmailSent
+                                    ? `${formatTime(timeLeft)}`
+                                    : "이메일 인증"}
+                            </button>
+                        )}
+                        {isEmailVerified && (
+                            <div className="absolute right-1 top-1/2 flex -translate-y-1/2 items-center gap-2 bg-green-100 px-4 py-[1.3vh] text-sm text-green-800">
+                                <svg
+                                    className="h-4 w-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                인증 완료
+                            </div>
+                        )}
+                    </div>
+
+                    {/* 이메일 인증번호 입력 필드 */}
+                    <div className="w-full">
+                        {showVerificationInput && (
+                            <div className="relative w-full">
+                                <input
+                                    type="text"
+                                    value={emailVerificationCode}
+                                    onChange={(e) =>
+                                        setEmailVerificationCode(e.target.value)
+                                    }
+                                    placeholder="인증번호 6자리를 입력하세요"
+                                    maxLength={6}
+                                    className="h-[5vh] w-full rounded-none border border-blue-200 bg-blue-50 px-4 pr-20 text-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={verifyEmailCode}
+                                    disabled={
+                                        emailVerificationCode.length !== 6
+                                    }
+                                    className={`absolute right-1 top-1/2 -translate-y-1/2 px-4 py-[1.3vh] text-sm text-white ${
+                                        emailVerificationCode.length !== 6
+                                            ? "cursor-not-allowed bg-gray-400"
+                                            : "bg-blue-600 hover:bg-blue-700"
+                                    }`}
+                                >
+                                    확인
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* 이메일 인증 상태 메시지 */}
+                    {isEmailSent && !isEmailVerified && (
+                        <div className="text-left">
+                            <p className="text-sm text-blue-600">
+                                {email}
+                                <span className="ms-1 text-sm text-gray-700">
+                                    로 인증번호를 발송했습니다.
+                                </span>
+                            </p>
+                            <p className="mt-1 text-xs text-gray-500">
+                                {formatTime(timeLeft)} 후에 만료됩니다.
+                                인증번호가 오지 않았다면 스팸함을 확인해주세요.
+                            </p>
+                        </div>
+                    )}
+
+                    {isEmailVerified && (
+                        <div className="text-left">
+                            <p className="text-sm text-green-600">
+                                이메일 인증 완료
+                            </p>
+                        </div>
+                    )}
 
                     <div className="w-full">
                         {/* 비밀번호 입력 영역 */}
@@ -112,7 +327,7 @@ const RegisterClient = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="비밀번호 (대소문자 포함, 8자 이상)"
-                                className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 pr-12 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200" // ← 오른쪽 패딩 주의!
+                                className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 pr-12 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                             />
 
                             <button
@@ -177,6 +392,8 @@ const RegisterClient = () => {
                         placeholder="휴대폰 번호"
                         className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                     />
+
+                    {/* 주소 */}
                     <div className="relative w-full">
                         <input
                             type="text"
@@ -207,6 +424,8 @@ const RegisterClient = () => {
                             주소찾기
                         </button>
                     </div>
+
+                    {/* 상세주소 */}
                     <input
                         type="text"
                         name="detailAddress"
@@ -251,6 +470,15 @@ const RegisterClient = () => {
                     </label>
                 </section>
 
+                {/* 가입 조건 안내 */}
+                {!isEmailVerified && email.trim() && (
+                    <div className="w-full text-left">
+                        <p className="text-sm text-red-600">
+                            회원가입을 완료하려면 이메일 인증이 필요합니다.
+                        </p>
+                    </div>
+                )}
+
                 {/* 버튼 */}
                 <div className="mt-6 flex w-full justify-center gap-4 c_xl:text-xl">
                     <button
@@ -271,9 +499,11 @@ const RegisterClient = () => {
                     로그인으로 가기
                 </Link>
             </form>
+
             {isOpen && (
                 <AddressModal onComplete={onComplete} onClose={closeModal} />
             )}
+
             {(isOpenUserAgreeOne || isOpenUserAgreeTwo) && (
                 <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
@@ -300,8 +530,10 @@ const RegisterClient = () => {
                             <X className="h-5 w-5" />
                         </button>
 
-                        {isOpenUserAgreeOne && <UserAgreeOne />}
-                        {isOpenUserAgreeTwo && <UserAgreeTwo />}
+                        <div className="h-full overflow-y-auto">
+                            {isOpenUserAgreeOne && <UserAgreeOne />}
+                            {isOpenUserAgreeTwo && <UserAgreeTwo />}
+                        </div>
                     </div>
                 </div>
             )}
