@@ -1,4 +1,4 @@
-import { Edit3, Heart, MoreVertical, Trash2 } from "lucide-react";
+import { Edit3, Heart, MoreVertical, Trash2, Crown } from "lucide-react";
 import { useState } from "react";
 import { ReviewCommentItemProps } from "./interface";
 
@@ -14,6 +14,9 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
     const [editContent, setEditContent] = useState(comment.content);
     const [showMenu, setShowMenu] = useState(false);
     const [isLiking, setIsLiking] = useState(false); // 개별 좋아요 로딩 상태 추가
+
+    // API에서 제공하는 isAdmin 값 사용
+    const isAdmin = comment.isAdmin;
 
     const handleEdit = () => {
         if (editContent.trim()) {
@@ -42,9 +45,14 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
             <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
                     <div>
-                        <h5 className="text-sm font-medium text-gray-900">
-                            {comment.author}
-                        </h5>
+                        <div className="flex items-center space-x-1">
+                            <h5 className="text-sm font-medium text-gray-900">
+                                {comment.author}
+                            </h5>
+                            {isAdmin && (
+                                <Crown className="h-3.5 w-3.5 text-gray-500" />
+                            )}
+                        </div>
                         <p className="text-xs text-gray-500">
                             {new Date(comment.timestamp).toLocaleDateString(
                                 "ko-KR",
@@ -61,7 +69,7 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
                 </div>
 
                 <div className="relative">
-                    {comment.userId === userId && (
+                    {comment.userId._id === userId && (
                         <>
                             <button
                                 onClick={() => setShowMenu(!showMenu)}

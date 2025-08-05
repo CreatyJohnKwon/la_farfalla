@@ -5,7 +5,7 @@ import { Dispatch } from "react";
 // ============= 클라이언트용 인터페이스 =============
 interface Review {
     _id: string;
-    userId: string;
+    userId: ICommentID;
     author: string;
     content: string;
     images: string[]; // 🆕 이미지 URL 배열 추가
@@ -16,17 +16,25 @@ interface Review {
     // 🆕 이미지 관련 가상 필드
     imageCount?: number;
     hasImages?: boolean;
+    isAdmin?: string;
 }
 
 interface IComment {
     id: string;
     author: string;
     content: string;
-    userId: string;
+    userId: ICommentID;
     likesCount: number;
     likedUsers: string[];
     isLiked: boolean;
     timestamp: Date;
+    isAdmin: string;
+}
+
+interface ICommentID {
+    email: string;
+    name: string;
+    _id: string;
 }
 
 // ============= Mongoose Document용 인터페이스 =============

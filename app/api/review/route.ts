@@ -26,12 +26,36 @@ export async function GET(req: NextRequest) {
         const query = productId ? { productId } : {};
 
         const reviews = (await Review.find(query)
-            .populate("author", "name email")
+            .populate("userId", "name email") // ✅ userId 필드를 populate
+            .populate("comments.userId", "name email") // 댓글 작성자 정보 populate
             .sort({ createdAt: -1 })
             .lean()) as any[];
 
-        // ✅ UserLike 없이 직접 확인
+        // 어드민 이메일 목록 및 고정 이름
+        const adminEmails = [
+            "admin@admin.com",
+            "vmfodzl1125@naver.com",
+            "cofsl0411@naver.com",
+            "soun0551@naver.com",
+        ];
+
+        const adminNames: { [key: string]: string } = {
+            "admin@admin.com": "PM 매니저",
+            "vmfodzl1125@naver.com": "PM 해결사",
+            "cofsl0411@naver.com": "PM 채린",
+            "soun0551@naver.com": "PM 수민",
+        };
+
         const reviewsWithLikeStatus = reviews.map((review) => {
+            const reviewAuthorEmail = review.userId?.email; // ✅ userId에서 정보 가져오기
+            const isReviewAdmin = reviewAuthorEmail
+                ? adminEmails.includes(reviewAuthorEmail)
+                : false;
+            const reviewDisplayName =
+                isReviewAdmin && reviewAuthorEmail
+                    ? adminNames[reviewAuthorEmail] || review.userId.name
+                    : review.userId?.name || "알 수 없는 사용자";
+
             // 리뷰 좋아요 상태
             const isLiked = currentUserId
                 ? review.likedUsers?.some(
@@ -40,25 +64,46 @@ export async function GET(req: NextRequest) {
                   )
                 : false;
 
-            // 댓글 좋아요 상태
+            // 댓글 좋아요 상태 및 어드민 여부 확인
             const commentsWithLikeStatus = (review.comments || []).map(
-                (comment: any) => ({
-                    ...comment,
-                    isLiked: currentUserId
-                        ? comment.likedUsers?.some(
-                              (userId: any) =>
-                                  userId.toString() ===
-                                  currentUserId.toString(),
-                          )
-                        : false,
-                    likesCount: comment.likedUsers?.length || 0, // ✅ 배열 길이로 계산
-                }),
+                (comment: any) => {
+                    // ✅ populate된 userId 객체에서 정보 가져오기
+                    const userInfo = comment.userId; // populate된 User 객체
+                    const userEmail = userInfo?.email;
+                    const userName = userInfo?.name;
+
+                    const isAdmin = userEmail
+                        ? adminEmails.includes(userEmail)
+                        : false;
+
+                    const displayName =
+                        isAdmin && userEmail
+                            ? adminNames[userEmail] || userName
+                            : userName;
+
+                    return {
+                        ...comment,
+                        isLiked: currentUserId
+                            ? comment.likedUsers?.some(
+                                  (userId: any) =>
+                                      userId.toString() ===
+                                      currentUserId.toString(),
+                              )
+                            : false,
+                        likesCount: comment.likedUsers?.length || 0,
+                        isAdmin: isAdmin,
+                        author: displayName, // ✅ populate된 User 정보 사용
+                        userInfo: userInfo, // ✅ 전체 User 정보도 포함 (필요시)
+                    };
+                },
             );
 
             return {
                 ...review,
+                isAdmin: isReviewAdmin,
+                author: reviewDisplayName, // ✅ 표시용 이름
                 isLiked,
-                likesCount: review.likedUsers?.length || 0, // ✅ 배열 길이로 계산
+                likesCount: review.likedUsers?.length || 0,
                 images: review.images || [],
                 imageCount: review.images?.length || 0,
                 hasImages: review.images && review.images.length > 0,

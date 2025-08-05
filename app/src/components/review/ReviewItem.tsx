@@ -5,6 +5,7 @@ import {
     MoreVertical,
     Trash2,
     X,
+    Crown,
 } from "lucide-react";
 import ReviewCommentItem from "./ReviewCommentItem";
 import { useState } from "react";
@@ -200,9 +201,14 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                 <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-4">
                         <div>
-                            <h4 className="font-semibold text-gray-900">
-                                {review.author}
-                            </h4>
+                            <div className="flex items-center space-x-2">
+                                <h4 className="font-semibold text-gray-900">
+                                    {review.author}
+                                </h4>
+                                {review.isAdmin && (
+                                    <Crown className="h-3.5 w-3.5 text-gray-500" />
+                                )}
+                            </div>
                             <div className="mt-1 flex items-center space-x-3">
                                 <p className="text-xs text-gray-500">
                                     {new Date(
@@ -226,16 +232,18 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                     </div>
 
                     <div className="relative">
-                        {session && review.userId === session._id && (
-                            <>
-                                <button
-                                    onClick={() => setShowMenu(!showMenu)}
-                                    className="p-2 transition-colors duration-200 hover:bg-black/5"
-                                >
-                                    <MoreVertical className="h-4 w-4 text-gray-600" />
-                                </button>
-                            </>
-                        )}
+                        {session &&
+                            review.userId?._id?.toString() ===
+                                session._id?.toString() && (
+                                <>
+                                    <button
+                                        onClick={() => setShowMenu(!showMenu)}
+                                        className="p-2 transition-colors duration-200 hover:bg-black/5"
+                                    >
+                                        <MoreVertical className="h-4 w-4 text-gray-600" />
+                                    </button>
+                                </>
+                            )}
 
                         {showMenu && (
                             <div className="absolute right-0 z-10 mt-2 w-36 border border-gray-200/50 bg-white shadow-2xl">
