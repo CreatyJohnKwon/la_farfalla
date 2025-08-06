@@ -34,14 +34,14 @@ export async function GET(req: NextRequest) {
         // 어드민 이메일 목록 및 고정 이름
         const adminEmails = [
             "admin@admin.com",
-            "vmfodzl1125@naver.com",
+            // "vmfodzl1125@naver.com",
             "cofsl0411@naver.com",
             "soun0551@naver.com",
         ];
 
         const adminNames: { [key: string]: string } = {
             "admin@admin.com": "lafarfalla",
-            "vmfodzl1125@naver.com": "lafarfalla",
+            // "vmfodzl1125@naver.com": "lafarfalla",
             "cofsl0411@naver.com": "lafarfalla",
             "soun0551@naver.com": "lafarfalla",
         };
