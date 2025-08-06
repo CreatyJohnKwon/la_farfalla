@@ -40,10 +40,10 @@ export async function GET(req: NextRequest) {
         ];
 
         const adminNames: { [key: string]: string } = {
-            "admin@admin.com": "PM 매니저",
-            "vmfodzl1125@naver.com": "PM 해결사",
-            "cofsl0411@naver.com": "PM 채린",
-            "soun0551@naver.com": "PM 수민",
+            "admin@admin.com": "lafarfalla",
+            "vmfodzl1125@naver.com": "lafarfalla",
+            "cofsl0411@naver.com": "lafarfalla",
+            "soun0551@naver.com": "lafarfalla",
         };
 
         const reviewsWithLikeStatus = reviews.map((review) => {

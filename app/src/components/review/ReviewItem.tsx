@@ -12,7 +12,6 @@ import { useState } from "react";
 import { ReviewItemProps } from "./interface";
 import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
 import { uploadImagesToServer } from "@/src/shared/lib/uploadToR2";
-import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 
 const ReviewItem: React.FC<ReviewItemProps> = ({
     review,
@@ -205,9 +204,6 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                                 <h4 className="font-semibold text-gray-900">
                                     {review.author}
                                 </h4>
-                                {review.isAdmin && (
-                                    <Crown className="h-3.5 w-3.5 text-gray-500" />
-                                )}
                             </div>
                             <div className="mt-1 flex items-center space-x-3">
                                 <p className="text-xs text-gray-500">

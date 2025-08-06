@@ -49,9 +49,6 @@ const ReviewCommentItem: React.FC<ReviewCommentItemProps> = ({
                             <h5 className="text-sm font-medium text-gray-900">
                                 {comment.author}
                             </h5>
-                            {isAdmin && (
-                                <Crown className="h-3.5 w-3.5 text-gray-500" />
-                            )}
                         </div>
                         <p className="text-xs text-gray-500">
                             {new Date(comment.timestamp).toLocaleDateString(
