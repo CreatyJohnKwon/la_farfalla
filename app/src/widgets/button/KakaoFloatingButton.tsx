@@ -54,33 +54,18 @@ const KakaoFloatingButton = () => {
         };
     }, [updateResponsiveValues]);
 
-    // 클릭 이벤트
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        const userAgent = navigator.userAgent.toLowerCase();
-        const isAndroid = /android/.test(userAgent);
-        const channelId = "_Uxfaxin"; // 실제 채널 ID로 변경
-
-        if (isAndroid) {
-            // Android 딥링크: intent
-            const intentUrl = `intent://plusfriend/home/${channelId}#Intent;scheme=kakaotalk;package=com.kakao.talk;end`;
-            window.location.href = intentUrl;
-        } else {
-            // iOS 또는 PC 등: 일반 링크
-            const webUrl = `https://pf.kakao.com/${channelId}`;
-            window.open(webUrl, "_blank");
-        }
-    };
-
     if (!mounted || shouldHideButton) return null;
 
     return (
         <button
-            className="fixed bottom-5 right-5 z-50 flex cursor-pointer select-none flex-col items-center justify-center rounded-xl bg-black shadow-lg transition-all duration-200 hover:bg-gray-800 hover:shadow-xl"
+            className="fixed bottom-5 right-5 z-50 flex cursor-pointer select-none flex-col items-center justify-center rounded-xl bg-black shadow-lg transition-all duration-200 hover:shadow-xl sm:hover:bg-gray-800"
             style={{
                 width: `${responsiveValues.BUTTON_SIZE}px`,
                 height: `${responsiveValues.BUTTON_SIZE}px`,
             }}
-            onClick={handleClick}
+            onClick={() =>
+                window.open("https://pf.kakao.com/_Uxfaxin/chat", "_blank")
+            }
             // 접근성 개선
             aria-label="카카오톡 채널 상담하기"
             role="button"
