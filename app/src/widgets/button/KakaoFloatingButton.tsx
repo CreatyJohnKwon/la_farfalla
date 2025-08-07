@@ -16,13 +16,14 @@ const KakaoFloatingButton = () => {
 
     const [mounted, setMounted] = useState<boolean>(false);
     const [responsiveValues, setResponsiveValues] = useState({
-        BUTTON_SIZE: 72,
+        BUTTON_SIZE: 70,
         ICON_SIZE: 20,
         TEXT_SIZE: "text-sm",
     });
 
     const pathname = usePathname();
     const shouldHideButton = pathname === "/order";
+    const visable = !pathname.includes("/admin");
 
     // 반응형 값 업데이트
     const updateResponsiveValues = useCallback(() => {
@@ -58,7 +59,7 @@ const KakaoFloatingButton = () => {
 
     return (
         <button
-            className="fixed bottom-5 right-5 z-50 flex cursor-pointer select-none flex-col items-center justify-center rounded-xl bg-black shadow-lg transition-all duration-200 hover:shadow-xl sm:hover:bg-gray-800"
+            className={`fixed bottom-5 right-5 flex cursor-pointer select-none flex-col items-center justify-center rounded-xl bg-black shadow-lg transition-all duration-200 hover:shadow-xl sm:hover:bg-gray-800 ${pathname.includes("/home") ? "z-30" : "z-40"} ${visable ? "block" : "hidden"}`}
             style={{
                 width: `${responsiveValues.BUTTON_SIZE}px`,
                 height: `${responsiveValues.BUTTON_SIZE}px`,

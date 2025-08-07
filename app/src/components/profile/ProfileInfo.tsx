@@ -8,14 +8,14 @@ const ProfileInfo = () => {
     return (
         <div className="mt-0 h-1/2 w-full flex-col sm:mt-20 sm:h-3/4 md:grid md:grid-cols-4">
             <div className="flex h-full w-full items-center justify-center md:col-span-2">
-                <div className="flex h-full w-full flex-col items-start justify-center gap-8 sm:pb-28">
+                <div className="flex h-auto w-full flex-col items-start justify-center gap-8 sm:pb-28">
                     {isLoading ? (
                         <div className="flex animate-pulse flex-col gap-4">
                             {/* 프로필 세부정보 스켈레톤 */}
-                            <div className="flex flex-col items-center gap-2 text-center sm:items-start">
-                                <div className="h-10 w-40 bg-slate-200" />
-                                <div className="h-2 w-48 bg-slate-200" />
-                                <div className="mb-2 mt-1.5 h-2 w-48 bg-slate-200" />
+                            <div className="flex flex-col items-start gap-2 text-center sm:items-start">
+                                <div className="mt-2 h-8 w-32 bg-slate-200" />
+                                <div className="h-4 w-48 bg-slate-200" />
+                                <div className="mt-1.5 h-4 w-48 bg-slate-200" />
                             </div>
                         </div>
                     ) : (

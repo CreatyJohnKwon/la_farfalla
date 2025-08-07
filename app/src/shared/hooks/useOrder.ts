@@ -23,6 +23,7 @@ import {
     useUpdateStockMutation,
 } from "./react-query/useOrderQuery";
 import { ProductOption } from "@/src/components/product/interface";
+import { v4 as uuidv4 } from "uuid";
 
 const useOrder = () => {
     const { session } = useUser();
@@ -152,6 +153,7 @@ const useOrder = () => {
                 quantity: item.quantity,
                 color: item.color,
                 size: item.size,
+                image: [],
             })),
             payMethod: payments,
             shippingStatus: "pending",
@@ -162,7 +164,7 @@ const useOrder = () => {
         // const channelKey = await returnStoreId(payments);
         const channelKey = "channel-key-29f71c8c-faf6-4066-b022-7d09e02107db";
         // const channelKey = "channel-key-4d42f07d-23eb-4594-96a6-2cd6a583e8b4";
-        const paymentId = crypto.randomUUID();
+        const paymentId = uuidv4();
 
         if (!channelKey) {
             alert("결제 채널이 설정되지 않았습니다.");

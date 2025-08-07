@@ -79,7 +79,7 @@ const EditProfile = () => {
 
     if (session && session.user)
         return (
-            <div className="flex h-[43vh] w-[85vw] flex-col items-start justify-start gap-6 overflow-y-auto font-pretendard text-lg font-[200] sm:w-full sm:text-xl c_xl:text-3xl">
+            <div className="flex w-[85vw] flex-col items-start justify-start gap-6 overflow-y-scroll pb-5 font-pretendard text-lg font-[200] sm:h-[40vh] sm:w-full sm:text-xl c_xl:text-3xl">
                 <span className="font-amstel-thin w-full border border-gray-200 bg-white px-4 py-2 text-gray-500 placeholder:text-gray-400 focus:outline-none">
                     {session.user.email}
                 </span>
@@ -164,9 +164,9 @@ const EditProfile = () => {
                                 })),
                             )
                         }
-                        className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/70 px-5 py-1 text-base font-[300] text-white hover:bg-black sm:text-lg"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 bg-black px-3 py-3 text-xs font-[300] text-white sm:bg-black/70 sm:px-5 sm:py-[1vh] sm:text-lg sm:hover:bg-black"
                     >
-                        주소찾기
+                        주소 찾기
                     </button>
                 </div>
 
@@ -176,12 +176,12 @@ const EditProfile = () => {
                     value={form.detailAddress}
                     onChange={handleChange}
                     placeholder={"상세주소"}
-                    className="w-full border border-gray-200 min-h-12 bg-white px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                    className="min-h-12 w-full border border-gray-200 bg-white px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                 />
 
                 <button
                     onClick={handleSubmit}
-                    className="font-amstel place-self-end bg-black px-5 py-2 text-base text-white sm:text-lg"
+                    className="font-amstel w-full bg-black px-5 py-2 text-base text-white sm:w-auto sm:place-self-end sm:text-lg"
                 >
                     Save
                 </button>

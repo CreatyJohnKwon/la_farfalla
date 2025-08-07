@@ -1,3 +1,5 @@
+import { Product } from "@/src/components/product/interface";
+
 interface MenuItem {
     text: string;
     link: string;
@@ -95,6 +97,7 @@ interface OrderItem {
     color: string;
     quantity: number;
     price?: number;
+    image?: string[];
 }
 
 interface OrderData {
@@ -204,7 +207,9 @@ interface UserCouponWithPopulate {
     isUsed: boolean;
     usedAt?: Date;
     usedOrderId?: string;
-    discountAmount?: string;
+
+    discountType: "fixed" | "percentage";
+    discountValue: number;
     isActive: boolean;
     assignedAt: Date;
     assignmentType: "manual" | "auto" | "event" | "signup";

@@ -11,45 +11,113 @@ const OrderItem = ({ item }: { item: OrderData }) => {
     return (
         <>
             <li
-                className="cursor-pointer rounded-md border border-gray-200 p-4 transition hover:border-gray-400"
+                className="group z-40 cursor-pointer rounded-lg border border-gray-100 bg-white p-5 transition-all duration-200 active:bg-gray-50 sm:border-gray-200 sm:p-6 sm:hover:border-gray-300"
                 onClick={() => setIsModalOpen(true)}
+                style={{ touchAction: "manipulation" }}
             >
-                <div className="mb-2 flex items-center justify-between">
-                    <h3 className="font-pretendard text-sm text-gray-800">
-                        {`주문번호: ${item.createdAt ? item._id : "error"}`}
-                    </h3>
-                    <span className="font-amstel text-base text-gray-400">
-                        {item.totalPrice.toLocaleString()} KRW
-                    </span>
-                </div>
-
-                <div className="mb-2 flex items-center justify-between">
-                    <h3 className="font-pretendard text-sm font-[200] text-gray-800">
-                        {`주문일자: ${
-                            item.createdAt
+                {/* 헤더: 주문번호와 금액 */}
+                <div className="mb-4 flex items-start justify-between">
+                    <div className="min-w-0 flex-1">
+                        <p className="text-xs font-medium text-gray-900 sm:text-sm">
+                            #{item.createdAt ? `${item._id}` : "ERROR"}
+                        </p>
+                        <p className="mt-1 text-xs text-gray-500">
+                            {item.createdAt
                                 ? format(
                                       new Date(item.createdAt),
-                                      "yyyy.MM.dd HH:mm",
+                                      "MM.dd HH:mm",
                                   )
-                                : "error"
-                        }`}
-                    </h3>
+                                : "error"}
+                        </p>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-sm font-semibold text-gray-900 sm:text-base">
+                            {item.totalPrice.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-500">KRW</p>
+                    </div>
                 </div>
 
-                <p className="mb-2 font-pretendard text-sm font-[200] text-gray-700">
-                    배송지: {item.address} {item.detailAddress} ({item.postcode}
-                    )
-                </p>
+                {/* 상품 정보 */}
+                <div className="mb-4">
+                    <p className="mb-2 text-xs font-medium text-gray-700 sm:text-sm">
+                        주문상품 {item.items.length}개
+                    </p>
+                    <div className="space-y-2">
+                        {item.items.slice(0, 2).map((product, i) => (
+                            <div
+                                key={i}
+                                className="flex items-center justify-between"
+                            >
+                                <div className="min-w-0 flex-1">
+                                    <p className="truncate text-xs text-gray-900 sm:text-sm">
+                                        {product.productNm}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                        {product.color} · {product.size}
+                                    </p>
+                                </div>
+                                <p className="ml-3 text-xs text-gray-500">
+                                    {product.quantity}개
+                                </p>
+                            </div>
+                        ))}
+                        {item.items.length > 2 && (
+                            <p className="text-xs text-gray-400">
+                                외 {item.items.length - 2}개 상품
+                            </p>
+                        )}
+                    </div>
+                </div>
 
-                <div className="mt-2 space-y-1 font-pretendard text-sm font-[200] text-gray-600">
-                    {item.items.map((product, i) => (
-                        <div key={i}>
-                            {`${product.productNm} - ${product.color} /
-                        ${product.size} / 수량 ${product.quantity}`}
-                        </div>
-                    ))}
+                {/* 상태 표시 */}
+                <div className="mt-4 flex items-center justify-between">
+                    <div className="flex items-center">
+                        <div
+                            className={`mr-2 h-2 w-2 rounded-full ${
+                                item.shippingStatus === "pending"
+                                    ? "bg-yellow-400"
+                                    : item.shippingStatus === "ready"
+                                      ? "bg-blue-400"
+                                      : item.shippingStatus === "shipped"
+                                        ? "bg-green-400"
+                                        : item.shippingStatus === "confirm"
+                                          ? "bg-gray-400"
+                                          : "bg-red-400"
+                            }`}
+                        />
+                        <p className="text-xs text-gray-600">
+                            {item.shippingStatus === "pending"
+                                ? "주문완료"
+                                : item.shippingStatus === "ready"
+                                  ? "상품준비중"
+                                  : item.shippingStatus === "shipped"
+                                    ? "배송중"
+                                    : item.shippingStatus === "confirm"
+                                      ? "배송완료"
+                                      : "주문취소"}
+                        </p>
+                    </div>
+
+                    {/* 더보기 인디케이터 */}
+                    <div className="flex items-center text-gray-400 group-active:text-gray-600 sm:group-hover:text-gray-600">
+                        <svg
+                            className="h-4 w-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={1.5}
+                                d="M9 5l7 7-7 7"
+                            />
+                        </svg>
+                    </div>
                 </div>
             </li>
+
             {isModalOpen && (
                 <OrderDetailModal
                     isOpen={isModalOpen}

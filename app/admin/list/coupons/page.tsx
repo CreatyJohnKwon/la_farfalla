@@ -261,16 +261,17 @@ const CouponAdmin = () => {
           ) || []
         : [];
 
-    // 필터 초기화 함수들
-    const resetIssuedFilters = () => {
-        setFilterStatus("all");
-        setUserSearchTerm("");
-        setIssuedSortOrder("none");
-    };
+    const discountAmount = (
+        type: "fixed" | "percentage",
+        value: number,
+    ): string => {
+        if (!value && !type) return "-";
 
-    const resetTemplateFilters = () => {
-        setTemplateStatusFilter("all");
-        setTemplateSortOrder("none");
+        if (type === "fixed") {
+            return `${value.toLocaleString()}원`;
+        } else {
+            return `${value.toLocaleString()}%`;
+        }
     };
 
     // 로딩 상태
@@ -279,7 +280,7 @@ const CouponAdmin = () => {
     return (
         <div className="w-full max-w-full p-4 font-pretendard sm:p-6 lg:p-16">
             {/* 헤더 */}
-            <div className="mb-6 mt-4 sm:mt-8 lg:mt-[5vh]">
+            <div className="mb-6 mt-[7vh]">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-3">
                         <h1 className="text-xl font-semibold text-gray-800 sm:text-2xl">
@@ -485,7 +486,7 @@ const CouponAdmin = () => {
                                                             <td className="px-4 py-3">
                                                                 <div className="text-xs text-gray-600">
                                                                     <span
-                                                                        className={`-ms-1 inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                                                                        className={`-ms-1 inline-flex items-center whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium ${
                                                                             userCoupon.assignmentType ===
                                                                             "manual"
                                                                                 ? "bg-purple-100 text-purple-800"
@@ -512,7 +513,7 @@ const CouponAdmin = () => {
                                                             </td>
                                                             <td className="px-4 py-3">
                                                                 <span
-                                                                    className={`-ms-1 inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                                                                    className={`-ms-1 inline-flex items-center whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium ${
                                                                         userCoupon.isUsed
                                                                             ? "bg-green-100 text-green-800"
                                                                             : "bg-yellow-100 text-yellow-800"
@@ -536,9 +537,10 @@ const CouponAdmin = () => {
                                                                 )}
                                                             </td>
                                                             <td className="px-4 py-3 text-gray-900">
-                                                                {userCoupon.discountAmount
-                                                                    ? `${userCoupon.discountAmount.toLocaleString()}원`
-                                                                    : "-"}
+                                                                {discountAmount(
+                                                                    userCoupon.discountType,
+                                                                    userCoupon.discountValue,
+                                                                )}
                                                             </td>
                                                             <td className="px-4 py-3">
                                                                 {!userCoupon.isUsed && (
@@ -634,9 +636,10 @@ const CouponAdmin = () => {
                                                         <div className="flex items-center justify-between">
                                                             <div className="text-sm text-gray-600">
                                                                 할인금액:{" "}
-                                                                {userCoupon.discountAmount
-                                                                    ? `${userCoupon.discountAmount.toLocaleString()}원`
-                                                                    : "-"}
+                                                                {discountAmount(
+                                                                    userCoupon.discountType,
+                                                                    userCoupon.discountValue,
+                                                                )}
                                                             </div>
                                                             {!userCoupon.isUsed && (
                                                                 <button
@@ -823,7 +826,7 @@ const CouponAdmin = () => {
                                                                     </td>
                                                                     <td className="px-4 py-3">
                                                                         <span
-                                                                            className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                                                                            className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium ${
                                                                                 coupon.type ===
                                                                                 "common"
                                                                                     ? "bg-blue-100 text-blue-800"
@@ -857,7 +860,7 @@ const CouponAdmin = () => {
                                                                     <td className="px-4 py-3">
                                                                         <div className="flex flex-col gap-1">
                                                                             <span
-                                                                                className={`inline-flex w-24 items-center rounded-full px-2 py-1 text-center text-xs font-medium ${status.color}`}
+                                                                                className={`inline-flex w-12 items-center whitespace-nowrap rounded-full px-2 py-1 text-center text-xs font-medium ${status.color}`}
                                                                             >
                                                                                 {
                                                                                     status.label

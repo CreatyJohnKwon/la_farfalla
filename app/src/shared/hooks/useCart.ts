@@ -8,6 +8,7 @@ import { postCart, deleteCart, updateQuantity } from "../lib/server/cart";
 import useUser from "@src/shared/hooks/useUsers";
 import useOrder from "./useOrder";
 import { Product } from "@/src/components/product/interface";
+import { v4 as uuidv4 } from "uuid";
 
 const useCart = () => {
     const [cartView, setCartView] = useAtom(cartViewAtom);
@@ -49,7 +50,7 @@ const useCart = () => {
         const newItem: SelectedItem = {
             userId: session?.user?.email || "",
             title: product.title.kr,
-            cartItemId: crypto.randomUUID(),
+            cartItemId: uuidv4(),
             image: product.image[0],
             productId: product._id || "",
             size,

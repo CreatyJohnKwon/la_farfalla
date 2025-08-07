@@ -23,12 +23,21 @@ const userCouponSchema = new Schema(
             ref: "Order",
             default: null,
         },
-        discountAmount: { type: Number, default: null },
+        discountValue: { type: Number, default: null },
+        discountType: {
+            type: String,
+            enum: ["fixed", "percentage"],
+            default: null,
+        },
         assignedAt: { type: Date, default: Date.now, index: true },
         assignmentType: {
             type: String,
             enum: ["manual", "auto", "event", "signup"],
             default: "manual",
+        },
+        endAt: {
+            type: Date,
+            default: null,
         },
         deletedAt: {
             type: Date,

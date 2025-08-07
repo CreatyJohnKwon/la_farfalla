@@ -36,7 +36,6 @@ const CouponList = () => {
 
     // 쿠폰 발급 핸들러
     const handleClaimCoupon = (couponId: string) => {
-        // TODO: 쿠폰 발급 API 호출
         mutation.mutate(
             { couponId },
             {
@@ -62,7 +61,7 @@ const CouponList = () => {
     if (isError || isCouponManageError) {
         return (
             <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
-                <li className="mt-10 text-center font-pretendard text-2xl font-[300] text-red-400">
+                <li className="mt-10 text-center font-pretendard text-xl font-[300] text-red-400">
                     쿠폰 로딩 실패
                 </li>
             </ul>
@@ -82,21 +81,43 @@ const CouponList = () => {
         ),
     );
 
-    // 활성화된 쿠폰만 필터링 (현재 시간 기준으로 유효한 쿠폰)
+    // 🎯 이벤트 쿠폰 선착순 로직 개선
     const validCoupons = allCoupons.filter((coupon: any) => {
         const now = new Date();
-        return (
-            coupon.isActive &&
-            new Date(coupon.startAt) <= now &&
-            new Date(coupon.endAt) >= now &&
-            (coupon.maxUsage === null || coupon.currentUsage < coupon.maxUsage)
-        );
+        const isActive = coupon.isActive;
+        const isInTimeRange =
+            new Date(coupon.startAt) <= now && new Date(coupon.endAt) >= now;
+        const isUserOwned = userCouponIds.has(coupon._id);
+
+        // 기본 조건: 활성화되어 있고 시간 범위 내에 있어야 함
+        if (!isActive || !isInTimeRange) {
+            return false;
+        }
+
+        // 이벤트 쿠폰인 경우 (선착순)
+        if (coupon.type === "event") {
+            // 사용자가 이미 보유한 이벤트 쿠폰 → 선착순 종료 여부 상관없이 항상 보여줌
+            if (isUserOwned) {
+                return true;
+            }
+
+            // 사용자가 보유하지 않은 이벤트 쿠폰 → 선착순이 남아있을 때만 보여줌
+            const hasQuotaLeft =
+                coupon.maxUsage === null ||
+                coupon.currentUsage < coupon.maxUsage;
+            return hasQuotaLeft;
+        }
+
+        // 일반 쿠폰 (common, personal) → 기존 로직
+        const hasQuotaLeft =
+            coupon.maxUsage === null || coupon.currentUsage < coupon.maxUsage;
+        return hasQuotaLeft;
     });
 
     // 쿠폰이 하나라도 있을 때
     if (validCoupons.length > 0) {
         return (
-            <ul className="flex h-[43vh] w-[90vw] flex-col gap-4 overflow-y-auto sm:w-auto">
+            <ul className="flex w-[85vw] flex-col gap-4 overflow-y-scroll pb-5 sm:h-[40vh] sm:w-auto">
                 {validCoupons.map((coupon: any) => {
                     // 사용자가 보유한 쿠폰 중에서 현재 쿠폰과 매칭되는 것을 찾기
                     const userCoupon = userCoupons.find(
@@ -105,7 +126,7 @@ const CouponList = () => {
 
                     // 사용자가 보유한 쿠폰이 있고, 그것이 사용되었다면 렌더링하지 않음
                     if (userCoupon && userCoupon.isUsed) {
-                        return null; // 또는 return;
+                        return null;
                     }
 
                     const isUserOwned = userCouponIds.has(coupon._id);
@@ -137,6 +158,14 @@ const CouponList = () => {
                         event: "bg-red-100 text-red-800",
                     };
 
+                    // 🎯 이벤트 쿠폰 선착순 상태 확인
+                    const isEventCoupon = coupon.type === "event";
+                    const isQuotaExhausted =
+                        coupon.maxUsage !== null &&
+                        coupon.currentUsage >= coupon.maxUsage;
+                    const canClaim =
+                        !isUserOwned && (!isEventCoupon || !isQuotaExhausted);
+
                     return (
                         <li
                             key={coupon._id}
@@ -162,6 +191,20 @@ const CouponList = () => {
                                             <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
                                                 {discountText}
                                             </span>
+                                            {/* 🎯 선착순 상태 표시 */}
+                                            {isEventCoupon && (
+                                                <span
+                                                    className={`rounded-full px-2 py-1 text-xs font-medium ${
+                                                        isQuotaExhausted
+                                                            ? "bg-red-100 text-red-600"
+                                                            : "bg-orange-100 text-orange-600"
+                                                    }`}
+                                                >
+                                                    {isQuotaExhausted
+                                                        ? "선착순 마감"
+                                                        : "선착순"}
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
 
@@ -175,6 +218,13 @@ const CouponList = () => {
                                         {`쿠폰 코드: ${coupon.code}`}
                                     </p>
 
+                                    {/* 🎯 선착순 정보 표시 (이벤트 쿠폰만) */}
+                                    {/* {isEventCoupon && coupon.maxUsage && (
+                                        <p className="text-xs text-orange-500">
+                                            {`발급: ${coupon.currentUsage}/${coupon.maxUsage}명`}
+                                        </p>
+                                    )} */}
+
                                     {/* 발급 정보 (보유 중인 쿠폰만) */}
                                     {isUserOwned && userCouponForDetails && (
                                         <div className="mt-2 flex flex-col gap-1 border-t border-gray-100 pt-2">
@@ -182,6 +232,8 @@ const CouponList = () => {
                                                 {`발급일: ${expiryDate(userCouponForDetails.assignedAt)}`}
                                                 {userCouponForDetails.assignmentType ===
                                                     "signup" && " (가입 혜택)"}
+                                                {isEventCoupon &&
+                                                    " (선착순 획득)"}
                                             </span>
                                             <span className="text-xs text-red-400">
                                                 {`만료일: ${expiryDate(coupon.endAt)}`}
@@ -196,7 +248,7 @@ const CouponList = () => {
                                         <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
                                             보유중
                                         </span>
-                                    ) : (
+                                    ) : canClaim ? (
                                         <button
                                             onClick={() =>
                                                 handleClaimCoupon(coupon._id)
@@ -205,6 +257,10 @@ const CouponList = () => {
                                         >
                                             발급받기
                                         </button>
+                                    ) : (
+                                        <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
+                                            마감됨
+                                        </span>
                                     )}
                                 </div>
                             </div>

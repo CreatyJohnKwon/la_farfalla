@@ -70,7 +70,7 @@ const Users = () => {
     return (
         <div className="w-full max-w-full p-4 font-pretendard sm:p-6 lg:p-16">
             {/* 헤더 */}
-            <div className="mb-6 mt-4 sm:mt-8 lg:mt-[5vh]">
+            <div className="mb-6 mt-[7vh]">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-3">
                         <h1 className="text-xl font-semibold text-gray-800 sm:text-2xl">
@@ -150,7 +150,7 @@ const Users = () => {
                                 <th className="w-[20%] px-4 py-3 text-left text-xs font-medium sm:text-sm">
                                     아이디(이메일)
                                 </th>
-                                <th className="w-[15%] px-4 py-3 text-left text-xs font-medium sm:text-sm">
+                                <th className="w-[10%] px-4 py-3 text-left text-xs font-medium sm:text-sm">
                                     <div className="flex items-center gap-1">
                                         회원명
                                         {(sortOption === "name_asc" ||
@@ -216,7 +216,7 @@ const Users = () => {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3">
+                                        <td className="whitespace-nowrap px-4 py-3">
                                             <div className="flex items-center gap-2">
                                                 {(sortOption === "latest" ||
                                                     sortOption ===
@@ -236,7 +236,7 @@ const Users = () => {
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 text-xs text-gray-700 sm:text-sm">
+                                        <td className="whitespace-nowrap px-4 py-3 text-xs text-gray-700 sm:text-sm">
                                             {user.phoneNumber || "-"}
                                         </td>
                                         <td className="px-4 py-3 text-xs text-gray-700 sm:text-sm">

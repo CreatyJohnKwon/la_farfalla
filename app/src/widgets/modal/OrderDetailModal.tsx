@@ -4,16 +4,9 @@ import {
     useSmartUpdateOrderMutation,
 } from "@/src/shared/hooks/react-query/useOrderQuery";
 import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
-import {
-    CheckCircle,
-    Clock,
-    CreditCard,
-    MapPin,
-    Package,
-    Phone,
-    Truck,
-    X,
-} from "lucide-react";
+import { CheckCircle, X } from "lucide-react";
+import Image from "next/image";
+import DefaultImage from "../../../../public/images/chill.png";
 
 // 주문 상세 모달 컴포넌트
 const OrderDetailModal = ({
@@ -25,11 +18,11 @@ const OrderDetailModal = ({
     onClose: () => void;
     order: OrderData;
 }) => {
-    if (!isOpen) return null;
-
     const { data: user } = useUserQuery();
     const { mutateAsync: smartUpdateOrder } = useSmartUpdateOrderMutation();
     const { refetch: orderListRefetch } = useOrderQuery(user?._id);
+
+    if (!isOpen) return null;
 
     const handleUpdate = async (
         id: string,
@@ -152,47 +145,50 @@ const OrderDetailModal = ({
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-2 sm:p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
             onClick={onClose}
+            style={{ touchAction: "manipulation" }}
         >
             <div
-                className="max-h-[95vh] w-full max-w-2xl overflow-y-auto rounded-md bg-white sm:max-h-[90vh]"
+                className="h-[70vh] w-[90vw] overflow-y-auto rounded-lg bg-white sm:h-[90vh] sm:w-[35vw]"
                 onClick={(e) => e.stopPropagation()}
+                style={{
+                    WebkitOverflowScrolling: "touch",
+                    overscrollBehavior: "contain",
+                }}
             >
                 {/* 헤더 */}
-                <div className="flex items-center justify-between border-b border-gray-200 p-4 sm:p-6">
-                    <div className="min-w-0 flex-1">
-                        <h2 className="truncate text-lg font-bold text-gray-900 sm:text-2xl">
+                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
+                    <div className="min-w-0 flex-1 pr-2">
+                        <h2 className="truncate font-pretendard text-lg font-[700] text-gray-900">
                             주문 상세
                         </h2>
-                        <p className="mt-1 truncate text-xs text-gray-500 sm:text-sm">
+                        <p className="mt-1 truncate text-xs text-gray-500">
                             주문번호: {order._id}
                         </p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="ml-2 flex-shrink-0 rounded-full p-2 transition-colors hover:bg-gray-100"
+                        className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full transition-colors hover:bg-gray-100 active:bg-gray-200"
+                        style={{ touchAction: "manipulation" }}
                     >
-                        <X className="h-5 w-5 text-gray-600 sm:h-6 sm:w-6" />
+                        <X className="h-5 w-5 text-gray-600" />
                     </button>
                 </div>
 
-                <div className="space-y-6 p-4 sm:space-y-8 sm:p-6">
+                <div className="space-y-4 p-4">
                     {/* 배송 상태 섹션 */}
                     <div
-                        className={`${statusInfo.bgColor} ${statusInfo.borderColor} rounded-md border-2 p-4 sm:p-6`}
+                        className={`${statusInfo.bgColor} ${statusInfo.borderColor} rounded-lg border-2 p-4`}
                     >
-                        <div className="mb-4 flex items-center">
-                            <Truck
-                                className={`h-5 w-5 sm:h-6 sm:w-6 ${statusInfo.color} mr-2 flex-shrink-0 sm:mr-3`}
-                            />
+                        <div className="mb-3 flex items-center">
                             <div className="min-w-0">
                                 <h3
-                                    className={`font-pretendard text-lg sm:text-lg ${statusInfo.color}`}
+                                    className={`font-pretendard text-base font-bold ${statusInfo.color}`}
                                 >
                                     {statusInfo.text}
                                 </h3>
-                                <p className="mt-1 text-xs text-gray-600 sm:text-sm">
+                                <p className="mt-1 text-sm text-gray-600">
                                     {statusInfo.description}
                                 </p>
                             </div>
@@ -200,7 +196,7 @@ const OrderDetailModal = ({
 
                         {/* 배송 진행 상태 바 */}
                         {order.shippingStatus !== "cancel" && (
-                            <div className="mt-4 sm:mt-6">
+                            <div className="mt-4">
                                 <div className="flex items-center justify-between">
                                     {progressSteps.map((step, index) => (
                                         <div
@@ -208,26 +204,26 @@ const OrderDetailModal = ({
                                             className="flex flex-1 flex-col items-center"
                                         >
                                             <div
-                                                className={`flex h-6 w-6 items-center justify-center rounded-full sm:h-8 sm:w-8 ${
+                                                className={`flex h-6 w-6 items-center justify-center rounded-full ${
                                                     step.isActive
                                                         ? "bg-blue-500 text-white"
                                                         : "bg-gray-200 text-gray-400"
                                                 }`}
                                             >
                                                 {step.isActive ? (
-                                                    <CheckCircle className="h-3 w-3 sm:h-5 sm:w-5" />
+                                                    <CheckCircle className="h-4 w-4" />
                                                 ) : (
-                                                    <span className="text-xs font-medium">
+                                                    <span className="font-pretendard text-xs">
                                                         {index + 1}
                                                     </span>
                                                 )}
                                             </div>
                                             <span
-                                                className={`mt-1 text-center text-[10px] sm:mt-2 sm:text-xs ${
+                                                className={`mt-1 text-center font-pretendard text-xs ${
                                                     step.isActive
-                                                        ? "font-medium text-blue-600"
+                                                        ? "text-blue-600"
                                                         : "text-gray-400"
-                                                }`}
+                                                } ${index === 1 ? "px-1" : ""}`}
                                             >
                                                 {step.label}
                                             </span>
@@ -239,57 +235,66 @@ const OrderDetailModal = ({
 
                         {/* 운송장 정보 */}
                         {order.trackingNumber && (
-                            <div className="mt-4 rounded-md border border-gray-200 bg-white p-3">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-xs text-gray-600 sm:text-sm">
-                                        운송장번호
-                                    </span>
-                                    <span className="break-all font-mono text-xs font-medium sm:text-sm">
-                                        {order.trackingNumber} (우체국)
-                                    </span>
-                                </div>
-                                {order.shippedAt && (
-                                    <div className="mt-2 flex items-center justify-between">
-                                        <span className="text-xs text-gray-600 sm:text-sm">
-                                            발송일시
+                            <div className="mt-3 rounded-md border border-gray-200 bg-white p-3">
+                                <div className="flex flex-col space-y-1">
+                                    <div className="flex justify-between">
+                                        <span className="font-pretendard text-xs font-medium text-gray-700">
+                                            운송장번호
                                         </span>
-                                        <span className="text-xs sm:text-sm">
-                                            {formatDate(order.shippedAt)}
+                                        <span className="break-all font-pretendard text-xs text-blue-600">
+                                            {order.trackingNumber} (우체국)
                                         </span>
                                     </div>
-                                )}
+                                    {order.shippedAt && (
+                                        <div className="flex justify-between">
+                                            <span className="font-pretendard text-xs font-medium text-gray-700">
+                                                발송일시
+                                            </span>
+                                            <span className="text-xs text-gray-600">
+                                                {formatDate(order.shippedAt)}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>
 
                     {/* 주문 상품 섹션 */}
                     <div>
-                        <h3 className="mb-4 flex items-center font-pretendard text-lg text-gray-900">
-                            <Package className="mr-2 h-5 w-5" />
+                        <h3 className="mb-3 flex items-center font-pretendard text-base font-semibold text-gray-900">
                             주문 상품 ({order.items.length}개)
                         </h3>
-                        <div className="space-y-4">
+                        <div className="space-y-2">
                             {order.items.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="flex items-center rounded-md border border-gray-200 p-4"
+                                    className="flex items-center rounded-md border border-gray-200 p-3"
                                 >
-                                    <div className="mr-4 flex h-16 w-16 items-center justify-center rounded-md bg-gray-100">
-                                        <Package className="h-8 w-8 text-gray-400" />
+                                    <div className="mr-3 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md p-1">
+                                        <Image
+                                            alt="image"
+                                            className="h-auto w-auto"
+                                            width={1000}
+                                            height={1000}
+                                            objectFit="cover"
+                                            src={
+                                                item.image
+                                                    ? item.image[0]
+                                                    : DefaultImage
+                                            }
+                                        />
                                     </div>
-                                    <div className="flex-1">
-                                        <h4 className="font-pretendard text-lg text-gray-900">
+                                    <div className="min-w-0 flex-1">
+                                        <h4 className="truncate font-pretendard text-sm font-medium text-gray-900">
                                             {item.productNm}
                                         </h4>
-                                        <div className="mt-1 text-sm text-gray-600">
+                                        <div className="mt-1 text-xs text-gray-600">
                                             <span>사이즈: {item.size}</span>
                                             <span className="mx-2">•</span>
                                             <span>색상: {item.color}</span>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="text-sm text-gray-600">
-                                            수량: {item.quantity}개
+                                            <span className="mx-2">•</span>
+                                            <span>수량: {item.quantity}개</span>
                                         </div>
                                     </div>
                                 </div>
@@ -299,35 +304,42 @@ const OrderDetailModal = ({
 
                     {/* 결제 정보 섹션 */}
                     <div>
-                        <h3 className="mb-4 flex items-center font-pretendard text-lg text-gray-900">
-                            <CreditCard className="mr-2 h-5 w-5" />
+                        <h3 className="mb-3 flex items-center font-pretendard text-base font-semibold text-gray-900">
                             결제 정보
                         </h3>
-                        <div className="space-y-3 rounded-md bg-gray-50 p-4 text-lg">
+                        <div className="space-y-2 rounded-md bg-gray-50 p-3">
                             <div className="flex items-center justify-between">
-                                <span className="text-gray-600">결제방법</span>
-                                <span className="font-pretendard">
+                                <span className="whitespace-nowrap font-pretendard text-sm font-[500] text-gray-700">
+                                    결제방법
+                                </span>
+                                <span className="font-pretendard text-xs text-gray-900">
                                     {getPayMethodText(order.payMethod)}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-gray-600">결제일시</span>
-                                <span>{formatDate(order.createdAt)}</span>
+                                <span className="whitespace-nowrap font-pretendard text-sm font-[500] text-gray-700">
+                                    결제일시
+                                </span>
+                                <span className="text-xs text-gray-600">
+                                    {formatDate(order.createdAt)}
+                                </span>
                             </div>
                             {order.paymentId && (
                                 <div className="flex items-center justify-between">
-                                    <span className="text-gray-600">
+                                    <span className="whitespace-nowrap font-pretendard text-sm font-[500] text-gray-700">
                                         결제번호
                                     </span>
-                                    <span className="font-mono text-sm">
+                                    <span className="ms-20 break-all text-end font-mono text-xs text-gray-600">
                                         {order.paymentId}
                                     </span>
                                 </div>
                             )}
-                            <div className="mt-3 border-t border-gray-200 pt-3">
-                                <div className="flex items-center justify-between font-pretendard text-lg">
-                                    <span>총 결제금액</span>
-                                    <span className="font-amstel text-blue-600">
+                            <div className="border-t border-gray-200 pt-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="font-pretendard text-sm font-[600] text-gray-900">
+                                        총 결제금액
+                                    </span>
+                                    <span className="font-amstel text-lg font-bold text-blue-600">
                                         {formatPrice(order.totalPrice)}
                                     </span>
                                 </div>
@@ -337,72 +349,78 @@ const OrderDetailModal = ({
 
                     {/* 배송지 정보 섹션 */}
                     <div>
-                        <h3 className="mb-3 flex items-center font-pretendard text-base text-gray-900 sm:mb-4 sm:text-lg">
-                            <MapPin className="mr-2 h-4 w-4 flex-shrink-0 sm:h-5 sm:w-5" />
+                        <h3 className="mb-3 flex items-center font-pretendard text-base font-semibold text-gray-900">
                             배송지 정보
                         </h3>
-                        <div className="space-y-2 rounded-md bg-gray-50 p-3 sm:p-4">
-                            <div className="flex items-center">
-                                <Phone className="mr-2 h-3 w-3 flex-shrink-0 text-gray-500 sm:h-4 sm:w-4" />
-                                <span className="text-sm font-medium sm:text-base">
+                        <div className="space-y-2 rounded-md bg-gray-50 p-3">
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-gray-900">
                                     {order.userNm}
                                 </span>
-                                <span className="ml-2 text-sm text-gray-600 sm:text-base">
+                                <span className="text-xs text-gray-600">
                                     {order.phoneNumber}
                                 </span>
                             </div>
-                            <div className="text-sm text-gray-700 sm:text-base">
+                            <div className="text-xs text-gray-700">
                                 <div className="break-words">
                                     ({order.postcode}) {order.address}
                                 </div>
-                                <div className="break-words">
+                                <div className="break-words font-medium">
                                     {order.detailAddress}
                                 </div>
                             </div>
                             {order.deliveryMemo && (
-                                <div className="mt-2 rounded border border-yellow-200 bg-yellow-50 p-2 text-xs text-gray-600 sm:text-sm">
-                                    <span className="font-medium">
-                                        배송요청사항:
-                                    </span>{" "}
-                                    {order.deliveryMemo}
+                                <div className="mt-2 rounded-md border border-yellow-200 bg-yellow-50 p-2">
+                                    <div className="text-xs">
+                                        <span className="font-pretendard font-medium text-gray-800">
+                                            배송요청사항:
+                                        </span>
+                                        <p className="mt-1 text-gray-700">
+                                            {order.deliveryMemo}
+                                        </p>
+                                    </div>
                                 </div>
                             )}
                         </div>
                     </div>
-                </div>
 
-                {/* 푸터 */}
-                <div className="border-t border-gray-200 bg-gray-50 p-4 sm:p-6">
-                    <div className="flex items-center text-xs text-gray-500 sm:text-sm">
-                        <Clock className="mr-2 h-3 w-3 flex-shrink-0 sm:h-4 sm:w-4" />
-                        <span className="break-words">
-                            주문일시: {formatDate(order.createdAt)}
-                        </span>
-                    </div>
-
-                    {/* 구매확정 버튼 */}
-                    {order.shippingStatus === "shipped" && (
-                        <div className="mt-5 flex items-end font-pretendard">
-                            <button
-                                onClick={() =>
-                                    handleUpdate(order._id || "", "confirm", "")
-                                }
-                                className="cursor-pointer rounded-md bg-black px-4 py-2 text-sm text-white transition-colors hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:px-6 sm:py-3 sm:text-base"
-                            >
-                                구매확정하기
-                            </button>
-                            <div className="ms-5 text-start text-xs text-red-400">
-                                <p>
-                                    구매확정 이후에는 단순 변심에 의한 교환 및
-                                    반품이 불가합니다.
-                                </p>
-                                <p>
-                                    제품에 이상이 있는 경우에는 구매확정 전
-                                    반드시 채널톡으로 문의주세요.
-                                </p>
-                            </div>
+                    {/* 푸터 정보 */}
+                    <div className="border-t border-gray-200 pt-3">
+                        <div className="flex items-center text-xs text-gray-500">
+                            <span className="break-words">
+                                주문일시: {formatDate(order.createdAt)}
+                            </span>
                         </div>
-                    )}
+
+                        {/* 구매확정 버튼 */}
+                        {order.shippingStatus === "shipped" && (
+                            <div className="mt-3 space-y-2">
+                                <button
+                                    onClick={() =>
+                                        handleUpdate(
+                                            order._id || "",
+                                            "confirm",
+                                            "",
+                                        )
+                                    }
+                                    className="w-full cursor-pointer rounded-md bg-black px-4 py-3 font-pretendard text-sm font-medium text-white transition-colors hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 active:bg-black/90"
+                                    style={{ touchAction: "manipulation" }}
+                                >
+                                    구매확정하기
+                                </button>
+                                <div className="text-xs leading-relaxed text-red-500">
+                                    <p className="mb-1">
+                                        구매확정 이후에는 단순 변심에 의한 교환
+                                        및 반품이 불가합니다.
+                                    </p>
+                                    <p>
+                                        제품에 이상이 있는 경우에는 구매확정 전
+                                        반드시 채널톡으로 문의주세요.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

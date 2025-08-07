@@ -88,11 +88,11 @@ const Cart = () => {
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+            className="fixed inset-0 flex items-center justify-center bg-black/50"
             onClick={() => setCartView(false)}
         >
             <div
-                className="relative h-4/5 w-11/12 bg-white"
+                className="relative z-50 h-4/5 w-11/12 bg-white"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="mt-3 flex w-full items-center justify-between px-5 sm:mt-5 sm:px-8">

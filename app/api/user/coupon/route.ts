@@ -163,8 +163,11 @@ export async function POST(req: NextRequest) {
         const newUserCoupon = new UserCoupon({
             userId: user._id,
             couponId: couponId,
+            discountValue: coupon.discountValue,
+            discountType: coupon.discountType,
             assignmentType: assignmentType,
             assignedAt: new Date(),
+            endAt: coupon.endAt,
         });
 
         await newUserCoupon.save();

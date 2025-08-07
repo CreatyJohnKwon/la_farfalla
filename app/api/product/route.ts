@@ -9,7 +9,10 @@ const GET = async (req: NextRequest) => {
 
         const productId = req.nextUrl.searchParams.get("productId");
         const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
-        const limit = parseInt(req.nextUrl.searchParams.get("limit") || "9", 10);
+        const limit = parseInt(
+            req.nextUrl.searchParams.get("limit") || "9",
+            10,
+        );
 
         if (productId) {
             if (!isValidObjectId(productId)) {
@@ -20,14 +23,14 @@ const GET = async (req: NextRequest) => {
             }
 
             const productItem = await Product.findById(productId).lean();
-    
+
             if (!productItem) {
                 return NextResponse.json(
                     { error: "Product not found" },
                     { status: 404 },
                 );
             }
-    
+
             return NextResponse.json(productItem);
         }
 
@@ -39,7 +42,7 @@ const GET = async (req: NextRequest) => {
             .limit(limit);
 
         const total = await Product.countDocuments();
-        
+
         return NextResponse.json({
             data: products,
             total,

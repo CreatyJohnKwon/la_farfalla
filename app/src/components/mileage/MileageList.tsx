@@ -34,7 +34,7 @@ const MileageList = () => {
     // 마일리지가 하나라도 있을 때
     if (mileage && mileage.length > 0) {
         return (
-            <ul className="flex h-[43vh] w-[85vw] flex-col gap-4 overflow-y-auto sm:w-auto">
+            <ul className="flex w-[85vw] flex-col gap-4 overflow-y-scroll pb-5 sm:h-[40vh] sm:w-auto">
                 {mileage.map((item: MileageItem) => (
                     <li
                         key={item._id}

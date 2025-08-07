@@ -171,7 +171,7 @@ const Orders = () => {
     return (
         <div className="w-full max-w-full p-4 font-pretendard sm:p-6 lg:p-16">
             {/* 헤더 */}
-            <div className="mb-6 mt-4 sm:mt-8 lg:mt-[5vh]">
+            <div className="mb-6 mt-[7vh]">
                 <div className="flex flex-col gap-4">
                     {/* 타이틀과 버튼들 */}
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -373,10 +373,10 @@ const Orders = () => {
                                 <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
                                     상품목록
                                 </th>
-                                <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
+                                <th className="w-[15%] px-4 py-3 text-xs font-medium sm:text-sm">
                                     상태
                                 </th>
-                                <th className="w-[8%] px-4 py-3 text-xs font-medium sm:text-sm">
+                                <th className="w-[5%] px-4 py-3 text-xs font-medium sm:text-sm">
                                     상태 변경
                                 </th>
                             </tr>
@@ -394,7 +394,7 @@ const Orders = () => {
                                             }`}
                                         >
                                             {/* 체크 박스 */}
-                                            <td className="px-4 py-3">
+                                            <td className="whitespace-nowrap px-4 py-3">
                                                 {order._id && (
                                                     <input
                                                         type="checkbox"
@@ -416,13 +416,13 @@ const Orders = () => {
                                                 )}
                                             </td>
                                             {/* 주문번호 */}
-                                            <td className="px-4 py-3">
+                                            <td className="whitespace-nowrap px-4 py-3">
                                                 <div className="font-mono text-xs text-gray-600 sm:text-sm">
                                                     {order._id}
                                                 </div>
                                             </td>
                                             {/* 주문자명 */}
-                                            <td className="px-4 py-3">
+                                            <td className="whitespace-nowrap px-4 py-3">
                                                 <button
                                                     className="text-xs font-medium hover:text-blue-700 hover:underline sm:text-sm"
                                                     onClick={() => {
@@ -442,7 +442,7 @@ const Orders = () => {
                                                 </button>
                                             </td>
                                             {/* 휴대전화번호 */}
-                                            <td className="px-4 py-3 text-xs text-gray-700 sm:text-sm">
+                                            <td className="whitespace-nowrap px-4 py-3 text-xs text-gray-700 sm:text-sm">
                                                 {order.phoneNumber || "-"}
                                             </td>
                                             {/* 주소 */}
@@ -452,7 +452,7 @@ const Orders = () => {
                                                 </div>
                                             </td>
                                             {/* 상품 목록 */}
-                                            <td className="px-4 py-3">
+                                            <td className="whitespace-nowrap px-4 py-3">
                                                 <button
                                                     className="text-xs hover:text-blue-700 hover:underline sm:text-sm"
                                                     onClick={() => {
@@ -472,9 +472,9 @@ const Orders = () => {
                                                 </button>
                                             </td>
                                             {/* 상태 */}
-                                            <td className="px-4 py-3">
+                                            <td className="whitespace-nowrap px-4 py-3">
                                                 <span
-                                                    className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(order.shippingStatus)}`}
+                                                    className={`-ms-2 inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(order.shippingStatus)}`}
                                                 >
                                                     {getStatusText(
                                                         order.shippingStatus,
