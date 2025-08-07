@@ -8,7 +8,7 @@ interface Position {
     y: number;
 }
 
-const DraggableFloatingButton = () => {
+const KakaoFloatingButton = () => {
     // 반응형 패딩과 버튼 크기
     const getResponsiveValues = useCallback(() => {
         const isMobile = window.innerWidth < 768;
@@ -290,4 +290,4 @@ const DraggableFloatingButton = () => {
     );
 };
 
-export default DraggableFloatingButton;
+export default KakaoFloatingButton;
