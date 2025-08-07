@@ -12,6 +12,8 @@ import {
     useToggleCommentLikeMutation,
 } from "@src/shared/hooks/react-query/useReviewQuery";
 import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
+import { useRouter } from "next/navigation";
+import useUsers from "@/src/shared/hooks/useUsers";
 
 const ReviewSystem: React.FC<ReviewSystemProps> = ({
     productId,
@@ -34,6 +36,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
     const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
     const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
     const [isDragOver, setIsDragOver] = useState(false);
+    const { authCheck } = useUsers();
 
     // 파일 업로드 처리
     const handleFiles = (files: FileList | null) => {
@@ -109,56 +112,62 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
 
     // 리뷰 작성 - 기존 훅과 완전 호환
     const handleSubmitReview = async () => {
-        if (newReview.trim()) {
-            try {
-                // 🆕 기존 방식에 imageFiles만 추가
-                await postReviewMutation.mutateAsync({
-                    content: newReview,
-                    productId,
-                    imageFiles: uploadedPhotos, // 🆕 파일 객체 배열 추가
-                });
+        if (authCheck())
+            if (newReview.trim())
+                try {
+                    // 🆕 기존 방식에 imageFiles만 추가
+                    await postReviewMutation.mutateAsync({
+                        content: newReview,
+                        productId,
+                        imageFiles: uploadedPhotos, // 🆕 파일 객체 배열 추가
+                    });
 
-                // 폼 초기화
-                setNewReview("");
-                setUploadedPhotos([]);
-                setPhotoPreviews([]);
-            } catch (error) {
-                console.error("리뷰 작성 중 오류:", error);
-                // 에러는 mutation에서 alert로 처리됨
-            }
-        }
+                    // 폼 초기화
+                    setNewReview("");
+                    setUploadedPhotos([]);
+                    setPhotoPreviews([]);
+                } catch (error) {
+                    console.error("리뷰 작성 중 오류:", error);
+                    // 에러는 mutation에서 alert로 처리됨
+                }
     };
 
     // 댓글 추가
     const addComment = async (reviewId: string, content: string) => {
-        try {
-            await postCommentMutation.mutateAsync({
-                reviewId,
-                content,
-            });
-        } catch (error) {
-            // 에러는 mutation에서 처리됨
-        }
+        if (authCheck())
+            try {
+                await postCommentMutation.mutateAsync({
+                    reviewId,
+                    content,
+                });
+            } catch (error) {
+                // 에러는 mutation에서 처리됨
+                console.error(error);
+            }
     };
 
     // 리뷰 좋아요 토글
     const toggleLikeReview = async (reviewId: string) => {
         try {
-            await toggleReviewLikeMutation.mutateAsync(reviewId);
+            if (authCheck())
+                await toggleReviewLikeMutation.mutateAsync(reviewId);
         } catch (error) {
             // 에러는 mutation에서 처리됨
+            console.error(error);
         }
     };
 
     // 댓글 좋아요 토글
     const toggleLikeComment = async (reviewId: string, commentId: string) => {
         try {
-            await toggleCommentLikeMutation.mutateAsync({
-                reviewId,
-                commentId,
-            });
+            if (authCheck())
+                await toggleCommentLikeMutation.mutateAsync({
+                    reviewId,
+                    commentId,
+                });
         } catch (error) {
             // 에러는 mutation에서 처리됨
+            console.error(error);
         }
     };
 
@@ -169,13 +178,15 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
         images?: string[],
     ) => {
         try {
-            await updateReviewMutation.mutateAsync({
-                reviewId,
-                content: newContent,
-                images,
-            });
+            if (authCheck())
+                await updateReviewMutation.mutateAsync({
+                    reviewId,
+                    content: newContent,
+                    images,
+                });
         } catch (error) {
             // 에러는 mutation에서 처리됨
+            console.error(error);
         }
     };
 
@@ -193,6 +204,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                 });
             } catch (error) {
                 // 에러는 mutation에서 처리됨
+                console.error(error);
             }
         }
     };
@@ -204,6 +216,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                 await deleteReviewMutation.mutateAsync(reviewId);
             } catch (error) {
                 // 에러는 mutation에서 처리됨
+                console.error(error);
             }
         }
     };

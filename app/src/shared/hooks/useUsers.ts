@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const useUsers = () => {
     const [isLoggedIn, setIsLoggedIn] = useAtom<boolean>(isLoggedInAtom);
@@ -11,6 +12,18 @@ const useUsers = () => {
     const [password, setPassword] = useState<string>("");
     const [isDisabled, setIsDisabled] = useState<boolean>(false);
     const { data: session } = useSession();
+    const router = useRouter();
+
+    const authCheck = (): boolean => {
+        if (!session) {
+            if (
+                confirm("로그인을 해주세요.\n로그인 창으로 이동하시겠습니까?")
+            ) {
+                router.replace("/login");
+            }
+            return false;
+        } else return true;
+    };
 
     const loginHandler = async (provider: "kakao" | "naver") => {
         await signIn(provider, {
@@ -59,6 +72,8 @@ const useUsers = () => {
         menusData,
         session,
         navStartData,
+
+        authCheck,
     };
 };
 

@@ -136,8 +136,8 @@ const StatusUpdateModal = ({
                                 name="waybill"
                                 placeholder={
                                     orderData?.trackingNumber
-                                        ? "변경할 운송장번호 입력 (숫자만 입력하세요)"
-                                        : "운송장번호 입력 (숫자만 입력하세요)"
+                                        ? "변경할 운송장번호 입력"
+                                        : "운송장번호 입력"
                                 }
                                 className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-300"
                                 value={waybillNumber ? waybillNumber : ""}

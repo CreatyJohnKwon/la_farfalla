@@ -356,7 +356,7 @@ const CouponAdmin = () => {
                 <div
                     className={`w-full lg:w-1/2 ${activeTab !== "issued" ? "hidden lg:block" : ""}`}
                 >
-                    <div className="rounded-lg border bg-white shadow-sm">
+                    <div className="rounded-lg border bg-white">
                         <div className="flex flex-col border-b px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                             <div className="mb-3 sm:mb-0">
                                 <h2 className="text-lg font-medium text-gray-800 sm:text-xl">
@@ -691,7 +691,7 @@ const CouponAdmin = () => {
                 <div
                     className={`w-full lg:w-1/2 ${activeTab !== "templates" ? "hidden lg:block" : ""}`}
                 >
-                    <div className="rounded-lg border bg-white shadow-sm">
+                    <div className="rounded-lg border bg-white">
                         <div className="border-b px-4 py-4 sm:px-6">
                             <h2 className="text-lg font-medium text-gray-800 sm:text-xl">
                                 쿠폰 템플릿 관리

@@ -327,7 +327,7 @@ const Orders = () => {
             </div>
 
             {/* 테이블 컨테이너 */}
-            <div className="overflow-hidden rounded-lg border bg-white shadow-sm">
+            <div className="overflow-hidden rounded-lg bg-white">
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-[700px] text-left text-sm">
                         <thead>

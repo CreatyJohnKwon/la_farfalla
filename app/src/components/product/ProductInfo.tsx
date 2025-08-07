@@ -10,7 +10,6 @@ import QuantityModal from "@src/widgets/modal/QuantityModal";
 import { useEffect, useState } from "react";
 import useCart from "@src/shared/hooks/useCart";
 import useUser from "@src/shared/hooks/useUsers";
-import { redirect } from "next/navigation";
 import { Product } from "./interface";
 
 const ProductInfo = ({ product }: { product: Product }) => {
@@ -31,7 +30,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
     } = useCart();
     const [activeTab, setActiveTab] = useState(null);
 
-    const { session } = useUser();
+    const { authCheck } = useUser();
 
     useEffect(() => {
         if (selectedSize && selectedColor) {
@@ -211,11 +210,9 @@ const ProductInfo = ({ product }: { product: Product }) => {
                         className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 sm:text-base md:py-3 md:text-lg lg:text-lg"
                         disabled={selectedItems.length === 0}
                         onClick={() => {
-                            if (!session) {
-                                alert("로그인이 필요합니다.");
-                                return redirect("/login");
+                            if (authCheck()) {
+                                handleBuy(selectedItems);
                             }
-                            handleBuy(selectedItems);
                         }}
                     >
                         buy now
