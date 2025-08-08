@@ -599,7 +599,7 @@ export default function CreateAnnounceModal({ onClose }: Props) {
             ) : isListLoading ? (
                 <LoadingSpinner size="md" />
             ) : (
-                <div className="h-full overflow-y-auto p-4 lg:p-6">
+                <div className="h-full overflow-y-auto">
                     <AnnounceList announces={announces || []} />
                 </div>
             )}

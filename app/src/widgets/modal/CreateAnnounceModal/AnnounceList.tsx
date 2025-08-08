@@ -130,7 +130,7 @@ const AnnounceList = ({ announces }: AnnounceListProps) => {
                 return (
                     <div
                         key={announce._id.toString()}
-                        className={`group relative border border-gray-200 bg-white p-4 transition-all hover:border-gray-300 hover:shadow-sm sm:p-6 ${
+                        className={`group relative border-b border-gray-200 bg-white p-4 transition-all hover:border-gray-300 hover:shadow-sm sm:p-6 ${
                             isCurrentlyDeleting ? "opacity-50" : ""
                         } ${!announce.visible ? "bg-gray-50" : ""}`}
                     >
