@@ -54,7 +54,7 @@ export async function POST(
 
         const newComment = {
             id: commentId, // 🔄 명확한 변수 사용
-            author: user.name || session.user.name || session.user.email,
+            author: user.email || session.user.email,
             content: content.trim(),
             userId: user._id,
             likesCount: 0,
@@ -63,7 +63,7 @@ export async function POST(
         };
 
         // 🔄 실제로 데이터베이스에 저장!
-        const updatedReview = await Review.findByIdAndUpdate(
+        await Review.findByIdAndUpdate(
             reviewId,
             { $push: { comments: newComment } },
             { new: true },

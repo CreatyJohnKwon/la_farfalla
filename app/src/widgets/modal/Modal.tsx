@@ -21,7 +21,7 @@ const Modal = ({
                 transition={{ duration: 0.2 }}
                 className={
                     className ||
-                    "relative max-h-[90vh] w-full max-w-2xl overflow-y-auto bg-white p-6 shadow-2xl"
+                    "relative max-h-[90vh] max-w-[60vw] overflow-y-auto bg-white p-6 shadow-2xl"
                 }
                 onClick={(e) => e.stopPropagation()}
             >

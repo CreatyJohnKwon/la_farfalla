@@ -1,4 +1,4 @@
-// app/api/review/route.ts (이미지 지원 버전)
+// app/api/review/route.ts (요청자 권한별 이메일 표시 버전)
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import { getAuthSession } from "@/src/shared/lib/session";
@@ -6,19 +6,80 @@ import User from "@/src/entities/models/User";
 import { Review } from "@/src/entities/models/Review";
 import { UserProfileData } from "@/src/entities/type/interfaces";
 
-// GET - 리뷰 목록 조회 (이미지 포함, 사용자별 좋아요 상태 포함)
+// 🆕 요청자 권한에 따른 이메일 표시 함수
+const getEmailDisplay = (
+    email: string | null | undefined,
+    isRequesterAdmin: any,
+) => {
+    if (!email || typeof email !== "string") {
+        return "undefined";
+    }
+
+    // 🆕 요청자가 어드민이면 원본 이메일 전체 표시
+    if (isRequesterAdmin) {
+        return email;
+    }
+
+    // 🆕 일반 사용자면 앞 4자리를 별표로 치환 (@ 이후 제거)
+    try {
+        const [localPart] = email.split("@");
+
+        if (localPart.length <= 4) {
+            // 4자리 이하면 모두 별표로
+            return "*".repeat(localPart.length);
+        } else {
+            // 4자리 이상이면 앞 4자리만 별표로 치환
+            return "****" + localPart.slice(4);
+        }
+    } catch (error) {
+        console.error("이메일 표시 오류:", error);
+        return "undefined";
+    }
+};
+
+// 🆕 사용자 표시 이름 결정 함수 (요청자 권한 반영)
+const getDisplayName = (
+    email: string,
+    isAdmin: boolean,
+    adminNames: any,
+    isRequesterAdmin: any,
+) => {
+    if (!email) {
+        return "알 수 없는 사용자";
+    }
+
+    if (isAdmin && adminNames[email]) {
+        return adminNames[email]; // 어드민은 고정 이름 사용
+    }
+
+    return getEmailDisplay(email, isRequesterAdmin); // 요청자 권한에 따라 이메일 표시
+};
+
+// 🆕 어드민 체크 함수
+const isAdminUser = (email: string) => {
+    const adminEmails = [
+        "admin@admin.com",
+        "cofsl0411@naver.com",
+        "soun0551@naver.com",
+    ];
+    return adminEmails.includes(email);
+};
+
+// GET - 리뷰 목록 조회 (요청자 권한별 이메일 표시)
 export async function GET(req: NextRequest) {
     try {
         await connectDB();
 
         const session = await getAuthSession();
         let currentUserId = null;
+        let isRequesterAdmin = false; // 🆕 요청자 어드민 여부
 
         if (session?.user?.email) {
             const currentUser = (await User.findOne({
                 email: session.user.email,
             }).lean()) as any;
             currentUserId = currentUser?._id;
+            isRequesterAdmin = isAdminUser(session.user.email); // 🆕 요청자 어드민 체크
         }
 
         const { searchParams } = new URL(req.url);
@@ -26,35 +87,37 @@ export async function GET(req: NextRequest) {
         const query = productId ? { productId } : {};
 
         const reviews = (await Review.find(query)
-            .populate("userId", "name email") // ✅ userId 필드를 populate
-            .populate("comments.userId", "name email") // 댓글 작성자 정보 populate
+            .populate("userId", "name email")
+            .populate("comments.userId", "name email")
             .sort({ createdAt: -1 })
             .lean()) as any[];
 
         // 어드민 이메일 목록 및 고정 이름
         const adminEmails = [
             "admin@admin.com",
-            // "vmfodzl1125@naver.com",
             "cofsl0411@naver.com",
             "soun0551@naver.com",
         ];
 
         const adminNames: { [key: string]: string } = {
             "admin@admin.com": "lafarfalla",
-            // "vmfodzl1125@naver.com": "lafarfalla",
             "cofsl0411@naver.com": "lafarfalla",
             "soun0551@naver.com": "lafarfalla",
         };
 
         const reviewsWithLikeStatus = reviews.map((review) => {
-            const reviewAuthorEmail = review.userId?.email; // ✅ userId에서 정보 가져오기
+            const reviewAuthorEmail = review.userId?.email;
             const isReviewAdmin = reviewAuthorEmail
                 ? adminEmails.includes(reviewAuthorEmail)
                 : false;
-            const reviewDisplayName =
-                isReviewAdmin && reviewAuthorEmail
-                    ? adminNames[reviewAuthorEmail] || review.userId.name
-                    : review.userId?.name || "알 수 없는 사용자";
+
+            // 🆕 요청자 권한에 따른 이메일 표시 적용
+            const reviewDisplayName = getDisplayName(
+                reviewAuthorEmail,
+                isReviewAdmin,
+                adminNames,
+                isRequesterAdmin, // 🆕 요청자 어드민 여부 전달
+            );
 
             // 리뷰 좋아요 상태
             const isLiked = currentUserId
@@ -64,22 +127,23 @@ export async function GET(req: NextRequest) {
                   )
                 : false;
 
-            // 댓글 좋아요 상태 및 어드민 여부 확인
+            // 🆕 댓글 좋아요 상태 및 요청자 권한별 이메일 표시 적용
             const commentsWithLikeStatus = (review.comments || []).map(
                 (comment: any) => {
-                    // ✅ populate된 userId 객체에서 정보 가져오기
-                    const userInfo = comment.userId; // populate된 User 객체
+                    const userInfo = comment.userId;
                     const userEmail = userInfo?.email;
-                    const userName = userInfo?.name;
 
                     const isAdmin = userEmail
                         ? adminEmails.includes(userEmail)
                         : false;
 
-                    const displayName =
-                        isAdmin && userEmail
-                            ? adminNames[userEmail] || userName
-                            : userName;
+                    // 🆕 댓글 작성자도 요청자 권한에 따른 이메일 표시 적용
+                    const displayName = getDisplayName(
+                        userEmail,
+                        isAdmin,
+                        adminNames,
+                        isRequesterAdmin, // 🆕 요청자 어드민 여부 전달
+                    );
 
                     return {
                         ...comment,
@@ -92,8 +156,19 @@ export async function GET(req: NextRequest) {
                             : false,
                         likesCount: comment.likedUsers?.length || 0,
                         isAdmin: isAdmin,
-                        author: displayName, // ✅ populate된 User 정보 사용
-                        userInfo: userInfo, // ✅ 전체 User 정보도 포함 (필요시)
+                        author: displayName, // 🆕 요청자 권한에 따른 표시 이름
+                        // 🆕 요청자 권한에 따른 사용자 정보
+                        userInfo: userInfo
+                            ? {
+                                  _id: userInfo._id,
+                                  name: userInfo.name,
+                                  email: getEmailDisplay(
+                                      userInfo.email,
+                                      isRequesterAdmin,
+                                  ), // 🆕 요청자 권한에 따른 이메일
+                                  isAdmin: isAdmin,
+                              }
+                            : null,
                     };
                 },
             );
@@ -101,7 +176,7 @@ export async function GET(req: NextRequest) {
             return {
                 ...review,
                 isAdmin: isReviewAdmin,
-                author: reviewDisplayName, // ✅ 표시용 이름
+                author: reviewDisplayName, // 🆕 요청자 권한에 따른 표시 이름
                 isLiked,
                 likesCount: review.likedUsers?.length || 0,
                 images: review.images || [],
@@ -109,6 +184,19 @@ export async function GET(req: NextRequest) {
                 hasImages: review.images && review.images.length > 0,
                 timestamp: review.createdAt,
                 comments: commentsWithLikeStatus,
+                // 🆕 요청자 권한에 따른 사용자 정보
+                userInfo: review.userId
+                    ? {
+                          _id: review.userId._id,
+                          name: review.userId.name,
+                          email: getEmailDisplay(
+                              review.userId.email,
+                              isRequesterAdmin,
+                          ), // 🆕 요청자 권한에 따른 이메일
+                          isAdmin: isReviewAdmin,
+                      }
+                    : null,
+                userId: review.userId?._id, // ID만 유지
             };
         });
 
@@ -116,6 +204,13 @@ export async function GET(req: NextRequest) {
             type: "reviews",
             data: reviewsWithLikeStatus,
             count: reviewsWithLikeStatus.length,
+            // 🆕 디버깅용 (선택사항)
+            meta: {
+                isRequesterAdmin: isRequesterAdmin,
+                requesterEmail: isRequesterAdmin
+                    ? session?.user?.email
+                    : getEmailDisplay(session?.user?.email, false),
+            },
         });
     } catch (error: any) {
         console.error("리뷰 조회 중 오류:", error);
@@ -126,7 +221,7 @@ export async function GET(req: NextRequest) {
     }
 }
 
-// POST - 리뷰 생성 (이미지 포함)
+// POST - 리뷰 생성 (요청자 권한별 이메일 표시)
 export async function POST(req: NextRequest) {
     try {
         await connectDB();
@@ -140,7 +235,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // 🆕 이미지 배열 검증
+        // 이미지 배열 검증
         if (images && Array.isArray(images)) {
             if (images.length > 5) {
                 return NextResponse.json(
@@ -149,7 +244,6 @@ export async function POST(req: NextRequest) {
                 );
             }
 
-            // URL 형식 검증 (선택사항)
             const invalidUrls = images.filter((url) => {
                 try {
                     new URL(url);
@@ -186,29 +280,63 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        // 🆕 요청자 어드민 체크
+        const isRequesterAdmin = isAdminUser(session.user.email);
+
+        // 어드민 체크
+        const adminEmails = [
+            "admin@admin.com",
+            "cofsl0411@naver.com",
+            "soun0551@naver.com",
+        ];
+
+        const adminNames: { [key: string]: string } = {
+            "admin@admin.com": "lafarfalla",
+            "cofsl0411@naver.com": "lafarfalla",
+            "soun0551@naver.com": "lafarfalla",
+        };
+
+        const isAdmin = adminEmails.includes(user.email);
+
         const newReview = new Review({
-            author: user.name || session.user.name || session.user.email,
+            author: user.email || session.user.email,
             content,
             productId,
             userId: user._id,
             likesCount: 0,
-            images: images || [], // 🆕 이미지 배열 저장
+            images: images || [],
             comments: [],
         });
 
         await newReview.save();
 
-        // 🔄 저장된 리뷰 반환 (이미지 포함)
         const savedReview = newReview.toObject();
+
+        // 🆕 요청자 권한에 따른 표시 이름
+        const displayName = getDisplayName(
+            user.email,
+            isAdmin,
+            adminNames,
+            isRequesterAdmin,
+        );
 
         return NextResponse.json({
             message: "리뷰가 작성되었습니다",
             data: {
                 ...savedReview,
                 isLiked: false,
-                imageCount: savedReview.images?.length || 0, // 🆕 이미지 개수
-                hasImages: savedReview.images && savedReview.images.length > 0, // 🆕 이미지 존재 여부
+                imageCount: savedReview.images?.length || 0,
+                hasImages: savedReview.images && savedReview.images.length > 0,
                 timestamp: savedReview.createdAt,
+                // 🆕 요청자 권한에 따른 사용자 정보
+                author: displayName,
+                isAdmin: isAdmin,
+                userInfo: {
+                    _id: user._id,
+                    name: user.name,
+                    email: getEmailDisplay(user.email, isRequesterAdmin), // 🆕 요청자 권한에 따른 이메일
+                    isAdmin: isAdmin,
+                },
             },
         });
     } catch (error: any) {

@@ -136,7 +136,7 @@ const Products = () => {
     return (
         <div className="w-full max-w-full p-3 font-pretendard sm:p-6 lg:p-16">
             {/* 헤더 */}
-            <div className="mb-4 mt-[8vh] sm:mb-6 sm:mt-[5vh]">
+            <div className="mb-6 mt-[7vh]">
                 <div className="flex flex-col gap-3 sm:gap-4">
                     {/* 타이틀과 버튼들 */}
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">

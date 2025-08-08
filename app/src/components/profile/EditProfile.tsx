@@ -93,7 +93,7 @@ const EditProfile = () => {
                                 name="password"
                                 value={form.password}
                                 onChange={handleChange}
-                                placeholder="비밀번호 (8자 이상, 변경 시 입력)"
+                                placeholder="비밀번호 (8자 이상, 대소문자 및 숫자)"
                                 className="min-h-12 w-full border border-gray-200 bg-white px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                             />
                             {form.password.length > 0 && (

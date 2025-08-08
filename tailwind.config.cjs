@@ -12,6 +12,7 @@ module.exports = {
                 "slide-in-left": "slideInLeft 0.2s ease-out forwards",
                 "slide-out-left": "slideOutLeft 0.3s ease-in forwards",
                 "fade-in": "fade-in 0.5s ease-in-out forwards",
+                marquee: "marquee 30s linear infinite",
             },
             keyframes: {
                 slideInLeft: {
@@ -25,6 +26,10 @@ module.exports = {
                 "fade-in": {
                     "0%": { opacity: "0" },
                     "100%": { opacity: "1" },
+                },
+                marquee: {
+                    "0%": { transform: "translateX(0%)" },
+                    "100%": { transform: "translateX(-50%)" },
                 },
             },
             letterSpacing: {

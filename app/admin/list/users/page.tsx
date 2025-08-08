@@ -5,6 +5,7 @@ import {
     useRestoreUserMutation,
     useUserListQuery,
 } from "@/src/shared/hooks/react-query/useUserQuery";
+import CreateAnnounceModal from "@/src/widgets/modal/CreateAnnounceModal/CreateAnnounceModal";
 import UpdateUser from "@/src/widgets/modal/UpdateUser";
 import { useState, useMemo } from "react";
 
@@ -19,6 +20,7 @@ const Users = () => {
     const restoreUser = useRestoreUserMutation();
 
     const [openModal, setOpenModal] = useState(false);
+    const [openAnnounceModal, setOpenAnnounceModal] = useState(false);
     const [userData, setUserData] = useState<UserProfileData>();
     const [sortOption, setSortOption] = useState<SortOption>("none");
 
@@ -72,13 +74,13 @@ const Users = () => {
             {/* 헤더 */}
             <div className="mb-6 mt-[7vh]">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className="flex h-9 items-center gap-3">
                         <h1 className="text-xl font-semibold text-gray-800 sm:text-2xl">
                             유저 관리
                         </h1>
                         <button
                             onClick={() => refetch()}
-                            className="flex h-9 w-9 items-center justify-center rounded border border-gray-300 bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800 sm:h-10 sm:w-10"
+                            className="flex h-full w-9 items-center justify-center rounded border border-gray-300 bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800 sm:w-10"
                             title="새로고침"
                         >
                             <svg
@@ -95,6 +97,12 @@ const Users = () => {
                                 />
                             </svg>
                         </button>
+                        <button
+                            onClick={() => setOpenAnnounceModal(true)}
+                            className="rounded-xs flex h-full items-center justify-center whitespace-nowrap border bg-gray-100 px-4 font-pretendard text-sm font-[500] text-black transition-colors hover:bg-gray-200 sm:px-6 sm:text-base"
+                        >
+                            공지 관리
+                        </button>
                     </div>
 
                     {/* 필터 옵션 */}
@@ -107,7 +115,7 @@ const Users = () => {
                             onChange={(e) =>
                                 setSortOption(e.target.value as SortOption)
                             }
-                            className="min-h-[44px] rounded-md border border-gray-300 bg-white px-4 py-2 text-sm hover:border-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="h-full rounded-sm border border-gray-300 bg-white px-2 py-2 text-sm hover:border-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             <option value="none">기본 순서</option>
                             <option value="latest">최근 가입순</option>
@@ -150,7 +158,7 @@ const Users = () => {
                                 <th className="w-[20%] px-4 py-3 text-left text-xs font-medium sm:text-sm">
                                     아이디(이메일)
                                 </th>
-                                <th className="w-[10%] px-4 py-3 text-left text-xs font-medium sm:text-sm">
+                                <th className="w-[8%] px-4 py-3 text-left text-xs font-medium sm:text-sm">
                                     <div className="flex items-center gap-1">
                                         회원명
                                         {(sortOption === "name_asc" ||
@@ -179,6 +187,9 @@ const Users = () => {
                                 </th>
                                 <th className="w-[10%] px-4 py-3 text-left text-xs font-medium sm:text-sm">
                                     마일리지
+                                </th>
+                                <th className="w-[10%] px-4 py-3 text-left text-xs font-medium sm:text-sm">
+                                    누적구매금액
                                 </th>
                                 <th className="w-[10%] px-4 py-3 text-center text-xs font-medium sm:text-sm">
                                     수정
@@ -249,6 +260,13 @@ const Users = () => {
                                                 {user.mileage?.toLocaleString() ||
                                                     0}
                                                 P
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3 text-xs sm:text-sm">
+                                            <span className="whitespace-nowrap font-medium text-blue-600">
+                                                {user.reward?.toLocaleString() ||
+                                                    0}{" "}
+                                                원
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
@@ -350,6 +368,11 @@ const Users = () => {
                     onClose={() => setOpenModal(false)}
                     user={userData}
                     refetch={refetch}
+                />
+            )}
+            {openAnnounceModal && (
+                <CreateAnnounceModal
+                    onClose={() => setOpenAnnounceModal(false)}
                 />
             )}
         </div>

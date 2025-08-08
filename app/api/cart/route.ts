@@ -4,6 +4,18 @@ import { Cart } from "@src/entities/models/Cart";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../src/shared/lib/auth";
 
+const GET = async () => {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.email;
+
+    if (!userId) {
+        return NextResponse.json([], { status: 200 });
+    }
+
+    const cartItems = await Cart.find({ userId }).lean();
+    return NextResponse.json(cartItems);
+};
+
 const POST = async (req: NextRequest) => {
     const body = await req.json();
 
@@ -39,18 +51,6 @@ const POST = async (req: NextRequest) => {
     }
 
     return NextResponse.json({ ok: true });
-};
-
-const GET = async () => {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user?.email;
-
-    if (!userId) {
-        return NextResponse.json([], { status: 200 });
-    }
-
-    const cartItems = await Cart.find({ userId }).lean();
-    return NextResponse.json(cartItems);
 };
 
 const PATCH = async (req: NextRequest) => {

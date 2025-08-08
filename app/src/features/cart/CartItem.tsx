@@ -58,11 +58,14 @@ const CartItem = ({ item }: { item: SelectedItem }) => {
                     className="flex flex-col items-center text-start c_md:m-0 c_md:w-full c_md:gap-2 c_md:text-center"
                     onClick={() => handleRouteProduct(product._id)}
                 >
-                    <span className="font-amstel w-full text-[0.5em] font-[300] hover:underline c_md:text-[0.6em]">
+                    <span className="font-amstel w-full text-sm font-[300] hover:underline c_md:text-base">
                         {product.title.eg}
                     </span>
-                    <span className="w-full font-pretendard text-[0.5em] font-[300] hover:underline c_md:text-[0.6em]">
+                    <span className="w-full font-pretendard text-sm font-[300] hover:underline c_md:text-base">
                         {product.title.kr}
+                    </span>
+                    <span className="mb-1 w-full font-pretendard text-xs font-[300] hover:underline c_md:text-sm">
+                        {`${item.size} - ${item.color}`}
                     </span>
                 </div>
                 <QuantityModal
