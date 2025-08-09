@@ -45,8 +45,20 @@ interface MutationContext {
     previousAnnounces: IAnnounceDTO[] | undefined;
 }
 
-export const useUpdateAnnounceMutation = () => {
+// 개선된 버전 - 컴포넌트에서 알림 제어 가능
+export const useUpdateAnnounceMutation = (options?: {
+    showSuccessAlert?: boolean;
+    showErrorAlert?: boolean;
+    onSuccess?: (data: IAnnounceDTO, variables: UpdateAnnounceParams) => void;
+    onError?: (error: Error, variables: UpdateAnnounceParams) => void;
+}) => {
     const queryClient = useQueryClient();
+    const {
+        showSuccessAlert = true,
+        showErrorAlert = true,
+        onSuccess: customOnSuccess,
+        onError: customOnError,
+    } = options || {};
 
     return useMutation<
         IAnnounceDTO,
@@ -55,7 +67,6 @@ export const useUpdateAnnounceMutation = () => {
         MutationContext
     >({
         mutationFn: async ({ id, data }: UpdateAnnounceParams) => {
-            // 타입 안전한 함수 사용
             return updateAnnounceById(id, data);
         },
         onMutate: async ({ id, data }): Promise<MutationContext> => {
@@ -81,13 +92,14 @@ export const useUpdateAnnounceMutation = () => {
             return { previousAnnounces };
         },
         onSuccess: (updatedAnnounce, variables) => {
-            if (variables.data.visible !== undefined) {
-                const message = variables.data.visible
-                    ? "공지가 표시됩니다."
-                    : "공지가 숨겨집니다.";
-                alert(message);
-            } else {
-                alert("공지가 성공적으로 수정되었습니다.");
+            customOnSuccess?.(updatedAnnounce, variables);
+
+            if (showSuccessAlert) {
+                const { visible, ...restData } = variables.data;
+
+                if (Object.keys(restData).length > 0) {
+                    alert("공지가 성공적으로 수정되었습니다.");
+                }
             }
         },
         onError: (error: any, variables, context) => {
@@ -98,28 +110,21 @@ export const useUpdateAnnounceMutation = () => {
                     context.previousAnnounces,
                 );
             }
+
             console.error("❌ 공지 업데이트 실패:", error);
-            alert(`공지 수정에 실패했습니다: ${error.message}`);
+
+            // 커스텀 에러 콜백 먼저 실행
+            customOnError?.(error, variables);
+
+            // 기본 알림 표시 (옵션에 따라)
+            if (showErrorAlert) {
+                alert(`공지 수정에 실패했습니다: ${error.message}`);
+            }
         },
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ["announces"] });
         },
     });
-};
-
-// 간편한 visible 토글 전용 훅
-export const useToggleVisibleMutation = () => {
-    const { mutate: updateAnnounce, ...rest } = useUpdateAnnounceMutation();
-
-    return {
-        mutate: (announce: IAnnounceDTO) => {
-            updateAnnounce({
-                id: announce._id.toString(),
-                data: { visible: !announce.visible },
-            });
-        },
-        ...rest,
-    };
 };
 
 // 공지 삭제

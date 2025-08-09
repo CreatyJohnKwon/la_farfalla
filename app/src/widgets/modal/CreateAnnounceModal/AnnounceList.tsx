@@ -424,7 +424,8 @@ const AnnounceList = ({ announces, onEdit }: AnnounceListProps) => {
                                     시작: {formatDate(announce.startAt)}
                                 </span>
                                 <span>
-                                    종료: {formatDate(announce.deletedAt)}
+                                    종료: {formatDate(announce.deletedAt)}{" "}
+                                    (자동삭제)
                                 </span>
                             </div>
 
@@ -444,7 +445,7 @@ const AnnounceList = ({ announces, onEdit }: AnnounceListProps) => {
                             {isCurrentlyToggling && !isCurrentlyDeleting && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-white/30 backdrop-blur-sm">
                                     <div className="flex items-center gap-2 bg-white px-4 py-2 shadow-lg">
-                                        <div className="h-4 w-4 animate-spin border-2 border-orange-600 border-t-transparent"></div>
+                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
                                         <span className="text-sm font-medium text-gray-700">
                                             {announce.visible
                                                 ? "숨기는 중..."

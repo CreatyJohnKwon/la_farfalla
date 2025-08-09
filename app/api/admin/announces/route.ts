@@ -2,12 +2,30 @@ import { AnnounceModel } from "@/src/entities/models/Announce";
 import { connectDB } from "@/src/entities/models/db/mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
+// MongoDB Document를 평문 객체로 변환하는 헬퍼 함수
+const transformAnnounce = (doc: any) => {
+    return {
+        _id: doc._id.toString(), // ObjectId를 string으로 변환
+        isPopup: doc.isPopup,
+        description: doc.description,
+        startAt: doc.startAt,
+        deletedAt: doc.deletedAt,
+        visible: doc.visible,
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt,
+    };
+};
+
 // 공지 목록 조회
 export async function GET() {
     try {
         await connectDB();
         const announces = await AnnounceModel.find().sort({ createdAt: -1 });
-        return NextResponse.json(announces);
+
+        // MongoDB 문서를 평문 객체로 변환
+        const transformedAnnounces = announces.map(transformAnnounce);
+
+        return NextResponse.json(transformedAnnounces);
     } catch (error) {
         console.error("공지 조회 실패:", error);
         return NextResponse.json(
@@ -38,8 +56,12 @@ export async function POST(req: NextRequest) {
             updatedAt: new Date(),
         });
 
-        await announce.save();
-        return NextResponse.json(announce, { status: 201 });
+        const savedAnnounce = await announce.save();
+
+        // MongoDB 문서를 평문 객체로 변환
+        const transformedAnnounce = transformAnnounce(savedAnnounce);
+
+        return NextResponse.json(transformedAnnounce, { status: 201 });
     } catch (error) {
         console.error("공지 생성 실패:", error);
         return NextResponse.json(
@@ -49,13 +71,12 @@ export async function POST(req: NextRequest) {
     }
 }
 
-// 공지 수정 (새로 추가!)
+// 공지 수정
 export async function PATCH(req: NextRequest) {
     try {
         await connectDB();
         const body = await req.json();
 
-        // ID 추출 - query parameter 또는 body에서
         const announceId =
             req.nextUrl.searchParams.get("aid") || body._id || body.id;
 
@@ -66,21 +87,59 @@ export async function PATCH(req: NextRequest) {
             );
         }
 
-        // _id 필드는 업데이트에서 제외
         const updateData = { ...body };
         delete updateData._id;
         delete updateData.id;
 
-        // updatedAt 필드 추가
+        if (
+            updateData.isPopup !== undefined &&
+            typeof updateData.isPopup !== "boolean"
+        ) {
+            return NextResponse.json(
+                { error: "isPopup 값이 올바르지 않습니다" },
+                { status: 400 },
+            );
+        }
+
+        if (
+            updateData.description !== undefined &&
+            typeof updateData.description !== "string"
+        ) {
+            return NextResponse.json(
+                { error: "description 값이 올바르지 않습니다" },
+                { status: 400 },
+            );
+        }
+
+        if (updateData.startAt && updateData.deletedAt) {
+            const startDate = new Date(updateData.startAt);
+            const endDate = new Date(updateData.deletedAt);
+
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                return NextResponse.json(
+                    { error: "올바르지 않은 날짜 형식입니다" },
+                    { status: 400 },
+                );
+            }
+
+            if (endDate <= startDate) {
+                return NextResponse.json(
+                    { error: "삭제 날짜는 시작 날짜보다 이후여야 합니다" },
+                    { status: 400 },
+                );
+            }
+
+            updateData.startAt = startDate;
+            updateData.deletedAt = endDate;
+        }
+
+        // updatedAt 추가
         updateData.updatedAt = new Date();
 
         const updatedAnnounce = await AnnounceModel.findByIdAndUpdate(
             announceId,
             updateData,
-            {
-                new: true, // 업데이트된 문서 반환
-                runValidators: true, // 스키마 검증 실행
-            },
+            { new: true, runValidators: false }, // 여기서 mongoose 검증 끔
         );
 
         if (!updatedAnnounce) {
@@ -90,7 +149,7 @@ export async function PATCH(req: NextRequest) {
             );
         }
 
-        return NextResponse.json(updatedAnnounce);
+        return NextResponse.json(transformAnnounce(updatedAnnounce));
     } catch (error) {
         console.error("공지 수정 실패:", error);
         return NextResponse.json(

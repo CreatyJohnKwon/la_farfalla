@@ -1,5 +1,6 @@
 // models/Announce.ts
 import mongoose, { Document } from "mongoose";
+import { ChangeEvent, RefObject } from "react";
 
 // 공지사항 인터페이스
 interface IAnnounce extends Document {
@@ -22,16 +23,6 @@ interface IAnnounceDTO {
     deletedAt: Date; // 공지가 자동 삭제될 날짜 (MongoDB TTL 사용)
 }
 
-// 사용자 조회 기록 인터페이스
-interface IUserAnnounceView extends Document {
-    _id: mongoose.Types.ObjectId;
-    userId?: string; // 로그인 사용자 ID
-    announceId: mongoose.Types.ObjectId; // 공지사항 ID
-    sessionId?: string; // 비로그인 사용자 세션 ID
-    viewedAt: Date; // 조회 시간
-    neverShowAgain: boolean; // 다시 보지 않기 여부
-}
-
 interface UpdateAnnounceParams {
     id: string;
     data: Partial<IAnnounceDTO>;
@@ -43,13 +34,60 @@ interface CreateAnnounceData {
     startAt: Date;
     deletedAt: Date;
     visible?: boolean;
-    imageFile?: File; // 실제 이미지 업로드 구현 시 사용
 }
+
+interface AnnounceForm {
+    isPopup: boolean;
+    description: string;
+    startAt: string;
+    deletedAt: string;
+    imageFile?: File;
+}
+
+// 안전한 타입 정의
+interface AnnounceForm {
+    isPopup: boolean;
+    description: string;
+    startAt: string;
+    deletedAt: string;
+    imageFile?: File;
+}
+
+interface FormContentProps {
+    isEditMode: boolean;
+    editingAnnounce: IAnnounceDTO | null;
+    form: AnnounceForm;
+    errors: Partial<Record<keyof AnnounceForm, string>>;
+    imagePreviewUrl: string;
+    fileInputRef: RefObject<HTMLInputElement | null>;
+    ACCEPTED_IMAGE_TYPES: readonly string[];
+    MAX_DESCRIPTION_LENGTH: number;
+    handleInputChange: (
+        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => void;
+    handleStyleChange: (isPopup: boolean) => void;
+    handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleImageRemove: () => void;
+    cancelEditMode: () => void;
+}
+
+const ACCEPTED_IMAGE_TYPES = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/gif",
+] as const;
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_DESCRIPTION_LENGTH = 50;
 
 export type {
     IAnnounce,
-    IUserAnnounceView,
     IAnnounceDTO,
     UpdateAnnounceParams,
     CreateAnnounceData,
+    AnnounceForm,
+    FormContentProps,
 };
+
+export { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE, MAX_DESCRIPTION_LENGTH };
