@@ -10,9 +10,10 @@ import Image from "next/image";
 
 interface AnnounceListProps {
     announces?: IAnnounceDTO[];
+    onEdit?: (announce: IAnnounceDTO) => void;
 }
 
-const AnnounceList = ({ announces }: AnnounceListProps) => {
+const AnnounceList = ({ announces, onEdit }: AnnounceListProps) => {
     const { mutate: deleteAnnounce, isPending: isDeleting } =
         useDeleteAnnounceMutation();
     const { mutate: updateAnnounce, isPending: isUpdating } =
@@ -213,6 +214,32 @@ const AnnounceList = ({ announces }: AnnounceListProps) => {
 
                                 {/* 액션 버튼들 */}
                                 <div className="flex items-center gap-1">
+                                    {/* 수정 버튼 */}
+                                    {onEdit && (
+                                        <button
+                                            onClick={() => onEdit(announce)}
+                                            disabled={isUpdating || isDeleting}
+                                            className="flex h-8 w-8 items-center justify-center text-gray-400 transition-all hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+                                            aria-label={`${announce.description} 공지 수정`}
+                                            title="수정"
+                                        >
+                                            <svg
+                                                className="h-4 w-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                                aria-hidden="true"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                />
+                                            </svg>
+                                        </button>
+                                    )}
+
                                     {/* 표시/숨김 토글 버튼 */}
                                     <button
                                         onClick={() =>
