@@ -10,6 +10,7 @@ import { IAnnounceDTO } from "@/src/entities/type/announce";
 import { deleteAnnounce } from "@/src/shared/lib/server/announce";
 import AnnounceList from "./AnnounceList";
 import LoadingSpinner from "../../spinner/LoadingSpinner";
+import { uploadImagesToServer } from "@/src/shared/lib/uploadToR2";
 
 interface Props {
     onClose: () => void;
@@ -247,6 +248,7 @@ export default function CreateAnnounceModal({ onClose }: Props) {
         setIsSubmitting(true);
 
         try {
+            // 배너 타입인 경우 기존 배너 삭제
             if (!form.isPopup && announces) {
                 const existingBanner = announces.find(
                     (item: IAnnounceDTO) => !item.isPopup,
@@ -256,16 +258,37 @@ export default function CreateAnnounceModal({ onClose }: Props) {
                 }
             }
 
+            let finalDescription = form.description.trim();
+
+            // 팝업 타입이고 이미지 파일이 있는 경우 R2에 업로드
+            if (form.isPopup && form.imageFile) {
+                try {
+                    // uploadImagesToServer 함수를 사용하여 이미지 업로드
+                    const uploadedUrls = await uploadImagesToServer([
+                        form.imageFile,
+                    ]);
+
+                    if (uploadedUrls && uploadedUrls.length > 0) {
+                        // 업로드된 이미지 URL을 description에 저장
+                        finalDescription = uploadedUrls[0];
+                    } else {
+                        throw new Error("이미지 업로드에 실패했습니다.");
+                    }
+                } catch (uploadError) {
+                    console.error("이미지 업로드 실패:", uploadError);
+                    // 업로드 실패 시 사용자에게 알림
+                    alert("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
+                    return;
+                }
+            }
+
             const submitData: CreateAnnounceData = {
                 isPopup: form.isPopup,
-                description: form.isPopup
-                    ? form.imageFile?.name || form.description
-                    : form.description.trim(),
+                description: finalDescription,
                 startAt: new Date(form.startAt),
                 deletedAt: new Date(form.deletedAt),
                 visible: true,
-                ...(form.isPopup &&
-                    form.imageFile && { imageFile: form.imageFile }),
+                // 팝업 타입의 경우 imageFile은 이미 R2에 업로드되었으므로 제외
             };
 
             await createAnnounceMutation.mutateAsync(submitData as any);
@@ -276,6 +299,8 @@ export default function CreateAnnounceModal({ onClose }: Props) {
             onClose();
         } catch (error) {
             console.error("공지 생성 실패:", error);
+            // 전반적인 오류 처리
+            alert("공지 생성에 실패했습니다. 다시 시도해주세요.");
         } finally {
             setIsSubmitting(false);
         }
@@ -569,7 +594,7 @@ export default function CreateAnnounceModal({ onClose }: Props) {
 
     // 목록 컴포넌트
     const ListContent = () => (
-        <div className="h-full overflow-hidden">
+        <div className="h-full overflow-hidden p-2 sm:p-0">
             {listError ? (
                 <div className="flex h-full items-center justify-center p-4 lg:p-6">
                     <div className="text-center">
@@ -609,7 +634,7 @@ export default function CreateAnnounceModal({ onClose }: Props) {
     return (
         <Modal
             onClose={onClose}
-            className="relative h-[90vh] w-[90vw] overflow-y-auto bg-white p-6 shadow-2xl sm:h-[80vh] sm:w-[60vw]"
+            className="relative h-[90vh] w-[90vw] overflow-y-auto bg-white shadow-2xl sm:h-[80vh] sm:w-[60vw]"
         >
             {/* PC 버전 */}
             <div className="hidden h-full max-h-[calc(100vh-8rem)] w-full max-w-7xl bg-white lg:flex">
