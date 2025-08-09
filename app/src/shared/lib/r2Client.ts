@@ -8,12 +8,24 @@ const client = new S3Client({
         accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
         secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
     },
+    // SSL/TLS 설정 추가
+    forcePathStyle: true,
+    requestHandler: {
+        // Node.js 환경에서 SSL 설정
+        httpsAgent: new (require("https").Agent)({
+            rejectUnauthorized: true,
+            secureProtocol: "TLSv1_2_method", // TLS 1.2 강제 사용
+            ciphers: "HIGH:!aNULL:!MD5",
+        }),
+        requestTimeout: 60000, // 60초 타임아웃
+        connectionTimeout: 10000, // 10초 연결 타임아웃
+    },
 });
 
 const config = {
     api: {
         bodyParser: {
-            sizeLimit: "25mb",
+            sizeLimit: "50mb",
         },
     },
 };

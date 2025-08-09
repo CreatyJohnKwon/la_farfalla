@@ -108,7 +108,6 @@ const AnnounceList = ({ announces, onEdit }: AnnounceListProps) => {
 
     // 이미지 클릭 핸들러
     const handleImageClick = (imageUrl: string) => {
-        console.log("이미지 클릭됨:", imageUrl); // 디버깅용
         setImageElement(imageUrl);
         setImageModalOpen(true);
     };
