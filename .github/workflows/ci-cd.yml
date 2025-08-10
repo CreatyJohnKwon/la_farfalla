@@ -1,9 +1,13 @@
-name: CI/CD Pipeline
+name: Optimized CI/CD Pipeline
 
 on:
     push:
         branches:
             - main
+
+env:
+    NODE_VERSION: "18"
+    DEPLOY_DIR: "la_farfalla"
 
 jobs:
     build-and-deploy:
@@ -11,123 +15,252 @@ jobs:
 
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
-            - name: Set up SSH key
+            - name: Setup Node.js with caching
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: "npm"
+                  cache-dependency-path: package-lock.json
+
+            - name: Cache node_modules
+              uses: actions/cache@v3
+              id: npm-cache
+              with:
+                  path: |
+                      ~/.npm
+                      node_modules
+                      .next/cache
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-
+                      ${{ runner.os }}-node-
+
+            - name: Install dependencies
+              if: steps.npm-cache.outputs.cache-hit != 'true'
               run: |
-                  # Set up SSH key
+                  echo "📦 Installing dependencies..."
+                  npm ci --prefer-offline --no-audit
+
+            - name: Create optimized .env.production
+              run: |
+                  echo "🔧 Creating production environment file..."
+                  cat > .env.production << EOF
+                  NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}
+                  NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
+                  KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
+                  KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
+                  NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+                  NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+                  R2_TOKEN=${{ secrets.R2_TOKEN }}
+                  R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
+                  R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
+                  R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}
+                  R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
+                  R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}
+                  MONGODB_URI=${{ secrets.MONGODB_URI }}
+                  NEXT_IMAGE_OPTIMIZATION_TIMEOUT=${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}
+                  SMTP_HOST=${{ secrets.SMTP_HOST }}
+                  SMTP_PORT=${{ secrets.SMTP_PORT }}
+                  SMTP_SECURE=${{ secrets.SMTP_SECURE }}
+                  SMTP_USER=${{ secrets.SMTP_USER }}
+                  SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+                  ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
+                  STORE_NAME=${{ secrets.STORE_NAME }}
+                  NODE_ENV=production
+                  EOF
+
+            - name: Build application locally
+              run: |
+                  echo "🏗️ Building application..."
+                  npm run build
+                  echo "✅ Build completed"
+
+            - name: Create optimized deployment package
+              run: |
+                  echo "📦 Creating optimized deployment package..."
+                  TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+                  ARTIFACT_NAME="deploy-${TIMESTAMP}.tar.gz"
+
+                  # 배포에 필요한 파일만 선별적으로 포함
+                  tar -czf "$ARTIFACT_NAME" \
+                      --exclude='.git' \
+                      --exclude='.github' \
+                      --exclude='node_modules' \
+                      --exclude='*.log' \
+                      --exclude='.next/cache' \
+                      --exclude='coverage' \
+                      --exclude='tests' \
+                      --exclude='*.test.*' \
+                      --exclude='*.spec.*' \
+                      --exclude='.env.local' \
+                      --exclude='.env.development' \
+                      --exclude='README.md' \
+                      --exclude='.gitignore' \
+                      --exclude='docs' \
+                      .
+
+                  echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
+
+                  # 압축 결과 확인
+                  ORIGINAL_SIZE=$(du -sh . | cut -f1)
+                  COMPRESSED_SIZE=$(du -sh "$ARTIFACT_NAME" | cut -f1)
+                  echo "📊 Original size: $ORIGINAL_SIZE, Compressed: $COMPRESSED_SIZE"
+
+            - name: Set up SSH key with optimization
+              run: |
+                  echo "🔑 Setting up SSH connection..."
                   mkdir -p ~/.ssh
                   echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
-                  echo "Host *" >> ~/.ssh/config
-                  echo "  StrictHostKeyChecking no" >> ~/.ssh/config
-                  echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
-              env:
-                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
-            - name: Create .env.production
-              run: |
-                  echo "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> .env.production
-                  echo "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}" >> .env.production
-                  echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env.production
-                  echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env.production
-                  echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.production
-                  echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
-                  echo "R2_TOKEN=${{ secrets.R2_TOKEN }}" >> .env.production
-                  echo "R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}" >> .env.production
-                  echo "R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}" >> .env.production
-                  echo "R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}" >> .env.production
-                  echo "R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}" >> .env.production
-                  echo "R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}" >> .env.production
-                  echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.production
-                  echo "NEXT_IMAGE_OPTIMIZATION_TIMEOUT=${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}" >> .env.production
-                  echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env.production
-                  echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> .env.production
-                  echo "SMTP_SECURE=${{ secrets.SMTP_SECURE }}" >> .env.production
-                  echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env.production
-                  echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env.production
-                  echo "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> .env.production
-                  echo "STORE_NAME=${{ secrets.STORE_NAME }}" >> .env.production
-
-            - name: Archive app source (exclude node_modules)
-              run: |
-                  TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-                  zip -r build-artifact-${TIMESTAMP}.zip . -x "node_modules/*" -x ".git/*" -x ".github/*" -x "*.log"
-                  echo "ARTIFACT_NAME=build-artifact-${TIMESTAMP}.zip" >> $GITHUB_ENV
-
-            - name: Upload artifact to EC2
-              run: |
-                  scp -i ~/.ssh/id_rsa ${{ env.ARTIFACT_NAME }} ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/home/ec2-user/
-
-            - name: Remote Deploy
-              run: |
-                  ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=3 \
-                      -i ~/.ssh/id_rsa \
-                      ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-                    
-                    DEPLOY_DIR="la_farfalla"
-                    ARTIFACT_FILE="/home/ec2-user/${{ env.ARTIFACT_NAME }}"
-                    
-                    echo "🔄 Starting deployment process..."
-                    
-                    # 1. 기존 컨테이너 중지 및 완전 정리
-                    echo "🛑 Stopping containers and cleaning up..."
-                    if [ -d "$DEPLOY_DIR" ]; then
-                        cd "$DEPLOY_DIR"
-                        docker-compose down --remove-orphans || true
-                        cd /home/ec2-user
-                        # sudo로 강제 삭제 (권한 문제 해결)
-                        sudo rm -rf "$DEPLOY_DIR"
-                    fi
-                    
-                    # 2. Docker 시스템 정리
-                    echo "🧹 Cleaning Docker system..."
-                    docker system prune -af --volumes || true
-                    
-                    # 3. 새 디렉토리 생성
-                    echo "📁 Creating new deployment directory..."
-                    mkdir -p "$DEPLOY_DIR"
-                    cd "$DEPLOY_DIR"
-                    
-                    # 4. 아티팩트 압축 해제
-                    echo "📦 Extracting build artifact..."
-                    unzip -o -q "$ARTIFACT_FILE"
-                    
-                    # 5. 아티팩트 파일 삭제
-                    rm -f "$ARTIFACT_FILE"
-                    
-                    # 6. Docker 컨테이너 시작
-                    echo "🚀 Starting Docker containers..."
-                    docker-compose up -d --build --force-recreate
-                    
-                    # 7. 헬스체크
-                    echo "🏥 Performing health check..."
-                    sleep 15
-                    if docker-compose ps | grep -q "Up"; then
-                        echo "✅ All containers are running"
-                        docker-compose ps
-                    else
-                        echo "⚠️ Warning: Some containers may not be running properly"
-                        docker-compose ps
-                    fi
-                    
-                    # 8. 간단한 정리 (오래된 아티팩트만)
-                    echo "🧹 Cleaning up old artifacts..."
-                    find /home/ec2-user -maxdepth 1 -name "build-artifact*.zip" -mtime +7 -delete 2>/dev/null || true
-                    
-                    echo "✅ Deployment completed successfully!"
-                    echo "🌐 Application should be available at: ${{ secrets.NEXTAUTH_URL }}"
+                  # SSH 설정 최적화
+                  cat > ~/.ssh/config << EOF
+                  Host ec2-deploy
+                      HostName ${{ secrets.EC2_PUBLIC_IP }}
+                      User ec2-user
+                      IdentityFile ~/.ssh/id_rsa
+                      StrictHostKeyChecking no
+                      UserKnownHostsFile=/dev/null
+                      ServerAliveInterval 60
+                      ServerAliveCountMax 3
+                      Compression yes
+                      TCPKeepAlive yes
                   EOF
               env:
                   AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
-                  EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
 
-            - name: Deployment Status
+            - name: Optimized file transfer
+              run: |
+                  echo "🚀 Transferring deployment package..."
+
+                  # 압축 전송 (더 빠름)
+                  scp -C -o Compression=yes "${{ env.ARTIFACT_NAME }}" ec2-deploy:/tmp/
+
+                  echo "✅ Transfer completed"
+
+            - name: Remote deployment with cleanup
+              run: |
+                  ssh ec2-deploy << 'DEPLOY_SCRIPT'
+                    set -e  # 에러 시 즉시 중단
+                    
+                    echo "🔄 Starting optimized deployment..."
+                    
+                    # 변수 설정
+                    DEPLOY_DIR="${{ env.DEPLOY_DIR }}"
+                    ARTIFACT_FILE="/tmp/${{ env.ARTIFACT_NAME }}"
+                    BACKUP_DIR="${DEPLOY_DIR}_backup_$(date +%H%M%S)"
+                    
+                    # 1. 헬스체크 함수
+                    health_check() {
+                        echo "🏥 Performing health check..."
+                        for i in {1..30}; do
+                            if docker-compose ps | grep -q "Up"; then
+                                echo "✅ Application is healthy"
+                                return 0
+                            fi
+                            echo "⏳ Waiting for application to start... ($i/30)"
+                            sleep 2
+                        done
+                        echo "❌ Health check failed"
+                        return 1
+                    }
+                    
+                    # 2. 롤백 함수
+                    rollback() {
+                        echo "🔄 Rolling back to previous version..."
+                        if [ -d "$BACKUP_DIR" ]; then
+                            sudo rm -rf "$DEPLOY_DIR" 2>/dev/null || true
+                            mv "$BACKUP_DIR" "$DEPLOY_DIR"
+                            cd "$DEPLOY_DIR"
+                            docker-compose up -d
+                            echo "✅ Rollback completed"
+                        fi
+                    }
+                    
+                    # 3. 기존 서비스 안전 종료 및 백업
+                    if [ -d "$DEPLOY_DIR" ]; then
+                        echo "🛑 Gracefully stopping existing services..."
+                        cd "$DEPLOY_DIR"
+                        docker-compose down --timeout 30 || true
+                        cd /home/ec2-user
+                        
+                        # 빠른 백업 (링크 사용)
+                        echo "💾 Creating backup..."
+                        mv "$DEPLOY_DIR" "$BACKUP_DIR" 2>/dev/null || sudo mv "$DEPLOY_DIR" "$BACKUP_DIR"
+                    fi
+                    
+                    # 4. Docker 리소스 정리 (병렬 실행)
+                    echo "🧹 Cleaning Docker resources..."
+                    {
+                        docker container prune -f
+                        docker image prune -f
+                        docker network prune -f
+                    } &
+                    
+                    # 5. 새 배포 디렉토리 생성
+                    echo "📁 Setting up new deployment..."
+                    mkdir -p "$DEPLOY_DIR"
+                    cd "$DEPLOY_DIR"
+                    
+                    # 6. 빠른 압축 해제
+                    echo "📦 Extracting deployment package..."
+                    tar -xzf "$ARTIFACT_FILE" --no-same-owner
+                    
+                    # 7. 임시 파일 정리
+                    rm -f "$ARTIFACT_FILE"
+                    
+                    # 8. Docker 빌드 및 시작 (캐시 활용)
+                    echo "🚀 Starting new deployment..."
+                    if ! docker-compose up -d --build; then
+                        echo "❌ Deployment failed"
+                        rollback
+                        exit 1
+                    fi
+                    
+                    # 9. 헬스체크
+                    if ! health_check; then
+                        echo "❌ Health check failed, rolling back..."
+                        rollback
+                        exit 1
+                    fi
+                    
+                    # 10. 백업 정리 (성공 시에만)
+                    echo "🧹 Cleaning up old backups..."
+                    sudo rm -rf "$BACKUP_DIR" 2>/dev/null || true
+                    
+                    # 11. 최종 상태 확인
+                    echo "📊 Final status check..."
+                    docker-compose ps
+                    docker system df
+                    
+                    # 12. 오래된 아티팩트 정리
+                    find /tmp -name "deploy-*.tar.gz" -mtime +1 -delete 2>/dev/null || true
+                    
+                    echo "✅ Deployment completed successfully!"
+                    echo "🌐 Application is available at: ${{ secrets.NEXTAUTH_URL }}"
+                    echo "📈 Memory usage: $(free -h | awk 'NR==2{printf "%.1f%%", $3*100/$2}')"
+                    echo "💾 Disk usage: $(df -h / | awk 'NR==2{print $5}')"
+                  DEPLOY_SCRIPT
+
+            - name: Cleanup local artifacts
+              if: always()
+              run: |
+                  echo "🧹 Cleaning up local artifacts..."
+                  rm -f ${{ env.ARTIFACT_NAME }} 2>/dev/null || true
+
+            - name: Deployment notification
               if: always()
               run: |
                   if [ ${{ job.status }} == 'success' ]; then
-                      echo "✅ Deployment completed successfully!"
+                      echo "✅ 🎉 Deployment completed successfully!"
+                      echo "🚀 Build time optimization achieved with caching"
+                      echo "📦 Optimized package deployment completed"
+                      echo "🌐 Application URL: ${{ secrets.NEXTAUTH_URL }}"
                   else
-                      echo "❌ Deployment failed. Check logs above."
+                      echo "❌ 🚨 Deployment failed!"
+                      echo "🔍 Please check the logs above for details"
+                      echo "🔄 Automatic rollback should have been triggered"
                       exit 1
                   fi
