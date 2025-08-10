@@ -76,6 +76,8 @@ jobs:
                   echo "🏗️ Building application..."
                   npm run build
                   echo "✅ Build completed"
+                  # 빌드 완료 후 파일 시스템 안정화를 위한 대기
+                  sleep 2
 
             - name: Create optimized deployment package
               run: |
@@ -83,30 +85,52 @@ jobs:
                   TIMESTAMP=$(date +%Y%m%d_%H%M%S)
                   ARTIFACT_NAME="deploy-${TIMESTAMP}.tar.gz"
 
-                  # 배포에 필요한 파일만 선별적으로 포함
-                  tar -czf "$ARTIFACT_NAME" \
-                      --exclude='.git' \
-                      --exclude='.github' \
-                      --exclude='node_modules' \
-                      --exclude='*.log' \
-                      --exclude='.next/cache' \
-                      --exclude='coverage' \
-                      --exclude='tests' \
-                      --exclude='*.test.*' \
-                      --exclude='*.spec.*' \
-                      --exclude='.env.local' \
-                      --exclude='.env.development' \
-                      --exclude='README.md' \
-                      --exclude='.gitignore' \
-                      --exclude='docs' \
-                      .
+                  # 임시 디렉토리에 배포용 파일들 복사
+                  TEMP_DIR="deploy_temp_${TIMESTAMP}"
+                  mkdir -p "$TEMP_DIR"
+
+                  echo "📋 Copying deployment files..."
+                  # 필요한 파일들만 선별적으로 복사
+                  cp -r .next "$TEMP_DIR/" 2>/dev/null || true
+                  cp package*.json "$TEMP_DIR/"
+                  cp -r public "$TEMP_DIR/" 2>/dev/null || true
+                  cp -r src "$TEMP_DIR/" 2>/dev/null || true
+                  cp -r app "$TEMP_DIR/" 2>/dev/null || true
+                  cp -r components "$TEMP_DIR/" 2>/dev/null || true
+                  cp -r lib "$TEMP_DIR/" 2>/dev/null || true
+                  cp -r styles "$TEMP_DIR/" 2>/dev/null || true
+                  cp next.config.js "$TEMP_DIR/" 2>/dev/null || true
+                  cp tailwind.config.js "$TEMP_DIR/" 2>/dev/null || true
+                  cp postcss.config.js "$TEMP_DIR/" 2>/dev/null || true
+                  cp .env.production "$TEMP_DIR/"
+                  cp docker-compose.yml "$TEMP_DIR/" 2>/dev/null || true
+                  cp Dockerfile "$TEMP_DIR/" 2>/dev/null || true
+
+                  # .next/cache 디렉토리 제거 (자주 변경되는 파일)
+                  rm -rf "$TEMP_DIR/.next/cache" 2>/dev/null || true
+
+                  # 임시 디렉토리에서 압축 (안전함)
+                  echo "🗜️ Creating compressed archive..."
+                  tar -czf "$ARTIFACT_NAME" -C "$TEMP_DIR" . \
+                      --warning=no-file-changed \
+                      --warning=no-file-removed
+
+                  # 임시 디렉토리 정리
+                  rm -rf "$TEMP_DIR"
 
                   echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
 
                   # 압축 결과 확인
-                  ORIGINAL_SIZE=$(du -sh . | cut -f1)
-                  COMPRESSED_SIZE=$(du -sh "$ARTIFACT_NAME" | cut -f1)
-                  echo "📊 Original size: $ORIGINAL_SIZE, Compressed: $COMPRESSED_SIZE"
+                  if [ -f "$ARTIFACT_NAME" ]; then
+                      COMPRESSED_SIZE=$(du -sh "$ARTIFACT_NAME" | cut -f1)
+                      echo "✅ Package created successfully: $COMPRESSED_SIZE"
+                      echo "📁 Contents preview:"
+                      tar -tzf "$ARTIFACT_NAME" | head -10
+                      echo "..."
+                  else
+                      echo "❌ Failed to create package"
+                      exit 1
+                  fi
 
             - name: Set up SSH key with optimization
               run: |
