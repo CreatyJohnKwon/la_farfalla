@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import ReviewItem from "./ReviewItem";
-import { ReviewSystemProps } from "./interface";
+import { ReviewSystemProps, Review } from "./interface";
 import {
     usePostReviewMutation,
     useUpdateReviewMutation,
@@ -14,6 +14,9 @@ import {
 import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 import { useRouter } from "next/navigation";
 import useUsers from "@/src/shared/hooks/useUsers";
+
+// 정렬 옵션 타입 정의
+type SortOption = "newest" | "oldest" | "most-liked" | "least-liked";
 
 const ReviewSystem: React.FC<ReviewSystemProps> = ({
     productId,
@@ -36,7 +39,48 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
     const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
     const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
     const [isDragOver, setIsDragOver] = useState(false);
+    const [sortOption, setSortOption] = useState<SortOption>("newest");
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { authCheck } = useUsers();
+
+    // 정렬 옵션 설정
+    const sortOptions = [
+        { value: "newest", label: "최신순", icon: "↓" },
+        { value: "oldest", label: "오래된순", icon: "↑" },
+        { value: "most-liked", label: "좋아요 많은순", icon: "↓" },
+        { value: "least-liked", label: "좋아요 적은순", icon: "↑" },
+    ] as const;
+
+    // 리뷰 정렬 로직
+    const sortedReviews = useMemo(() => {
+        const reviewsCopy = [...reviews];
+
+        switch (sortOption) {
+            case "newest":
+                return reviewsCopy.sort(
+                    (a, b) =>
+                        new Date(b.createdAt).getTime() -
+                        new Date(a.createdAt).getTime(),
+                );
+            case "oldest":
+                return reviewsCopy.sort(
+                    (a, b) =>
+                        new Date(a.createdAt).getTime() -
+                        new Date(b.createdAt).getTime(),
+                );
+            case "most-liked":
+                return reviewsCopy.sort((a, b) => b.likesCount - a.likesCount);
+            case "least-liked":
+                return reviewsCopy.sort((a, b) => a.likesCount - b.likesCount);
+            default:
+                return reviewsCopy;
+        }
+    }, [reviews, sortOption]);
+
+    // 현재 선택된 정렬 옵션 레이블
+    const currentSortLabel =
+        sortOptions.find((option) => option.value === sortOption)?.label ||
+        "최신순";
 
     // 파일 업로드 처리
     const handleFiles = (files: FileList | null) => {
@@ -108,6 +152,12 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
     const removePhoto = (index: number) => {
         setUploadedPhotos((prev) => prev.filter((_, i) => i !== index));
         setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    // 정렬 옵션 변경
+    const handleSortChange = (newSortOption: SortOption) => {
+        setSortOption(newSortOption);
+        setIsDropdownOpen(false);
     };
 
     // 리뷰 작성 - 기존 훅과 완전 호환
@@ -370,8 +420,61 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                 </div>
             </div>
 
+            {/* 정렬 드롭다운 */}
+            {reviews.length > 0 && (
+                <div className="relative place-self-end">
+                    <button
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className="flex items-center space-x-2 border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                    >
+                        <span>{currentSortLabel}</span>
+                        <svg
+                            className={`h-4 w-4 transition-transform ${
+                                isDropdownOpen ? "rotate-180" : ""
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                            />
+                        </svg>
+                    </button>
+
+                    {isDropdownOpen && (
+                        <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right border border-gray-200 bg-white shadow-lg">
+                            {sortOptions.map((option) => (
+                                <button
+                                    key={option.value}
+                                    onClick={() =>
+                                        handleSortChange(option.value)
+                                    }
+                                    className={`block w-full px-4 py-2 text-left text-sm hover:bg-gray-100 ${
+                                        sortOption === option.value
+                                            ? "bg-gray-50 font-medium text-gray-900"
+                                            : "text-gray-700"
+                                    }`}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <span>{option.label}</span>
+                                        <span className="text-xs text-gray-400">
+                                            {option.icon}
+                                        </span>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* 정렬된 리뷰 리스트 */}
             <div className="space-y-0">
-                {reviews.map((review) => (
+                {sortedReviews.map((review) => (
                     <ReviewItem
                         key={review._id}
                         review={review}
@@ -389,6 +492,14 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                     />
                 ))}
             </div>
+
+            {/* 드롭다운 바깥 클릭 시 닫기 */}
+            {isDropdownOpen && (
+                <div
+                    className="z-5 fixed inset-0"
+                    onClick={() => setIsDropdownOpen(false)}
+                ></div>
+            )}
 
             {reviews.length === 0 && !isLoading && (
                 <div className="py-20 text-center">
