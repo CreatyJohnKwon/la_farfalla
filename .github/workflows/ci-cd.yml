@@ -250,17 +250,26 @@ jobs:
                   echo "🧹 Cleaning up local artifacts..."
                   rm -f ${{ env.ARTIFACT_NAME }} 2>/dev/null || true
 
-            - name: Deployment notification
-              if: always()
+            - name: Deployment success notification
+              if: success()
               run: |
-                  if [ ${{ job.status }} == 'success' ]; then
-                      echo "✅ 🎉 Deployment completed successfully!"
-                      echo "🚀 Build time optimization achieved with caching"
-                      echo "📦 Optimized package deployment completed"
-                      echo "🌐 Application URL: ${{ secrets.NEXTAUTH_URL }}"
-                  else
-                      echo "❌ 🚨 Deployment failed!"
-                      echo "🔍 Please check the logs above for details"
-                      echo "🔄 Automatic rollback should have been triggered"
-                      exit 1
-                  fi
+                  echo "✅ 🎉 Deployment completed successfully!"
+                  echo "🚀 Build time optimization achieved with caching"
+                  echo "📦 Optimized package deployment completed"
+                  echo "🌐 Application URL: ${{ secrets.NEXTAUTH_URL }}"
+                  echo "📊 Deployment metrics:"
+                  echo "  - Cache hit: ${{ steps.npm-cache.outputs.cache-hit }}"
+                  echo "  - Build completed at: $(date)"
+
+            - name: Deployment failure notification
+              if: failure()
+              run: |
+                  echo "❌ 🚨 Deployment failed!"
+                  echo "🔍 Please check the logs above for details"
+                  echo "🔄 Automatic rollback should have been triggered"
+                  echo "💡 Troubleshooting tips:"
+                  echo "  1. Check SSH connection to EC2"
+                  echo "  2. Verify environment variables"
+                  echo "  3. Check Docker container logs"
+                  echo "  4. Verify disk space on EC2"
+                  exit 1
