@@ -13,8 +13,7 @@ interface Review {
     likesCount: number;
     isLiked: boolean;
     comments: IComment[];
-    // 🆕 이미지 관련 가상 필드
-    imageCount?: number;
+    imageCount?: number; // 🆕 이미지 관련 가상 필드
     hasImages?: boolean;
     isAdmin?: string;
     createdAt: Date;
