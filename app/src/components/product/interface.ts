@@ -37,6 +37,45 @@ interface ProductVariant {
     stockQuantity: number;
 }
 
+// 검색 결과 타입
+interface SearchResult extends Product {
+    score: number;
+    matchType: "title" | "description" | "season" | "color";
+}
+
+interface SearchFloatingButtonProps {
+    products: Product[];
+    onSearch: (query: string, filteredProducts: Product[]) => void;
+}
+
+// 검색 결과 타입
+interface SearchResult {
+    _id?: string;
+    title: {
+        kr: string;
+        eg: string;
+    };
+    description: {
+        images: string[];
+        text: string;
+        detail: string;
+    };
+    price: string;
+    discount: string;
+    image: string[];
+    seasonName: string;
+    size: Array<string>;
+    quantity: string;
+    options?: Array<{
+        productId?: string;
+        colorName: string;
+        stockQuantity: number;
+    }>;
+    createdAt?: Date;
+    score: number;
+    matchType: "title" | "description" | "season" | "color";
+}
+
 // 새 옵션 타입
 type NewVariantType = Omit<ProductVariant, "id" | "optionNumber">;
 
@@ -87,4 +126,6 @@ export type {
     StockChecker,
     ProductDropProps,
     DropdownItem,
+    SearchFloatingButtonProps,
+    SearchResult,
 };
