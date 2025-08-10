@@ -12,6 +12,41 @@ import useCart from "@src/shared/hooks/useCart";
 import useUser from "@src/shared/hooks/useUsers";
 import { Product } from "./interface";
 
+// SVG 아이콘 컴포넌트들
+const ShareIcon = ({ className = "" }: { className?: string }) => (
+    <svg
+        className={className}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
+        />
+    </svg>
+);
+
+const CheckIcon = ({ className = "" }: { className?: string }) => (
+    <svg
+        className={className}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M5 13l4 4L19 7"
+        />
+    </svg>
+);
+
 const ProductInfo = ({ product }: { product: Product }) => {
     const {
         count,
@@ -29,6 +64,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
         handleAddToCart,
     } = useCart();
     const [activeTab, setActiveTab] = useState(null);
+    const [shareStatus, setShareStatus] = useState(""); // 'copied' | 'shared' | ''
 
     const { authCheck } = useUser();
 
@@ -51,6 +87,42 @@ const ProductInfo = ({ product }: { product: Product }) => {
 
     const toggleTab = (tabName: any) => {
         setActiveTab(activeTab === tabName ? null : tabName);
+    };
+
+    // 공유하기 기능
+    const handleShare = async () => {
+        const shareData = {
+            title: `${product.title.kr} - ${product.title.eg}`,
+            text: product.description.text,
+            url: window.location.href,
+        };
+
+        try {
+            // Web Share API 지원 확인
+            if (navigator.share) {
+                await navigator.share(shareData);
+                setShareStatus("shared");
+            } else {
+                // Web Share API를 지원하지 않는 경우 클립보드에 복사
+                await navigator.clipboard.writeText(
+                    `${shareData.title}\n${shareData.text}\n${shareData.url}`,
+                );
+                setShareStatus("copied");
+            }
+
+            // 2초 후 상태 초기화
+            setTimeout(() => setShareStatus(""), 2000);
+        } catch (error) {
+            console.error("공유 실패:", error);
+            // 클립보드 복사도 실패한 경우 URL만 복사 시도
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                setShareStatus("copied");
+                setTimeout(() => setShareStatus(""), 2000);
+            } catch (clipboardError) {
+                console.error("클립보드 복사 실패:", clipboardError);
+            }
+        }
     };
 
     const detailsContent = (
@@ -119,11 +191,39 @@ const ProductInfo = ({ product }: { product: Product }) => {
     return (
         <div className="w-full md:w-1/2">
             <div className="mt-3 flex h-full flex-col items-center justify-center gap-3 md:mt-0 md:gap-3 lg:gap-3 xl:gap-4">
-                {/* title */}
+                {/* title with share button */}
                 <div className="flex flex-col items-center gap-2 text-center md:gap-3 lg:gap-4 xl:gap-5">
-                    <span className="font-amstel w-[90vw] text-3xl md:text-4xl xl:text-5xl">
-                        {product.title.eg}
-                    </span>
+                    <div className="relative w-full max-w-[90vw] md:max-w-none">
+                        <h1 className="font-amstel pr-12 text-3xl md:pr-16 md:text-4xl xl:text-5xl">
+                            {product.title.eg}
+                        </h1>
+
+                        {/* 공유하기 버튼 - 안정화된 위치 */}
+                        <button
+                            onClick={handleShare}
+                            className="group absolute right-0 top-1 rounded-full p-2 transition-all duration-200 hover:bg-gray-100 md:p-3"
+                            title="공유하기"
+                            aria-label="상품 공유하기"
+                        >
+                            {shareStatus === "copied" ||
+                            shareStatus === "shared" ? (
+                                <CheckIcon className="h-4 w-4 text-gray-900 md:h-5 md:w-5 lg:h-6 lg:w-6" />
+                            ) : (
+                                <ShareIcon className="h-4 w-4 text-gray-600 transition-colors group-hover:text-black md:h-5 md:w-5 lg:h-6 lg:w-6" />
+                            )}
+                        </button>
+
+                        {/* 공유 상태 메시지 - 반응형 위치 */}
+                        {shareStatus && (
+                            <div className="absolute right-0 top-full z-10 mt-2 whitespace-nowrap rounded bg-black px-3 py-1 text-xs text-white shadow-lg md:text-sm">
+                                {shareStatus === "copied"
+                                    ? "링크가 복사되었습니다"
+                                    : "공유되었습니다"}
+                                <div className="absolute -top-1 right-4 h-2 w-2 rotate-45 bg-black"></div>
+                            </div>
+                        )}
+                    </div>
+
                     <span className="-mt-1 font-pretendard text-lg font-[300] md:text-xl xl:text-2xl">
                         {product.title.kr}
                     </span>
@@ -207,7 +307,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
 
                 <div className="font-amstel flex w-full justify-between gap-4 px-2 md:w-5/6 md:gap-6 md:px-0 lg:gap-8 xl:gap-10">
                     <button
-                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 sm:text-base md:py-3 md:text-lg lg:text-lg"
+                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50 sm:text-base md:py-3 md:text-lg lg:text-lg"
                         disabled={selectedItems.length === 0}
                         onClick={() => {
                             if (authCheck()) {
@@ -218,7 +318,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                         buy now
                     </button>
                     <button
-                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 sm:text-base md:py-3 md:text-lg lg:text-lg"
+                        className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50 sm:text-base md:py-3 md:text-lg lg:text-lg"
                         disabled={selectedItems.length === 0}
                         onClick={() => handleAddToCart()}
                     >
@@ -227,7 +327,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 </div>
 
                 {/* 개선된 하단 탭 섹션 - 아래로만 확장 */}
-                <div className="mt-10 flex flex-col gap-4 text-center text-[1rem] font-[500] md:text-[1.3rem]">
+                <div className="mt-8 flex w-full flex-col gap-4 text-center text-[1rem] font-[500] md:mt-10 md:text-[1.3rem]">
                     <div>
                         <button
                             className={`font-amstel transition-colors duration-200 ${
