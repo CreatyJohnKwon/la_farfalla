@@ -39,6 +39,30 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
     const [editPhotoPreviews, setEditPhotoPreviews] = useState<string[]>([]);
     const [isDragOver, setIsDragOver] = useState(false);
 
+    const { data: session } = useUserQuery();
+
+    // 🔧 더 안전한 권한 체크 (여러 케이스 대응)
+    const isOwner = (() => {
+        if (!session || !review.userId) return false;
+
+        // 케이스 1: 직접 비교
+        if (review.userId._id === session._id) return true;
+
+        // 케이스 2: toString() 비교
+        if (review.userId._id?.toString() === session._id?.toString())
+            return true;
+
+        // 케이스 3: review.userId가 문자열인 경우
+        if (typeof review.userId === "string" && review.userId === session._id)
+            return true;
+
+        // 케이스 4: 이메일 비교 (최후 수단)
+        if (review.author === session.name || review.author === session.email)
+            return true;
+
+        return false;
+    })();
+
     const handleAddComment = () => {
         if (commentContent.trim()) {
             onAddComment(review._id, commentContent);
@@ -192,8 +216,6 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
     const comments = review.comments || [];
     const images = review.images || [];
 
-    const { data: session } = useUserQuery();
-
     return (
         <>
             <div className="border-b border-gray-200 px-2 py-8 transition-all duration-300 last:border-b-0 hover:bg-gray-50/50">
@@ -227,19 +249,18 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                         </div>
                     </div>
 
+                    {/* 🔧 권한 체크 로직 수정 */}
                     <div className="relative">
-                        {session &&
-                            review.userId?._id?.toString() ===
-                                session._id?.toString() && (
-                                <>
-                                    <button
-                                        onClick={() => setShowMenu(!showMenu)}
-                                        className="p-2 transition-colors duration-200 hover:bg-black/5"
-                                    >
-                                        <MoreVertical className="h-4 w-4 text-gray-600" />
-                                    </button>
-                                </>
-                            )}
+                        {isOwner && (
+                            <>
+                                <button
+                                    onClick={() => setShowMenu(!showMenu)}
+                                    className="p-2 transition-colors duration-200 hover:bg-black/5"
+                                >
+                                    <MoreVertical className="h-4 w-4 text-gray-600" />
+                                </button>
+                            </>
+                        )}
 
                         {showMenu && (
                             <div className="absolute right-0 z-10 mt-2 w-36 border border-gray-200/50 bg-white shadow-2xl">
@@ -560,7 +581,7 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                                 onLike={onLikeComment}
                                 onEdit={onEditComment}
                                 onDelete={onDeleteComment}
-                                userId={session._id}
+                                userId={session?._id} // 🔧 안전한 접근
                                 reviewId={review._id}
                             />
                         ))}
