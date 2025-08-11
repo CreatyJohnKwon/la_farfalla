@@ -4,11 +4,13 @@ import {
     getOrder,
     getOrderList,
     updateAdminOrder,
+    updateOrderAddress,
     updateStock,
 } from "../../lib/server/order";
 import { useSetAtom } from "jotai";
 import { resetProductFormAtom } from "../../lib/atom";
 import { ProductOption } from "@/src/components/product/interface";
+import { AddressUpdateInput } from "@/src/entities/type/order";
 
 const useAllOrderQuery = () => {
     return useQuery<OrderData[], Error>({
@@ -123,9 +125,41 @@ const useUpdateStockMutation = () => {
     });
 };
 
+const useUpdateAddressOrder = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (input: AddressUpdateInput) => {
+            return updateOrderAddress(
+                input.orderId,
+                input.newAddress,
+                input.reason,
+                input.orderInfo,
+            );
+        },
+
+        onSuccess: (data, variables) => {
+            // 주문 관련 캐시 무효화
+            queryClient.invalidateQueries({ queryKey: ["orders"] });
+            queryClient.invalidateQueries({ queryKey: ["admin-order"] });
+            queryClient.invalidateQueries({
+                queryKey: ["order-list", data.userId],
+            });
+
+            console.log("✅ 배송지 변경 완료:", data);
+        },
+
+        onError: (error, variables) => {
+            console.error("❌ 배송지 변경 실패:", error);
+            throw error; // 에러를 다시 throw하여 컴포넌트에서 처리할 수 있도록
+        },
+    });
+};
+
 export {
     useAllOrderQuery,
     useSmartUpdateOrderMutation,
     useOrderQuery,
     useUpdateStockMutation,
+    useUpdateAddressOrder,
 };

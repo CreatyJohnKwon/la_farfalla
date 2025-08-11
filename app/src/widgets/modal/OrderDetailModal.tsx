@@ -2,6 +2,7 @@ import { OrderData, ShippingStatus } from "@/src/entities/type/interfaces";
 import {
     useOrderQuery,
     useSmartUpdateOrderMutation,
+    useUpdateAddressOrder,
 } from "@/src/shared/hooks/react-query/useOrderQuery";
 import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
 import { CheckCircle, X } from "lucide-react";
@@ -9,7 +10,9 @@ import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
 import { useState } from "react";
 import RefundCancelModal from "./RefundCancelModal";
+import DeliveryChangeModal from "./DeliveryChangeModal"; // 🆕 추가
 
+// 주문 상세 모달 컴포넌트
 // 주문 상세 모달 컴포넌트
 const OrderDetailModal = ({
     isOpen,
@@ -24,25 +27,38 @@ const OrderDetailModal = ({
     const { mutateAsync: smartUpdateOrder } = useSmartUpdateOrderMutation();
     const { refetch: orderListRefetch } = useOrderQuery(user?._id);
 
+    const updateAddressMutation = useUpdateAddressOrder();
+
     const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
+    const [isDeliveryChangeModalOpen, setIsDeliveryChangeModalOpen] =
+        useState(false); // 🆕 추가
 
     if (!isOpen) return null;
 
     let predefinedMessage: string;
 
-    // 🆕 개선된 handleChannel 함수
+    // 🆕 개선된 handleChannel 함수 (환불/취소/교환)
     const handleChannel = async (data: {
         type: string;
         reason: string;
         orderInfo: string;
     }) => {
         try {
+            const actionName =
+                data.type === "cancel"
+                    ? "주문 취소"
+                    : data.type === "refund"
+                      ? "환불"
+                      : data.type === "exchange"
+                        ? "교환"
+                        : "처리";
+
             predefinedMessage = `
-                ${data.type === "cancel" ? "주문 취소" : "환불"} 요청드립니다.
+                ${actionName} 요청드립니다.
 
                 ${data.orderInfo}
 
-                ${data.type === "cancel" ? "취소" : "환불"} 사유:
+                ${actionName} 사유:
                 ${data.reason}
 
                 빠른 처리 부탁드립니다.
@@ -52,7 +68,7 @@ const OrderDetailModal = ({
             await navigator.clipboard.writeText(predefinedMessage);
 
             alert(
-                `${data.type === "cancel" ? "취소" : "환불"} 요청 메시지가 복사되었습니다!\n카카오톡 채널에서 붙여넣기(Ctrl+V) 해주세요.`,
+                `${actionName} 요청 메시지가 복사되었습니다!\n카카오톡 채널에서 붙여넣기(Ctrl+V) 해주세요.`,
             );
 
             // 1초 후 채널 열기
@@ -64,12 +80,94 @@ const OrderDetailModal = ({
             }, 1000);
         } catch (error) {
             // 클립보드 실패 시 prompt 사용
-            const message = `${data.type === "cancel" ? "취소" : "환불"} 요청 메시지를 복사해서 채널에 보내주세요:`;
+            const actionName =
+                data.type === "cancel"
+                    ? "취소"
+                    : data.type === "refund"
+                      ? "환불"
+                      : data.type === "exchange"
+                        ? "교환"
+                        : "처리";
+            const message = `${actionName} 요청 메시지를 복사해서 채널에 보내주세요:`;
             prompt(message, predefinedMessage);
             window.open(
                 "https://pf.kakao.com/_Uxfaxin/chat",
                 "channel_talk_request",
             );
+        }
+    };
+
+    // 🆕 배송지 변경 처리 함수 (개선된 버전)
+    const handleDeliveryChange = async (data: {
+        newAddress: {
+            postcode: string;
+            address: string;
+            detailAddress: string;
+            deliveryMemo: string;
+        };
+        reason: string;
+        orderInfo: string;
+    }) => {
+        try {
+            // 배송지 변경 API 호출
+            await updateAddressMutation.mutateAsync({
+                orderId: order._id || "",
+                newAddress: data.newAddress,
+                reason: data.reason.trim(),
+                orderInfo: data.orderInfo,
+            });
+
+            // 성공 시 모달 닫기
+            alert("배송지가 성공적으로 변경되었습니다.");
+            onClose();
+        } catch (error) {
+            console.error("배송지 변경 API 실패:", error);
+
+            // API 실패 시 카카오톡 채널로 수동 요청 안내
+            const predefinedMessage = `
+            //     [배송지 변경 요청]
+            //     주문번호: ${order._id}
+
+            //     기존 배송지: (${order.postcode}) ${order.address} ${order.detailAddress}
+            //     새 배송지: (${data.newAddress.postcode}) ${data.newAddress.address} ${data.newAddress.detailAddress}
+
+            //     변경 사유: ${data.reason || "배송지 변경 요청"}
+
+            //     새로운 배송 요청사항: ${data.newAddress.deliveryMemo || "없음"}
+
+            //     빠른 처리 부탁드립니다.
+            // `.trim();
+
+            // try {
+            //     // 클립보드에 복사
+            //     await navigator.clipboard.writeText(predefinedMessage);
+
+            //     alert(
+            //         "배송지 변경에 실패했습니다.\n요청 메시지가 클립보드에 복사되었습니다.\n카카오톡 채널에서 붙여넣기(Ctrl+V) 해주세요.",
+            //     );
+            // } catch (clipboardError) {
+            //     // 클립보드 복사 실패 시 prompt 사용
+            //     console.error("클립보드 복사 실패:", clipboardError);
+
+            //     alert(
+            //         "배송지 변경에 실패했습니다.\n아래 메시지를 복사해서 카카오톡 채널로 문의해주세요.",
+            //     );
+
+            //     // prompt로 메시지 표시 (사용자가 직접 복사할 수 있도록)
+            //     prompt(
+            //         "다음 메시지를 복사해서 카카오톡 채널에 보내주세요:",
+            //         predefinedMessage,
+            //     );
+            // }
+
+            // // 1초 후 카카오톡 채널 열기
+            // setTimeout(() => {
+            //     window.open(
+            //         "https://pf.kakao.com/_Uxfaxin/chat",
+            //         "channel_talk_delivery_change",
+            //         "noopener,noreferrer",
+            //     );
+            // }, 1000);
         }
     };
 
@@ -408,9 +506,9 @@ const OrderDetailModal = ({
                             ) : (
                                 <span
                                     className="cursor-pointer font-pretendard text-xs font-[500] text-gray-500 underline hover:text-gray-900"
-                                    onClick={() => {
-                                        //TODO: 클릭 시, 배송지 변경 로직이 시작 됨
-                                    }}
+                                    onClick={() =>
+                                        setIsDeliveryChangeModalOpen(true)
+                                    } // 🆕 모달 열기
                                 >
                                     배송지 변경하기
                                 </span>
@@ -512,11 +610,19 @@ const OrderDetailModal = ({
                     </div>
                 </div>
 
-                {/* 🆕 환불/취소 모달 추가 */}
+                {/* 🆕 환불/취소 모달 */}
                 <RefundCancelModal
                     isOpen={isRefundModalOpen}
                     onClose={() => setIsRefundModalOpen(false)}
                     onSubmit={handleChannel}
+                    order={order}
+                />
+
+                {/* 🆕 배송지 변경 모달 */}
+                <DeliveryChangeModal
+                    isOpen={isDeliveryChangeModalOpen}
+                    onClose={() => setIsDeliveryChangeModalOpen(false)}
+                    onSubmit={handleDeliveryChange}
                     order={order}
                 />
             </div>

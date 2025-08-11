@@ -77,10 +77,6 @@ const updateStock = async (
         }
 
         const result = await response.json();
-        // console.log(
-        //     `✅ 재고 ${action === "reduce" ? "차감" : "복구"} 성공:`,
-        //     result.updates,
-        // );
         return result;
     } catch (error: any) {
         console.error(
@@ -93,6 +89,36 @@ const updateStock = async (
     }
 };
 
+const updateOrderAddress = async (
+    orderId: string,
+    newAddress: {
+        postcode: string;
+        address: string;
+        detailAddress: string;
+        deliveryMemo: string;
+    },
+    reason?: string,
+    orderInfo?: string,
+) => {
+    const response = await fetch(`/api/order/${orderId}/address`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            newAddress,
+            reason,
+            orderInfo,
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error("배송지 변경에 실패했습니다.");
+    }
+
+    return response.json();
+};
+
 export {
     updateCoupon,
     getOrder,
@@ -100,4 +126,5 @@ export {
     updateAdminOrder,
     sendMail,
     updateStock,
+    updateOrderAddress,
 };
