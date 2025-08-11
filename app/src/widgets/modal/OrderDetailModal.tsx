@@ -230,8 +230,8 @@ const OrderDetailModal = ({
                 };
             case "cancel":
                 return {
-                    text: "구매취소",
-                    description: "구매가 취소되었습니다",
+                    text: "주문취소",
+                    description: "주문이 취소되었습니다",
                     color: "text-red-600",
                     bgColor: "bg-red-50",
                     borderColor: "border-red-200",
@@ -276,6 +276,7 @@ const OrderDetailModal = ({
             { key: "ready", label: "상품준비중" },
             { key: "shipped", label: "출고" },
             { key: "confirm", label: "구매확정" },
+            { key: "cancel", label: "구매취소" },
         ];
 
         const currentIndex = steps.findIndex((step) => step.key === status);
@@ -297,7 +298,7 @@ const OrderDetailModal = ({
             style={{ touchAction: "manipulation" }}
         >
             <div
-                className="h-[70vh] w-[90vw] overflow-y-auto rounded-lg bg-white sm:h-[87vh] sm:w-[35vw]"
+                className="h-auto w-[90vw] overflow-y-auto rounded-lg bg-white sm:w-[35vw]"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                     WebkitOverflowScrolling: "touch",
@@ -501,7 +502,8 @@ const OrderDetailModal = ({
                                 배송지 정보
                             </span>
                             {order.shippingStatus === "confirm" ||
-                            order.shippingStatus === "shipped" ? (
+                            order.shippingStatus === "shipped" ||
+                            order.shippingStatus === "cancel" ? (
                                 <></>
                             ) : (
                                 <span

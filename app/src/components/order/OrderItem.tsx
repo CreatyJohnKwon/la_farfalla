@@ -18,8 +18,11 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                 {/* 헤더: 주문번호와 금액 */}
                 <div className="mb-4 flex items-start justify-between">
                     <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium text-gray-900 sm:text-sm">
-                            #{item.createdAt ? `${item._id}` : "ERROR"}
+                        <p className="font-pretendard text-xs font-[500] text-gray-900 sm:text-sm">
+                            주문 번호 |{" "}
+                            <span className="font-mono">
+                                {item.createdAt ? `${item._id}` : "ERROR"}
+                            </span>
                         </p>
                         <p className="mt-1 text-xs text-gray-500">
                             {item.createdAt
@@ -92,9 +95,9 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                                 : item.shippingStatus === "ready"
                                   ? "상품준비중"
                                   : item.shippingStatus === "shipped"
-                                    ? "배송중"
+                                    ? "출고"
                                     : item.shippingStatus === "confirm"
-                                      ? "배송완료"
+                                      ? "구매확정"
                                       : "주문취소"}
                         </p>
                     </div>

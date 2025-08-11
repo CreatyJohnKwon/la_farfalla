@@ -95,7 +95,7 @@ const StatusUpdateModal = ({
                                             className="mt-4 text-red-600 hover:text-red-800"
                                             onClick={() => handleCancelUpdate()}
                                         >
-                                            배송 취소하기
+                                            주문 취소하기
                                         </button>
                                     </div>
                                 );

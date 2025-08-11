@@ -5,31 +5,14 @@ import { AddressUpdateRequest } from "@/src/entities/type/order";
 import { Order } from "@/src/entities/models/Order";
 
 // 배송지 변경 PATCH API
-export async function PATCH(
-    request: NextRequest,
-    { params }: { params: { orderId: string } },
-) {
+export async function PATCH(request: NextRequest) {
     try {
         // 데이터베이스 연결
         await connectDB();
 
         // URL 파라미터에서 orderId 추출 (Next.js 모든 버전 호환)
-        let orderId: string;
-
-        try {
-            const resolvedParams = await Promise.resolve(params);
-            orderId = resolvedParams?.orderId;
-        } catch (paramsError) {
-            console.error("Params resolution error:", paramsError);
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "Failed to extract order ID",
-                    error: "Invalid route parameters",
-                },
-                { status: 400 },
-            );
-        }
+        const url = new URL(request.url);
+        const orderId = url.pathname.split("/")[3];
 
         // orderId 검증
         if (!orderId || typeof orderId !== "string") {

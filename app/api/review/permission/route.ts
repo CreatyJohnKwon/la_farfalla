@@ -3,6 +3,7 @@ import { Order } from "@/src/entities/models/Order";
 import User from "@/src/entities/models/User";
 import { OrderItem } from "@/src/entities/type/interfaces";
 import { ReviewPermissionResponse } from "@/src/entities/type/review";
+import { NextRequest } from "next/server";
 import { adminEmails } from "public/data/common";
 
 async function checkReviewPermission(
@@ -40,7 +41,7 @@ async function checkReviewPermission(
     }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
     try {
         // DB 연결
         await connectDB();

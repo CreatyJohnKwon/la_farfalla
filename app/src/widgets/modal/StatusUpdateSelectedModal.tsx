@@ -159,7 +159,7 @@ const StatusUpdateSelectedModal = ({
                                                 handleCancelUpdate();
                                             }}
                                         >
-                                            배송 취소하기
+                                            주문 취소하기
                                         </button>
                                     </div>
                                 );
