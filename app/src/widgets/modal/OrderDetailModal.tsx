@@ -7,6 +7,8 @@ import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
 import { CheckCircle, X } from "lucide-react";
 import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
+import { useState } from "react";
+import RefundCancelModal from "./RefundCancelModal";
 
 // 주문 상세 모달 컴포넌트
 const OrderDetailModal = ({
@@ -22,7 +24,54 @@ const OrderDetailModal = ({
     const { mutateAsync: smartUpdateOrder } = useSmartUpdateOrderMutation();
     const { refetch: orderListRefetch } = useOrderQuery(user?._id);
 
+    const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
+
     if (!isOpen) return null;
+
+    let predefinedMessage: string;
+
+    // 🆕 개선된 handleChannel 함수
+    const handleChannel = async (data: {
+        type: string;
+        reason: string;
+        orderInfo: string;
+    }) => {
+        try {
+            predefinedMessage = `
+                ${data.type === "cancel" ? "주문 취소" : "환불"} 요청드립니다.
+
+                ${data.orderInfo}
+
+                ${data.type === "cancel" ? "취소" : "환불"} 사유:
+                ${data.reason}
+
+                빠른 처리 부탁드립니다.
+            `.trim();
+
+            // 클립보드에 복사
+            await navigator.clipboard.writeText(predefinedMessage);
+
+            alert(
+                `${data.type === "cancel" ? "취소" : "환불"} 요청 메시지가 복사되었습니다!\n카카오톡 채널에서 붙여넣기(Ctrl+V) 해주세요.`,
+            );
+
+            // 1초 후 채널 열기
+            setTimeout(() => {
+                window.open(
+                    "https://pf.kakao.com/_Uxfaxin/chat",
+                    "channel_talk_request",
+                );
+            }, 1000);
+        } catch (error) {
+            // 클립보드 실패 시 prompt 사용
+            const message = `${data.type === "cancel" ? "취소" : "환불"} 요청 메시지를 복사해서 채널에 보내주세요:`;
+            prompt(message, predefinedMessage);
+            window.open(
+                "https://pf.kakao.com/_Uxfaxin/chat",
+                "channel_talk_request",
+            );
+        }
+    };
 
     const handleUpdate = async (
         id: string,
@@ -150,7 +199,7 @@ const OrderDetailModal = ({
             style={{ touchAction: "manipulation" }}
         >
             <div
-                className="h-[70vh] w-[90vw] overflow-y-auto rounded-lg bg-white sm:h-[90vh] sm:w-[35vw]"
+                className="h-[70vh] w-[90vw] overflow-y-auto rounded-lg bg-white sm:h-[87vh] sm:w-[35vw]"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                     WebkitOverflowScrolling: "touch",
@@ -349,9 +398,24 @@ const OrderDetailModal = ({
 
                     {/* 배송지 정보 섹션 */}
                     <div>
-                        <h3 className="mb-3 flex items-center font-pretendard text-base font-semibold text-gray-900">
-                            배송지 정보
-                        </h3>
+                        <div className="mb-3 flex flex-row items-center justify-between">
+                            <span className="font-pretendard text-base font-semibold text-gray-900">
+                                배송지 정보
+                            </span>
+                            {order.shippingStatus === "confirm" ||
+                            order.shippingStatus === "shipped" ? (
+                                <></>
+                            ) : (
+                                <span
+                                    className="cursor-pointer font-pretendard text-xs font-[500] text-gray-500 underline hover:text-gray-900"
+                                    onClick={() => {
+                                        //TODO: 클릭 시, 배송지 변경 로직이 시작 됨
+                                    }}
+                                >
+                                    배송지 변경하기
+                                </span>
+                            )}
+                        </div>
                         <div className="space-y-2 rounded-md bg-gray-50 p-3">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm font-medium text-gray-900">
@@ -386,10 +450,35 @@ const OrderDetailModal = ({
 
                     {/* 푸터 정보 */}
                     <div className="border-t border-gray-200 pt-3">
-                        <div className="flex items-center text-xs text-gray-500">
+                        <div className="flex items-center justify-between text-xs text-gray-500">
                             <span className="break-words">
                                 주문일시: {formatDate(order.createdAt)}
                             </span>
+                            {order.shippingStatus === "ready" ||
+                            order.shippingStatus === "pending" ? (
+                                <span
+                                    className="cursor-pointer font-pretendard text-xs font-[500] text-red-400 underline hover:text-red-500"
+                                    onClick={() => setIsRefundModalOpen(true)}
+                                >
+                                    주문 취소하기
+                                </span>
+                            ) : order.shippingStatus === "shipped" ? (
+                                <span
+                                    className="cursor-pointer font-pretendard text-xs font-[500] text-red-400 underline hover:text-red-500"
+                                    onClick={() => setIsRefundModalOpen(true)}
+                                >
+                                    환불 및 교환하기
+                                </span>
+                            ) : order.shippingStatus === "confirm" ? (
+                                <span
+                                    className="cursor-pointer font-pretendard text-xs font-[500] text-red-400 underline hover:text-red-500"
+                                    onClick={() => setIsRefundModalOpen(true)}
+                                >
+                                    교환하기
+                                </span>
+                            ) : (
+                                <></>
+                            )}
                         </div>
 
                         {/* 구매확정 버튼 */}
@@ -422,6 +511,14 @@ const OrderDetailModal = ({
                         )}
                     </div>
                 </div>
+
+                {/* 🆕 환불/취소 모달 추가 */}
+                <RefundCancelModal
+                    isOpen={isRefundModalOpen}
+                    onClose={() => setIsRefundModalOpen(false)}
+                    onSubmit={handleChannel}
+                    order={order}
+                />
             </div>
         </div>
     );

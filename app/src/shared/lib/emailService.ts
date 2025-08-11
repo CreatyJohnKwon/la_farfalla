@@ -66,7 +66,7 @@ export class EmailService {
             ready: "상품 준비 중",
             shipped: "출고",
             confirm: "구매 확정",
-            cancel: "구매 취소 (교환/환불)",
+            cancel: "주문 취소 (교환/환불)",
         };
         const shippingStatusText = shippingStatusMap[orderData.shippingStatus];
 

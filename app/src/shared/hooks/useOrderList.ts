@@ -16,7 +16,7 @@ const useOrderList = () => {
         ready: "상품 준비 중",
         shipped: "출고",
         confirm: "구매 확정",
-        cancel: "구매 취소",
+        cancel: "주문 취소",
     } as const;
 
     const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
