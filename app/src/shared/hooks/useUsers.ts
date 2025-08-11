@@ -6,6 +6,12 @@ import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+interface SessionProps {
+    name: string;
+    email: string;
+    _id: string;
+}
+
 const useUsers = () => {
     const [isLoggedIn, setIsLoggedIn] = useAtom<boolean>(isLoggedInAtom);
     const [email, setEmail] = useState<string>("");

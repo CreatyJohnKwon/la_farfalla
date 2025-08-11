@@ -5,6 +5,7 @@ import { getAuthSession } from "@/src/shared/lib/session";
 import User from "@/src/entities/models/User";
 import { Review } from "@/src/entities/models/Review";
 import { UserProfileData } from "@/src/entities/type/interfaces";
+import { adminEmails } from "public/data/common";
 
 // 🆕 요청자 권한에 따른 이메일 표시 함수
 const getEmailDisplay = (
@@ -57,11 +58,6 @@ const getDisplayName = (
 
 // 🆕 어드민 체크 함수
 const isAdminUser = (email: string) => {
-    const adminEmails = [
-        "admin@admin.com",
-        "cofsl0411@naver.com",
-        "soun0551@naver.com",
-    ];
     return adminEmails.includes(email);
 };
 
@@ -91,13 +87,6 @@ export async function GET(req: NextRequest) {
             .populate("comments.userId", "name email")
             .sort({ createdAt: -1 })
             .lean()) as any[];
-
-        // 어드민 이메일 목록 및 고정 이름
-        const adminEmails = [
-            "admin@admin.com",
-            "cofsl0411@naver.com",
-            "soun0551@naver.com",
-        ];
 
         const adminNames: { [key: string]: string } = {
             "admin@admin.com": "lafarfalla",
@@ -282,13 +271,6 @@ export async function POST(req: NextRequest) {
 
         // 🆕 요청자 어드민 체크
         const isRequesterAdmin = isAdminUser(session.user.email);
-
-        // 어드민 체크
-        const adminEmails = [
-            "admin@admin.com",
-            "cofsl0411@naver.com",
-            "soun0551@naver.com",
-        ];
 
         const adminNames: { [key: string]: string } = {
             "admin@admin.com": "lafarfalla",

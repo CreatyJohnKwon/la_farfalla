@@ -16,6 +16,7 @@ import useCart from "@src/shared/hooks/useCart";
 import Cart from "@src/features/cart/Cart";
 import AdminDrop from "../drop/AdminDrop";
 import { useSeasonQuery } from "@/src/shared/hooks/react-query/useSeasonQuery";
+import { adminEmails } from "public/data/common";
 
 const Navbar = () => {
     const { data: category, isLoading: isCategoryLoad } = useSeasonQuery();
@@ -28,13 +29,6 @@ const Navbar = () => {
     const [children, setChildren] = useState<any>(null);
 
     const pathName = usePathname();
-
-    const adminEmails = [
-        "admin@admin.com",
-        "soun0551@naver.com",
-        "cofsl0411@naver.com",
-        "vmfodzl1125@naver.com",
-    ];
 
     useEffect(() => {
         if (category) setChildren(<ShopDrop category={category} />);

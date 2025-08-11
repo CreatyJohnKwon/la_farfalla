@@ -10,8 +10,10 @@ import {
     patchReviewComment,
     postReviewComment,
     getReviewComments,
+    checkReviewPermission,
 } from "@/src/shared/lib/server/review";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import useUsers from "../useUsers";
 
 // 리뷰 목록 조회
 const useGetReviewsListQuery = (productId?: string) => {
@@ -253,8 +255,31 @@ const useToggleCommentLikeMutation = () => {
     });
 };
 
+// 리뷰 권한 검증
+const useReviewPermission = (productId: string) => {
+    // 현재 로그인한 사용자 정보
+    const { session } = useUsers();
+    const user = session?.user;
+
+    return useQuery({
+        queryKey: ["reviewPermission", user?.email, productId],
+        queryFn: () => {
+            if (!user?.email) {
+                // 로그인하지 않은 경우
+                return Promise.resolve({
+                    canReview: false,
+                    message: "로그인 후 리뷰를 작성할 수 있습니다.",
+                });
+            }
+            return checkReviewPermission(user.email, productId);
+        },
+        enabled: !!(user?.email && productId),
+        staleTime: 5 * 60 * 1000,
+        retry: 1,
+    });
+};
+
 export {
-    // 기존 exports...
     useGetReviewsListQuery,
     usePostReviewMutation,
     useUpdateReviewMutation,
@@ -265,4 +290,5 @@ export {
     useUpdateCommentMutation,
     useDeleteCommentMutation,
     useToggleCommentLikeMutation,
+    useReviewPermission,
 };

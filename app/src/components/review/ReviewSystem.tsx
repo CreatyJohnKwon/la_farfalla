@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import ReviewItem from "./ReviewItem";
-import { ReviewSystemProps, Review } from "./interface";
+import { ReviewSystemProps } from "./interface";
 import {
     usePostReviewMutation,
     useUpdateReviewMutation,
@@ -10,9 +10,9 @@ import {
     useUpdateCommentMutation,
     useDeleteCommentMutation,
     useToggleCommentLikeMutation,
+    useReviewPermission,
 } from "@src/shared/hooks/react-query/useReviewQuery";
 import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
-import { useRouter } from "next/navigation";
 import useUsers from "@/src/shared/hooks/useUsers";
 
 // 정렬 옵션 타입 정의
@@ -34,14 +34,22 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
     const deleteCommentMutation = useDeleteCommentMutation();
     const toggleCommentLikeMutation = useToggleCommentLikeMutation();
 
+    // 리뷰 권한 검증 훅
+    const { data: permissionData, isLoading: permissionLoading } =
+        useReviewPermission(productId);
+
     // 로컬 상태
-    const [newReview, setNewReview] = useState("");
+    const [sortOption, setSortOption] = useState<SortOption>("newest");
     const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
     const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
-    const [isDragOver, setIsDragOver] = useState(false);
-    const [sortOption, setSortOption] = useState<SortOption>("newest");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isDragOver, setIsDragOver] = useState(false);
+    const [newReview, setNewReview] = useState("");
     const { authCheck } = useUsers();
+
+    // 🆕 권한 체크를 위한 변수
+    const canWriteReview = permissionData?.canReview || false;
+    const permissionMessage = permissionData?.message || "";
 
     // 정렬 옵션 설정
     const sortOptions = [
@@ -289,7 +297,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
     };
 
     // 로딩 상태
-    if (isLoading) {
+    if (isLoading || permissionLoading) {
         return (
             <LoadingSpinner size="md" fullScreen={false} message="Loading..." />
         );
@@ -316,6 +324,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
 
     return (
         <div className="mx-auto min-h-screen w-full bg-white p-6">
+            {/* 🆕 리뷰 작성 섹션 - 권한에 따라 조건부 렌더링 */}
             <div className="mb-12 border border-gray-100 bg-white p-6">
                 <div className="mb-8 flex items-center justify-between">
                     <div>
@@ -330,28 +339,105 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                     </div>
                 </div>
 
-                <div className="space-y-5">
-                    {/* 사진 첨부 영역 - textarea 위에 위치 */}
-                    <div className="flex items-start gap-3">
-                        {/* 사진 추가 버튼 (정사각형) */}
-                        <div
-                            className={`relative flex h-16 w-16 cursor-pointer items-center justify-center border border-dashed border-gray-300 transition-colors hover:border-gray-400 ${
-                                isDragOver ? "border-black bg-gray-50" : ""
-                            } ${uploadedPhotos.length >= 5 ? "pointer-events-none opacity-50" : ""}`}
-                            onDragOver={handleDragOver}
-                            onDragLeave={handleDragLeave}
-                            onDrop={handleDrop}
-                        >
-                            <input
-                                type="file"
-                                multiple
-                                accept="image/*"
-                                onChange={(e) => handleFiles(e.target.files)}
-                                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                disabled={uploadedPhotos.length >= 5}
-                            />
+                {/* 🆕 권한 검증에 따른 조건부 렌더링 */}
+                {canWriteReview ? (
+                    /* 리뷰 작성 권한이 있을 때 */
+                    <div className="space-y-5">
+                        {/* 사진 첨부 영역 - textarea 위에 위치 */}
+                        <div className="flex items-start gap-3">
+                            {/* 사진 추가 버튼 (정사각형) */}
+                            <div
+                                className={`relative flex h-16 w-16 cursor-pointer items-center justify-center border border-dashed border-gray-300 transition-colors hover:border-gray-400 ${
+                                    isDragOver ? "border-black bg-gray-50" : ""
+                                } ${uploadedPhotos.length >= 5 ? "pointer-events-none opacity-50" : ""}`}
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                            >
+                                <input
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    onChange={(e) =>
+                                        handleFiles(e.target.files)
+                                    }
+                                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                    disabled={uploadedPhotos.length >= 5}
+                                />
+                                <svg
+                                    className="h-6 w-6 text-gray-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={1.5}
+                                        d="M12 4v16m8-8H4"
+                                    />
+                                </svg>
+                            </div>
+
+                            {/* 업로드된 사진들 - 우측으로 하나씩 생성 */}
+                            {photoPreviews.map((preview, index) => (
+                                <div key={index} className="group relative">
+                                    <img
+                                        src={preview}
+                                        alt={`미리보기 ${index + 1}`}
+                                        className="h-16 w-16 border border-gray-200 object-cover"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => removePhoto(index)}
+                                        className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            ))}
+
+                            {/* 사진 개수 표시 */}
+                            {uploadedPhotos.length > 0 && (
+                                <div className="ml-2 flex items-center">
+                                    <span className="text-xs text-gray-400">
+                                        {uploadedPhotos.length}/5
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+
+                        <textarea
+                            value={newReview}
+                            onChange={(e) => setNewReview(e.target.value)}
+                            className="w-full resize-none border border-gray-300 bg-white p-5 text-gray-800 placeholder-gray-500 focus:border-black focus:outline-none"
+                            rows={4}
+                            placeholder="서비스에 대한 리뷰를 작성해주세요. (최대 1000자)"
+                            disabled={postReviewMutation.isPending}
+                            maxLength={1000}
+                        />
+
+                        <div className="flex justify-end">
+                            <button
+                                onClick={handleSubmitReview}
+                                disabled={
+                                    postReviewMutation.isPending ||
+                                    !newReview.trim()
+                                }
+                                className="bg-black px-8 py-3 font-semibold text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
+                            >
+                                {postReviewMutation.isPending
+                                    ? "작성 중..."
+                                    : "리뷰 작성"}
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    /* 🆕 리뷰 작성 권한이 없을 때 표시할 메시지 */
+                    <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-center">
+                        <div className="mb-2">
                             <svg
-                                className="h-6 w-6 text-gray-400"
+                                className="mx-auto h-12 w-12 text-gray-400"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -360,64 +446,18 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth={1.5}
-                                    d="M12 4v16m8-8H4"
+                                    d="M12 15v2m0 0v2m0-2h2m-2 0H9.5A5.5 5.5 0 1 1 9.5 4h13A2.5 2.5 0 0 1 25 6.5V7"
                                 />
                             </svg>
                         </div>
-
-                        {/* 업로드된 사진들 - 우측으로 하나씩 생성 */}
-                        {photoPreviews.map((preview, index) => (
-                            <div key={index} className="group relative">
-                                <img
-                                    src={preview}
-                                    alt={`미리보기 ${index + 1}`}
-                                    className="h-16 w-16 border border-gray-200 object-cover"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => removePhoto(index)}
-                                    className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
-                                >
-                                    ×
-                                </button>
-                            </div>
-                        ))}
-
-                        {/* 사진 개수 표시 */}
-                        {uploadedPhotos.length > 0 && (
-                            <div className="ml-2 flex items-center">
-                                <span className="text-xs text-gray-400">
-                                    {uploadedPhotos.length}/5
-                                </span>
-                            </div>
-                        )}
+                        <p className="mb-1 text-lg font-medium text-gray-700">
+                            리뷰 작성 불가
+                        </p>
+                        <p className="text-sm text-gray-500">
+                            {permissionMessage}
+                        </p>
                     </div>
-
-                    <textarea
-                        value={newReview}
-                        onChange={(e) => setNewReview(e.target.value)}
-                        className="w-full resize-none border border-gray-300 bg-white p-5 text-gray-800 placeholder-gray-500 focus:border-black focus:outline-none"
-                        rows={4}
-                        placeholder="서비스에 대한 리뷰를 작성해주세요. (최대 1000자)"
-                        disabled={postReviewMutation.isPending}
-                        maxLength={1000}
-                    />
-
-                    <div className="flex justify-end">
-                        <button
-                            onClick={handleSubmitReview}
-                            disabled={
-                                postReviewMutation.isPending ||
-                                !newReview.trim()
-                            }
-                            className="bg-black px-8 py-3 font-semibold text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
-                        >
-                            {postReviewMutation.isPending
-                                ? "작성 중..."
-                                : "리뷰 작성"}
-                        </button>
-                    </div>
-                </div>
+                )}
             </div>
 
             {/* 정렬 드롭다운 */}

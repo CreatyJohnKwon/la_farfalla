@@ -3,6 +3,7 @@ import {
     ToggleReviewLikeResponse,
 } from "@/src/components/review/interface";
 import { uploadImagesToServer } from "../uploadToR2";
+import { ReviewPermissionResponse } from "@/src/entities/type/review";
 
 const BASE_URL =
     process.env.NODE_ENV === "production"
@@ -218,6 +219,28 @@ const toggleReviewCommentLike = async (
     return result.data;
 };
 
+// 권한 검증 API 호출 함수
+const checkReviewPermission = async (
+    userEmail: string,
+    productId: string,
+): Promise<ReviewPermissionResponse> => {
+    const response = await fetch(
+        `/api/review/permission?userEmail=${userEmail}&productId=${productId}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        },
+    );
+
+    if (!response.ok) {
+        throw new Error("권한 확인 실패");
+    }
+
+    return response.json();
+};
+
 export {
     getReviewList,
     getReviewComments,
@@ -229,4 +252,5 @@ export {
     deleteReviewComment,
     toggleReviewCommentLike,
     toggleReviewLike,
+    checkReviewPermission,
 };

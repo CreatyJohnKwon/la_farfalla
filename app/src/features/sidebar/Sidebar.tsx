@@ -15,6 +15,7 @@ import AboutDrop from "@src/widgets/drop/AboutDrop";
 import useCart from "@src/shared/hooks/useCart";
 import AdminDrop from "@/src/widgets/drop/AdminDrop";
 import { useSeasonQuery } from "@/src/shared/hooks/react-query/useSeasonQuery";
+import { adminEmails } from "public/data/common";
 
 const Sidebar = () => {
     const { openSidebar, setOpenSidebar } = useProduct();
@@ -41,13 +42,6 @@ const Sidebar = () => {
     }, [openSidebar]);
 
     if (!isVisible) return null;
-
-    const adminEmails = [
-        "admin@admin.com",
-        "soun0551@naver.com",
-        "cofsl0411@naver.com",
-        "vmfodzl1125@naver.com",
-    ];
 
     return (
         !isCategoryLoad &&
