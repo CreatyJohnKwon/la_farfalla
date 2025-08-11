@@ -186,23 +186,6 @@ const Shop = () => {
                             </div>
                         ) : (
                             <>
-                                {/* 검색 모드일 때 결과 헤더 */}
-                                {isSearchMode && (
-                                    <div className="absolute left-1/2 top-20 z-40 -translate-x-1/2 transform">
-                                        <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 shadow-sm">
-                                            <span className="text-sm text-gray-600">
-                                                '{searchQuery}' 검색 결과:{" "}
-                                                <strong>
-                                                    {
-                                                        searchFilteredProducts.length
-                                                    }
-                                                    개
-                                                </strong>
-                                            </span>
-                                        </div>
-                                    </div>
-                                )}
-
                                 {/* 상품 그리드 */}
                                 <ul className="mt-24 grid w-[90vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:mt-32 md:w-[85vw] md:grid-cols-3">
                                     {displayProducts.map((item, index) => (
