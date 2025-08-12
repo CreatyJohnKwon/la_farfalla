@@ -18,7 +18,15 @@ const AnnounceSchema = new Schema<IAnnounce>(
             required: true,
             default: true,
         },
-        createAt: {
+        backgroundColor: {
+            type: String,
+            default: "",
+        },
+        textColor: {
+            type: String,
+            default: "",
+        },
+        createdAt: {
             type: Date,
             default: Date.now,
             immutable: true,

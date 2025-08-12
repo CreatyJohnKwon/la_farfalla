@@ -51,6 +51,8 @@ export default function CreateAnnounceModal({ onClose }: Props) {
         description: "",
         startAt: getCurrentDateTime(),
         deletedAt: getDateTimeAfterHours(1),
+        backgroundColor: "ffffff",
+        textColor: "000000",
     }));
 
     const [errors, setErrors] = useState<
@@ -355,6 +357,9 @@ export default function CreateAnnounceModal({ onClose }: Props) {
                 startAt: startDate,
                 deletedAt: endDate,
                 visible: true,
+                backgroundColor:
+                    form.isPopup === false ? form.backgroundColor : undefined,
+                textColor: form.isPopup === false ? form.textColor : undefined,
             };
 
             if (isEditMode && editingAnnounce) {

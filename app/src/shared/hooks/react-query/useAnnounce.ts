@@ -1,4 +1,9 @@
-import { CreateAnnounceData, IAnnounceDTO } from "@/src/entities/type/announce";
+import {
+    CreateAnnounceData,
+    IAnnounceDTO,
+    MutationContext,
+    UpdateAnnounceParams,
+} from "@/src/entities/type/announce";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     createAnnounce,
@@ -33,17 +38,6 @@ export const useCreateAnnounceMutation = () => {
         },
     });
 };
-
-// 공지 수정 - 타입 안전성 개선
-interface UpdateAnnounceParams {
-    id: string;
-    data: Partial<Omit<IAnnounceDTO, "_id">>;
-}
-
-// onMutate에서 반환하는 context 타입 정의
-interface MutationContext {
-    previousAnnounces: IAnnounceDTO[] | undefined;
-}
 
 // 개선된 버전 - 컴포넌트에서 알림 제어 가능
 export const useUpdateAnnounceMutation = (options?: {

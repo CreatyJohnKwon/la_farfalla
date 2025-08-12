@@ -17,10 +17,20 @@ const FormContent = memo(
         handleImageRemove,
         cancelEditMode,
     }: FormContentProps) => {
-        // 안전한 기본값 보장
+        // 안전한 기본값 보장 (수정 모드에서는 기존 데이터 우선 사용)
         const safeForm = {
             isPopup: Boolean(form?.isPopup), // 더 명확한 boolean 변환
             description: form?.description ?? "",
+            textColor:
+                form?.textColor ??
+                (isEditMode && editingAnnounce?.textColor
+                    ? editingAnnounce.textColor
+                    : "000000"),
+            backgroundColor:
+                form?.backgroundColor ??
+                (isEditMode && editingAnnounce?.backgroundColor
+                    ? editingAnnounce.backgroundColor
+                    : "ffffff"),
             startAt: form?.startAt ?? "",
             deletedAt: form?.deletedAt ?? "",
             imageFile: form?.imageFile,
@@ -28,6 +38,11 @@ const FormContent = memo(
 
         const safeErrors = errors ?? {};
         const safeImagePreviewUrl = imagePreviewUrl ?? "";
+
+        // 헥스 코드 유효성 검사 함수 (# 없이)
+        const isValidHex = (hex: string) => {
+            return /^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+        };
 
         return (
             <div className="space-y-6">
@@ -284,47 +299,199 @@ const FormContent = memo(
                             )}
                         </div>
                     ) : (
-                        <div className="space-y-4">
-                            <label
-                                htmlFor="description"
-                                className="block text-sm font-semibold text-gray-900"
-                            >
-                                배너 내용{" "}
-                                <span className="text-blue-600">*</span>
-                            </label>
-                            <div className="relative">
-                                <input
-                                    id="description"
-                                    name="description"
-                                    type="text"
-                                    value={safeForm.description}
-                                    onChange={handleInputChange}
-                                    placeholder="공지 내용을 입력하세요"
-                                    className={`w-full border p-4 pr-16 outline-none transition-all focus:ring-2 ${
-                                        safeErrors.description
-                                            ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                                            : "border-gray-200 focus:border-blue-600 focus:ring-blue-200"
-                                    }`}
-                                    maxLength={MAX_DESCRIPTION_LENGTH}
-                                    aria-describedby="description-counter description-error"
-                                />
-                                <div
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 transform text-sm text-gray-400"
-                                    id="description-counter"
+                        <div className="space-y-6">
+                            {/* 배너 내용 */}
+                            <div className="space-y-4">
+                                <label
+                                    htmlFor="description"
+                                    className="block text-sm font-semibold text-gray-900"
                                 >
-                                    {safeForm.description.length}/
-                                    {MAX_DESCRIPTION_LENGTH}
+                                    배너 내용{" "}
+                                    <span className="text-blue-600">*</span>
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        id="description"
+                                        name="description"
+                                        type="text"
+                                        value={safeForm.description}
+                                        onChange={handleInputChange}
+                                        placeholder="공지 내용을 입력하세요"
+                                        className={`w-full border p-4 pr-16 outline-none transition-all focus:ring-2 ${
+                                            safeErrors.description
+                                                ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                                                : "border-gray-200 focus:border-blue-600 focus:ring-blue-200"
+                                        }`}
+                                        maxLength={MAX_DESCRIPTION_LENGTH}
+                                        aria-describedby="description-counter description-error"
+                                    />
+                                    <div
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 transform text-sm text-gray-400"
+                                        id="description-counter"
+                                    >
+                                        {safeForm.description.length}/
+                                        {MAX_DESCRIPTION_LENGTH}
+                                    </div>
+                                </div>
+                                {safeErrors.description && (
+                                    <p
+                                        className="text-sm text-red-600"
+                                        role="alert"
+                                        id="description-error"
+                                    >
+                                        {safeErrors.description}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* 색상 설정 */}
+                            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                                {/* 텍스트 색상 */}
+                                <div className="space-y-2">
+                                    <label
+                                        htmlFor="textColor"
+                                        className="block text-sm font-semibold text-gray-900"
+                                    >
+                                        텍스트 색상{" "}
+                                        <span className="text-blue-600">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        {/* # 프리픽스 */}
+                                        <div className="absolute left-3 top-1/2 -translate-y-1/2 transform font-mono text-gray-500">
+                                            #
+                                        </div>
+                                        <input
+                                            id="textColor"
+                                            name="textColor"
+                                            type="text"
+                                            value={safeForm.textColor}
+                                            onChange={handleInputChange}
+                                            placeholder="000000"
+                                            className={`w-full border p-3 pl-8 pr-12 font-mono outline-none transition-all focus:ring-2 ${
+                                                safeErrors.textColor
+                                                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                                                    : "border-gray-200 focus:border-blue-600 focus:ring-blue-200"
+                                            }`}
+                                            maxLength={6}
+                                        />
+                                        {/* 색상 미리보기 박스 */}
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 transform">
+                                            <div
+                                                className={`h-6 w-6 rounded border border-gray-300 ${
+                                                    isValidHex(
+                                                        safeForm.textColor,
+                                                    )
+                                                        ? "opacity-100"
+                                                        : "bg-gray-200 opacity-50"
+                                                }`}
+                                                style={{
+                                                    backgroundColor: isValidHex(
+                                                        safeForm.textColor,
+                                                    )
+                                                        ? `#${safeForm.textColor}`
+                                                        : "#e5e7eb",
+                                                }}
+                                                title={`미리보기: #${safeForm.textColor}`}
+                                            />
+                                        </div>
+                                    </div>
+                                    {safeErrors.textColor && (
+                                        <p
+                                            className="text-sm text-red-600"
+                                            role="alert"
+                                        >
+                                            {safeErrors.textColor}
+                                        </p>
+                                    )}
+                                    <p className="text-xs text-gray-500">
+                                        예시: 000000 (검정), ffffff (흰색),
+                                        ff0000 (빨강)
+                                    </p>
+                                </div>
+
+                                {/* 띠지 배경색 */}
+                                <div className="space-y-2">
+                                    <label
+                                        htmlFor="backgroundColor"
+                                        className="block text-sm font-semibold text-gray-900"
+                                    >
+                                        띠지 배경색{" "}
+                                        <span className="text-blue-600">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        {/* # 프리픽스 */}
+                                        <div className="absolute left-3 top-1/2 -translate-y-1/2 transform font-mono text-gray-500">
+                                            #
+                                        </div>
+                                        <input
+                                            id="backgroundColor"
+                                            name="backgroundColor"
+                                            type="text"
+                                            value={safeForm.backgroundColor}
+                                            onChange={handleInputChange}
+                                            placeholder="ffffff"
+                                            className={`w-full border p-3 pl-8 pr-12 font-mono outline-none transition-all focus:ring-2 ${
+                                                safeErrors.backgroundColor
+                                                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                                                    : "border-gray-200 focus:border-blue-600 focus:ring-blue-200"
+                                            }`}
+                                            maxLength={6}
+                                        />
+                                        {/* 색상 미리보기 박스 */}
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 transform">
+                                            <div
+                                                className={`h-6 w-6 rounded border border-gray-300 ${
+                                                    isValidHex(
+                                                        safeForm.backgroundColor,
+                                                    )
+                                                        ? "opacity-100"
+                                                        : "bg-gray-200 opacity-50"
+                                                }`}
+                                                style={{
+                                                    backgroundColor: isValidHex(
+                                                        safeForm.backgroundColor,
+                                                    )
+                                                        ? `#${safeForm.backgroundColor}`
+                                                        : "#e5e7eb",
+                                                }}
+                                                title={`미리보기: #${safeForm.backgroundColor}`}
+                                            />
+                                        </div>
+                                    </div>
+                                    {safeErrors.backgroundColor && (
+                                        <p
+                                            className="text-sm text-red-600"
+                                            role="alert"
+                                        >
+                                            {safeErrors.backgroundColor}
+                                        </p>
+                                    )}
+                                    <p className="text-xs text-gray-500">
+                                        예시: ffffff (흰색), f0f0f0 (연회색),
+                                        007bff (파랑)
+                                    </p>
                                 </div>
                             </div>
-                            {safeErrors.description && (
-                                <p
-                                    className="text-sm text-red-600"
-                                    role="alert"
-                                    id="description-error"
-                                >
-                                    {safeErrors.description}
-                                </p>
-                            )}
+
+                            {/* 배너 미리보기 */}
+                            {safeForm.description &&
+                                isValidHex(safeForm.textColor) &&
+                                isValidHex(safeForm.backgroundColor) && (
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-gray-900">
+                                            배너 미리보기
+                                        </label>
+                                        <div
+                                            className="border border-gray-200 p-4 text-center font-medium"
+                                            style={{
+                                                color: `#${safeForm.textColor}`,
+                                                backgroundColor: `#${safeForm.backgroundColor}`,
+                                            }}
+                                        >
+                                            {safeForm.description}
+                                        </div>
+                                    </div>
+                                )}
                         </div>
                     )}
                 </div>

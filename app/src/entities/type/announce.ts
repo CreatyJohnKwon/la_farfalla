@@ -8,7 +8,9 @@ interface IAnnounce extends Document {
     isPopup: boolean; // 팝업형식인지 띠형식인지
     description: string; // isPopup에 따라 true면 image URL, false면 text 데이터
     visible: boolean; // true면 보여지고 false면 안보여짐 (토글 기능)
-    createAt: Date; // 공지 생성 날짜
+    backgroundColor?: string; // 배너의 배경화면 칼라 설정 (헥스)
+    textColor?: string; // 배너의 텍스트 칼라 설정 (헥스)
+    createdAt: Date; // 공지 생성 날짜
     startAt: Date; // 공지가 보여질 날짜
     deletedAt: Date; // 공지가 자동 삭제될 날짜 (MongoDB TTL 사용)
 }
@@ -18,7 +20,9 @@ interface IAnnounceDTO {
     isPopup: boolean; // 팝업형식인지 띠형식인지
     description: string; // isPopup에 따라 true면 image URL, false면 text 데이터
     visible: boolean; // true면 보여지고 false면 안보여짐 (토글 기능)
-    createAt: Date; // 공지 생성 날짜
+    backgroundColor?: string;
+    textColor?: string;
+    createdAt: Date; // 공지 생성 날짜
     startAt: Date; // 공지가 보여질 날짜
     deletedAt: Date; // 공지가 자동 삭제될 날짜 (MongoDB TTL 사용)
 }
@@ -31,26 +35,21 @@ interface UpdateAnnounceParams {
 interface CreateAnnounceData {
     isPopup: boolean;
     description: string;
+    visible?: boolean;
+    backgroundColor?: string;
+    textColor?: string;
     startAt: Date;
     deletedAt: Date;
-    visible?: boolean;
 }
 
 interface AnnounceForm {
     isPopup: boolean;
     description: string;
+    imageFile?: File;
+    backgroundColor?: string;
+    textColor?: string;
     startAt: string;
     deletedAt: string;
-    imageFile?: File;
-}
-
-// 안전한 타입 정의
-interface AnnounceForm {
-    isPopup: boolean;
-    description: string;
-    startAt: string;
-    deletedAt: string;
-    imageFile?: File;
 }
 
 interface FormContentProps {
@@ -71,6 +70,11 @@ interface FormContentProps {
     cancelEditMode: () => void;
 }
 
+// onMutate에서 반환하는 context 타입 정의
+interface MutationContext {
+    previousAnnounces: IAnnounceDTO[] | undefined;
+}
+
 const ACCEPTED_IMAGE_TYPES = [
     "image/jpeg",
     "image/jpg",
@@ -88,6 +92,7 @@ export type {
     CreateAnnounceData,
     AnnounceForm,
     FormContentProps,
+    MutationContext,
 };
 
 export { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE, MAX_DESCRIPTION_LENGTH };

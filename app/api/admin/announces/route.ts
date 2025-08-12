@@ -11,9 +11,16 @@ const transformAnnounce = (doc: any) => {
         startAt: doc.startAt,
         deletedAt: doc.deletedAt,
         visible: doc.visible,
-        createdAt: doc.createdAt,
+        backgroundColor: doc.backgroundColor || "",
+        textColor: doc.textColor || "",
+        createdAt: doc.createdAt || "",
         updatedAt: doc.updatedAt,
     };
+};
+
+// 헥스 코드 유효성 검사 함수
+const isValidHexColor = (color: string): boolean => {
+    return /^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
 };
 
 // 공지 목록 조회
@@ -41,7 +48,7 @@ export async function POST(req: NextRequest) {
         await connectDB();
         const body = await req.json();
 
-        // 데이터 검증
+        // 기본 데이터 검증
         if (!body.description || typeof body.isPopup !== "boolean") {
             return NextResponse.json(
                 { error: "필수 필드가 누락되었습니다" },
@@ -49,13 +56,61 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const announce = new AnnounceModel({
+        // 배너 모드일 때 색상 필드 검증
+        if (body.isPopup === false) {
+            if (!body.textColor || !body.backgroundColor) {
+                return NextResponse.json(
+                    {
+                        error: "배너 모드에서는 텍스트 색상과 배경색이 필요합니다",
+                    },
+                    { status: 400 },
+                );
+            }
+
+            if (
+                !isValidHexColor(body.textColor) ||
+                !isValidHexColor(body.backgroundColor)
+            ) {
+                return NextResponse.json(
+                    {
+                        error: "올바른 헥스 색상 코드를 입력해주세요 (예: ffffff, 000000)",
+                    },
+                    { status: 400 },
+                );
+            }
+        }
+
+        // 날짜 검증
+        if (body.startAt && body.deletedAt) {
+            const startDate = new Date(body.startAt);
+            const endDate = new Date(body.deletedAt);
+
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                return NextResponse.json(
+                    { error: "올바르지 않은 날짜 형식입니다" },
+                    { status: 400 },
+                );
+            }
+
+            if (endDate <= startDate) {
+                return NextResponse.json(
+                    { error: "종료 날짜는 시작 날짜보다 이후여야 합니다" },
+                    { status: 400 },
+                );
+            }
+        }
+
+        const announceData = {
             ...body,
             visible: body.visible !== undefined ? body.visible : true, // 기본값 true
+            // 팝업 모드일 때는 색상 필드를 빈 문자열로 설정
+            backgroundColor: body.isPopup === false ? body.backgroundColor : "",
+            textColor: body.isPopup === false ? body.textColor : "",
             createdAt: new Date(),
             updatedAt: new Date(),
-        });
+        };
 
+        const announce = new AnnounceModel(announceData);
         const savedAnnounce = await announce.save();
 
         // MongoDB 문서를 평문 객체로 변환
@@ -87,10 +142,20 @@ export async function PATCH(req: NextRequest) {
             );
         }
 
+        // 기존 데이터 조회
+        const existingAnnounce = await AnnounceModel.findById(announceId);
+        if (!existingAnnounce) {
+            return NextResponse.json(
+                { error: "공지를 찾을 수 없습니다" },
+                { status: 404 },
+            );
+        }
+
         const updateData = { ...body };
         delete updateData._id;
         delete updateData.id;
 
+        // isPopup 값 검증
         if (
             updateData.isPopup !== undefined &&
             typeof updateData.isPopup !== "boolean"
@@ -101,6 +166,7 @@ export async function PATCH(req: NextRequest) {
             );
         }
 
+        // description 값 검증
         if (
             updateData.description !== undefined &&
             typeof updateData.description !== "string"
@@ -111,6 +177,90 @@ export async function PATCH(req: NextRequest) {
             );
         }
 
+        // 배너 모드일 때 색상 필드 처리
+        const finalIsPopup =
+            updateData.isPopup !== undefined
+                ? updateData.isPopup
+                : existingAnnounce.isPopup;
+
+        if (finalIsPopup === false) {
+            // 기존 색상 값과 새로운 값 병합
+            const currentTextColor = existingAnnounce.textColor || "";
+            const currentBackgroundColor =
+                existingAnnounce.backgroundColor || "";
+
+            const finalTextColor =
+                updateData.textColor !== undefined
+                    ? updateData.textColor
+                    : currentTextColor;
+            const finalBackgroundColor =
+                updateData.backgroundColor !== undefined
+                    ? updateData.backgroundColor
+                    : currentBackgroundColor;
+
+            console.log(updateData.textColor, updateData.backgroundColor);
+
+            // 최종 색상 값이 모두 있는지 확인
+            if (!finalTextColor || !finalBackgroundColor) {
+                return NextResponse.json(
+                    {
+                        error: "배너 모드에서는 텍스트 색상과 배경색이 모두 필요합니다",
+                    },
+                    { status: 400 },
+                );
+            }
+
+            // 색상 유효성 검사
+            if (
+                !isValidHexColor(finalTextColor) ||
+                !isValidHexColor(finalBackgroundColor)
+            ) {
+                return NextResponse.json(
+                    {
+                        error: "올바른 헥스 색상 코드를 입력해주세요 (예: ffffff, 000000)",
+                    },
+                    { status: 400 },
+                );
+            }
+
+            // 업데이트 데이터에 최종 색상 값 설정
+            updateData.textColor = finalTextColor;
+            updateData.backgroundColor = finalBackgroundColor;
+        }
+
+        // 개별 색상 필드 검증 (값이 제공된 경우만)
+        if (updateData.textColor !== undefined && updateData.textColor !== "") {
+            if (!isValidHexColor(updateData.textColor)) {
+                return NextResponse.json(
+                    {
+                        error: "올바른 텍스트 색상 코드를 입력해주세요 (예: ffffff, 000000)",
+                    },
+                    { status: 400 },
+                );
+            }
+        }
+
+        if (
+            updateData.backgroundColor !== undefined &&
+            updateData.backgroundColor !== ""
+        ) {
+            if (!isValidHexColor(updateData.backgroundColor)) {
+                return NextResponse.json(
+                    {
+                        error: "올바른 배경 색상 코드를 입력해주세요 (예: ffffff, 000000)",
+                    },
+                    { status: 400 },
+                );
+            }
+        }
+
+        // 팝업 모드로 변경될 때 색상 필드 초기화
+        if (updateData.isPopup === true) {
+            updateData.backgroundColor = "";
+            updateData.textColor = "";
+        }
+
+        // 날짜 검증
         if (updateData.startAt && updateData.deletedAt) {
             const startDate = new Date(updateData.startAt);
             const endDate = new Date(updateData.deletedAt);
@@ -124,7 +274,7 @@ export async function PATCH(req: NextRequest) {
 
             if (endDate <= startDate) {
                 return NextResponse.json(
-                    { error: "삭제 날짜는 시작 날짜보다 이후여야 합니다" },
+                    { error: "종료 날짜는 시작 날짜보다 이후여야 합니다" },
                     { status: 400 },
                 );
             }
@@ -139,7 +289,7 @@ export async function PATCH(req: NextRequest) {
         const updatedAnnounce = await AnnounceModel.findByIdAndUpdate(
             announceId,
             updateData,
-            { new: true, runValidators: false }, // 여기서 mongoose 검증 끔
+            { new: true, runValidators: false },
         );
 
         if (!updatedAnnounce) {
