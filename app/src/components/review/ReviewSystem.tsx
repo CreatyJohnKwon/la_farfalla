@@ -326,16 +326,14 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
         <div className="mx-auto min-h-screen w-full bg-white p-6">
             {/* 🆕 리뷰 작성 섹션 - 권한에 따라 조건부 렌더링 */}
             <div className="mb-12 border border-gray-100 bg-white p-6">
-                <div className="mb-8 flex items-center justify-between">
-                    <div>
-                        <h2 className="mb-2 text-2xl font-bold text-gray-900">
-                            고객 리뷰
-                        </h2>
-                        <div className="flex items-center space-x-4">
-                            <span className="text-gray-600">
-                                {reviews.length}개의 리뷰
-                            </span>
-                        </div>
+                <div className="mb-8 flex flex-row items-center justify-between">
+                    <h2 className="font-amstel mb-2 text-3xl text-gray-900">
+                        Review
+                    </h2>
+                    <div className="flex items-center space-x-4">
+                        <span className="text-gray-600">
+                            {reviews.length}개의 리뷰
+                        </span>
                     </div>
                 </div>
 
