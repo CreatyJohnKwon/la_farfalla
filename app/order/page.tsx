@@ -37,6 +37,9 @@ const Order = () => {
         totalMileage,
         appliedCouponName,
         setAppliedCouponName,
+
+        recipientName,
+        setRecipientName,
         phoneNumber,
         setPhoneNumber,
         address,
@@ -46,7 +49,7 @@ const Order = () => {
         detailAddress,
         setDetailAddress,
         setSaveAddress,
-        setPayments,
+        // setPayments,
 
         orderComplete,
     } = useOrder();
@@ -251,6 +254,7 @@ const Order = () => {
         setDetailAddress(user.detailAddress);
         setPostcode(user.postcode);
         setMileage(user.mileage);
+        setAppliedCouponName(user.name);
     }, [user]);
 
     useEffect(() => {
@@ -264,6 +268,10 @@ const Order = () => {
         e.preventDefault();
 
         // 기존 검증들
+        if (!recipientName || recipientName.trim() === "") {
+            return alert("수령인 이름을 입력해주세요.");
+        }
+
         if (phoneNumber === "000-0000-0000" || phoneNumber.length < 11) {
             return alert("전화번호를 확인해주세요.");
         }
@@ -352,28 +360,9 @@ const Order = () => {
                             </p>
                             <div className="text-sm">
                                 <p className="font-pretendard">{user.name}</p>
-                                <input
-                                    className="font-amstel mt-1 rounded-none border-b text-black focus:outline-none focus:ring-1 focus:ring-gray-200"
-                                    type="tel"
-                                    value={
-                                        phoneNumber.startsWith("000")
-                                            ? ""
-                                            : phoneNumber
-                                    }
-                                    name="phoneNumber"
-                                    onChange={(e) => {
-                                        const raw = e.target.value
-                                            .replace(/\D/g, "")
-                                            .slice(0, 11);
-                                        const formatted =
-                                            formatPhoneNumber(raw);
-                                        setPhoneNumber(formatted);
-                                    }}
-                                    maxLength={
-                                        phoneNumber.startsWith("02") ? 12 : 13
-                                    }
-                                    placeholder={`000-0000-0000`}
-                                />
+                                <p className="font-amstel mt-1">
+                                    {user.phoneNumber}
+                                </p>
 
                                 <p className="font-amstel">
                                     {user.email || "이메일 정보 없음"}
@@ -387,13 +376,52 @@ const Order = () => {
                                 배송 정보
                             </h2>
                             <div className="text-sm">
-                                <p className="font-pretendard">{user.name}</p>
-                                <p className="font-amstel mt-1">
-                                    {phoneNumber.startsWith("000") ||
-                                    phoneNumber === ""
-                                        ? "000-0000-0000"
-                                        : phoneNumber}
-                                </p>
+                                <div className="w-[50%] space-y-3">
+                                    <div>
+                                        <label className="mb-1 block text-xs text-gray-600">
+                                            수령인 이름
+                                        </label>
+                                        <input
+                                            className="w-full border-b border-gray-300 bg-white text-sm focus:border-gray-500 focus:outline-none"
+                                            type="text"
+                                            value={recipientName}
+                                            name="recipientName"
+                                            onChange={(e) =>
+                                                setRecipientName(e.target.value)
+                                            }
+                                            placeholder="홍길동"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-xs text-gray-600">
+                                            수령인 전화번호
+                                        </label>
+                                        <input
+                                            className="w-full border-b border-gray-300 bg-white text-sm focus:border-gray-500 focus:outline-none"
+                                            type="tel"
+                                            value={
+                                                phoneNumber.startsWith("000")
+                                                    ? ""
+                                                    : phoneNumber
+                                            }
+                                            name="phoneNumber"
+                                            onChange={(e) => {
+                                                const raw = e.target.value
+                                                    .replace(/\D/g, "")
+                                                    .slice(0, 11);
+                                                const formatted =
+                                                    formatPhoneNumber(raw);
+                                                setPhoneNumber(formatted);
+                                            }}
+                                            maxLength={
+                                                phoneNumber.startsWith("02")
+                                                    ? 12
+                                                    : 13
+                                            }
+                                            placeholder="000-0000-0000"
+                                        />
+                                    </div>
+                                </div>
 
                                 <div className="relative w-full">
                                     <input

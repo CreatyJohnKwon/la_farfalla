@@ -3,13 +3,14 @@ import mongoose, { Schema } from "mongoose";
 const orderSchema = new mongoose.Schema(
     {
         // 주문 정보
-        userId: { type: Schema.Types.ObjectId, ref: "User", required: true }, // 사용자 ID
-        userNm: { type: String, required: true }, // 사용자 이름
-        phoneNumber: { type: String, required: true }, // 배송지 전화번호
+        userId: { type: Schema.Types.ObjectId, ref: "User", required: true }, // 주문자 ID (User 테이블 참조)
+        userNm: { type: String, required: true }, // ✅ 수취인 이름 (기존: 주문자 이름 → 변경: 수취인 이름)
+        phoneNumber: { type: String, required: true }, // ✅ 수취인 전화번호 (배송지 전화번호)
         address: { type: String, required: true }, // 배송지 주소
         detailAddress: { type: String, required: true }, // 배송지 상세 주소
         deliveryMemo: { type: String, required: false, default: "" }, // 배송 메모
         postcode: { type: String, required: true }, // 우편번호
+
         items: [
             {
                 productId: { type: String, required: true }, // 상품 ID

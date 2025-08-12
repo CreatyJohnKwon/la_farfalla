@@ -10,7 +10,6 @@ import { Review } from "@/src/entities/models/Review";
 import { Order } from "@/src/entities/models/Order";
 import { Cart } from "@/src/entities/models/Cart";
 
-// GET: 유저 정보 조회 (UserCoupon 기반)
 export async function GET() {
     const session = await getAuthSession();
     if (!session?.user?.email) {
@@ -81,9 +80,8 @@ export async function PATCH(req: NextRequest) {
     await connectDB();
     const user = await User.findOne({ email: email });
 
-    if (!user) {
+    if (!user)
         return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
 
     if (name) user.name = name;
     if (address) user.address = address;

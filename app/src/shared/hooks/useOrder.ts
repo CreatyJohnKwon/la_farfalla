@@ -24,6 +24,7 @@ import {
 } from "./react-query/useOrderQuery";
 import { ProductOption } from "@/src/components/product/interface";
 import { v4 as uuidv4 } from "uuid";
+import { adminEmails } from "public/data/common";
 
 const useOrder = () => {
     const { session } = useUser();
@@ -51,6 +52,7 @@ const useOrder = () => {
     const [customMemo, setCustomMemo] = useState("");
     const [couponMemo, setCouponMemo] = useState("");
     const [appliedCouponName, setAppliedCouponName] = useState("");
+    const [recipientName, setRecipientName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [address, setAddress] = useState("");
     const [postcode, setPostcode] = useState("");
@@ -100,31 +102,19 @@ const useOrder = () => {
     // ✅ 다른 useEffect들...
     useEffect(() => {
         if (!user) return;
+
         setPhoneNumber(user.phoneNumber);
         setAddress(user.address);
         setDetailAddress(user.detailAddress);
         setPostcode(user.postcode);
         setMileage(user.mileage);
+        setRecipientName(user.name);
     }, [user]);
 
     useEffect(() => {
         if (!user) return;
         setMileage(user.mileage - usedMileage);
     }, [usedMileage]);
-
-    // const returnStoreId = async (payments: string): Promise<string> => {
-    //     switch (payments) {
-    //         case "NAVER_PAY":
-    //             // return "store-f8bba69a-c4d7-4754-aeae-c483519aa061"; // 네이버 페이 테스트 채널 키
-    //             return "";
-    //         case "KAKAO_PAY":
-    //             return "channel-key-a2d29b8e-d463-4089-9f23-fefb2f08ca46"; // 카카오 페이 테스트 채널 키
-    //         case "CARD":
-    //             return "channel-key-29f71c8c-faf6-4066-b022-7d09e02107db"; // 카드 결제 테스트 채널 키
-    //         default:
-    //             return ""; // 기본 테스트 상점 ID
-    //     }
-    // };
 
     const orderComplete = async () => {
         let stockItems: ProductOption[] = [];
@@ -141,8 +131,8 @@ const useOrder = () => {
 
         const orderData: OrderData = {
             userId: user._id,
-            userNm: user.name,
-            phoneNumber,
+            userNm: recipientName,
+            phoneNumber: phoneNumber,
             address,
             detailAddress,
             postcode,
@@ -161,9 +151,7 @@ const useOrder = () => {
         };
 
         const storeId = "store-f8bba69a-c4d7-4754-aeae-c483519aa061";
-        // const channelKey = await returnStoreId(payments);
         const channelKey = "channel-key-29f71c8c-faf6-4066-b022-7d09e02107db";
-        // const channelKey = "channel-key-4d42f07d-23eb-4594-96a6-2cd6a583e8b4";
         const paymentId = uuidv4();
 
         if (!channelKey) {
@@ -191,7 +179,7 @@ const useOrder = () => {
                     orderDatas.length === 1
                         ? orderDatas[0].title
                         : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
-                totalAmount: session?.user?.email?.startsWith("admin")
+                totalAmount: adminEmails.includes(session?.user?.email || "")
                     ? 1000
                     : totalPrice,
                 currency: "CURRENCY_KRW",
@@ -208,6 +196,7 @@ const useOrder = () => {
             // ✅ 응답이 없는 경우 처리
             if (!response) {
                 alert("결제 요청 실패");
+
                 return;
             }
 
@@ -220,7 +209,9 @@ const useOrder = () => {
 
                 if (response.code === "PAY_PROCESS_CANCELED") {
                     alert("결제가 취소되었습니다.");
+                    console.error(response);
                 } else {
+                    console.error(response);
                     alert(
                         `결제 실패: ${response.message || "알 수 없는 오류"}`,
                     );
@@ -442,6 +433,9 @@ const useOrder = () => {
         setTotalMileage,
         appliedCouponName,
         setAppliedCouponName,
+
+        recipientName,
+        setRecipientName,
         phoneNumber,
         setPhoneNumber,
         address,
