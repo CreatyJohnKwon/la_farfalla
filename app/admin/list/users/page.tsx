@@ -23,6 +23,7 @@ const Users = () => {
     const [openAnnounceModal, setOpenAnnounceModal] = useState(false);
     const [userData, setUserData] = useState<UserProfileData>();
     const [sortOption, setSortOption] = useState<SortOption>("none");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const handleRestoreUser = (userId: string) => {
         restoreUser.mutate(userId, {
@@ -34,11 +35,54 @@ const Users = () => {
         });
     };
 
-    // 정렬된 유저 목록
-    const sortedUsers = useMemo(() => {
-        if (!users || sortOption === "none") return users || [];
+    // 검색 함수
+    const searchUsers = (users: UserProfileData[], query: string) => {
+        if (!query.trim()) return users;
 
-        const usersCopy = [...users];
+        const searchTerm = query.toLowerCase().trim();
+
+        return users.filter((user) => {
+            // 이메일 검색
+            const emailMatch = user.email?.toLowerCase().includes(searchTerm);
+
+            // 이름 검색
+            const nameMatch = user.name?.toLowerCase().includes(searchTerm);
+
+            // 전화번호 검색 (하이픈 제거해서 검색)
+            const phoneMatch = user.phoneNumber
+                ?.replace(/-/g, "")
+                .includes(searchTerm.replace(/-/g, ""));
+
+            // 주소 검색
+            const addressMatch =
+                user.address?.toLowerCase().includes(searchTerm) ||
+                user.detailAddress?.toLowerCase().includes(searchTerm);
+
+            // 우편번호 검색
+            const postcodeMatch = user.postcode?.includes(searchTerm);
+
+            return (
+                emailMatch ||
+                nameMatch ||
+                phoneMatch ||
+                addressMatch ||
+                postcodeMatch
+            );
+        });
+    };
+
+    // 검색 및 정렬된 유저 목록
+    const filteredAndSortedUsers = useMemo(() => {
+        if (!users) return [];
+
+        // 먼저 검색 적용
+        const searchedUsers = searchUsers(users, searchQuery);
+
+        // 검색 결과가 없거나 정렬 옵션이 none이면 검색 결과만 반환
+        if (sortOption === "none") return searchedUsers;
+
+        // 정렬 적용
+        const usersCopy = [...searchedUsers];
 
         switch (sortOption) {
             case "latest":
@@ -64,7 +108,12 @@ const Users = () => {
             default:
                 return usersCopy;
         }
-    }, [users, sortOption]);
+    }, [users, sortOption, searchQuery]);
+
+    // 검색어 초기화
+    const clearSearch = () => {
+        setSearchQuery("");
+    };
 
     if (isUserDataLoading) return <div>Loading...</div>;
     if (!users) return <div>유저 목록이 없습니다.</div>;
@@ -105,46 +154,136 @@ const Users = () => {
                         </button>
                     </div>
 
-                    {/* 필터 옵션 */}
+                    {/* 검색 및 필터 옵션 */}
                     <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-                        <span className="whitespace-nowrap text-sm text-gray-600">
-                            정렬 기준:
-                        </span>
-                        <select
-                            value={sortOption}
-                            onChange={(e) =>
-                                setSortOption(e.target.value as SortOption)
-                            }
-                            className="h-full rounded-sm border border-gray-300 bg-white px-2 py-2 text-sm hover:border-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="none">기본 순서</option>
-                            <option value="latest">최근 가입순</option>
-                            <option value="oldest">오래된 가입순</option>
-                            <option value="name_asc">이름 ㄱ-ㅎ 순</option>
-                            <option value="name_desc">이름 ㅎ-ㄱ 순</option>
-                        </select>
+                        {/* 검색 입력 */}
+                        <div className="relative flex items-center">
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="이메일, 이름, 전화번호, 주소 검색..."
+                                    value={searchQuery}
+                                    onChange={(e) =>
+                                        setSearchQuery(e.target.value)
+                                    }
+                                    className="h-full w-64 rounded-sm border border-gray-300 bg-white px-3 py-2 pl-10 pr-10 text-sm placeholder-gray-500 hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                />
+                                {/* 검색 아이콘 */}
+                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <svg
+                                        className="h-4 w-4 text-gray-400"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                        />
+                                    </svg>
+                                </div>
+                                {/* 검색어 초기화 버튼 */}
+                                {searchQuery && (
+                                    <button
+                                        onClick={clearSearch}
+                                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                                        title="검색어 초기화"
+                                    >
+                                        <svg
+                                            className="h-4 w-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M6 18L18 6M6 6l12 12"
+                                            />
+                                        </svg>
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* 정렬 옵션 */}
+                        <div className="flex items-center gap-2">
+                            <span className="whitespace-nowrap text-sm text-gray-600">
+                                정렬:
+                            </span>
+                            <select
+                                value={sortOption}
+                                onChange={(e) =>
+                                    setSortOption(e.target.value as SortOption)
+                                }
+                                className="h-full rounded-sm border border-gray-300 bg-white px-2 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                            >
+                                <option value="none">기본 순서</option>
+                                <option value="latest">최근 가입순</option>
+                                <option value="oldest">오래된 가입순</option>
+                                <option value="name_asc">이름 ㄱ-ㅎ 순</option>
+                                <option value="name_desc">이름 ㅎ-ㄱ 순</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                {/* 총 유저 수 표시 */}
+                {/* 총 유저 수 및 검색 결과 표시 */}
                 <div className="mt-4 text-sm text-gray-600">
-                    총{" "}
-                    <span className="font-medium text-blue-600">
-                        {sortedUsers.length}
-                    </span>
-                    명의 유저
-                    {sortOption !== "none" && (
-                        <span className="ml-2 text-gray-500">
-                            (
-                            {sortOption === "latest"
-                                ? "최근 가입순"
-                                : sortOption === "oldest"
-                                  ? "오래된 가입순"
-                                  : sortOption === "name_asc"
-                                    ? "이름 ㄱ-ㅎ 순"
-                                    : "이름 ㅎ-ㄱ 순"}{" "}
-                            정렬됨)
-                        </span>
+                    {searchQuery ? (
+                        <div className="flex flex-wrap items-center gap-1">
+                            <span>
+                                '
+                                <span className="font-medium text-blue-600">
+                                    {searchQuery}
+                                </span>
+                                ' 검색 결과:{" "}
+                                <span className="font-medium text-blue-600">
+                                    {filteredAndSortedUsers.length}
+                                </span>
+                                명
+                            </span>
+                            <span className="text-gray-400">
+                                (전체 {users.length}명 중)
+                            </span>
+                            {sortOption !== "none" && (
+                                <span className="ml-2 text-gray-500">
+                                    -{" "}
+                                    {sortOption === "latest"
+                                        ? "최근 가입순"
+                                        : sortOption === "oldest"
+                                          ? "오래된 가입순"
+                                          : sortOption === "name_asc"
+                                            ? "이름 ㄱ-ㅎ 순"
+                                            : "이름 ㅎ-ㄱ 순"}{" "}
+                                    정렬됨
+                                </span>
+                            )}
+                        </div>
+                    ) : (
+                        <div>
+                            총{" "}
+                            <span className="font-medium text-blue-600">
+                                {filteredAndSortedUsers.length}
+                            </span>
+                            명의 유저
+                            {sortOption !== "none" && (
+                                <span className="ml-2 text-gray-500">
+                                    (
+                                    {sortOption === "latest"
+                                        ? "최근 가입순"
+                                        : sortOption === "oldest"
+                                          ? "오래된 가입순"
+                                          : sortOption === "name_asc"
+                                            ? "이름 ㄱ-ㅎ 순"
+                                            : "이름 ㅎ-ㄱ 순"}{" "}
+                                    정렬됨)
+                                </span>
+                            )}
+                        </div>
                     )}
                 </div>
             </div>
@@ -198,7 +337,7 @@ const Users = () => {
                         </thead>
 
                         <tbody>
-                            {sortedUsers.map(
+                            {filteredAndSortedUsers.map(
                                 (user: UserProfileData, index: number) => (
                                     <tr
                                         key={user._id}
@@ -337,7 +476,7 @@ const Users = () => {
                 </div>
 
                 {/* 빈 상태 */}
-                {sortedUsers.length === 0 && (
+                {filteredAndSortedUsers.length === 0 && (
                     <div className="py-12 text-center text-gray-500">
                         <svg
                             className="mx-auto h-12 w-12 text-gray-400"
@@ -345,19 +484,40 @@ const Users = () => {
                             stroke="currentColor"
                             viewBox="0 0 24 24"
                         >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                            />
+                            {searchQuery ? (
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            ) : (
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                                />
+                            )}
                         </svg>
                         <h3 className="mt-2 text-sm font-medium text-gray-900">
-                            유저가 없습니다
+                            {searchQuery
+                                ? "검색 결과가 없습니다"
+                                : "유저가 없습니다"}
                         </h3>
                         <p className="mt-1 text-sm text-gray-500">
-                            등록된 유저가 없습니다.
+                            {searchQuery
+                                ? `'${searchQuery}'에 해당하는 유저를 찾을 수 없습니다.`
+                                : "등록된 유저가 없습니다."}
                         </p>
+                        {searchQuery && (
+                            <button
+                                onClick={clearSearch}
+                                className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                            >
+                                검색어 초기화
+                            </button>
+                        )}
                     </div>
                 )}
             </div>

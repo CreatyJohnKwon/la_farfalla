@@ -373,7 +373,7 @@ const CouponAdmin = () => {
                                     onChange={(e) =>
                                         setFilterStatus(e.target.value as any)
                                     }
-                                    className="min-h-[44px] rounded border border-gray-300 px-3 py-2 text-sm sm:text-base"
+                                    className="h-full rounded-sm border border-gray-300 bg-white px-2 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
                                 >
                                     <option value="all">전체</option>
                                     <option value="used">사용됨</option>

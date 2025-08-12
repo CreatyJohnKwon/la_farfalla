@@ -201,7 +201,7 @@ const Products = () => {
                                         onChange={(e) =>
                                             setSeasonFilter(e.target.value)
                                         }
-                                        className="min-h-[44px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-auto sm:min-w-[120px]"
+                                        className="min-h-[44px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[120px]"
                                     >
                                         <option value="all">전체 시즌</option>
                                         {uniqueSeasons.map((season) => (
@@ -223,7 +223,7 @@ const Products = () => {
                                                 e.target.value as any,
                                             )
                                         }
-                                        className="min-h-[44px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-auto sm:min-w-[120px]"
+                                        className="min-h-[44px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[120px]"
                                     >
                                         <option value="all">전체</option>
                                         <option value="in_stock">
@@ -246,7 +246,7 @@ const Products = () => {
                                                 e.target.value as SortOption,
                                             )
                                         }
-                                        className="min-h-[44px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-auto sm:min-w-[140px]"
+                                        className="min-h-[44px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[140px]"
                                     >
                                         <option value="none">기본 순서</option>
                                         <option value="latest">

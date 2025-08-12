@@ -231,7 +231,7 @@ const Orders = () => {
                                             e.target.value as SortOption,
                                         )
                                     }
-                                    className="min-h-[44px] rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="min-h-[44px] rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
                                 >
                                     <option value="none">기본 순서</option>
                                     <option value="name_asc">
@@ -253,7 +253,7 @@ const Orders = () => {
                                     onChange={(e) =>
                                         setStatusFilter(e.target.value)
                                     }
-                                    className="min-h-[44px] rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="focus:border-gray-5000 min-h-[44px] rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
                                 >
                                     <option value="all">전체 상태</option>
                                     {uniqueStatuses.map((status) => (
@@ -516,24 +516,11 @@ const Orders = () => {
                 {/* 빈 상태 */}
                 {!orderListLoading && filteredAndSortedOrders.length === 0 && (
                     <div className="py-12 text-center text-gray-500">
-                        <svg
-                            className="mx-auto h-12 w-12 text-gray-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                            />
-                        </svg>
-                        <h3 className="mt-2 text-sm font-medium text-gray-900">
+                        <span className="mt-2 text-base font-medium text-gray-900">
                             {statusFilter !== "all" || sortOption !== "none"
                                 ? "필터 조건에 맞는 주문이 없습니다"
                                 : "주문이 없습니다"}
-                        </h3>
+                        </span>
                         <p className="mt-1 text-sm text-gray-500">
                             {statusFilter !== "all" || sortOption !== "none"
                                 ? "다른 필터 조건을 시도해보세요."
