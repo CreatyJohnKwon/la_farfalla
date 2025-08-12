@@ -152,7 +152,6 @@ const useOrder = () => {
 
         const storeId = "store-f8bba69a-c4d7-4754-aeae-c483519aa061";
         const channelKey = "channel-key-4d42f07d-23eb-4594-96a6-2cd6a583e8b4";
-        const paymentId = uuidv4();
 
         if (!channelKey) {
             alert("결제 채널이 설정되지 않았습니다.");
@@ -174,7 +173,7 @@ const useOrder = () => {
             const response = await PortOne.requestPayment({
                 storeId,
                 channelKey,
-                paymentId,
+                paymentId: uuidv4(),
                 orderName:
                     orderDatas.length === 1
                         ? orderDatas[0].title
@@ -382,8 +381,6 @@ const useOrder = () => {
             detailAddress,
             postcode,
         };
-
-        console.log("updateAddress : ", updateAddress);
 
         await updateUser(updateAddress);
     };

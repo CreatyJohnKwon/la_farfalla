@@ -93,8 +93,6 @@ export async function PATCH(req: NextRequest) {
     if (password) user.password = await bcrypt.hash(password, 10);
     if (mileage) user.mileage = mileage;
 
-    console.log(user);
-
     await user.save();
 
     return NextResponse.json({ success: true });
