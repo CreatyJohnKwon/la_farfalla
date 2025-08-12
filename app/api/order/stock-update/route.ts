@@ -86,9 +86,6 @@ export async function PUT(request: NextRequest) {
 
                 productObjectId =
                     ObjectIdUtils.toObjectIdStrict(targetProductId);
-                // console.log(
-                //     `✅ ObjectId 변환 성공: ${targetProductId} → ${productObjectId}`,
-                // );
             } catch (objectIdError: any) {
                 console.error("ObjectId 변환 실패:", objectIdError);
                 return NextResponse.json(
@@ -114,10 +111,6 @@ export async function PUT(request: NextRequest) {
                     );
                 }
 
-                // console.log(
-                //     `📦 success to get product : ${product.title.kr} (ID: ${productObjectId})`,
-                // );
-
                 // 🔍 options 배열에서 해당 colorName 찾기
                 const optionIndex = product.options.findIndex(
                     (option: any) => option.colorName === item.colorName,
@@ -139,10 +132,6 @@ export async function PUT(request: NextRequest) {
                 const currentOption = product.options[optionIndex];
                 const currentStock = currentOption.stockQuantity || 0;
 
-                // console.log(
-                //     `📊 less store : ${item.colorName} = ${currentStock}`,
-                // );
-
                 let newStock;
 
                 if (action === "reduce") {
@@ -161,13 +150,9 @@ export async function PUT(request: NextRequest) {
                         );
                     }
                     newStock = currentStock - quantity;
-                    // console.log(
-                    //     `⬇️ reduce product store : ${currentStock} - ${quantity} = ${newStock}`,
-                    // );
                 } else {
                     // 재고 복구
                     newStock = currentStock + quantity;
-                    console.log(`⬆️ restore product store : ${quantity}`);
                 }
 
                 // 🔄 MongoDB 배열 요소 업데이트 (positional operator 사용)
@@ -195,10 +180,6 @@ export async function PUT(request: NextRequest) {
                         );
                     }
 
-                    // console.log(
-                    //     `✅ less store update colorName: ${item.colorName}/ to newStock: ${newStock}`,
-                    // );
-
                     // 2단계: 전체 재고량(quantity) 재계산 및 업데이트
                     const totalQuantity = updateResult.options.reduce(
                         (sum: number, option: any) => {
@@ -224,18 +205,6 @@ export async function PUT(request: NextRequest) {
                     if (!finalUpdateResult) {
                         throw new Error("❌ failure to update product store");
                     }
-
-                    // 4단계: 각 색상별 재고 현황 로그 (디버깅용)
-                    finalUpdateResult.options.forEach(
-                        (opt: any, idx: number) => {
-                            console.log(
-                                `   ${idx + 1}. ${opt.colorName}: ${opt.stockQuantity}개`,
-                            );
-                        },
-                    );
-                    // console.log(
-                    //     `📦 product store success : ${finalUpdateResult.quantity}개`,
-                    // );
                 } catch (updateError: any) {
                     console.error("❌ product store failure:", updateError);
                     return NextResponse.json(
@@ -246,19 +215,6 @@ export async function PUT(request: NextRequest) {
                             colorName: item.colorName,
                         },
                         { status: 500 },
-                    );
-                }
-
-                // 📝 재고 로그 기록 (선택사항)
-                try {
-                    // StockLog 모델이 있다면 기록
-                    // console.log(
-                    //     `📝 product store changes success : ${product.title.kr} ${item.colorName} ${action} ${quantity}`,
-                    // );
-                } catch (logError: any) {
-                    console.warn(
-                        "❌ product store failure :",
-                        logError.message,
                     );
                 }
 
@@ -293,8 +249,6 @@ export async function PUT(request: NextRequest) {
             updates,
             timestamp: new Date().toISOString(),
         };
-
-        console.log(`store update success:`, response.message);
 
         return NextResponse.json(response);
     } catch (error: any) {

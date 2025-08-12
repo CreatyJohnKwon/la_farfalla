@@ -77,6 +77,8 @@ export async function PATCH(req: NextRequest) {
         mileage,
     } = body;
 
+    console.log(body);
+
     await connectDB();
     const user = await User.findOne({ email: email });
 
@@ -90,6 +92,8 @@ export async function PATCH(req: NextRequest) {
     if (postcode) user.postcode = postcode;
     if (password) user.password = await bcrypt.hash(password, 10);
     if (mileage) user.mileage = mileage;
+
+    console.log(user);
 
     await user.save();
 

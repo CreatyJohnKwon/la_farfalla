@@ -85,7 +85,7 @@ const updateUser = async (form: {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
     });
-    if (!res.ok) throw new Error("업데이트 실패");
+    if (!res.ok) throw new Error("updateUser | 업데이트 실패: " + res.json);
     return res.json();
 };
 

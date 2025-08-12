@@ -67,7 +67,10 @@ const useSmartUpdateOrderMutation = () => {
         },
 
         onError: (error, variables) => {
-            console.error("❌ 업데이트 실패", error);
+            console.error("❌ useSmartUpdateOrderMutation | 업데이트 실패", {
+                error,
+                variables,
+            });
             const count = Array.isArray(variables) ? variables.length : 1;
             alert(
                 `${count}개 주문 업데이트 중 오류가 발생했어요: ${error.message}`,
