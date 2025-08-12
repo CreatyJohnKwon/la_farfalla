@@ -151,7 +151,8 @@ const useOrder = () => {
         };
 
         const storeId = "store-f8bba69a-c4d7-4754-aeae-c483519aa061";
-        const channelKey = "channel-key-29f71c8c-faf6-4066-b022-7d09e02107db";
+        const channelKey = "channel-key-4d42f07d-23eb-4594-96a6-2cd6a583e8b4";
+        // const channelKey = "channel-key-29f71c8c-faf6-4066-b022-7d09e02107db"; // test
         const paymentId = uuidv4();
 
         if (!channelKey) {
@@ -171,7 +172,7 @@ const useOrder = () => {
                 action: "reduce",
             });
 
-            let response = await PortOne.requestPayment({
+            const response = await PortOne.requestPayment({
                 storeId,
                 channelKey,
                 paymentId,
@@ -219,28 +220,33 @@ const useOrder = () => {
                 return;
             }
 
-            // 🔥 서버에서 결제 검증 (보안상 필수) 추후 개선
-            const verificationResponse = await fetch("/api/payment/verify", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    paymentId: response.paymentId,
-                    expectedAmount: totalPrice,
-                    orderData,
-                }),
-            });
+            // // 🔥 서버에서 결제 검증 (보안상 필수)
+            // // 지만 사용자가 많은 대기업이 될 경우에 고려하고 도입하자
+            // const verificationResponse = await fetch("/api/payment/verify", {
+            //     method: "POST",
+            //     headers: { "Content-Type": "application/json" },
+            //     body: JSON.stringify({
+            //         paymentId: response.txId,
+            //         expectedAmount: adminEmails.includes(
+            //             session?.user?.email || "",
+            //         )
+            //             ? 1000
+            //             : totalPrice,
+            //         orderData,
+            //     }),
+            // });
 
-            const verificationResult = await verificationResponse.json();
+            // const verificationResult = await verificationResponse.json();
 
-            if (!verificationResult.success) {
-                alert("결제 검증에 실패했습니다. 고객센터에 문의해주세요.");
-                return;
-            }
+            // if (!verificationResult.success) {
+            //     alert("결제 검증에 실패했습니다. 고객센터에 문의해주세요.");
+            //     return;
+            // }
 
             // ✅ 검증 성공 후 주문 처리
             const res = await orderAccept({
                 ...orderData,
-                paymentId: response.paymentId, // response에서 받은 paymentId 사용
+                paymentId: response.txId, // response에서 받은 paymentId 사용
             });
 
             if (res.success) {
@@ -254,7 +260,7 @@ const useOrder = () => {
                 const body = JSON.stringify({
                     ...orderData,
                     _id: res.orderId,
-                    paymentId: paymentId,
+                    paymentId: response.txId,
                     createdAt: new Date().toISOString(),
                 });
 

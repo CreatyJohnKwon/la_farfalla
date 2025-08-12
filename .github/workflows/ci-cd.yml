@@ -48,6 +48,7 @@ jobs:
                   echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env.production
                   echo "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> .env.production
                   echo "STORE_NAME=${{ secrets.STORE_NAME }}" >> .env.production
+                  echo "PORTONE_API_SECRET_KEY=${{ secrets.PORTONE_API_SECRET_KEY }}" >> .env.production
             - name: Archive app source (exclude node_modules)
               run: |
                   TIMESTAMP=$(date +%Y%m%d_%H%M%S)
