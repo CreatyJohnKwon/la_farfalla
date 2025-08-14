@@ -298,7 +298,7 @@ const OrderDetailModal = ({
             style={{ touchAction: "manipulation" }}
         >
             <div
-                className="h-auto w-[90vw] overflow-y-auto rounded-lg bg-white sm:w-[35vw]"
+                className="max-h-[90vh] w-[90vw] overflow-y-auto rounded-lg bg-white sm:w-[35vw]"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                     WebkitOverflowScrolling: "touch",
@@ -569,16 +569,7 @@ const OrderDetailModal = ({
                                 >
                                     환불 및 교환하기
                                 </span>
-                            ) : order.shippingStatus === "confirm" ? (
-                                <span
-                                    className="cursor-pointer font-pretendard text-xs font-[500] text-red-400 underline hover:text-red-500"
-                                    onClick={() => setIsRefundModalOpen(true)}
-                                >
-                                    교환하기
-                                </span>
-                            ) : (
-                                <></>
-                            )}
+                            ) : <></> }
                         </div>
 
                         {/* 구매확정 버튼 */}
