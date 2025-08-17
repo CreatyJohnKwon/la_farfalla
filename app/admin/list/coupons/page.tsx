@@ -8,33 +8,30 @@ import {
     useGetManageCouponsListQuery,
     useUpdateManageCouponMutation,
     useDeleteUserCouponMutation,
+    usePostSpecialUserCouponMutation,
 } from "@/src/shared/hooks/react-query/useBenefitQuery";
 import CouponCreateModal from "@/src/widgets/modal/CouponCreateModal";
 import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
+import PersonalCouponDistribution from "@/src/components/coupon/PersonalCouponDistribution";
 
 const CouponAdmin = () => {
     const [selectedCoupon, setSelectedCoupon] = useState<ICoupon | null>(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
-    const [filterStatus, setFilterStatus] = useState<"all" | "used" | "unused">(
-        "all",
-    );
-    const [activeTab, setActiveTab] = useState<"issued" | "templates">(
-        "issued",
-    );
+    
+    // 🎯 개별 쿠폰 배포 관련 상태 추가
+    const [showDistributionModal, setShowDistributionModal] = useState(false);
+    const [distributionCoupon, setDistributionCoupon] = useState<ICoupon | null>(null);
+    
+    const [filterStatus, setFilterStatus] = useState<"all" | "used" | "unused">("all");
+    const [activeTab, setActiveTab] = useState<"issued" | "templates">("issued");
 
     // 발급된 쿠폰 필터 상태
     const [userSearchTerm, setUserSearchTerm] = useState("");
-    const [issuedSortOrder, setIssuedSortOrder] = useState<
-        "latest" | "oldest" | "none"
-    >("none");
+    const [issuedSortOrder, setIssuedSortOrder] = useState<"latest" | "oldest" | "none">("none");
 
     // 템플릿 쿠폰 필터 상태
-    const [templateStatusFilter, setTemplateStatusFilter] = useState<
-        "all" | "active" | "expired" | "inactive"
-    >("all");
-    const [templateSortOrder, setTemplateSortOrder] = useState<
-        "latest" | "oldest" | "none"
-    >("none");
+    const [templateStatusFilter, setTemplateStatusFilter] = useState<"all" | "active" | "expired" | "inactive">("all");
+    const [templateSortOrder, setTemplateSortOrder] = useState<"latest" | "oldest" | "none">("none");
 
     // 우측 - 쿠폰 템플릿 관리 (Coupon 스키마)
     const {
@@ -54,12 +51,35 @@ const CouponAdmin = () => {
     const deleteManageCouponMutation = useDeleteManageCouponMutation();
     const updateManageCouponMutation = useUpdateManageCouponMutation();
     const deleteUserCouponMutation = useDeleteUserCouponMutation();
+    const postSpecialUserCouponMutation = usePostSpecialUserCouponMutation();
+
+    // 🎯 개별 쿠폰 배포 함수 추가
+    const handleDistributeCoupon = async (emails: string[]) => {
+        if (!distributionCoupon) return;
+        
+        try {
+            postSpecialUserCouponMutation.mutate(
+                { 
+                    // 요청값에 필요한 JSON 데이터   
+                    couponId: distributionCoupon._id,
+                    emails
+                },
+                {
+                    onSuccess: () => { // onError 는 mutation 에서 반응
+                        alert(`${emails.length}명에게 "${distributionCoupon.name} 쿠폰"이 발급되었습니다.`);
+                        userCouponRefetch();
+                        manageCouponRefetch();
+                    }
+                },
+            );
+        } catch (error) {
+            console.error('쿠폰 배포 실패:', error);
+            alert('쿠폰 배포에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
 
     // 쿠폰 템플릿 활성화/비활성화 토글
-    const toggleCouponActive = async (
-        couponId: string,
-        currentIsActive: boolean,
-    ) => {
+    const toggleCouponActive = async (couponId: string, currentIsActive: boolean) => {
         try {
             updateManageCouponMutation.mutate(
                 { couponId, currentIsActive },
@@ -94,7 +114,6 @@ const CouponAdmin = () => {
         if (!confirm("이 사용자의 쿠폰을 회수하시겠습니까?")) return;
 
         try {
-            // 쿠폰 회수 로직
             deleteUserCouponMutation.mutate(userCouponId, {
                 onSuccess: () => {
                     alert("쿠폰이 회수되었습니다.");
@@ -758,7 +777,7 @@ const CouponAdmin = () => {
                                                     <th className="w-[20%] px-4 py-3 text-sm">
                                                         상태
                                                     </th>
-                                                    <th className="w-[10%] px-4 py-3 text-center text-sm">
+                                                    <th className="w-[15%] px-4 py-3 text-center text-sm">
                                                         작업
                                                     </th>
                                                 </tr>
@@ -894,35 +913,53 @@ const CouponAdmin = () => {
                                                                         </div>
                                                                     </td>
                                                                     <td className="px-4 py-3 text-center">
-                                                                        <button
-                                                                            onClick={(
-                                                                                e,
-                                                                            ) => {
-                                                                                e.stopPropagation();
-                                                                                deleteCoupon(
-                                                                                    coupon.name,
-                                                                                    coupon._id,
-                                                                                );
-                                                                            }}
-                                                                            className="text-sm text-red-600 hover:text-red-800"
-                                                                            title="삭제"
-                                                                        >
-                                                                            <svg
-                                                                                className="h-5 w-5"
-                                                                                fill="none"
-                                                                                stroke="currentColor"
-                                                                                viewBox="0 0 24 24"
+                                                                        <div className="flex items-center justify-center gap-2">
+                                                                            {/* 🎯 Personal 타입일 때만 배포 버튼 표시 */}
+                                                                            {coupon.type === 'personal' && (
+                                                                                <button
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        setDistributionCoupon(coupon);
+                                                                                        setShowDistributionModal(true);
+                                                                                    }}
+                                                                                    className="text-sm text-blue-600 hover:text-blue-800"
+                                                                                    title="배포"
+                                                                                >
+                                                                                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                                                                    </svg>
+                                                                                </button>
+                                                                            )}
+                                                                            <button
+                                                                                onClick={(
+                                                                                    e,
+                                                                                ) => {
+                                                                                    e.stopPropagation();
+                                                                                    deleteCoupon(
+                                                                                        coupon.name,
+                                                                                        coupon._id,
+                                                                                    );
+                                                                                }}
+                                                                                className="text-sm text-red-600 hover:text-red-800"
+                                                                                title="삭제"
                                                                             >
-                                                                                <path
-                                                                                    strokeLinecap="round"
-                                                                                    strokeLinejoin="round"
-                                                                                    strokeWidth={
-                                                                                        2
-                                                                                    }
-                                                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                                                                />
-                                                                            </svg>
-                                                                        </button>
+                                                                                <svg
+                                                                                    className="h-5 w-5"
+                                                                                    fill="none"
+                                                                                    stroke="currentColor"
+                                                                                    viewBox="0 0 24 24"
+                                                                                >
+                                                                                    <path
+                                                                                        strokeLinecap="round"
+                                                                                        strokeLinejoin="round"
+                                                                                        strokeWidth={
+                                                                                            2
+                                                                                        }
+                                                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                                                    />
+                                                                                </svg>
+                                                                            </button>
+                                                                        </div>
                                                                     </td>
                                                                 </tr>
                                                                 {/* 선택된 쿠폰 템플릿 상세 정보 */}
@@ -1055,35 +1092,53 @@ const CouponAdmin = () => {
                                                                         </div>
                                                                     )}
                                                                 </div>
-                                                                <button
-                                                                    onClick={(
-                                                                        e,
-                                                                    ) => {
-                                                                        e.stopPropagation();
-                                                                        deleteCoupon(
-                                                                            coupon.name,
-                                                                            coupon._id,
-                                                                        );
-                                                                    }}
-                                                                    className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded border border-red-200 text-red-600 hover:bg-red-50 hover:text-red-800"
-                                                                    title="삭제"
-                                                                >
-                                                                    <svg
-                                                                        className="h-5 w-5"
-                                                                        fill="none"
-                                                                        stroke="currentColor"
-                                                                        viewBox="0 0 24 24"
+                                                                <div className="flex gap-2">
+                                                                    {/* 🎯 Personal 타입일 때만 배포 버튼 표시 */}
+                                                                    {coupon.type === 'personal' && (
+                                                                        <button
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setDistributionCoupon(coupon);
+                                                                                setShowDistributionModal(true);
+                                                                            }}
+                                                                            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded border border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-800"
+                                                                            title="배포"
+                                                                        >
+                                                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    )}
+                                                                    <button
+                                                                        onClick={(
+                                                                            e,
+                                                                        ) => {
+                                                                            e.stopPropagation();
+                                                                            deleteCoupon(
+                                                                                coupon.name,
+                                                                                coupon._id,
+                                                                            );
+                                                                        }}
+                                                                        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded border border-red-200 text-red-600 hover:bg-red-50 hover:text-red-800"
+                                                                        title="삭제"
                                                                     >
-                                                                        <path
-                                                                            strokeLinecap="round"
-                                                                            strokeLinejoin="round"
-                                                                            strokeWidth={
-                                                                                2
-                                                                            }
-                                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                                                        />
-                                                                    </svg>
-                                                                </button>
+                                                                        <svg
+                                                                            className="h-5 w-5"
+                                                                            fill="none"
+                                                                            stroke="currentColor"
+                                                                            viewBox="0 0 24 24"
+                                                                        >
+                                                                            <path
+                                                                                strokeLinecap="round"
+                                                                                strokeLinejoin="round"
+                                                                                strokeWidth={
+                                                                                    2
+                                                                                }
+                                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                                            />
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
                                                             </div>
 
                                                             <div className="flex flex-wrap gap-2">
@@ -1227,12 +1282,25 @@ const CouponAdmin = () => {
                 </div>
             </div>
 
-            {/* 쿠폰 생성 모달 */}
+            {/* 🎯 기존 쿠폰 생성 모달 */}
             {showCreateModal && (
                 <CouponCreateModal
                     isOpen={showCreateModal}
                     onClose={() => setShowCreateModal(false)}
                     onRefetch={manageCouponRefetch}
+                />
+            )}
+
+            {/* 🎯 새로운 개별 쿠폰 배포 모달 */}
+            {showDistributionModal && distributionCoupon && (
+                <PersonalCouponDistribution
+                    isOpen={showDistributionModal}
+                    onClose={() => {
+                        setShowDistributionModal(false);
+                        setDistributionCoupon(null);
+                    }}
+                    selectedCoupon={distributionCoupon}
+                    onDistribute={handleDistributeCoupon}
                 />
             )}
         </div>

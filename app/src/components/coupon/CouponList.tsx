@@ -108,6 +108,11 @@ const CouponList = () => {
             return hasQuotaLeft;
         }
 
+        if (coupon.type === "personal") {
+            // 개인 쿠폰은 사용자가 보유한 쿠폰이 아니면 보여주지 않음
+            return isUserOwned;
+        }
+
         // 일반 쿠폰 (common, personal) → 기존 로직
         const hasQuotaLeft =
             coupon.maxUsage === null || coupon.currentUsage < coupon.maxUsage;

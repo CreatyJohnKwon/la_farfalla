@@ -22,6 +22,26 @@ const postUserCoupon = async (data: Partial<any>): Promise<any> => {
     return res.json();
 };
 
+const postSpecialUserCoupon = async (data: Partial<any>): Promise<any> => {
+    const res = await fetch("/api/user/coupon/distribute", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const errorMessage = errorData.message || "알 수 없는 쿠폰 생성 실패 오류";
+        
+        return res.json();
+    }
+
+
+    return res.json();
+};
+
 const deleteUserCoupon = async (_id: string | undefined) => {
     if (!_id) throw new Error("Coupon id is undefined");
 
@@ -103,6 +123,7 @@ export {
     getManageCouponList,
     postCoupon,
     postUserCoupon,
+    postSpecialUserCoupon,
     patchCoupon,
     deleteCoupon,
     deleteUserCoupon,

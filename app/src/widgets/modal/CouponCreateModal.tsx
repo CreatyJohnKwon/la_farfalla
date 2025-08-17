@@ -1,5 +1,5 @@
 import { usePostManageCouponMutation } from "@/src/shared/hooks/react-query/useBenefitQuery";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface CouponCreateModalProps {
     isOpen: boolean;

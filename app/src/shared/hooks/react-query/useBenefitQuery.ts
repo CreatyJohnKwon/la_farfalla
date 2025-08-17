@@ -4,7 +4,6 @@ import {
     CouponResponse,
     ICoupon,
     MileageItem,
-    OrderData,
 } from "@src/entities/type/interfaces";
 import { updateCoupon } from "@src/shared/lib/server/order";
 import {
@@ -15,6 +14,7 @@ import {
     getMyCoupon,
     patchCoupon,
     postCoupon,
+    postSpecialUserCoupon,
     postUserCoupon,
 } from "../../lib/server/coupon";
 
@@ -46,6 +46,17 @@ const usePostUserCouponMutation = () => {
             queryClient.invalidateQueries({ queryKey: ["userCoupons"] }),
         onError: (error: any) =>
             alert(error.message || "쿠폰 생성 중 오류 발생"),
+    });
+};
+
+const usePostSpecialUserCouponMutation = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: postSpecialUserCoupon,
+        onSuccess: () =>
+            queryClient.invalidateQueries({ queryKey: ["userCoupons"] }),
+        onError: (error) =>
+            alert(error.message),
     });
 };
 
@@ -118,6 +129,7 @@ export {
     useDeleteUserCouponMutation,
     useGetManageCouponsListQuery,
     usePostManageCouponMutation,
+    usePostSpecialUserCouponMutation,
     useUpdateManageCouponMutation,
     useDeleteManageCouponMutation,
 };

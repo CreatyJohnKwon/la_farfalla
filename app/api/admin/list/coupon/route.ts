@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { UserCoupon } from "@/src/entities/models/UserCoupon";
+import { connectDB } from "@/src/entities/models/db/mongoose";
 
 export async function GET(req: NextRequest) {
     try {
+        await connectDB();
+
         const allCoupons = await UserCoupon.find()
             .populate("userId")
             .sort({ createdAt: -1 })

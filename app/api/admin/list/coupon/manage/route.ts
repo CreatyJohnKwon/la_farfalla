@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Coupon } from "@src/entities/models/Coupon";
 import { UserCoupon } from "@/src/entities/models/UserCoupon";
+import { connectDB } from "@/src/entities/models/db/mongoose";
 
 export async function GET(req: NextRequest) {
     try {
+        await connectDB();
+
         const allCoupons = await Coupon.find().sort({ createdAt: -1 }).lean();
 
         return NextResponse.json({
@@ -23,6 +26,8 @@ export async function GET(req: NextRequest) {
 // POST - 쿠폰 생성
 export async function POST(req: NextRequest) {
     try {
+        await connectDB();
+
         const body = await req.json();
         const newCoupon = await Coupon.create(body);
         return NextResponse.json({
@@ -47,6 +52,8 @@ export async function PATCH(req: NextRequest) {
                 { status: 400 },
             );
         }
+
+        await connectDB();
 
         const updatedCoupon = await Coupon.findByIdAndUpdate(_id, updateData, {
             new: true,
@@ -80,6 +87,8 @@ export async function DELETE(req: NextRequest) {
                 { status: 400 },
             );
         }
+
+        await connectDB();
 
         const deleted = await Coupon.findByIdAndDelete(_id);
 

@@ -7,18 +7,18 @@ import UpdateProductModal from "@/src/widgets/modal/UpdateProduct/UpdateProductM
 import UpdateSeasonModal from "@/src/widgets/modal/UpdateSeasonModal";
 import Link from "next/link";
 import { Product } from "@/src/components/product/interface";
-import useProduct from "@/src/shared/hooks/useProduct";
+    import useProduct from "@/src/shared/hooks/useProduct";
 
-type SortOption =
-    | "none"
-    | "latest"
-    | "oldest"
-    | "name_asc"
-    | "name_desc"
-    | "price_asc"
-    | "price_desc";
+    type SortOption =
+        | "none"
+        | "latest"
+        | "oldest"
+        | "name_asc"
+        | "name_desc"
+        | "price_asc"
+        | "price_desc";
 
-const Products = () => {
+    const Products = () => {
     const [isOpenUpdateModal, setIsOpenUpdateModal] = useState<boolean>(false);
     const [isOpenUpdateSeasonModal, setIsOpenUpdateSeasonModal] =
         useState<boolean>(false);
@@ -280,25 +280,26 @@ const Products = () => {
                                         필터 초기화
                                     </button>
                                 )}
+
+                                <div className="text-sm text-gray-600">
+                                    총{" "}
+                                    <span className="font-medium text-blue-600">
+                                        {filteredAndSortedProducts.length}
+                                    </span>
+                                    개 상품
+                                    {originalFilteredProducts &&
+                                        filteredAndSortedProducts.length !==
+                                            originalFilteredProducts.length && (
+                                            <span className="ml-1 text-gray-500">
+                                                (전체{" "}
+                                                {originalFilteredProducts.length}개
+                                                중)
+                                            </span>
+                                        )}
+                                </div>
                             </div>
 
                             {/* 결과 정보 */}
-                            <div className="text-sm text-gray-600">
-                                총{" "}
-                                <span className="font-medium text-blue-600">
-                                    {filteredAndSortedProducts.length}
-                                </span>
-                                개 상품
-                                {originalFilteredProducts &&
-                                    filteredAndSortedProducts.length !==
-                                        originalFilteredProducts.length && (
-                                        <span className="ml-1 text-gray-500">
-                                            (전체{" "}
-                                            {originalFilteredProducts.length}개
-                                            중)
-                                        </span>
-                                    )}
-                            </div>
 
                             {/* 활성 필터 태그 */}
                             {(seasonFilter !== "all" ||

@@ -160,9 +160,7 @@ interface ICoupon {
     maxUsage: number | null; // null로 명시적 정의
     maxUsagePerUser: number | null;
     currentUsage: number;
-    applicableCategories?: string[];
     applicableProducts?: string[];
-    excludeCategories?: string[];
     excludeProducts?: string[];
     createdAt: Date;
     updatedAt: Date;

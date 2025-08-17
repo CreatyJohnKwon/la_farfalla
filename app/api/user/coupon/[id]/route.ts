@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/src/entities/models/db/mongoose";
 import { Types } from "mongoose";
 import { UserCoupon } from "@/src/entities/models/UserCoupon";
+import { Coupon } from "@/src/entities/models/Coupon";
 
 export async function PATCH(
     req: NextRequest,

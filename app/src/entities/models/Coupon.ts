@@ -37,11 +37,7 @@ const couponSchema = new Schema<ICouponDocument>(
         maxUsagePerUser: { type: Number, default: 1 },
         currentUsage: { type: Number, default: 0 },
 
-        applicableCategories: [
-            { type: Schema.Types.ObjectId, ref: "Category" },
-        ],
         applicableProducts: [{ type: Schema.Types.ObjectId, ref: "Product" }],
-        excludeCategories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
         excludeProducts: [{ type: Schema.Types.ObjectId, ref: "Product" }],
     },
     {
