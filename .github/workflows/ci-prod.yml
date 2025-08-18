@@ -1,0 +1,110 @@
+name: CI/CD Production
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+
+            - name: Login to Docker Hub
+              uses: docker/login-action@v2
+              with:
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            - name: Build and push Docker image
+              uses: docker/build-push-action@v4
+              with:
+                  context: .
+                  file: ./Dockerfile.full
+                  push: true
+                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:latest
+                  build-args: |
+                      NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}
+                      NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
+                      KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
+                      KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
+                      NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+                      NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+                      R2_TOKEN=${{ secrets.R2_TOKEN }}
+                      R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
+                      R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
+                      R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}
+                      R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
+                      R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}
+                      MONGODB_URI=${{ secrets.MONGODB_URI }}
+                      NEXT_IMAGE_OPTIMIZATION_TIMEOUT=${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}
+                      SMTP_HOST=${{ secrets.SMTP_HOST }}
+                      SMTP_PORT=${{ secrets.SMTP_PORT }}
+                      SMTP_SECURE=${{ secrets.SMTP_SECURE }}
+                      SMTP_USER=${{ secrets.SMTP_USER }}
+                      SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+                      ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
+                      STORE_NAME=${{ secrets.STORE_NAME }}
+                      PORTONE_API_SECRET_KEY=${{ secrets.PORTONE_API_SECRET_KEY }}
+                      
+    deploy:
+        runs-on: ubuntu-latest
+        needs: build-and-push
+        steps:
+            - name: Set up SSH key
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+                  echo "Host *" >> ~/.ssh/config
+                  echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+                  echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+              env:
+                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+
+            - name: Remote Deploy to Production
+              run: |
+                  ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=3 \
+                      -i ~/.ssh/id_rsa \
+                      ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+                    
+                    DEPLOY_DIR="/home/ec2-user/la_farfalla"
+                    APP_IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:latest"
+                    
+                    echo "🔄 Starting remote deployment to production..."
+                    
+                    docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+                    docker pull "$APP_IMAGE_TAG"
+                    
+                    # 프로젝트 디렉토리를 생성하는 명령어 추가
+                    mkdir -p "$DEPLOY_DIR"
+                    
+                    echo "🚀 Starting Docker containers with new image..."
+                    cd "$DEPLOY_DIR"
+                    docker-compose up -d --no-build --force-recreate
+                    
+                    echo "🧹 Cleaning up unused Docker images..."
+                    docker image prune -af
+                    
+                    echo "✅ Deployment to production completed successfully!"
+                  EOF
+              env:
+                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+                  EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+                  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+                  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            - name: Deployment Status
+              if: always()
+              run: |
+                  if [ ${{ job.status }} == 'success' ]; then
+                      echo "✅ Deployment completed successfully!"
+                  else
+                      echo "❌ Deployment failed. Check logs above."
+                      exit 1
+                  fi
