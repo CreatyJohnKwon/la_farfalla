@@ -74,8 +74,7 @@ jobs:
                       ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
                     
                     DEPLOY_DIR="/home/ec2-user/la_farfalla"
-                    # Docker 이미지 태그를 lafarfalla:latest로 변경
-                    APP_IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:latest"
+                    APP_IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/your-app-name:latest"
                     
                     echo "🔄 Starting remote deployment to production..."
                     
