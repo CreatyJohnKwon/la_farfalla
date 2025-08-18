@@ -96,7 +96,7 @@ const CouponList = () => {
 
         // 이벤트 쿠폰인 경우 (선착순)
         if (coupon.type === "event") {
-            // 사용자가 이미 보유한 이벤트 쿠폰 → 선착순 종료 여부 상관없이 항상 보여줌
+            // 사용자가 이미 보유한 이벤트 쿠폰 → 선착순 종료 여부 상관없이 항상 보여 줌
             if (isUserOwned) {
                 return true;
             }

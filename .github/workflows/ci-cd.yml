@@ -6,16 +6,60 @@ on:
             - main
 
 jobs:
-    build-and-deploy:
+    build-and-push:
         runs-on: ubuntu-latest
 
         steps:
             - name: Checkout repository
               uses: actions/checkout@v3
 
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+
+            - name: Login to Docker Hub
+              uses: docker/login-action@v2
+              with:
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            - name: Build and push Docker image
+              uses: docker/build-push-action@v4
+              with:
+                  context: .
+                  file: ./Dockerfile.full
+                  push: true
+                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/your-app-name:latest
+                  build-args: |
+                      NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}
+                      NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
+                      KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
+                      KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
+                      NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+                      NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+                      R2_TOKEN=${{ secrets.R2_TOKEN }}
+                      R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
+                      R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
+                      R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}
+                      R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
+                      R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}
+                      MONGODB_URI=${{ secrets.MONGODB_URI }}
+                      NEXT_IMAGE_OPTIMIZATION_TIMEOUT=${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}
+                      SMTP_HOST=${{ secrets.SMTP_HOST }}
+                      SMTP_PORT=${{ secrets.SMTP_PORT }}
+                      SMTP_SECURE=${{ secrets.SMTP_SECURE }}
+                      SMTP_USER=${{ secrets.SMTP_USER }}
+                      SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+                      ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
+                      STORE_NAME=${{ secrets.STORE_NAME }}
+                      PORTONE_API_SECRET_KEY=${{ secrets.PORTONE_API_SECRET_KEY }}
+
+    deploy:
+        runs-on: ubuntu-latest
+        needs: build-and-push  # build-and-push Job이 완료된 후에 실행
+
+        steps:
             - name: Set up SSH key
               run: |
-                  # Set up SSH key
                   mkdir -p ~/.ssh
                   echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
@@ -25,100 +69,34 @@ jobs:
               env:
                   AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
-            - name: Create .env.production
-              run: |
-                  echo "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> .env.production
-                  echo "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}" >> .env.production
-                  echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env.production
-                  echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env.production
-                  echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.production
-                  echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
-                  echo "R2_TOKEN=${{ secrets.R2_TOKEN }}" >> .env.production
-                  echo "R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}" >> .env.production
-                  echo "R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}" >> .env.production
-                  echo "R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}" >> .env.production
-                  echo "R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}" >> .env.production
-                  echo "R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}" >> .env.production
-                  echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.production
-                  echo "NEXT_IMAGE_OPTIMIZATION_TIMEOUT=${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}" >> .env.production
-                  echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env.production
-                  echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> .env.production
-                  echo "SMTP_SECURE=${{ secrets.SMTP_SECURE }}" >> .env.production
-                  echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env.production
-                  echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env.production
-                  echo "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> .env.production
-                  echo "STORE_NAME=${{ secrets.STORE_NAME }}" >> .env.production
-                  echo "PORTONE_API_SECRET_KEY=${{ secrets.PORTONE_API_SECRET_KEY }}" >> .env.production
-            - name: Archive app source (exclude node_modules)
-              run: |
-                  TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-                  zip -r build-artifact-${TIMESTAMP}.zip . -x "node_modules/*" -x ".git/*" -x ".github/*" -x "*.log"
-                  echo "ARTIFACT_NAME=build-artifact-${TIMESTAMP}.zip" >> $GITHUB_ENV
-            - name: Upload artifact to EC2
-              run: |
-                  scp -i ~/.ssh/id_rsa ${{ env.ARTIFACT_NAME }} ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/home/ec2-user/
             - name: Remote Deploy
               run: |
                   ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=3 \
                       -i ~/.ssh/id_rsa \
                       ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
                     
-                    DEPLOY_DIR="la_farfalla"
-                    ARTIFACT_FILE="/home/ec2-user/${{ env.ARTIFACT_NAME }}"
+                    DEPLOY_DIR="/home/ec2-user/la_farfalla"
+                    APP_IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/your-app-name:latest"
                     
-                    echo "🔄 Starting deployment process..."
+                    echo "🔄 Starting remote deployment..."
                     
-                    # 1. 기존 컨테이너 중지 및 완전 정리
-                    echo "🛑 Stopping containers and cleaning up..."
-                    if [ -d "$DEPLOY_DIR" ]; then
-                        cd "$DEPLOY_DIR"
-                        docker-compose down --remove-orphans || true
-                        cd /home/ec2-user
-                        # sudo로 강제 삭제 (권한 문제 해결)
-                        sudo rm -rf "$DEPLOY_DIR"
-                    fi
+                    docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+                    docker pull "$APP_IMAGE_TAG"
                     
-                    # 2. Docker 시스템 정리
-                    echo "🧹 Cleaning Docker system..."
-                    docker system prune -af --volumes || true
-                    
-                    # 3. 새 디렉토리 생성
-                    echo "📁 Creating new deployment directory..."
-                    mkdir -p "$DEPLOY_DIR"
+                    echo "🚀 Starting Docker containers with new image..."
                     cd "$DEPLOY_DIR"
+                    docker-compose up -d --no-build --force-recreate
                     
-                    # 4. 아티팩트 압축 해제
-                    echo "📦 Extracting build artifact..."
-                    unzip -o -q "$ARTIFACT_FILE"
-                    
-                    # 5. 아티팩트 파일 삭제
-                    rm -f "$ARTIFACT_FILE"
-                    
-                    # 6. Docker 컨테이너 시작
-                    echo "🚀 Starting Docker containers..."
-                    docker-compose up -d --build --force-recreate
-                    
-                    # 7. 헬스체크
-                    echo "🏥 Performing health check..."
-                    sleep 15
-                    if docker-compose ps | grep -q "Up"; then
-                        echo "✅ All containers are running"
-                        docker-compose ps
-                    else
-                        echo "⚠️ Warning: Some containers may not be running properly"
-                        docker-compose ps
-                    fi
-                    
-                    # 8. 간단한 정리 (오래된 아티팩트만)
-                    echo "🧹 Cleaning up old artifacts..."
-                    find /home/ec2-user -maxdepth 1 -name "build-artifact*.zip" -mtime +7 -delete 2>/dev/null || true
+                    echo "🧹 Cleaning up unused Docker images..."
+                    docker image prune -af
                     
                     echo "✅ Deployment completed successfully!"
-                    echo "🌐 Application should be available at: ${{ secrets.NEXTAUTH_URL }}"
                   EOF
               env:
                   AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
                   EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+                  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+                  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
             - name: Deployment Status
               if: always()
