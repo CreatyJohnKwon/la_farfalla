@@ -1,15 +1,12 @@
 version: "3.8"
 
 services:
+  # 프로덕션 컨테이너 (twcommunity-server.store)
   nextjs:
-    # 운영 환경용 서비스
     image: ${DOCKERHUB_USERNAME}/lafarfalla:latest
     container_name: nextjs
     restart: always
     working_dir: /app
-    # NGINX가 포트를 관리하므로 포트 설정은 주석 처리
-    # ports:
-    #     - "3000:3000"
     environment:
       - NODE_ENV=production
       - NAVER_CLIENT_ID=${NAVER_CLIENT_ID}
@@ -17,7 +14,7 @@ services:
       - KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID}
       - KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - NEXTAUTH_URL=https://twcommunity-server.store
       - R2_TOKEN=${R2_TOKEN}
       - R2_ACCOUNT_ID=${R2_ACCOUNT_ID}
       - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
@@ -34,16 +31,15 @@ services:
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - STORE_NAME=${STORE_NAME}
       - PORTONE_API_SECRET_KEY=${PORTONE_API_SECRET_KEY}
+    networks:
+      - app-network
 
+  # 개발 컨테이너 (dev.twcommunity-server.store)
   dev-nextjs:
-    # 개발 환경용 서비스 추가
     image: ${DOCKERHUB_USERNAME}/lafarfalla:dev
     container_name: dev-nextjs
     restart: always
     working_dir: /app
-    # NGINX가 포트를 관리하므로 포트 설정은 주석 처리
-    # ports:
-    #     - "3000:3000"
     environment:
       - NODE_ENV=development
       - NAVER_CLIENT_ID=${NAVER_CLIENT_ID}
@@ -51,8 +47,7 @@ services:
       - KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID}
       - KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-      # NEXTAUTH_URL 값은 ci-dev.yml에서 설정하므로 여기서는 템플릿 변수 사용
-      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - NEXTAUTH_URL=https://dev.twcommunity-server.store
       - R2_TOKEN=${R2_TOKEN}
       - R2_ACCOUNT_ID=${R2_ACCOUNT_ID}
       - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
@@ -69,9 +64,12 @@ services:
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - STORE_NAME=${STORE_NAME}
       - PORTONE_API_SECRET_KEY=${PORTONE_API_SECRET_KEY}
+    networks:
+      - app-network
 
+  # nginx 리버스 프록시
   nginx:
-    image: nginx:latest
+    image: nginx:alpine
     container_name: nginx
     restart: always
     ports:
@@ -84,10 +82,10 @@ services:
     depends_on:
       - nextjs
       - dev-nextjs
-    environment:
-      - NGINX_HOST=twcommunity-server.store
-      - NGINX_EMAIL=wnsdn300300@gmail.com
+    networks:
+      - app-network
 
+  # SSL 인증서 관리
   certbot:
     image: certbot/certbot
     container_name: certbot
@@ -95,8 +93,12 @@ services:
       - certbot-www:/var/www/certbot
       - certbot-etc:/etc/letsencrypt
     entrypoint: >
-      /bin/sh -c "trap exit TERM; while :; do sleep 6h & wait $${!}; certbot renew --webroot -w /var/www/certbot; done"
+      /bin/sh -c "trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew --webroot -w /var/www/certbot; done"
 
 volumes:
   certbot-www:
   certbot-etc:
+
+networks:
+  app-network:
+    driver: bridge
