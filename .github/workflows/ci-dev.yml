@@ -34,7 +34,7 @@ jobs:
                       KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
                       KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
                       NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
-                      NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+                      NEXTAUTH_URL=https://dev.twcommunity-server.store
                       R2_TOKEN=${{ secrets.R2_TOKEN }}
                       R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
                       R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
@@ -74,7 +74,8 @@ jobs:
                       ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'EOF'
                     
                     DEPLOY_DIR="/home/ec2-user/la_farfalla"
-                    APP_IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/your-app-name:dev"
+                    # Docker 이미지 태그를 lafarfalla:dev로 변경
+                    APP_IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:dev"
                     
                     echo "🔄 Starting remote deployment to development..."
                     
