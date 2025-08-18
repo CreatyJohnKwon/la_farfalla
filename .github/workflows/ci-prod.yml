@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Production
 
 on:
     push:
@@ -8,7 +8,6 @@ on:
 jobs:
     build-and-push:
         runs-on: ubuntu-latest
-
         steps:
             - name: Checkout repository
               uses: actions/checkout@v3
@@ -28,7 +27,7 @@ jobs:
                   context: .
                   file: ./Dockerfile.full
                   push: true
-                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/your-app-name:latest
+                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:latest
                   build-args: |
                       NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}
                       NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
@@ -55,8 +54,7 @@ jobs:
 
     deploy:
         runs-on: ubuntu-latest
-        needs: build-and-push  # build-and-push Job이 완료된 후에 실행
-
+        needs: build-and-push
         steps:
             - name: Set up SSH key
               run: |
@@ -69,16 +67,16 @@ jobs:
               env:
                   AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
-            - name: Remote Deploy
+            - name: Remote Deploy to Production
               run: |
                   ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=3 \
                       -i ~/.ssh/id_rsa \
                       ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
                     
                     DEPLOY_DIR="/home/ec2-user/la_farfalla"
-                    APP_IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:latest"
+                    APP_IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/your-app-name:latest"
                     
-                    echo "🔄 Starting remote deployment..."
+                    echo "🔄 Starting remote deployment to production..."
                     
                     docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
                     docker pull "$APP_IMAGE_TAG"
@@ -90,7 +88,7 @@ jobs:
                     echo "🧹 Cleaning up unused Docker images..."
                     docker image prune -af
                     
-                    echo "✅ Deployment completed successfully!"
+                    echo "✅ Deployment to production completed successfully!"
                   EOF
               env:
                   AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
