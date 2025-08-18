@@ -10,7 +10,7 @@ import OrderList from "@src/components/order/OrderList";
 import { redirect } from "next/navigation";
 
 const ProfileClient = ({ id }: { id: string }) => {
-    const [title, setTitle] = useState<string | "">("");
+    const [title, setTitle] = useState<string | ''>('');
     const [child, setChild] = useState<React.ReactNode | null>(null);
 
     useEffect(() => {
