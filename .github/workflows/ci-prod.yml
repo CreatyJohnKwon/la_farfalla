@@ -78,12 +78,43 @@ jobs:
                     
                     echo "🔄 Starting remote deployment to production..."
                     
+                    # 환경변수 파일 생성
+                    cat > "$DEPLOY_DIR/.env" << ENV_EOF
+                    DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+                    NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}
+                    NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
+                    KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
+                    KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
+                    NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+                    R2_TOKEN=${{ secrets.R2_TOKEN }}
+                    R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
+                    R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
+                    R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}
+                    R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
+                    R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}
+                    MONGODB_URI=${{ secrets.MONGODB_URI }}
+                    NEXT_IMAGE_OPTIMIZATION_TIMEOUT=${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}
+                    SMTP_HOST=${{ secrets.SMTP_HOST }}
+                    SMTP_PORT=${{ secrets.SMTP_PORT }}
+                    SMTP_SECURE=${{ secrets.SMTP_SECURE }}
+                    SMTP_USER=${{ secrets.SMTP_USER }}
+                    SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+                    ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
+                    STORE_NAME=${{ secrets.STORE_NAME }}
+                    PORTONE_API_SECRET_KEY=${{ secrets.PORTONE_API_SECRET_KEY }}
+                    ENV_EOF
+                    
                     docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
                     docker pull "$APP_IMAGE_TAG"
                     
                     echo "🚀 Starting Docker containers with new image..."
                     cd "$DEPLOY_DIR"
-                    docker-compose up -d --no-build --force-recreate
+                    
+                    # 프로덕션용 docker-compose 파일 사용
+                    docker-compose -f docker-compose-prod.yml up -d --no-build --force-recreate
+                    
+                    echo "🔄 Reloading nginx configuration..."
+                    docker-compose -f docker-compose-prod.yml exec nginx nginx -s reload || echo "Nginx reload skipped"
                     
                     echo "🧹 Cleaning up unused Docker images..."
                     docker image prune -af
