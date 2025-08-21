@@ -41,7 +41,7 @@ const IntroduceClient = () => {
                 </div>
                 <br />
                 <span className="font-amstel-thin sm:font-amstel text-[0.5em] sm:text-base">
-                    © 2025. lafarfalla. All rights reserved. dev versionsss
+                    © 2025. lafarfalla. All rights reserved.
                 </span>
                 <span className="font-amstel absolute bottom-0 left-10 text-[6em] text-[#FAF6EB] transition-all duration-300 ease-in-out sm:-bottom-16 sm:text-[12.3em] c_xl:-bottom-32 c_xl:text-[20.2em]">
                     introduce

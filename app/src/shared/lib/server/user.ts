@@ -51,9 +51,10 @@ const registUser = async (formData: RegistReqData) => {
             reward: 0,
         });
 
-        benefitWelcomeCoupon(newUser._id);
+        // 신규 유저용 쿠폰 발급 프로세스 (프로세스 제거 / 임시 삭제 or 안쓸예정)
+        // benefitWelcomeCoupon(newUser._id);
 
-        return { success: true, message: "회원가입이 완료되었습니다" };
+        return { success: true, message: `${newUser.name}님의 회원가입이 완료되었습니다` };
     } catch (error) {
         console.error("Error registering user:", error);
         return { success: false, error: "회원가입에 실패했습니다" };
