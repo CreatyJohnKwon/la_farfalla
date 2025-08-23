@@ -40,7 +40,7 @@ export async function GET(req: Request) {
         if (user.provider !== "local") {
             // 이메일은 존재하지만 provider가 'local'이 아닌 경우 (소셜 로그인 회원)
             return NextResponse.json(
-                { error: `This is a social login account (${user.provider}). Please use social login or contact support.` },
+                { error: `소셜 로그인 계정입니다 (${user.provider}).\n소셜 로그인을 통해 로그인 하시거나 채널톡으로 문의해주세요.` },
                 { status: 404 }
             );
         }
