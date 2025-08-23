@@ -77,8 +77,6 @@ export async function PATCH(req: NextRequest) {
         mileage,
     } = body;
 
-    console.log(body);
-
     await connectDB();
     const user = await User.findOne({ email: email });
 

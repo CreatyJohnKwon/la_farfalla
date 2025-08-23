@@ -172,6 +172,11 @@ const RegisterClient = () => {
         if (!isValidForm) return;
 
         const formData = new FormData(e.currentTarget);
+        
+        // 이메일 인증이 완료되면 요소가 disabled되므로 formData에 포함되지 않음
+        // 따라서, disabled된 이메일 필드의 값을 수동으로 추가 해줘야 함
+        formData.append("email", email);
+
         mutation.mutate(formData);
     };
 

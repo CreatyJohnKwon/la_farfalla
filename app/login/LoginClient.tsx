@@ -9,9 +9,12 @@ import { RiKakaoTalkFill } from "react-icons/ri";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import FindPasswordModal from "@/src/widgets/modal/FindPasswordModal";
 
 const LoginClient = () => {
     const [pwdVisible, setPwdVisible] = useState<boolean>(false);
+    const [isFindPasswordModalOpen, setIsFindPasswordModalOpen] =
+        useState<boolean>(false);
 
     const {
         email,
@@ -98,7 +101,14 @@ const LoginClient = () => {
                             Login
                         </button>
                     </div>
-                    <p className="m-2 w-full border-b" />
+                    <div className="flex w-full items-center">
+                        <p className="w-full border-b" />
+                        <span className="w-full text-center text-prtendard text-xs text-gray-400 hover:text-gray-900 cursor-pointer"
+                        onClick={() => setIsFindPasswordModalOpen(true)}>
+                            비밀번호 찾기
+                        </span> 
+                        <p className="w-full border-b" />
+                    </div>
                     <Link
                         href={"/register"}
                         className="font-amstel flex w-full justify-center bg-black px-6 py-3 text-xs text-white transition-colors duration-300 ease-in-out hover:bg-black/50 md:text-base"
@@ -134,6 +144,9 @@ const LoginClient = () => {
                     </div>
                 </form>
             </div>
+            {isFindPasswordModalOpen && (
+                <FindPasswordModal onClose={() => setIsFindPasswordModalOpen(false)} />
+            )}
         </div>
     );
 };
