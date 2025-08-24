@@ -28,30 +28,8 @@ jobs:
                   file: ./Dockerfile.full
                   push: true
                   tags: ${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:dev
-                  build-args: |
-                      NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}
-                      NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
-                      KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
-                      KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
-                      NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
-                      NEXTAUTH_URL=${{ secrets.DEV_NEXTAUTH_URL }}
-                      R2_TOKEN=${{ secrets.R2_TOKEN }}
-                      R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
-                      R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
-                      R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}
-                      R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
-                      R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}
-                      MONGODB_URI=${{ secrets.MONGODB_URI }}
-                      NEXT_IMAGE_OPTIMIZATION_TIMEOUT=${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}
-                      SMTP_HOST=${{ secrets.SMTP_HOST }}
-                      SMTP_PORT=${{ secrets.SMTP_PORT }}
-                      SMTP_SECURE=${{ secrets.SMTP_SECURE }}
-                      SMTP_USER=${{ secrets.SMTP_USER }}
-                      SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
-                      ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
-                      STORE_NAME=${{ secrets.STORE_NAME }}
-                      PORTONE_API_SECRET_KEY=${{ secrets.PORTONE_API_SECRET_KEY }}
-    
+                  # build-args 제거 - 런타임에 환경변수로 처리
+
     deploy:
         runs-on: ubuntu-latest
         needs: build-and-push
@@ -67,45 +45,112 @@ jobs:
               env:
                   AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
+            - name: Transfer environment variables to server
+              run: |
+                  # 환경변수를 안전하게 서버로 전송 (로그에 노출되지 않음)
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'SETUP_ENV'
+                    # 임시 환경변수 파일 생성 (보안을 위해 600 권한 설정)
+                    touch /tmp/env_setup.sh
+                    chmod 600 /tmp/env_setup.sh
+                  SETUP_ENV
+                  
+                  # 환경변수를 개별적으로 안전하게 전송
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export DOCKERHUB_USERNAME=\"${{ secrets.DOCKERHUB_USERNAME }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export NAVER_CLIENT_ID=\"${{ secrets.NAVER_CLIENT_ID }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export NAVER_CLIENT_SECRET=\"${{ secrets.NAVER_CLIENT_SECRET }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export KAKAO_CLIENT_ID=\"${{ secrets.KAKAO_CLIENT_ID }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export KAKAO_CLIENT_SECRET=\"${{ secrets.KAKAO_CLIENT_SECRET }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export NEXTAUTH_SECRET=\"${{ secrets.NEXTAUTH_SECRET }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export R2_TOKEN=\"${{ secrets.R2_TOKEN }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export R2_ACCOUNT_ID=\"${{ secrets.R2_ACCOUNT_ID }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export R2_ACCESS_KEY_ID=\"${{ secrets.R2_ACCESS_KEY_ID }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export R2_SECRET_ACCESS_KEY=\"${{ secrets.R2_SECRET_ACCESS_KEY }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export R2_BUCKET_NAME=\"${{ secrets.R2_BUCKET_NAME }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export R2_FILE_DOMAIN=\"${{ secrets.R2_FILE_DOMAIN }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export MONGODB_URI=\"${{ secrets.MONGODB_URI }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export NEXT_IMAGE_OPTIMIZATION_TIMEOUT=\"${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export SMTP_HOST=\"${{ secrets.SMTP_HOST }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export SMTP_PORT=\"${{ secrets.SMTP_PORT }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export SMTP_SECURE=\"${{ secrets.SMTP_SECURE }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export SMTP_USER=\"${{ secrets.SMTP_USER }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export SMTP_PASSWORD=\"${{ secrets.SMTP_PASSWORD }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export ADMIN_EMAIL=\"${{ secrets.ADMIN_EMAIL }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export STORE_NAME=\"${{ secrets.STORE_NAME }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export PORTONE_API_SECRET_KEY=\"${{ secrets.PORTONE_API_SECRET_KEY }}\"' >> /tmp/env_setup.sh"
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
+                    "echo 'export TZ=\"Asia/Seoul\"' >> /tmp/env_setup.sh"
+
             - name: Remote Deploy to Development
               run: |
-                  ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=3 \
-                      -i ~/.ssh/id_rsa \
-                      ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'EOF'
-                    
+                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'EOF'
                     DEPLOY_DIR="/home/ec2-user/la_farfalla"
                     APP_IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:dev"
                     
                     echo "🔄 Starting remote deployment to development..."
                     
-                    # 환경변수 파일 생성
-                    cat > "$DEPLOY_DIR/.env" << 'ENV_EOF'
-                    DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
-                    NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}
-                    NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
-                    KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
-                    KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
-                    NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
-                    R2_TOKEN=${{ secrets.R2_TOKEN }}
-                    R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
-                    R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }}
-                    R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }}
-                    R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
-                    R2_FILE_DOMAIN=${{ secrets.R2_FILE_DOMAIN }}
-                    MONGODB_URI=${{ secrets.MONGODB_URI }}
-                    NEXT_IMAGE_OPTIMIZATION_TIMEOUT=${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}
-                    SMTP_HOST=${{ secrets.SMTP_HOST }}
-                    SMTP_PORT=${{ secrets.SMTP_PORT }}
-                    SMTP_SECURE=${{ secrets.SMTP_SECURE }}
-                    SMTP_USER=${{ secrets.SMTP_USER }}
-                    SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
-                    ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
-                    STORE_NAME=${{ secrets.STORE_NAME }}
-                    PORTONE_API_SECRET_KEY=${{ secrets.PORTONE_API_SECRET_KEY }}
-                    TZ=Asia/Seoul
-                    ENV_EOF
+                    # 환경변수 로드 (로그에 출력되지 않음)
+                    source /tmp/env_setup.sh
                     
-                    docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+                    # .env 파일 안전하게 생성 (내용이 로그에 출력되지 않음)
+                    echo "Creating environment file..."
+                    {
+                      echo "DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}"
+                      echo "NAVER_CLIENT_ID=${NAVER_CLIENT_ID}"
+                      echo "NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET}"
+                      echo "KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID}"
+                      echo "KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET}"
+                      echo "NEXTAUTH_SECRET=${NEXTAUTH_SECRET}"
+                      echo "R2_TOKEN=${R2_TOKEN}"
+                      echo "R2_ACCOUNT_ID=${R2_ACCOUNT_ID}"
+                      echo "R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}"
+                      echo "R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}"
+                      echo "R2_BUCKET_NAME=${R2_BUCKET_NAME}"
+                      echo "R2_FILE_DOMAIN=${R2_FILE_DOMAIN}"
+                      echo "MONGODB_URI=${MONGODB_URI}"
+                      echo "NEXT_IMAGE_OPTIMIZATION_TIMEOUT=${NEXT_IMAGE_OPTIMIZATION_TIMEOUT}"
+                      echo "SMTP_HOST=${SMTP_HOST}"
+                      echo "SMTP_PORT=${SMTP_PORT}"
+                      echo "SMTP_SECURE=${SMTP_SECURE}"
+                      echo "SMTP_USER=${SMTP_USER}"
+                      echo "SMTP_PASSWORD=${SMTP_PASSWORD}"
+                      echo "ADMIN_EMAIL=${ADMIN_EMAIL}"
+                      echo "STORE_NAME=${STORE_NAME}"
+                      echo "PORTONE_API_SECRET_KEY=${PORTONE_API_SECRET_KEY}"
+                      echo "TZ=${TZ}"
+                    } > "$DEPLOY_DIR/.env"
+
+                    # 파일 권한 설정
+                    chmod 600 "$DEPLOY_DIR/.env"
+                    
+                    # 임시 파일 삭제
+                    rm -f /tmp/env_setup.sh
+                    
+                    echo "Logging into Docker Hub..."
+                    docker login -u ${DOCKERHUB_USERNAME} -p ${{ secrets.DOCKERHUB_TOKEN }}
+                    
+                    echo "Pulling latest image..."
                     docker pull "$APP_IMAGE_TAG"
                     
                     echo "🚀 Starting Docker containers with new image..."
@@ -122,11 +167,11 @@ jobs:
                     
                     echo "✅ Deployment to development completed successfully!"
                   EOF
-              env:
-                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
-                  DEV_EC2_PUBLIC_IP: ${{ secrets.DEV_EC2_PUBLIC_IP }}
-                  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-                  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            - name: Cleanup
+              if: always()
+              run: |
+                  # 로컬 파일 정리는 필요없음 (env_vars.sh 삭제)
 
             - name: Deployment Status
               if: always()
