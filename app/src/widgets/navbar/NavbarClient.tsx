@@ -26,14 +26,14 @@ const NavbarClient = ({ category }: NavbarClientProps) => {
     const [textColor, setTextColor] = useState<string>("text-white");
     const [children, setChildren] = useState<any>(null);
 
-    const pathName = usePathname();
+    const pathName = usePathname()
 
     useEffect(() => {
         if (category) setChildren(<ShopDrop category={category} />);
     }, [category]);
 
     useEffect(() => {
-        switch (pathName) {
+        switch (pathName) { 
             case "/home":
                 setTextColor("text-white");
                 if (category) setChildren(<ShopDrop category={category} />);
