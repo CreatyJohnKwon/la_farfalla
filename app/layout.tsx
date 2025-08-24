@@ -6,10 +6,11 @@ import { getAuthSession } from "./src/shared/lib/session";
 import AuthProvider from "@src/features/providers/AuthProvider";
 import RQProvider from "@src/features/providers/RQProvider";
 import Sidebar from "@src/features/sidebar/Sidebar";
-import Navbar from "@src/widgets/navbar/Navbar";
+import Navbar from "@/src/widgets/navbar/NavbarClient";
 import Footer from "@src/widgets/footer/Footer";
 import { Provider as JotaiProvider } from "jotai";
 import KakaoFloatingButton from "./src/widgets/button/KakaoFloatingButton";
+import NavbarWrapper from "./src/widgets/navbar/NavWrapper";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -43,7 +44,7 @@ const RootLayout = async ({
                         <AuthProvider session={session}>
                             <main>{children}</main>
                             <Sidebar />
-                            <Navbar />
+                            <NavbarWrapper />
                             <Footer />
                             <KakaoFloatingButton />
                         </AuthProvider>

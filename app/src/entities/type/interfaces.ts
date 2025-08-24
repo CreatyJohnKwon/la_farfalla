@@ -1,5 +1,3 @@
-import { Product } from "@/src/components/product/interface";
-
 interface MenuItem {
     text: string;
     link: string;

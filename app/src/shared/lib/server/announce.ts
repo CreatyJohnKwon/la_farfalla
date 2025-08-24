@@ -1,14 +1,19 @@
-// lib/server/announce.ts 파일에 추가/수정할 함수들
-
 import { CreateAnnounceData, IAnnounceDTO } from "@/src/entities/type/announce";
+import { baseUrl } from "public/data/common";
 
-// 공지 목록 조회
+// 공지 목록 조회 : ISR 적용
 export const fetchAnnounces = async (): Promise<IAnnounceDTO[]> => {
-    const response = await fetch("/api/admin/announces", {
+    // 환경 변수에서 기본 URL을 가져와서 절대 경로를 만듭니다.
+    if (!baseUrl) {
+        throw new Error("NEXT_PUBLIC_API_URL 환경 변수가 설정되지 않았습니다. `.env` 를 확인해주세요.");
+    }
+    
+    const response = await fetch(`${baseUrl}/api/admin/announces`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
         },
+        next: { revalidate: 60 }, // ISR 적용
     });
 
     if (!response.ok) {

@@ -1,3 +1,5 @@
+import { baseUrl } from "public/data/common";
+
 const getSeason = async () => {
     try {
         const res = await fetch(`/api/season`);
@@ -30,6 +32,23 @@ const postSeason = async (data: { title: string; year: string }) => {
         throw error;
     }
 };
+
+const fetchSeason = async () => {
+    if (!baseUrl) {
+        throw new Error("baseUrl 이 설정되지 않았습니다. baseUrl: " + baseUrl);
+    }
+
+    const response = await fetch(`${baseUrl}/api/season`, {
+        method: 'GET',
+        next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch season data.');
+    }
+
+    return response.json();
+}
 
 const putSeason = async (data: {
     _id: string;
@@ -75,4 +94,4 @@ const deleteSeason = async (id: string) => {
     }
 };
 
-export { getSeason, postSeason, putSeason, deleteSeason };
+export { getSeason, postSeason, putSeason, fetchSeason, deleteSeason };
