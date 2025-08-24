@@ -57,6 +57,9 @@ const nextConfig: NextConfig = {
             },
         ];
     },
+    env: {
+        TZ: "Asia/Seoul",
+    },
 };
 
 export default nextConfig;
