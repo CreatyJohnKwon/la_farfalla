@@ -10,19 +10,19 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4 # v3 -> v4로 업데이트
 
             - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v2
+              uses: docker/setup-buildx-action@v3 # v2 -> v3로 업데이트
 
             - name: Login to Docker Hub
-              uses: docker/login-action@v2
+              uses: docker/login-action@v3 # v2 -> v3로 업데이트
               with:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
 
             - name: Build and push Docker image
-              uses: docker/build-push-action@v4
+              uses: docker/build-push-action@v5 # v4 -> v5로 업데이트
               with:
                   context: .
                   file: ./Dockerfile.full
@@ -166,17 +166,10 @@ jobs:
                     docker pull "$APP_IMAGE_TAG"
                     
                     echo "🚀 Starting Docker containers..."
-                    if [ -f docker-compose-prod.yml ]; then
-                        echo "Using production docker-compose file..."
-                        docker-compose -f docker-compose-prod.yml down || true
-                        docker-compose -f docker-compose-prod.yml up -d
-                        COMPOSE_FILE="docker-compose-prod.yml"
-                    else
-                        echo "⚠️  docker-compose-prod.yml not found, using default docker-compose.yml"
-                        docker-compose down || true
-                        docker-compose up -d
-                        COMPOSE_FILE="docker-compose.yml"
-                    fi
+                    # Production 배포이므로 'nextjs' 서비스만 다루도록 변경
+                    # 모든 컨테이너를 한 번에 내린 후, 필요한 서비스만 올리는 것이 안전합니다.
+                    docker-compose down # 모든 컨테이너와 네트워크 중지 및 삭제
+                    docker-compose up -d nextjs nginx certbot # 'nextjs'와 의존성만 시작
                     
                     echo "⏳ Waiting for containers to start..."
                     sleep 15
@@ -192,7 +185,7 @@ jobs:
                         fi
                     else
                         echo "Nginx container not found, checking compose services..."
-                        docker-compose -f "$COMPOSE_FILE" ps
+                        docker-compose ps # 특정 서비스만 올렸으므로 모든 서비스를 확인하는 것은 비효율적일 수 있습니다.
                     fi
                     
                     echo "🧹 Cleaning up unused Docker images..."
@@ -204,6 +197,7 @@ jobs:
                     
                     echo "🔍 Service health check:"
                     sleep 5
+                    # 'nextjs' 서비스의 포트를 3000으로 가정하고 health check
                     if curl -f http://localhost:3000 > /dev/null 2>&1; then
                         echo "✅ Application is responding on port 3000"
                     else
