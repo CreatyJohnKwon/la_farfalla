@@ -62,6 +62,9 @@ const useOrder = () => {
         "NAVER_PAY" | "KAKAO_PAY" | "CARD"
     >("NAVER_PAY");
 
+    // 주문 완료 상태 관리 (주문 로딩 스피너)
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     // ✅ 가격 계산 로직 (ICoupon 구조 고려)
     useEffect(() => {
         if (!orderDatas) return;
@@ -117,6 +120,9 @@ const useOrder = () => {
     }, [usedMileage]);
 
     const orderComplete = async () => {
+        // 로딩 시작
+        setIsSubmitting(true);
+
         let stockItems: ProductOption[] = [];
         // 필수 값 검증
         if (!phoneNumber || !address || !postcode) {
@@ -228,7 +234,9 @@ const useOrder = () => {
                 await Promise.all([
                     couponMemo !== "" ? useSpendCoupon() : Promise.resolve(),
                     useSpendMileage(res),
-                    addEarnMileage(res),
+                    // 마일리지 사용 로직 프로세스 변경
+                    // order -> 주문 확정 시점으로 변경
+                    // addEarnMileage(res),
                     saveNewAddress(),
                 ]);
 
@@ -263,6 +271,16 @@ const useOrder = () => {
             alert(
                 `결제 처리 중 오류가 발생했습니다.\n다시 시도해주세요.\n${error}`,
             );
+
+            // 오류 발생 시 재고 복구 (필요한 경우)
+            if (stockItems.length > 0) {
+                await updateStockMutation.mutateAsync({
+                    items: stockItems,
+                    action: "restore",
+                }).catch(restoreError => console.error("재고 복구 중 오류 발생:", restoreError));
+            }
+        } finally {
+            setIsSubmitting(false); // 로딩 종료 (성공, 실패, 에러 모두)
         }
     };
 
@@ -360,12 +378,12 @@ const useOrder = () => {
         }
     };
 
-    const addEarnMileage = (res: any) => {
+    const addEarnMileage = (res: any, description: string) => {
         const addMileage: MileageItem = {
             userId: user?._id,
             type: "earn",
             amount: totalMileage,
-            description: "마일리지 적립",
+            description: description || "마일리지 적립",
             relatedOrderId: res?.orderId,
             createdAt: new Date().toISOString(),
         };
@@ -431,6 +449,7 @@ const useOrder = () => {
         setPayments,
 
         orderComplete,
+        isSubmitting
     };
 };
 

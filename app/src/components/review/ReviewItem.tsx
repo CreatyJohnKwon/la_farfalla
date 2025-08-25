@@ -12,6 +12,7 @@ import { useState } from "react";
 import { ReviewItemProps } from "./interface";
 import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
 import { uploadImagesToServer } from "@/src/shared/lib/uploadToR2";
+import ReviewContents from "./ReviewContents";
 
 const ReviewItem: React.FC<ReviewItemProps> = ({
     review,
@@ -22,7 +23,6 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
     onEditComment,
     onDeleteReview,
     onDeleteComment,
-    // onLikePending, onLikeCommentPending 제거 - 개별 관리
 }) => {
     const [isCommenting, setIsCommenting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -31,7 +31,7 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
     const [showMenu, setShowMenu] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
-    const [isLikingReview, setIsLikingReview] = useState(false); // 개별 리뷰 좋아요 로딩 상태
+    const [isLikingReview, setIsLikingReview] = useState(false);
 
     // 🆕 이미지 수정 관련 상태
     const [editImages, setEditImages] = useState<string[]>(review.images || []);
@@ -46,19 +46,7 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
         if (!session || !review.userId) return false;
 
         // 케이스 1: 직접 비교
-        if (review.userId._id === session._id) return true;
-
-        // 케이스 2: toString() 비교
-        if (review.userId._id?.toString() === session._id?.toString())
-            return true;
-
-        // 케이스 3: review.userId가 문자열인 경우
-        if (typeof review.userId === "string" && review.userId === session._id)
-            return true;
-
-        // 케이스 4: 이메일 비교 (최후 수단)
-        if (review.author === session.name || review.author === session.email)
-            return true;
+        if (review.userId === session._id) return true;
 
         return false;
     })();
@@ -223,7 +211,7 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                     <div className="flex items-center space-x-4">
                         <div>
                             <div className="flex items-center space-x-2">
-                                <h4 className="font-semibold text-gray-900">
+                                <h4 className="font-amstel text-black text-lg">
                                     {review.author}
                                 </h4>
                             </div>
@@ -239,12 +227,6 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                                         minute: "2-digit",
                                     })}
                                 </p>
-                                {/* 🆕 이미지 개수 표시 */}
-                                {images.length > 0 && (
-                                    <span className="flex items-center text-xs text-blue-600">
-                                        📷 {images.length}개
-                                    </span>
-                                )}
                             </div>
                         </div>
                     </div>
@@ -448,45 +430,7 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            <p className="leading-relaxed text-gray-800">
-                                {review.content}
-                            </p>
-
-                            {/* 🆕 이미지 갤러리 */}
-                            {images.length > 0 && (
-                                <div className="space-y-3">
-                                    <div className="flex flex-wrap gap-2">
-                                        {images.map((imageUrl, index) => (
-                                            <div
-                                                key={index}
-                                                className="group relative cursor-pointer"
-                                                onClick={() =>
-                                                    openImageModal(imageUrl)
-                                                }
-                                            >
-                                                <img
-                                                    src={imageUrl}
-                                                    alt={`리뷰 이미지 ${index + 1}`}
-                                                    className="h-20 w-20 border border-gray-200 object-cover transition-transform duration-200 hover:scale-105 hover:shadow-lg sm:h-24 sm:w-24 md:h-28 md:w-28"
-                                                />
-                                                {/* 🆕 호버 오버레이 */}
-                                                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 transition-all duration-200 group-hover:bg-opacity-20">
-                                                    <span className="text-xs font-medium text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                                                        확대보기
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {/* 🆕 이미지가 많을 때 개수 표시 */}
-                                    {images.length > 4 && (
-                                        <p className="text-xs text-gray-500">
-                                            총 {images.length}개의 이미지
-                                        </p>
-                                    )}
-                                </div>
-                            )}
+                            <ReviewContents review={review} images={images} openImageModal={openImageModal} />
                         </div>
                     )}
                 </div>
@@ -547,7 +491,8 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                             onChange={(e) => setCommentContent(e.target.value)}
                             className="w-full resize-none border border-gray-300 bg-white/80 p-4 backdrop-blur-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-black/20"
                             rows={3}
-                            placeholder="리뷰에 댓글을 작성하세요..."
+                            placeholder="리뷰에 댓글을 작성하세요. (최대 100자)"
+                            maxLength={100}
                         />
                         <div className="flex space-x-3">
                             <button

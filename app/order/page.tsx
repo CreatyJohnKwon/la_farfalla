@@ -49,9 +49,9 @@ const Order = () => {
         detailAddress,
         setDetailAddress,
         setSaveAddress,
-        // setPayments,
 
         orderComplete,
+        isSubmitting
     } = useOrder();
 
     // ✅ 쿠폰 데이터 추출 및 최적화
@@ -234,7 +234,10 @@ const Order = () => {
     // ✅ useEffect들
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-            if (!orderDatas) return;
+            const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+            if (!orderDatas || !isDesktop) return;
+
             e.preventDefault();
             e.returnValue = "";
         };
@@ -299,6 +302,13 @@ const Order = () => {
                 onSubmit={handleFormSubmit} // ✅ 새로운 핸들러 사용
                 className="h-full min-h-screen w-full bg-gray-50 pt-16 md:pt-24"
             >
+                {/* 로딩 중일 때 오버레이 스피너 표시 */}
+                {isSubmitting && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <LoadingSpinner size="lg" message="Order processing..." />
+                    </div>
+                )}
+
                 <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 p-5 md:grid-cols-2">
                     {/* 좌측 영역 */}
                     <div className="space-y-6 md:h-[85vh] md:overflow-auto">
@@ -1031,9 +1041,9 @@ const Order = () => {
                             </div>
                             <p className="mt-2 font-pretendard text-sm text-gray-500">
                                 <span className="font-amstel">
-                                    {`${totalMileage.toLocaleString()} `}
+                                    {`\t${totalMileage.toLocaleString()}\t`}
                                 </span>
-                                <span>마일리지 적립 예정</span>
+                                <span>마일리지 적립 예정 (주문 확정 시)</span>
                                 <input
                                     type="text"
                                     name="totalMileage"
@@ -1113,6 +1123,24 @@ const Order = () => {
                 )}
             </form>
         );
+
+    if (isLoading) {
+        return <LoadingSpinner size="lg" message="Loading Order Details..." />;
+    }
+
+    if (!user || orderDatas.length === 0) {
+        return (
+            <div className="flex h-screen w-full items-center justify-center">
+                <div className="text-center">
+                    <h2 className="mb-2 text-xl font-bold text-gray-700">
+                        주문할 상품이 없습니다.
+                    </h2>
+                    <p className="text-gray-600">상품을 담아주세요.</p>
+                </div>
+            </div>
+        );
+    }
+    return null; // 모든 조건에 해당하지 않을 경우 아무것도 렌더링하지 않음
 };
 
 export default Order;
