@@ -69,7 +69,7 @@ const UserInfoModal = ({
 
                         <div className="me-1 mt-2 place-self-end text-end text-xs">
                             <p className="mb-1 font-medium text-gray-500">
-                                UUID (DB 확인용)
+                                유저 UUID (DB 확인용)
                             </p>
                             <p className="font-mono text-gray-600">
                                 {userData?._id}

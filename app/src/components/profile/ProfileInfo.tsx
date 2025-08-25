@@ -31,8 +31,17 @@ const ProfileInfo = () => {
                                         {` ${(user?.reward ?? 0).toLocaleString()} KRW`}
                                     </span>
                                 </span>
-                                <span className="font-amstel text-sm text-gray-600 underline sm:text-base c_xl:text-xl">
+                                <span className="font-amstel text-sm text-gray-600 underline sm:text-base c_xl:text-xl flex items-center gap-2"> {/* flexbox 추가 및 gap 설정 */}
                                     {user?.email ?? "이메일 정보 없음"}
+                                    <div>
+                                        {user?.provider === "naver" ? (
+                                            <span className="w-2 h-2 bg-[#03C75A] rounded-full inline-block" aria-label="네이버 로그인"></span>
+                                        ) : user?.provider === "kakao" ? (
+                                            <span className="w-2 h-2 bg-[#FEE500] rounded-full inline-block" aria-label="카카오 로그인"></span>
+                                        ) : user?.provider === "local" ? (
+                                            <span className="w-2 h-2 bg-black rounded-full inline-block" aria-label="로컬 계정"></span>
+                                        ) : null}
+                                    </div>
                                 </span>
                             </div>
                         </>

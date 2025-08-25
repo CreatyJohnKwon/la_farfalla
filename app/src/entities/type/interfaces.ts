@@ -64,7 +64,7 @@ type ShippingStatus = "pending" | "ready" | "shipped" | "confirm" | "cancel";
 
 interface UserProfileData {
     _id: string;
-    provider: string;
+    provider: "local" | "naver" | "kakao";
     email: string;
     name: string;
     address?: string;

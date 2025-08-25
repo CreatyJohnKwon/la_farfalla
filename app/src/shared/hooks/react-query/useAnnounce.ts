@@ -8,7 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     createAnnounce,
     deleteAnnounce,
-    fetchAnnounces,
+    getAnnouncesSSR,
     updateAnnounceById, // 타입 안전한 함수 사용
 } from "../../lib/server/announce";
 
@@ -16,7 +16,7 @@ import {
 export const useAnnouncesQuery = () => {
     return useQuery<IAnnounceDTO[], Error>({
         queryKey: ["announces"],
-        queryFn: fetchAnnounces,
+        queryFn: getAnnouncesSSR,
         retry: 1,
         staleTime: 5 * 60 * 1000,
     });

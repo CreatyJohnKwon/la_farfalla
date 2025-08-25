@@ -65,11 +65,11 @@ const usePostProductMutation = () => {
         onSuccess: () => {
             // 상품 리스트 캐시 업데이트
             queryClient.invalidateQueries({ queryKey: ["get-product-list"] });
-            alert(`상품 업데이트 완료!`);
+            alert(`상품이 업데이트 되었습니다`);
             resetProductForm();
         },
         onError: (error) => {
-            alert(`상품 업데이트 중 오류가 발생했어요: ${error.message}`);
+            alert(`상품 업데이트 중 오류가 발생했습니다: ${error.message}`);
         },
         onSettled: () => {
             setLoading(false);
@@ -95,7 +95,7 @@ const useUpdateProductMutation = () => {
         },
         onError: (error) => {
             console.error("❌ 상품 수정 실패", error);
-            alert(`상품 수정 중 오류가 발생했어요: ${error.message}`);
+            alert(`상품 수정 중 오류가 발생했습니다: ${error.message}`);
         },
         onSettled: () => {
             setLoading(false);
@@ -123,7 +123,7 @@ const useDeleteProductMutation = () => {
 
         onError: (error) => {
             console.error("❌ 삭제 실패", error);
-            alert(`상품 삭제 중 오류가 발생했어요: ${error.message}`);
+            alert(`상품 삭제 중 오류가 발생했습니다: ${error.message}`);
         },
     });
 };

@@ -62,7 +62,11 @@ const useSmartUpdateOrderMutation = () => {
 
             // 배열인지 단일인지에 따른 메시지 구분
             const count = Array.isArray(variables) ? variables.length : 1;
-            alert(`${count}개 주문 상태 업데이트 완료!`);
+            if (count === 1) {
+                alert(`총 ${count}개의 주문 상태가 업데이트 되었습니다`);
+            } else {
+                alert(`주문의 상태가 업데이트 되었습니다`);
+            }
             resetProductForm();
         },
 
@@ -73,7 +77,7 @@ const useSmartUpdateOrderMutation = () => {
             });
             const count = Array.isArray(variables) ? variables.length : 1;
             alert(
-                `${count}개 주문 업데이트 중 오류가 발생했어요: ${error.message}`,
+                `${count}개 주문 업데이트 중 오류가 발생했습니다: ${error.message}`,
             );
         },
     });

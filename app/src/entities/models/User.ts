@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema(
     {
         provider: {
             type: String,
-            enum: ["local", "kakao", "naver", "apple"], // 로그인 방식 구분
+            enum: ["local", "kakao", "naver"], // 로그인 방식 구분
             default: "local",
         },
         email: {
