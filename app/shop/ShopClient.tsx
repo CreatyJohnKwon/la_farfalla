@@ -7,7 +7,7 @@ import useProduct from "@/src/shared/hooks/useProduct";
 import SearchFloatingButton from "@/src/widgets/button/SearchFloatingButton";
 import { useMemo, useCallback, useState, useEffect } from "react";
 
-const ShopClient = ({ initialProducts }: { initialProducts: Product[] }) => {
+const ShopClient = () => {
     const {
         products,
         productsLoading,
@@ -15,7 +15,7 @@ const ShopClient = ({ initialProducts }: { initialProducts: Product[] }) => {
         section,
         isFetchingNextPage,
         handleProductListScroll,
-    } = useProduct(initialProducts);
+    } = useProduct();
 
     // 검색바에 전달할 상품 데이터 준비 (평면화된 배열)
     const searchableProducts = useMemo(() => {

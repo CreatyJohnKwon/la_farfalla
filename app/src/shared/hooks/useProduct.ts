@@ -9,7 +9,7 @@ import { useDeleteProductMutation, useProductListQuery } from "./react-query/use
 import { useEffect, useMemo } from "react";
 import { Product } from "@/src/components/product/interface";
 
-const useProduct = (initialProducts?: Product[]) => {
+const useProduct = () => {
     const [section, setSection] = useAtom(sectionAtom);
     const [openSidebar, setOpenSidebar] = useAtom(sidebarAtom);
     const [formData, setFormData] = useAtom(productFormDatasAtom);
@@ -23,7 +23,7 @@ const useProduct = (initialProducts?: Product[]) => {
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-    } = useProductListQuery(9, initialProducts);
+    } = useProductListQuery(9);
 
     // product list data memoization
     const filteredProducts = useMemo(() => {
