@@ -10,11 +10,6 @@ import { useSetAtom } from "jotai";
 import { loadingAtom, resetProductFormAtom } from "../../lib/atom";
 import { Product } from "@/src/components/product/interface";
 
-type ProductListResponse = {
-    data: Product[];
-    hasMore: boolean;
-}
-
 type ProductPage = {
   data: Product[];    // 실제 상품 리스트
   hasMore: boolean;  // 다음 페이지 존재 여부
@@ -27,23 +22,27 @@ type InfiniteQueryResult = {
 };
 
 // 무한 스크롤 사용
-const useProductListQuery = (limit = 9) => {
+const useProductListQuery = (limit = 9, initialData?: Product[]) => {
     return useInfiniteQuery<    
-        ProductPage,    // TData
-        Error,                 // TError
-        InfiniteQueryResult,   // TSelect 결과 (그냥 동일)
-        string[],              // queryKey 타입
+        ProductPage,
+        Error,
+        InfiniteQueryResult,
+        string[],
         number
     >({
         queryKey: ["get-product-list"],
         queryFn: async ({ pageParam = 1 }) => {
             return await getProductList(pageParam, limit);
         },
-            getNextPageParam: (lastPage, allPages) => lastPage.hasMore ? allPages.length + 1 : undefined,
+        getNextPageParam: (lastPage, allPages) => lastPage.hasMore ? allPages.length + 1 : undefined,
         initialPageParam: 1,
-        staleTime: 1000 * 60 * 3,
+        staleTime: 0, // 3분
         retry: false,
-    })
+                initialData: initialData ? {
+            pages: [{ data: initialData, hasMore: initialData.length === limit }],
+            pageParams: [1] 
+        } : undefined,
+    });
 };
 
 const useProductQuery = (id: string) => {

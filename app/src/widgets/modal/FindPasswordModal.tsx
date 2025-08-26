@@ -44,8 +44,8 @@ const FindPasswordModal = ({ onClose }: { onClose: () => void }) => {
 
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-            <div className="relative w-full max-w-md rounded-md bg-white p-6 shadow-xl md:w-3/4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm" onClick={onClose}>
+            <div className="relative w-full max-w-md rounded-md bg-white p-6 shadow-xl md:w-3/4" onClick={(e) => e.stopPropagation()}>
                 <button
                     onClick={onClose}
                     className="absolute right-4 top-4 text-gray-500 hover:text-gray-900"

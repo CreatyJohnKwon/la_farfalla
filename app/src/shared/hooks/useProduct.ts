@@ -6,9 +6,10 @@ import {
     sidebarAtom,
 } from "@src/shared/lib/atom";
 import { useDeleteProductMutation, useProductListQuery } from "./react-query/useProductQuery";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { Product } from "@/src/components/product/interface";
 
-const useProduct = () => {
+const useProduct = (initialProducts?: Product[]) => {
     const [section, setSection] = useAtom(sectionAtom);
     const [openSidebar, setOpenSidebar] = useAtom(sidebarAtom);
     const [formData, setFormData] = useAtom(productFormDatasAtom);
@@ -22,7 +23,7 @@ const useProduct = () => {
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-    } = useProductListQuery();
+    } = useProductListQuery(9, initialProducts);
 
     // product list data memoization
     const filteredProducts = useMemo(() => {
@@ -47,6 +48,11 @@ const useProduct = () => {
             fetchNextPage();
         }
     };
+
+    useEffect(() => {
+        console.log(filteredProducts)
+    }, [])
+
 
     return {
         openSidebar,

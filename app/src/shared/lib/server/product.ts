@@ -1,8 +1,24 @@
 import { Product } from "@/src/components/product/interface";
+import { baseUrl } from "public/data/common";
 
-const getProductList = async (page: number, limit = 9) => {
-    const res = await fetch(`/api/product?page=${page}&limit=${limit}`);
-    if (!res.ok) throw new Error("상품 리스트 불러오기 실패");
+const getProductList = async (
+    page = 1,
+    limit = 9,
+    options?: { isISR?: boolean }
+) => {
+    const fetchOptions: RequestInit = {};
+
+    if (options?.isISR) fetchOptions.next = { revalidate: 60 * 3 }; 
+    if (!baseUrl) throw new Error("baseUrl 이 설정되지 않았습니다. baseUrl: " + baseUrl);
+
+    const res = await fetch(`${baseUrl}/api/product?page=${page}&limit=${limit}`, fetchOptions);
+
+    console.log(options?.isISR ? "ISR 상품 리스트 호출" : "SSR 상품 리스트 호출");
+
+    if (!res.ok) {
+        throw new Error("상품 리스트를 불러오는 데 실패했습니다.");
+    }
+
     return await res.json();
 };
 
