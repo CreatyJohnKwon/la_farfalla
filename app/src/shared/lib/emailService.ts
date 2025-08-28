@@ -406,7 +406,7 @@ export class EmailService {
                       새로운 주문이 접수되었습니다.<br>
                       <strong style="color: #dc2626;">관리자 페이지에서 즉시 확인하고 처리해주세요.</strong>
                     </p>
-                    <a href="https://twcommunity-server.store/admin/list/orders" 
+                    <a href="https://lafarfalla.kr/admin/list/orders" 
                       class="action-button">📋 주문 상세보기</a>
                   </div>
                 </div>

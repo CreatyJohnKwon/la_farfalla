@@ -7,7 +7,7 @@ import { ReviewPermissionResponse } from "@/src/entities/type/review";
 
 const BASE_URL =
     process.env.NODE_ENV === "production"
-        ? "https://twcommunity-server.store"
+        ? "https://lafarfalla.kr"
         : "http://localhost:3000";
 
 // 리뷰 목록 조회

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # SSL 인증서 발급 스크립트
-domains=(twcommunity-server.store dev.twcommunity-server.store)
+domains=(lafarfalla.kr dev.lafarfalla.kr)
 rsa_key_size=4096
 data_path="./certbot"
 email="wnsdn300300@gmail.com"  # 실제 이메일로 변경하세요
@@ -88,8 +88,8 @@ if [ $? -eq 0 ]; then
     
     echo "🎉 SSL setup completed successfully!"
     echo "Your sites should now be available at:"
-    echo "  - https://twcommunity-server.store"
-    echo "  - https://dev.twcommunity-server.store"
+    echo "  - https://lafarfalla.kr"
+    echo "  - https://dev.lafarfalla.kr"
 else
     echo "❌ SSL certificate issuance failed!"
     echo "Please check the logs above for details."

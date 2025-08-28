@@ -5,6 +5,6 @@ const adminEmails = [
     "vmfodzl1125@naver.com",
 ];
 
-const baseUrl = process.env.NEXTAUTH_URL || "https://twcommunity-server.store/";
+const baseUrl = process.env.NEXTAUTH_URL || "https://lafarfalla.kr/";
 
 export { adminEmails, baseUrl };

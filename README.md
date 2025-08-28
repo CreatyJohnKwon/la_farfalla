@@ -3,7 +3,7 @@
 #### 개발중에는 오픈소스입니다
 #### 구현 후에 홈쇼핑 많이 애용해주세요~
 
-https://twcommunity-server.store
+https://lafarfalla.kr
 
 프로젝트 : 풀스택 (NextJS)</br>
 CI/CD 파이프라인 .yml : GitHub Actions</br>
