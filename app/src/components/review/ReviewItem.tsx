@@ -550,7 +550,7 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
                         <img
                             src={selectedImage}
                             alt="확대된 리뷰 이미지"
-                            className="max-h-full max-w-full object-contain"
+                            className="w-[90vw] sm:w-[70vw] h-auto object-contain max-h-[90vh] sm:max-h-[70vh] aspect-square"
                             onClick={(e) => e.stopPropagation()}
                         />
                     </div>

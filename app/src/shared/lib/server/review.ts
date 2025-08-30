@@ -4,11 +4,7 @@ import {
 } from "@/src/components/review/interface";
 import { uploadImagesToServer } from "../uploadToR2";
 import { ReviewPermissionResponse } from "@/src/entities/type/review";
-
-const BASE_URL =
-    process.env.NODE_ENV === "production"
-        ? "https://lafarfalla.kr"
-        : "http://localhost:3000";
+import { baseUrl } from "public/data/common";
 
 // 리뷰 목록 조회
 const getReviewList = async (
@@ -19,8 +15,8 @@ const getReviewList = async (
     count: number;
 }> => {
     const url = productId
-        ? `${BASE_URL}/api/review?productId=${productId}`
-        : `${BASE_URL}/api/review`;
+        ? `/api/review?productId=${productId}`
+        : `/api/review`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -62,7 +58,7 @@ const submitReviewToAPI = async (data: {
     productId?: string;
     images?: string[];
 }): Promise<{ message: string; data: Review }> => {
-    const response = await fetch(`${BASE_URL}/api/review`, {
+    const response = await fetch(`/api/review`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -81,7 +77,7 @@ const patchReview = async (data: {
     content: string;
     images?: string[]; // 🆕 이미지 배열 추가
 }): Promise<{ message: string; data: Review }> => {
-    const response = await fetch(`${BASE_URL}/api/review/${data.reviewId}`, {
+    const response = await fetch(`/api/review/${data.reviewId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -99,7 +95,7 @@ const patchReview = async (data: {
 
 // 리뷰 삭제
 const deleteReview = async (reviewId: string): Promise<{ message: string }> => {
-    const response = await fetch(`${BASE_URL}/api/review/${reviewId}`, {
+    const response = await fetch(`/api/review/${reviewId}`, {
         method: "DELETE",
     });
 
@@ -114,7 +110,7 @@ const deleteReview = async (reviewId: string): Promise<{ message: string }> => {
 const toggleReviewLike = async (
     reviewId: string,
 ): Promise<ToggleReviewLikeResponse> => {
-    const response = await fetch(`${BASE_URL}/api/review/${reviewId}/like`, {
+    const response = await fetch(`/api/review/${reviewId}/like`, {
         method: "POST",
     });
 
@@ -129,7 +125,7 @@ const toggleReviewLike = async (
 
 // 댓글 관련 함수들
 const getReviewComments = async (reviewId: string) => {
-    const response = await fetch(`${BASE_URL}/api/review/${reviewId}/comment`);
+    const response = await fetch(`/api/review/${reviewId}/comment`);
     if (!response.ok) {
         throw new Error("댓글 조회에 실패했습니다");
     }
@@ -141,7 +137,7 @@ const postReviewComment = async (data: {
     content: string;
 }) => {
     const response = await fetch(
-        `${BASE_URL}/api/review/${data.reviewId}/comment`,
+        `/api/review/${data.reviewId}/comment`,
         {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -162,7 +158,7 @@ const patchReviewComment = async (data: {
     content: string;
 }) => {
     const response = await fetch(
-        `${BASE_URL}/api/review/${data.reviewId}/comment/${data.commentId}`,
+        `/api/review/${data.reviewId}/comment/${data.commentId}`,
         {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -182,7 +178,7 @@ const deleteReviewComment = async (data: {
     commentId: string;
 }) => {
     const response = await fetch(
-        `${BASE_URL}/api/review/${data.reviewId}/comment/${data.commentId}`,
+        `/api/review/${data.reviewId}/comment/${data.commentId}`,
         {
             method: "DELETE",
         },
@@ -204,7 +200,7 @@ const toggleReviewCommentLike = async (
     likesCount: number;
 }> => {
     const response = await fetch(
-        `${BASE_URL}/api/review/${reviewId}/comment/${commentId}/like`,
+        `/api/review/${reviewId}/comment/${commentId}/like`,
         {
             method: "POST",
         },
