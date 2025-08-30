@@ -30,6 +30,7 @@ const ProductClient = ({ id }: { id: string }) => {
     const descriptionRef = useRef<HTMLDivElement>(null);
 
     const reviews = reviewsData?.data || [];
+    const imgsOnly: string[] = reviewsData?.imagesOnly || [];
 
     // 탭 데이터
     const tabs = [
@@ -211,6 +212,7 @@ const ProductClient = ({ id }: { id: string }) => {
                                 isLoading={reviewIsLoading}
                                 error={reviewError}
                                 refetch={reviewRefetch}
+                                imgsOnly={imgsOnly}
                             />
                         </div>
                     )}

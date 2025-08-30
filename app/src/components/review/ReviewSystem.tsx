@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useMemo } from "react";
 import ReviewItem from "./ReviewItem";
 import { ReviewSystemProps } from "./interface";
@@ -14,17 +16,19 @@ import {
 } from "@src/shared/hooks/react-query/useReviewQuery";
 import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
 import useUsers from "@/src/shared/hooks/useUsers";
+import ImageViewerModal from "@/src/widgets/modal/ImageViewerModal";
 
 // 정렬 옵션 타입 정의
 type SortOption = "newest" | "oldest" | "most-liked" | "least-liked";
 
-const ReviewSystem: React.FC<ReviewSystemProps> = ({
+const ReviewSystem = ({
     productId,
     reviews,
     isLoading,
     error,
     refetch,
-}) => {
+    imgsOnly
+}: ReviewSystemProps) => {
     const postReviewMutation = usePostReviewMutation();
     const updateReviewMutation = useUpdateReviewMutation();
     const deleteReviewMutation = useDeleteReviewMutation();
@@ -35,8 +39,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
     const toggleCommentLikeMutation = useToggleCommentLikeMutation();
 
     // 리뷰 권한 검증 훅
-    const { data: permissionData, isLoading: permissionLoading } =
-        useReviewPermission(productId);
+    const { data: permissionData, isLoading: permissionLoading } = useReviewPermission(productId);
 
     // 로컬 상태
     const [sortOption, setSortOption] = useState<SortOption>("newest");
@@ -44,10 +47,12 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
     const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [imgUrl, setImgUrl] = useState<string | null>(null);
     const [newReview, setNewReview] = useState("");
     const { authCheck } = useUsers();
 
-    // 🆕 권한 체크를 위한 변수
+    // 권한 체크
     const canWriteReview = permissionData?.canReview || false;
     const permissionMessage = permissionData?.message || "";
 
@@ -117,10 +122,9 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
 
             newFiles.push(file);
 
-            // 미리보기 생성 - 타입 안전하게 수정
+            // 미리보기 생성
             const reader = new FileReader();
             reader.onload = (e: ProgressEvent<FileReader>) => {
-                // 🔥 타입 안전한 처리
                 const target = e.target;
                 if (
                     target &&
@@ -168,16 +172,15 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
         setIsDropdownOpen(false);
     };
 
-    // 리뷰 작성 - 기존 훅과 완전 호환
+    // 리뷰 작성
     const handleSubmitReview = async () => {
         if (authCheck())
             if (newReview.trim())
                 try {
-                    // 🆕 기존 방식에 imageFiles만 추가
                     await postReviewMutation.mutateAsync({
                         content: newReview,
                         productId,
-                        imageFiles: uploadedPhotos, // 🆕 파일 객체 배열 추가
+                        imageFiles: uploadedPhotos,
                     });
 
                     // 폼 초기화
@@ -186,7 +189,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                     setPhotoPreviews([]);
                 } catch (error) {
                     console.error("리뷰 작성 중 오류:", error);
-                    // 에러는 mutation에서 alert로 처리됨
                 }
     };
 
@@ -199,7 +201,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                     content,
                 });
             } catch (error) {
-                // 에러는 mutation에서 처리됨
                 console.error(error);
             }
     };
@@ -210,7 +211,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
             if (authCheck())
                 await toggleReviewLikeMutation.mutateAsync(reviewId);
         } catch (error) {
-            // 에러는 mutation에서 처리됨
             console.error(error);
         }
     };
@@ -224,7 +224,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                     commentId,
                 });
         } catch (error) {
-            // 에러는 mutation에서 처리됨
             console.error(error);
         }
     };
@@ -243,7 +242,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                     images,
                 });
         } catch (error) {
-            // 에러는 mutation에서 처리됨
             console.error(error);
         }
     };
@@ -261,7 +259,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                     content: newContent,
                 });
             } catch (error) {
-                // 에러는 mutation에서 처리됨
                 console.error(error);
             }
         }
@@ -273,7 +270,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
             try {
                 await deleteReviewMutation.mutateAsync(reviewId);
             } catch (error) {
-                // 에러는 mutation에서 처리됨
                 console.error(error);
             }
         }
@@ -291,7 +287,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                     commentId,
                 });
             } catch (error) {
-                // 에러는 mutation에서 처리됨
             }
         }
     };
@@ -324,7 +319,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
 
     return (
         <div className="mx-auto min-h-screen w-full bg-white p-6">
-            {/* 🆕 리뷰 작성 섹션 - 권한에 따라 조건부 렌더링 */}
             <div className="mb-12 border border-gray-100 bg-white p-6">
                 <div className="mb-8 flex flex-row items-center justify-between">
                     <h2 className="font-amstel mb-2 text-3xl text-gray-900">
@@ -337,13 +331,9 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                     </div>
                 </div>
 
-                {/* 🆕 권한 검증에 따른 조건부 렌더링 */}
                 {canWriteReview ? (
-                    /* 리뷰 작성 권한이 있을 때 */
                     <div className="space-y-5">
-                        {/* 사진 첨부 영역 - textarea 위에 위치 */}
                         <div className="flex items-start gap-3">
-                            {/* 사진 추가 버튼 (정사각형) */}
                             <div
                                 className={`relative flex h-16 w-16 cursor-pointer items-center justify-center border border-dashed border-gray-300 transition-colors hover:border-gray-400 ${
                                     isDragOver ? "border-black bg-gray-50" : ""
@@ -377,7 +367,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                                 </svg>
                             </div>
 
-                            {/* 업로드된 사진들 - 우측으로 하나씩 생성 */}
                             {photoPreviews.map((preview, index) => (
                                 <div key={index} className="group relative">
                                     <img
@@ -388,14 +377,13 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                                     <button
                                         type="button"
                                         onClick={() => removePhoto(index)}
-                                        className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                                        className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center bg-red-500 text-xs leading-none text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
                                     >
                                         ×
                                     </button>
                                 </div>
                             ))}
 
-                            {/* 사진 개수 표시 */}
                             {uploadedPhotos.length > 0 && (
                                 <div className="ml-2 flex items-center">
                                     <span className="text-xs text-gray-400">
@@ -431,8 +419,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                         </div>
                     </div>
                 ) : (
-                    /* 🆕 리뷰 작성 권한이 없을 때 표시할 메시지 */
-                    <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-center">
+                    <div className="rounded-md border border-gray-200 bg-gray-50 p-6 text-center">
                         <div className="mb-2">
                             <svg
                                 className="mx-auto h-12 w-12 text-gray-400"
@@ -458,9 +445,57 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                 )}
             </div>
 
-            {/* 정렬 드롭다운 */}
+            {imgsOnly.length > 0 ? (
+                <div>
+                    <h3 className="mb-4 text-lg font-bold">
+                        리뷰 이미지
+                    </h3>
+                    <div className="relative overflow-hidden">
+                        <style>
+                            {`
+                            .custom-scrollbar::-webkit-scrollbar {
+                                height: 6px;
+                            }
+                            .custom-scrollbar::-webkit-scrollbar-thumb {
+                                background-color: rgba(0, 0, 0, 0.2);
+                                border-radius: 10px;
+                            }
+                            .custom-scrollbar::-webkit-scrollbar-track {
+                                background: transparent;
+                            }
+                            `}
+                        </style>
+                        <div className="flex w-full gap-4 overflow-x-auto pb-4 custom-scrollbar">
+                            {imgsOnly.map((imgSrc, index) => (
+                                <div
+                                    key={index}
+                                    onClick={() => {
+                                        setImgUrl(imgSrc);
+                                        setIsImageModalOpen(true);
+                                    }}
+                                    className="group relative flex-shrink-0 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48"
+                                >
+                                    <img
+                                        src={imgSrc}
+                                        alt={`리뷰 이미지 ${index + 1}`}
+                                        className="w-full h-full object-cover transition-transform duration-300"
+                                    />
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 transition-all duration-200 group-hover:bg-opacity-20">
+                                        <span className="text-xs font-medium text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                                            확대보기
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div></div>
+            )}
+
             {reviews.length > 0 && (
-                <div className="relative place-self-end">
+                <div className="relative place-self-end py-5">
                     <button
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                         className="flex items-center space-x-2 border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
@@ -510,7 +545,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                 </div>
             )}
 
-            {/* 정렬된 리뷰 리스트 */}
             <div className="space-y-0">
                 {sortedReviews.map((review) => (
                     <ReviewItem
@@ -531,7 +565,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                 ))}
             </div>
 
-            {/* 드롭다운 바깥 클릭 시 닫기 */}
             {isDropdownOpen && (
                 <div
                     className="z-5 fixed inset-0"
@@ -549,6 +582,13 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
                     </p>
                 </div>
             )}
+
+            {isImageModalOpen && 
+                <ImageViewerModal 
+                    onClose={() => setIsImageModalOpen(false)}
+                    imageUrl={imgUrl}
+                />
+            }
         </div>
     );
 };

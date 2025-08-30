@@ -3,9 +3,7 @@ import {
     Heart,
     MenuSquare,
     MoreVertical,
-    Trash2,
-    X,
-    Crown,
+    Trash2
 } from "lucide-react";
 import ReviewCommentItem from "./ReviewCommentItem";
 import { useState } from "react";
@@ -13,6 +11,7 @@ import { ReviewItemProps } from "./interface";
 import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
 import { uploadImagesToServer } from "@/src/shared/lib/uploadToR2";
 import ReviewContents from "./ReviewContents";
+import ImageViewerModal from "@/src/widgets/modal/ImageViewerModal";
 
 const ReviewItem: React.FC<ReviewItemProps> = ({
     review,
@@ -536,25 +535,10 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
 
             {/* 🆕 이미지 모달 */}
             {selectedImage && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4"
-                    onClick={closeImageModal}
-                >
-                    <div className="relative max-h-full max-w-4xl">
-                        <button
-                            onClick={closeImageModal}
-                            className="absolute -top-12 right-0 text-white transition-colors duration-200 hover:text-gray-300"
-                        >
-                            <X className="h-8 w-8" />
-                        </button>
-                        <img
-                            src={selectedImage}
-                            alt="확대된 리뷰 이미지"
-                            className="w-[90vw] sm:w-[70vw] h-auto object-contain max-h-[90vh] sm:max-h-[70vh] aspect-square"
-                            onClick={(e) => e.stopPropagation()}
-                        />
-                    </div>
-                </div>
+                <ImageViewerModal 
+                    imageUrl={selectedImage} 
+                    onClose={closeImageModal} 
+                />
             )}
         </>
     );

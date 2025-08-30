@@ -189,17 +189,22 @@ export async function GET(req: NextRequest) {
             };
         });
 
+        // 🆕 모든 리뷰 이미지 URL만 추출 (디버깅용)
+        const imagesOnly = reviewsWithLikeStatus
+            .flatMap((review) => review.images || [])
+            .filter((url) => typeof url === "string" && url.trim() !== "");
+
         return NextResponse.json({
             type: "reviews",
             data: reviewsWithLikeStatus,
             count: reviewsWithLikeStatus.length,
-            // 🆕 디버깅용 (선택사항)
             meta: {
                 isRequesterAdmin: isRequesterAdmin,
                 requesterEmail: isRequesterAdmin
                     ? session?.user?.email
                     : getEmailDisplay(session?.user?.email, false),
             },
+            imagesOnly, // 🆕 모든 리뷰 이미지 URL 배열
         });
     } catch (error: any) {
         console.error("리뷰 조회 중 오류:", error);

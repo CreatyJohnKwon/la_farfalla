@@ -109,6 +109,7 @@ interface ReviewSystemProps {
     isLoading: boolean;
     error: unknown; // 또는 AxiosError 등으로 구체화 가능
     refetch: () => void | Promise<unknown>; // 보통 Promise<void> 반환
+    imgsOnly: string[]; // 🆕 모든 리뷰 이미지 URL 배열
 }
 
 interface ToggleReviewLikeResponse {

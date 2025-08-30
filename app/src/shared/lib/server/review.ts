@@ -4,7 +4,6 @@ import {
 } from "@/src/components/review/interface";
 import { uploadImagesToServer } from "../uploadToR2";
 import { ReviewPermissionResponse } from "@/src/entities/type/review";
-import { baseUrl } from "public/data/common";
 
 // 리뷰 목록 조회
 const getReviewList = async (
@@ -13,6 +12,7 @@ const getReviewList = async (
     type: string;
     data: Review[];
     count: number;
+    imagesOnly?: string[];
 }> => {
     const url = productId
         ? `/api/review?productId=${productId}`
