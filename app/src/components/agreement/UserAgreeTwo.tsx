@@ -1,9 +1,9 @@
 const UserAgreeTwo = () => {
     return (
         <>
-            <h2 className="mb-4 text-base font-bold sm:text-xl">
+            <p className="mb-4 text-base font-bold sm:text-xl">
                 개인정보 수집 및 이용
-            </h2>
+            </p>
             <div className="mt-8 h-[55vh] overflow-y-auto overflow-x-hidden p-2 text-start text-base">
                 <div className="">
                     <h3 className="mb-1 font-semibold">
@@ -29,18 +29,18 @@ const UserAgreeTwo = () => {
                     </p>
                 </div>
                 <div>
-                    <h3 className="mt-2 font-semibold">
+                    <p className="mt-2 font-semibold">
                         2. 수집하는 개인정보 항목 ID, 성명, 비밀번호, 주소,
                         휴대폰 번호, 이메일, 14세 미만 가입자의 경우 법정대리인
                         정보
-                    </h3>
+                    </p>
                 </div>
                 <div>
-                    <h3 className="mt-2 font-semibold">
+                    <p className="mt-2 font-semibold">
                         3. 개인정보 보유 및 이용기간 회원탈퇴 시까지 (단, 관계
                         법령에 보존 근거가 있는 경우 해당 기간 시까지 보유,
                         개인정보처리방침에서 확인 가능)
-                    </h3>
+                    </p>
                 </div>
             </div>
         </>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import useOrder from "@src/shared/hooks/useOrder";
 
@@ -8,6 +8,8 @@ import DefaultImage from "../../public/images/chill.png";
 import { useAddress } from "@/src/shared/hooks/useAddress";
 import AddressModal from "@/src/features/address/AddressModal";
 import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
+import AgreementModal from "@/src/widgets/modal/Agreement/AgreementModal";
+import BuyAgreement from "@/src/components/agreement/BuyAgreement";
 
 const Order = () => {
     const { orderDatas } = useOrder();
@@ -53,6 +55,7 @@ const Order = () => {
         orderComplete,
         isSubmitting
     } = useOrder();
+    const [isOpenAgreementModal, setIsOpenAgreementModal] = useState<boolean>(false);
 
     // ✅ 쿠폰 데이터 추출 및 최적화
     const couponData = useMemo(() => coupons?.data || [], [coupons]);
@@ -1054,44 +1057,6 @@ const Order = () => {
                             </p>
                         </section>
 
-                        {/* 결제수단 */}
-                        {/* <section className="border bg-white p-4">
-                            <h2 className="font-pretendard-bold mb-4">
-                                결제수단
-                            </h2>
-                            <div className="flex gap-4 font-pretendard">
-                                <label className="flex items-center gap-2 text-sm">
-                                    <input
-                                        type="radio"
-                                        name="payment"
-                                        defaultChecked
-                                        onChange={() =>
-                                            setPayments("NAVER_PAY")
-                                        }
-                                    />
-                                    {"\t네이버 페이"}
-                                </label>
-                                <label className="flex items-center gap-2 text-sm">
-                                    <input
-                                        type="radio"
-                                        name="payment"
-                                        onChange={() =>
-                                            setPayments("KAKAO_PAY")
-                                        }
-                                    />
-                                    {"\t카카오 페이"}
-                                </label>
-                                <label className="flex items-center gap-2 text-sm">
-                                    <input
-                                        type="radio"
-                                        name="payment"
-                                        onChange={() => setPayments("CARD")}
-                                    />
-                                    {"\t신용카드"}
-                                </label>
-                            </div>
-                        </section> */}
-
                         {/* 약관 동의 */}
                         <section className="border bg-white p-4 font-pretendard">
                             <label className="flex items-center gap-2 text-sm leading-tight">
@@ -1100,9 +1065,23 @@ const Order = () => {
                                     name="paymentAgree"
                                     required
                                 />
-                                <span className="font-pretendard">
-                                    결제 동의 (구매조건 확인 및 결제진행에 동의)
-                                </span>
+                                <div>
+                                    <span className="font-pretendard">
+                                        {"결제\t및\t"}
+                                    </span>
+                                    <span 
+                                        className="font-pretendard underline cursor-pointer hover:text-blue-500" 
+                                        onClick={(e) => {
+                                            e.preventDefault(); // 이벤트 전이 막고
+                                            setIsOpenAgreementModal(true); // 약관동의 모달 열기
+                                        }}
+                                    >
+                                        {"약관\t동의\t"}
+                                    </span>
+                                    <span className="font-pretendard">
+                                        {"구매조건\t확인\t및\t결제진행에 동의\t(필수)"}
+                                    </span>
+                                </div>
                             </label>
                         </section>
 
@@ -1119,6 +1098,12 @@ const Order = () => {
                     <AddressModal
                         onComplete={onComplete}
                         onClose={closeModal}
+                    />
+                )}
+                {isOpenAgreementModal && (
+                    <AgreementModal 
+                        onClose={() => setIsOpenAgreementModal(false)}
+                        children={<BuyAgreement />}
                     />
                 )}
             </form>

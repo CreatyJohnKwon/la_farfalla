@@ -2,21 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
-
+import { FaRegEye } from "react-icons/fa6";
+import { FaRegEyeSlash } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-import { useAddress } from "@src/shared/hooks/useAddress";
-import AddressModal from "@src/features/address/AddressModal";
-
 import { registUserAction } from "./actions";
-
-import { FaRegEye } from "react-icons/fa6";
-import { FaRegEyeSlash } from "react-icons/fa6";
-import { X } from "lucide-react";
-import UserAgreeOne from "@/src/entities/UserAgreeOne";
-import UserAgreeTwo from "@/src/entities/UserAgreeTwo";
+import { useAddress } from "@src/shared/hooks/useAddress";
 import { sendAuthMail } from "@/src/shared/lib/server/user";
+
+import AddressModal from "@src/features/address/AddressModal";
+import AgreementModal from "@/src/widgets/modal/Agreement/AgreementModal";
+import UserAgreeOne from "@/src/components/agreement/UserAgreeOne";
+import UserAgreeTwo from "@/src/components/agreement/UserAgreeTwo";
 
 const RegisterClient = () => {
     const router = useRouter();
@@ -194,6 +192,11 @@ const RegisterClient = () => {
         address.trim() &&
         detailAddress.trim();
 
+    const onClose = () => {
+        if (isOpenUserAgreeOne) setIsOpenUserAgreeOne(false);
+        if (isOpenUserAgreeTwo) setIsOpenUserAgreeTwo(false);
+    }
+
     return (
         <div className="z-30 flex h-screen flex-col items-center justify-start overflow-y-auto py-8 text-center">
             <form
@@ -265,63 +268,63 @@ const RegisterClient = () => {
                                 인증 완료
                             </div>
                         )}
-                    </div>
 
-                    {/* 이메일 인증번호 입력 필드 */}
-                    <div className="w-full">
-                        {showVerificationInput && (
-                            <div className="relative w-full">
-                                <input
-                                    type="text"
-                                    value={emailVerificationCode}
-                                    onChange={(e) =>
-                                        setEmailVerificationCode(e.target.value)
-                                    }
-                                    placeholder="인증번호 6자리를 입력하세요"
-                                    maxLength={6}
-                                    className="h-[5vh] w-full rounded-none border border-blue-200 bg-blue-50 px-4 pr-20 text-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={verifyEmailCode}
-                                    disabled={
-                                        emailVerificationCode.length !== 6
-                                    }
-                                    className={`absolute right-1 top-1/2 -translate-y-1/2 px-4 py-[1.3vh] text-sm text-white ${
-                                        emailVerificationCode.length !== 6
-                                            ? "cursor-not-allowed bg-gray-400"
-                                            : "bg-blue-600 hover:bg-blue-700"
-                                    }`}
-                                >
-                                    확인
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                        {/* 이메일 인증번호 입력 필드 */}
+                        <div className="w-full">
+                            {showVerificationInput && (
+                                <div className="relative w-full">
+                                    <input
+                                        type="text"
+                                        value={emailVerificationCode}
+                                        onChange={(e) =>
+                                            setEmailVerificationCode(e.target.value)
+                                        }
+                                        placeholder="인증번호 6자리를 입력하세요"
+                                        maxLength={6}
+                                        className="h-[5vh] w-full rounded-none border border-blue-200 bg-blue-50 px-4 pr-20 text-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={verifyEmailCode}
+                                        disabled={
+                                            emailVerificationCode.length !== 6
+                                        }
+                                        className={`absolute right-1 top-1/2 -translate-y-1/2 px-4 py-[1.3vh] text-sm text-white ${
+                                            emailVerificationCode.length !== 6
+                                                ? "cursor-not-allowed bg-gray-400"
+                                                : "bg-blue-600 hover:bg-blue-700"
+                                        }`}
+                                    >
+                                        확인
+                                    </button>
+                                </div>
+                            )}
 
-                    {/* 이메일 인증 상태 메시지 */}
-                    {isEmailSent && !isEmailVerified && (
-                        <div className="text-left">
-                            <p className="text-sm text-blue-600">
-                                {email}
-                                <span className="ms-1 text-sm text-gray-700">
-                                    로 인증번호를 발송했습니다.
-                                </span>
-                            </p>
-                            <p className="mt-1 text-xs text-gray-500">
-                                {formatTime(timeLeft)} 후에 만료됩니다.
-                                인증번호가 오지 않았다면 스팸함을 확인해주세요.
-                            </p>
+                            {/* 이메일 인증 상태 메시지 */}
+                            {isEmailSent && !isEmailVerified && (
+                                <div className="text-left">
+                                    <p className="text-sm text-blue-600">
+                                        {email}
+                                        <span className="ms-1 pb-3 text-sm text-gray-700">
+                                            로 인증번호를 발송했습니다.
+                                        </span>
+                                    </p>
+                                    <p className="mt-1 text-xs text-gray-500">
+                                        {formatTime(timeLeft)} 후에 만료됩니다.
+                                        인증번호가 오지 않았다면 스팸함을 확인해주세요.
+                                    </p>
+                                </div>
+                            )}
+
+                            {isEmailVerified && (
+                                <div className="text-left">
+                                    <p className="text-sm text-green-600">
+                                        이메일 인증 완료
+                                    </p>
+                                </div>
+                            )}
                         </div>
-                    )}
-
-                    {isEmailVerified && (
-                        <div className="text-left">
-                            <p className="text-sm text-green-600">
-                                이메일 인증 완료
-                            </p>
-                        </div>
-                    )}
+                    </div>
 
                     <div className="w-full">
                         {/* 비밀번호 입력 영역 */}
@@ -508,40 +511,14 @@ const RegisterClient = () => {
             {isOpen && (
                 <AddressModal onComplete={onComplete} onClose={closeModal} />
             )}
-
             {(isOpenUserAgreeOne || isOpenUserAgreeTwo) && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-                    onClick={() => {
-                        if (isOpenUserAgreeOne) setIsOpenUserAgreeOne(false);
-                        if (isOpenUserAgreeTwo) setIsOpenUserAgreeTwo(false);
-                    }}
-                >
-                    <div
-                        className="relative h-[60vh] w-[90vw] overflow-hidden bg-white p-4 text-center shadow-xl md:w-1/3"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {/* 닫기 버튼 */}
-                        <button
-                            onClick={() => {
-                                if (isOpenUserAgreeOne)
-                                    setIsOpenUserAgreeOne(false);
-                                if (isOpenUserAgreeTwo)
-                                    setIsOpenUserAgreeTwo(false);
-                            }}
-                            className="absolute right-4 top-4 text-zinc-400 transition hover:text-zinc-800"
-                            aria-label="닫기"
-                        >
-                            <X className="h-5 w-5" />
-                        </button>
-
-                        <div className="h-full overflow-y-auto">
-                            {isOpenUserAgreeOne && <UserAgreeOne />}
-                            {isOpenUserAgreeTwo && <UserAgreeTwo />}
-                        </div>
-                    </div>
-                </div>
+                <AgreementModal 
+                    onClose={() => onClose()}
+                    children={isOpenUserAgreeOne ? <UserAgreeOne /> : <UserAgreeTwo />}
+                /> 
             )}
+            {/* children */}
+            
         </div>
     );
 };

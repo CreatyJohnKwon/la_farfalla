@@ -1,7 +1,7 @@
 const UserAgreeOne = () => {
     return (
         <>
-            <h2 className="mb-4 text-base font-bold sm:text-xl">이용약관</h2>
+            <p className="mb-4 text-base font-bold sm:text-xl">이용약관</p>
             <div className="mt-8 h-[50vh] overflow-y-auto overflow-x-hidden p-2 text-start font-pretendard text-base">
                 <p className="font-pretendard-bold">제1조(목적)</p>
                 <br />
