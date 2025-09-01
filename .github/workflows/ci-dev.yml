@@ -153,13 +153,12 @@ jobs:
                     echo "🚀 Starting Docker containers with new image..."
                     cd "$DEPLOY_DIR"
                     
-                    # 개발용 docker-compose 파일 사용
                     docker-compose down dev-nextjs
                     docker-compose pull dev-nextjs
                     docker-compose up -d dev-nextjs
                     
-                    echo "🧹 Cleaning up unused Docker images..."
-                    docker image prune -af
+                    # echo "🧹 Cleaning up unused Docker images..."
+                    # docker image prune -af
                     
                     echo "✅ Deployment to development completed successfully!"
                   EOF
