@@ -154,12 +154,9 @@ jobs:
                     cd "$DEPLOY_DIR"
                     
                     # 개발용 docker-compose 파일 사용
-                    docker-compose -f docker-compose-dev.yml down dev-nextjs
-                    docker-compose -f docker-compose-dev.yml pull dev-nextjs
-                    docker-compose -f docker-compose-dev.yml up -d dev-nextjs
-                    
-                    echo "🔄 Reloading nginx configuration..."
-                    docker-compose -f docker-compose-dev.yml exec nginx nginx -s reload || echo "Nginx reload skipped"
+                    docker-compose down dev-nextjs
+                    docker-compose pull dev-nextjs
+                    docker-compose up -d dev-nextjs
                     
                     echo "🧹 Cleaning up unused Docker images..."
                     docker image prune -af
