@@ -150,14 +150,13 @@ jobs:
                     echo "Logging into Docker Hub..."
                     docker login -u ${DOCKERHUB_USERNAME} -p ${{ secrets.DOCKERHUB_TOKEN }}
                     
-                    echo "Pulling latest image..."
-                    docker pull "$APP_IMAGE_TAG"
-                    
                     echo "🚀 Starting Docker containers with new image..."
                     cd "$DEPLOY_DIR"
                     
                     # 개발용 docker-compose 파일 사용
-                    docker-compose -f docker-compose-dev.yml up -d --no-build --force-recreate
+                    docker-compose -f docker-compose-dev.yml down dev-nextjs
+                    docker-compose -f docker-compose-dev.yml pull dev-nextjs
+                    docker-compose -f docker-compose-dev.yml up -d dev-nextjs
                     
                     echo "🔄 Reloading nginx configuration..."
                     docker-compose -f docker-compose-dev.yml exec nginx nginx -s reload || echo "Nginx reload skipped"
