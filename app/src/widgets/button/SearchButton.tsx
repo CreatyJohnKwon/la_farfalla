@@ -1,14 +1,13 @@
 "use client";
 
 import { SearchFloatingButtonProps } from "@/src/components/product/interface";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 
 const SearchButton: React.FC<SearchFloatingButtonProps> = ({
     products,
     onSearch,
 }) => {
     // 상태 관리
-    const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
     const [searchQuery, setSearchQuery] = useState<string>("");
 
     // refs
@@ -79,22 +78,6 @@ const SearchButton: React.FC<SearchFloatingButtonProps> = ({
         performRealTimeSearch(value);
     };
 
-    // 검색 모드 토글
-    const toggleSearch = () => {
-        if (isSearchOpen) {
-            // 검색 모드 닫기
-            setIsSearchOpen(false);
-            setSearchQuery("");
-            onSearch("", products); // 전체 상품 복원
-        } else {
-            // 검색 모드 열기
-            setIsSearchOpen(true);
-            setTimeout(() => {
-                searchInputRef.current?.focus();
-            }, 100);
-        }
-    };
-
     // 검색 초기화
     const clearSearch = () => {
         setSearchQuery("");
@@ -102,70 +85,26 @@ const SearchButton: React.FC<SearchFloatingButtonProps> = ({
         searchInputRef.current?.focus();
     };
 
-    // 외부 클릭 시 검색창 닫기
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (
-                containerRef.current &&
-                !containerRef.current.contains(event.target as Node)
-            ) {
-                if (isSearchOpen && !searchQuery) {
-                    setIsSearchOpen(false);
-                }
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () =>
-            document.removeEventListener("mousedown", handleClickOutside);
-    }, [isSearchOpen, searchQuery]);
-
     return (
-        <div
+       <div
             ref={containerRef}
-            className="w-[90vw] md:w-[85vw] flex items-center justify-start pt-24 md:pt-30"
+            className="w-[90vw] md:w-[85vw] flex items-center justify-start pt-24"
         >
-            {/* 검색 입력창 (돋보기 누르면 나타남) */}
-            <div
-                className={`
-                    h-10 bg-transparent
-                    transition-all duration-300 ease-in-out flex items-center
-                    ${isSearchOpen ? 'w-64' : 'w-6 overflow-hidden'}
-                `}
-            >
+            <div className="flex items-center space-x-2 w-[15vw]">
                 {/* 돋보기 아이콘 */}
-                <div
-                    className="flex-shrink-0 cursor-pointer"
-                    onClick={toggleSearch}
-                    aria-label={isSearchOpen ? "검색 닫기" : "상품 검색하기"}
-                    role="button"
+                <svg
+                    className="flex-shrink-0 h-6 w-6 text-gray-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                 >
-                    {isSearchOpen ? (
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            className="text-gray-600 h-6 w-6"
-                        >
-                            <line x1="18" y1="6" x2="6" y2="18" strokeWidth={2} />
-                            <line x1="6" y1="6" x2="18" y2="18" strokeWidth={2} />
-                        </svg>
-                    ) : (
-                        <svg
-                            className="h-6 w-6 text-gray-600"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                            />
-                        </svg>
-                    )}
-                </div>
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                </svg>
 
                 {/* 입력 필드 */}
                 <input
@@ -173,15 +112,14 @@ const SearchButton: React.FC<SearchFloatingButtonProps> = ({
                     type="text"
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    placeholder="상품을 검색해보세요..."
-                    className="ms-2 flex-grow bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none md:text-base"
+                    className="flex-grow bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none md:text-base border-b border-dashed border-gray-400 focus:border-gray-700"
                 />
 
                 {/* 클리어 버튼 */}
                 {searchQuery && (
                     <button
                         onClick={clearSearch}
-                        className="flex-shrink-0 transition-colors hover:bg-gray-100"
+                        className="flex-shrink-0 p-1"
                     >
                         <svg
                             width="16"
