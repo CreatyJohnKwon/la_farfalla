@@ -39,18 +39,18 @@ const AboutDrop = () => {
                             introduce
                         </button>
                     </li>
-                    {/* <li key={"move-project"} className="py-1">
+                    <li key={"move-project"} className="py-1">
                         <button
                             onClick={() => {
                                 router.push("/project");
                                 setOpenSidebar(false);
                                 setOpen(false);
                             }}
-                            disabled={true}
+                            // disabled={true}
                         >
                             project
                         </button>
-                    </li> */}
+                    </li>
                 </ul>
             )}
         </div>

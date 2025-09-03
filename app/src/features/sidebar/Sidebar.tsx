@@ -89,7 +89,7 @@ const Sidebar = () => {
                         </Link>
                     </ul>
 
-                    <ul className="flex flex-col items-center justify-center gap-10 text-center text-[2em] text-black">
+                    <ul className="flex flex-col items-center gap-8 text-center text-3xl text-black absolute top-1/4">
                         <li className="relative">
                             <ShopDrop category={category} />
                         </li>
@@ -101,11 +101,14 @@ const Sidebar = () => {
                                 <AboutDrop />
                             )}
                         </li>
+                    </ul>
 
+                    {/* 하단에 고정될 메뉴 리스트와 인스타그램 아이콘 */}
+                    <ul className="absolute bottom-1/4 left-1/2 -translate-x-1/2 flex flex-col items-center justify-center text-center">
                         <li>
                             <button
                                 onClick={() => instagramHandler()}
-                                className="mt-32 text-3xl text-black"
+                                className="text-3xl text-black"
                             >
                                 <RxInstagramLogo />
                             </button>
