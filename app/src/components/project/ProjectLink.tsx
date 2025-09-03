@@ -14,9 +14,9 @@ const ProjectLink = ({
     imageUrl: string | StaticImageData;
     altText: string;
 }) => {
-    return (
+   return (
         <Link
-            className="group relative flex-1 h-full overflow-hidden transition-all duration-500 ease-in-out hover:flex-[1.1]"
+            className="group relative flex-1 h-full w-full md:w-1/2 overflow-hidden transition-all duration-500 ease-in-out md:hover:flex-[2vw]"
             href={href}
         >
             {/* 배경 이미지 */}
@@ -28,11 +28,11 @@ const ProjectLink = ({
             />
 
             {/* 호버 시 나타나는 오버레이 */}
-            <div className="absolute inset-0 bg-black/0 transition-all duration-500 group-hover:bg-black/10 group-hover:backdrop-blur-sm"></div>
+            <div className="absolute inset-0 bg-black/0 transition-all duration-500 group-hover:bg-black/50"></div>
 
             {/* 텍스트 컨테이너 */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
-                <span className="text-3xl text-black font-amstel font-[600] z-10 transition-transform duration-500 hidden group-hover:block">
+                <span className="text-3xl text-white font-amstel font-[600] z-10 transition-transform duration-500 hidden group-hover:block">
                     {title}
                 </span>
             </div>

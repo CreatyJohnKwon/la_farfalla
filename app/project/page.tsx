@@ -5,7 +5,7 @@ import ProjectLink from "@/src/components/project/ProjectLink";
 
 const page = () => {
     return (
-        <div className="h-screen w-screen flex">
+        <div className="h-screen w-screen flex flex-col md:flex-row">
             <ProjectLink
                 href="/project"
                 title="25 Spring/Summer"
