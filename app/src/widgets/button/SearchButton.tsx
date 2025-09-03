@@ -90,7 +90,7 @@ const SearchButton: React.FC<SearchFloatingButtonProps> = ({
             ref={containerRef}
             className="w-[90vw] md:w-[85vw] flex items-center justify-start pt-24"
         >
-            <div className="flex items-center space-x-2 w-[15vw]">
+            <div className="flex items-center space-x-2 w-[12vw]">
                 {/* 돋보기 아이콘 */}
                 <svg
                     className="flex-shrink-0 h-6 w-6 text-gray-500"
@@ -112,7 +112,7 @@ const SearchButton: React.FC<SearchFloatingButtonProps> = ({
                     type="text"
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="flex-grow bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none md:text-base border-b border-dashed border-gray-400 focus:border-gray-700"
+                    className="flex-grow bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none md:text-base border-b border-gray-400 focus:border-gray-700"
                 />
 
                 {/* 클리어 버튼 */}
