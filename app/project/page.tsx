@@ -7,13 +7,13 @@ const page = () => {
     return (
         <div className="h-screen w-screen flex">
             <ProjectLink
-                href="/project/spring"
+                href="/project"
                 title="25 Spring/Summer"
                 imageUrl={chillImg}
                 altText="25 Spring/Summer background"
             />
             <ProjectLink
-                href="/project/autumn"
+                href="/project"
                 title="25 Autumn/Winter"
                 imageUrl={chillImg}
                 altText="25 Autumn/Winter background"
