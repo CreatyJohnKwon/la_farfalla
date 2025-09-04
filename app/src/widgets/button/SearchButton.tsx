@@ -101,19 +101,21 @@ const SearchButton: React.FC<SearchFloatingButtonProps> = ({
                     <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={1.5}
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     />
                 </svg>
 
                 {/* 입력 필드 */}
-                <input
-                    ref={searchInputRef}
-                    type="text"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="flex-grow bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none md:text-base border-b border-gray-400 focus:border-gray-700"
-                />
+                <div className="border-b border-gray-500 md:text-base text-sm bg-transparent text-gray-700 font-pretendard">
+                    <input
+                        ref={searchInputRef}
+                        type="text"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="flex-grow outline-none"
+                    />
+                </div>
 
                 {/* 클리어 버튼 */}
                 {searchQuery && (
