@@ -101,14 +101,14 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                         </span>
                     ) : (
                         <div className="font-amstel-thin sm:font-amstel space-y-1">
-                            <p className="text-xs text-gray-500 line-through transition-all duration-300 ease-in-out sm:text-base">
+                            <span className="text-xs text-gray-500 line-through sm:text-base">
                                 {`KRW ${priceResult(product)}`}
-                            </p>
+                            </span>
                             <div className="flex items-center justify-center space-x-2">
-                                <span className="rounded-full bg-red-500 px-2 py-1 text-xs font-bold text-white sm:px-3 sm:py-1 sm:text-sm">
+                                <span className="py-1 text-xs font-bold text-red-500 px-1 sm:py-1 sm:text-base">
                                     {`${product.discount}%`}
                                 </span>
-                                <span className="text-xs font-bold text-red-600 sm:text-base">
+                                <span className="text-xs font-bold text-slate-600 sm:text-base">
                                     {`KRW ${priceDiscount(product)}`}
                                 </span>
                             </div>

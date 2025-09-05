@@ -34,22 +34,23 @@ const MileageList = () => {
     // 마일리지가 하나라도 있을 때
     if (mileage && mileage.length > 0) {
         return (
-            <ul className="flex w-[85vw] flex-col gap-4 overflow-y-scroll pb-5 sm:h-[40vh] sm:w-auto">
+            <ul className="flex w-[85vw] flex-col gap-3 overflow-y-auto pb-5 sm:h-[40vh] sm:w-auto whitespace-nowrap">
                 {mileage.map((item: MileageItem) => (
                     <li
                         key={item._id}
-                        className={`rounded-md border p-4 ${
-                            item.type === "earn"
-                                ? "border-gray-200 bg-transparent"
-                                : "border-red-200 bg-red-50"
-                        }`}
+                        className="rounded-md border sm:hover:border-gray-300 p-5"
                     >
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold">
-                                {item.type === "earn" ? "적립" : "사용"}
-                            </span>
+                            <div className="w-[40vw] sm:w-[20vw] h-auto flex flex-row items-center justify-between">
+                                <span className="font-amstel text-sm xs:text-base">
+                                    {new Date(item.createdAt).toLocaleDateString().slice(0, -1)}
+                                </span>
+                                <span className="text-gray-400 font-pretendard font-[300] text-xs xs:text-sm">
+                                    {item.type === "earn" ? "마일리지 적립" : "마일리지 사용"}
+                                </span>
+                            </div>
                             <span
-                                className={`font-amstel text-base ${
+                                className={`font-amstel text-base xs:text-lg ${
                                     item.type === "earn"
                                         ? "text-green-600"
                                         : "text-red-600"
@@ -58,12 +59,6 @@ const MileageList = () => {
                                 {item.type === "earn" ? "+" : "-"}
                                 {item.amount.toLocaleString()}P
                             </span>
-                        </div>
-                        <div className="mt-1 text-xs text-gray-600">
-                            {item.description || "내용 없음"}
-                        </div>
-                        <div className="mt-1 text-xs text-gray-500">
-                            {new Date(item.createdAt).toLocaleDateString()} 발생
                         </div>
                     </li>
                 ))}

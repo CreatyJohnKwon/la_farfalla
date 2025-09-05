@@ -158,12 +158,12 @@ const ProductClient = ({ id }: { id: string }) => {
             <div className="mx-auto w-full max-w-4xl">
                 {/* 탭 헤더 */}
                 <div className="relative border-b">
-                    <nav className="relative flex space-x-8 px-6">
+                    <nav className="relative flex space-x-8 px-6 font-pretendard font-[500]">
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`border-b-2 px-1 py-4 text-sm font-medium transition-colors duration-200 ${
+                                className={`border-b-2 px-1 py-4 text-sm transition-colors duration-200 ${
                                     activeTab === tab.id
                                         ? "border-gray-900 text-gray-900"
                                         : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"

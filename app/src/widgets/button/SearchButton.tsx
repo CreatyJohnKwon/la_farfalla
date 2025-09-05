@@ -86,7 +86,7 @@ const SearchButton: React.FC<SearchFloatingButtonProps> = ({
     };
 
     return (
-       <div
+        <div
             ref={containerRef}
             className="w-[90vw] md:w-[85vw] flex items-center justify-start pt-24"
         >

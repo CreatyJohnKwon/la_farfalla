@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
-import BackgroundImg from "../../public/images/background_img.jpeg";
+import BackgroundImg from "../../public/images/bg_250905.jpg";
 import AnnounceLayer from "@/src/components/announce/AnnounceLayer";
 import { AnnouncesProps } from "@/src/entities/type/announce";
 

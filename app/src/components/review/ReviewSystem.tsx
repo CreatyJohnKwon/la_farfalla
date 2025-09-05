@@ -398,7 +398,7 @@ const ReviewSystem = ({
                             onChange={(e) => setNewReview(e.target.value)}
                             className="w-full resize-none border border-gray-300 bg-white p-5 text-gray-800 placeholder-gray-500 focus:border-black focus:outline-none"
                             rows={4}
-                            placeholder="서비스에 대한 리뷰를 작성해주세요. (최대 1000자)"
+                            placeholder="상품에 대한 리뷰를 작성해주세요. (최대 1,000자)"
                             disabled={postReviewMutation.isPending}
                             maxLength={1000}
                         />
@@ -453,16 +453,16 @@ const ReviewSystem = ({
                     <div className="relative overflow-hidden">
                         <style>
                             {`
-                            .custom-scrollbar::-webkit-scrollbar {
-                                height: 6px;
-                            }
-                            .custom-scrollbar::-webkit-scrollbar-thumb {
-                                background-color: rgba(0, 0, 0, 0.2);
-                                border-radius: 10px;
-                            }
-                            .custom-scrollbar::-webkit-scrollbar-track {
-                                background: transparent;
-                            }
+                                .custom-scrollbar::-webkit-scrollbar {
+                                    height: 6px;
+                                }
+                                .custom-scrollbar::-webkit-scrollbar-thumb {
+                                    background-color: rgba(0, 0, 0, 0.2);
+                                    border-radius: 10px;
+                                }
+                                .custom-scrollbar::-webkit-scrollbar-track {
+                                    background: transparent;
+                                }
                             `}
                         </style>
                         <div className="flex w-full gap-4 overflow-x-auto pb-4 custom-scrollbar">
@@ -473,7 +473,7 @@ const ReviewSystem = ({
                                         setImgUrl(imgSrc);
                                         setIsImageModalOpen(true);
                                     }}
-                                    className="group relative flex-shrink-0 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48"
+                                    className="group relative flex-shrink-0 cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg w-28 h-28 md:w-40 md:h-40 lg:w-40 lg:h-40"
                                 >
                                     <img
                                         src={imgSrc}

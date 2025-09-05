@@ -91,7 +91,7 @@ const ProductDrop = ({
                 <ul className="absolute z-20 max-h-40 w-full overflow-y-auto border border-gray-200 bg-white shadow-md md:max-h-48">
                     {items.map((item, index) => {
                         const displayText = getDisplayText(item);
-                        const stockQuantity = getStockQuantity(item);
+                        // const stockQuantity = getStockQuantity(item);
                         const outOfStock = isOutOfStock(item);
 
                         return (

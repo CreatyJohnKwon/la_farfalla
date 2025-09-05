@@ -1,108 +1,99 @@
 "use client";
 
-import useProduct from "@src/shared/hooks/useProduct";
-import useUsers from "@src/shared/hooks/useUsers";
-
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineUser } from "react-icons/ai";
 
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
-import ShopDrop from "../drop/ShopDrop";
-import AboutDrop from "../drop/AboutDrop";
-import useCart from "@src/shared/hooks/useCart";
 import Cart from "@src/features/cart/Cart";
-import AdminDrop from "../drop/AdminDrop";
-import { adminEmails } from "public/data/common";
-import { NavbarClientProps } from "../../entities/type/navigation";
+import usePage from "@src/shared/hooks/usePage";
+import DropdownMenu from "../drop/DropdownMenu";
 
-const NavbarClient = ({ category }: NavbarClientProps) => {
-    const { navStartData, session } = useUsers();
-    const { setOpenSidebar } = useProduct();
-    const { cartView, setCartView } = useCart();
-    
-    const [textColor, setTextColor] = useState<string>("text-white");
-    const [children, setChildren] = useState<any>(null);
-
-    const pathName = usePathname()
-
-    useEffect(() => {
-        if (category) setChildren(<ShopDrop category={category} />);
-    }, [category]);
+const NavbarClient = () => {
+    const {
+        session,
+        setCartView,
+        cartView,
+        setOpenSidebar,
+        setTextColor,
+        menuData,
+        menuTitle,
+        textColor,
+        pathName,
+        navStartData,
+        shopMenuItems,
+    } = usePage();
 
     useEffect(() => {
         switch (pathName) { 
             case "/home":
                 setTextColor("text-white");
-                if (category) setChildren(<ShopDrop category={category} />);
                 break;
             default:
                 setTextColor("text-black");
                 break;
         }
-    }, [pathName, category]);
+    }, [pathName]);
 
     return (
         <nav
-            className={`fixed top-0 z-40 h-16 w-full ps-0 pt-5 text-[1em] shadow-none sm:h-0 sm:bg-transparent ${pathName.includes("/home") ? "bg-transparent" : "bg-white"}`}
+            className={`fixed top-0 z-40 h-auto w-full ps-0 pt-4 text-base shadow-none ${pathName === "/home" ? "bg-transparent" : "bg-white/70"} ${textColor}`}
         >
             <div
-                className={`max-w-screen-w_max relative mx-auto flex items-center justify-between p-0 sm:p-4 sm:text-lg md:text-xl c_xl:text-2xl ${textColor}`}
+                className={`max-w-screen-w_max relative mx-auto flex items-center justify-between p-0 sm:p-4 sm:text-xl md:text-2xl c_xl:text-3xl`}
             >
-                                {/* 왼쪽 메뉴 : PC */}
+                {/* 왼쪽 메뉴 : PC */}
                 <ul className="hidden border-gray-100 ps-4 sm:flex sm:space-x-8">
                     <li
                         className="font-amstel block ps-4 sm:ps-6"
                         key={"shop-menu"}
                     >
-                        {children}
+                        {/* children 상태 대신 DropdownMenu를 직접 렌더링합니다. */}
+                        <DropdownMenu
+                            title="shop"
+                            items={shopMenuItems}
+                            triggerType="hover"
+                        />
                     </li>
-                    {session &&
-                    adminEmails.includes(session?.user?.email ?? "") ? (
-                        <li
-                            className="block ps-4 sm:ps-6"
-                            key={"admin-menu"}
-                        >
-                            <AdminDrop />
-                        </li>
-                    ) : (
-                        <li
-                            className="block ps-4 sm:ps-6"
-                            key={"about-menu"}
-                        >
-                            <AboutDrop />
-                        </li>
-                    )}
+                    <li
+                        className="block ps-4 sm:ps-6"
+                        key={"about-admin-menu"}
+                    >
+                        <DropdownMenu
+                            title={menuTitle}
+                            items={menuData}
+                            triggerType="hover"
+                        />
+                    </li>
                 </ul>
 
                 {/* 왼쪽 메뉴 : Mobile */}
                 <button onClick={() => setOpenSidebar(true)}>
                     <RxHamburgerMenu
-                        className={`${textColor} ms-6 block text-[1.5em] sm:hidden`}
+                        className={`ms-6 block text-[1.5em] sm:hidden`}
                     />
                 </button>
 
                 {/* 가운데 중앙 로고 (절대 위치) */}
-                <div className="font-amstel absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/3 text-base sm:-translate-y-1/2 sm:text-lg md:text-2xl c_xl:text-3xl">
+                <div className="font-amstel absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-base sm:text-xl md:text-3xl c_xl:text-4xl">
                     <Link href="/home">La farfalla</Link>
                 </div>
 
                 <div
-                    className={`font-amstel me-2 ml-auto justify-center bg-transparent sm:order-1 sm:me-4 ${textColor}`}
+                    className={`font-amstel me-2 ml-auto justify-center bg-transparent sm:order-1 sm:me-4`}
                 >
                     {/* 오른쪽 메뉴 : Mobile */}
                     <ul className="flex space-x-2 sm:hidden">
                         <button onClick={() => setCartView(true)}>
                             <HiOutlineShoppingBag
-                                className={`${textColor} me-4 text-[1.5em] ${session ? "block" : "hidden"}`}
+                                className={`me-4 text-[1.5em] ${session ? "block" : "hidden"}`}
                             />
                         </button>
 
-                        <Link href={"/profile"}>
+                        <Link href={session ? "/profile" : "/login"}>
                             <AiOutlineUser
-                                className={`${textColor} text-[1.5em] ${session ? "me-4" : "me-2"}`}
+                                className={`text-[1.5em] ${session ? "me-4" : "me-2"}`}
                             />
                         </Link>
                     </ul>
@@ -126,10 +117,10 @@ const NavbarClient = ({ category }: NavbarClientProps) => {
                             ) : (
                                 <li key={`nav_list_${index}`}>
                                     <Link
-                                        href={`/${navList.text}`}
+                                        href={navList.text === "login" && session ? "/profile" : `/${navList.text}`}
                                         className="block pe-4 sm:pe-6"
                                     >
-                                        {navList.text}
+                                        {navList.text === "login" && session ? "profile" : navList.text}
                                     </Link>
                                 </li>
                             ),
@@ -143,3 +134,4 @@ const NavbarClient = ({ category }: NavbarClientProps) => {
 };
 
 export default NavbarClient;
+

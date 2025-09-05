@@ -189,7 +189,7 @@ const DeliveryChangeModal = ({
                     {/* 헤더 */}
                     <div className="sticky top-0 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
                         <h3 className="font-pretendard text-lg font-bold text-gray-900">
-                            배송지 변경
+                            변경할 배송지 변경
                         </h3>
                         <button
                             onClick={onClose}
@@ -203,7 +203,7 @@ const DeliveryChangeModal = ({
                         {/* 주소 정보 */}
                         <div>
                             <h4 className="font-pretendard text-sm font-medium text-gray-900">
-                                배송 주소
+                                변경할 배송 주소
                             </h4>
 
                             {/* 주소 검색 */}
@@ -260,7 +260,7 @@ const DeliveryChangeModal = ({
                         {/* 배송 메모 */}
                         <div>
                             <label className="mb-1 block font-pretendard text-xs font-medium text-gray-700">
-                                배송 요청사항
+                                변경할 배송 요청사항
                             </label>
                             <textarea
                                 value={newAddress.deliveryMemo}

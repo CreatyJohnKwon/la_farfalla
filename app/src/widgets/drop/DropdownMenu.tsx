@@ -1,0 +1,104 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation"; 
+import useProduct from "@src/shared/hooks/useProduct";
+import usePage from "@/src/shared/hooks/usePage";
+
+// MenuItem 인터페이스를 확장하여 path를 옵셔널로 만들고,
+// onClick 콜백 함수를 추가합니다.
+interface MenuItem {
+    label: string;
+    path?: string; // path는 더 이상 필수가 아닙니다.
+    onClick?: () => void; // 커스텀 클릭 핸들러를 위한 속성
+}
+
+interface DropdownMenuProps {
+    title: string;
+    items: MenuItem[];
+    triggerType?: "click" | "hover";
+}
+
+const DropdownMenu = ({ 
+    title,
+    items, 
+    triggerType = "hover"
+}: DropdownMenuProps) => {
+    const { setOpenSidebar } = useProduct();
+    const { router, pathName, menuBg, setMenuBg } = usePage();
+
+    const [open, setOpen] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    const clickClasses = `${open ? "max-h-40 opacity-100 visible" : "max-h-0 opacity-0 invisible"}`;
+    const hoverClasses = "group-hover:max-h-40 group-hover:opacity-100 group-hover:visible max-h-0 opacity-0 invisible";
+
+    useEffect(() => {
+        switch (pathName) { 
+            case "/home":
+                setMenuBg("bg-transparent sm:pe-0");
+                break;
+            default:
+                setMenuBg("bg-white/70 sm:pe-10");
+                break;
+        }
+    }, [pathName]);
+
+    useEffect(() => {
+        if (triggerType === "click") {
+            const handleClickOutside = (event: MouseEvent) => {
+                if (ref.current && !ref.current.contains(event.target as Node)) {
+                    setOpen(false);
+                }
+            };
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, [triggerType]);
+
+    return (
+        <div 
+            ref={ref} 
+            className={`z-40 ${triggerType === "hover" ? "group relative" : ""}`}
+        >
+            <button 
+                className="font-amstel font-[500]"
+                onClick={() => triggerType === "click" && setOpen(prev => !prev)}
+            >
+                {title}
+            </button>
+            <ul
+                className={`
+                    mt-2 sm:mt-4 sm:absolute text-xl transition-all duration-300 ease-in-out font-amstel font-[500] whitespace-nowrap ${menuBg}
+                    ${triggerType === "click" ? clickClasses : hoverClasses}
+                `}
+            >
+                {items.map((item) => (
+                    <li key={item.label} className="py-1">
+                        <button
+                            onClick={() => {
+                                // 1. item에 onClick 핸들러가 있으면 그것을 실행합니다.
+                                if (item.onClick) {
+                                    item.onClick();
+                                } 
+                                // 2. 없으면 기존처럼 path로 라우팅합니다.
+                                else if (item.path) {
+                                    router.push(item.path);
+                                }
+                                
+                                // 공통 로직은 항상 실행됩니다.
+                                setOpenSidebar(false);
+                                if (triggerType === "click") setOpen(false);
+                            }}
+                        >
+                            {item.label}
+                        </button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+export default DropdownMenu;
+

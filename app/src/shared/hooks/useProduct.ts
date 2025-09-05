@@ -7,7 +7,6 @@ import {
 } from "@src/shared/lib/atom";
 import { useDeleteProductMutation, useProductListQuery } from "./react-query/useProductQuery";
 import { useEffect, useMemo } from "react";
-import { Product } from "@/src/components/product/interface";
 
 const useProduct = () => {
     const [section, setSection] = useAtom(sectionAtom);
