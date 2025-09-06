@@ -7,12 +7,12 @@ import AnnounceLayer from "@/src/components/announce/AnnounceLayer";
 import { AnnouncesProps } from "@/src/entities/type/announce";
 
 const HomeClient = ({ bannerAnnounce, popupAnnounces }: AnnouncesProps) => {
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
+  // useEffect(() => {
+  //   document.body.style.overflow = "hidden";
+  //   return () => {
+  //     document.body.style.overflow = "auto";
+  //   };
+  // }, []);
 
   return (
     <div className="relative flex min-h-screen w-full flex-col text-white">

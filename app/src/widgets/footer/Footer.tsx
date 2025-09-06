@@ -1,45 +1,45 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import usePage from "@/src/shared/hooks/usePage";
+import License from "./License";
 
 const Footer = () => {
-    const pathName = usePathname();
-    const [hidden, setHidden] = useState<boolean>(false);
-    const [textColor, setTextColor] = useState<string>("text-white");
+    const { pathName, instagramHandler } = usePage();
+    
+    // License 컴포넌트의 표시 여부만 관리하면 됩니다.
+    const [isLicenseVisible, setIsLicenseVisible] = useState(false);
 
-    useEffect(() => {
-        // pathName;
-        switch (pathName) {
-            case "/":
-            case "/home":
-                setHidden(false);
-                setTextColor("text-white");
-                break;
-            case "/introduce":
-            case "/project":
-                setHidden(false);
-                setTextColor("text-black");
-                break;
-            default:
-                setHidden(true);
-                setTextColor("text-black");
-                break;
-        }
-    }, [pathName]);
+    // 핸들러를 매우 간단하게 수정합니다.
+    const toggleLicenseVisibility = () => {
+        setIsLicenseVisible(prev => !prev);
+    };
+
+    if (pathName.includes("/admin")) {
+        return null
+    }
 
     return (
-        <div
-            className={`${hidden ? "hidden" : "block"} ${textColor} fixed bottom-0 w-screen pb-2 text-center font-pretendard text-[10px] font-[200] sm:text-xs`}
-        >
-            <p className="tracking-wide">라파팔라, 010-6788-3834 유현주</p>
-            <p className="tracking-wide">
-                사업지주소. 서울특별시 성북구 한천로78길 12-22, 1층
-            </p>
-            <span className="tracking-wide">
-                사업자등록번호. 177-24-01663, 통신판매번호. 2024-서울성북-1347
-            </span>
-        </div>
+        <footer className="flex flex-col justify-center items-center py-4">
+            <div 
+                className={`
+                    w-full transition-all duration-300 ease-in-out overflow-hidden
+                    ${isLicenseVisible ? 'max-h-96 opacity-100 visible mt-4' : 'max-h-0 opacity-0 invisible'}
+                `}
+            >
+                <License />
+            </div>
+
+            {/* 각 버튼 */}
+            <div className="flex flex-row h-12 sm:h-20 w-[90vw] sm:w-[92vw] text-black font-amstel justify-start items-center gap-10 text-base sm:text-xl md:text-2xl c_xl:text-3xl">
+                <span className="cursor-pointer" onClick={toggleLicenseVisibility}>
+                    license
+                </span>
+                <span className="cursor-pointer" onClick={instagramHandler}>
+                    instagram
+                </span>
+            </div>
+        </footer>
     );
 };
 

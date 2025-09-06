@@ -6,10 +6,10 @@ import { getAuthSession } from "./src/shared/lib/session";
 import AuthProvider from "@src/features/providers/AuthProvider";
 import RQProvider from "@src/features/providers/RQProvider";
 import Sidebar from "@/src/widgets/sidebar/Sidebar";
-import Footer from "@src/widgets/footer/Footer";
 import { Provider as JotaiProvider } from "jotai";
 import KakaoFloatingButton from "./src/widgets/button/KakaoFloatingButton";
 import NavbarWrapper from "./src/widgets/navbar/NavWrapper";
+import Footer from "@/src/widgets/footer/Footer";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",

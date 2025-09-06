@@ -32,6 +32,6 @@
         ".next/types/**/*.ts",
         "app/login/actions.ts=",
         "types/**/*.d.ts"
-    ],
+, "app/src/widgets/footer/License.tsx"    ],
     "exclude": ["node_modules"]
 }
