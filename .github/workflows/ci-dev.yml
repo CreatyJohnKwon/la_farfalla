@@ -47,60 +47,36 @@ jobs:
 
             - name: Transfer environment variables to server
               run: |
-                  # 환경변수를 안전하게 서버로 전송 (로그에 노출되지 않음)
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'SETUP_ENV'
-                    # 임시 환경변수 파일 생성 (보안을 위해 600 권한 설정)
-                    touch /tmp/env_setup.sh
-                    chmod 600 /tmp/env_setup.sh
-                  SETUP_ENV
-                  
-                  # 환경변수를 개별적으로 안전하게 전송
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export DOCKERHUB_USERNAME=\"${{ secrets.DOCKERHUB_USERNAME }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export NAVER_CLIENT_ID=\"${{ secrets.NAVER_CLIENT_ID }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export NAVER_CLIENT_SECRET=\"${{ secrets.NAVER_CLIENT_SECRET }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export KAKAO_CLIENT_ID=\"${{ secrets.KAKAO_CLIENT_ID }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export KAKAO_CLIENT_SECRET=\"${{ secrets.KAKAO_CLIENT_SECRET }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export NEXTAUTH_SECRET=\"${{ secrets.NEXTAUTH_SECRET }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export R2_TOKEN=\"${{ secrets.R2_TOKEN }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export R2_ACCOUNT_ID=\"${{ secrets.R2_ACCOUNT_ID }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export R2_ACCESS_KEY_ID=\"${{ secrets.R2_ACCESS_KEY_ID }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export R2_SECRET_ACCESS_KEY=\"${{ secrets.R2_SECRET_ACCESS_KEY }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export R2_BUCKET_NAME=\"${{ secrets.R2_BUCKET_NAME }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export R2_FILE_DOMAIN=\"${{ secrets.R2_FILE_DOMAIN }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export MONGODB_URI=\"${{ secrets.MONGODB_URI }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export NEXT_IMAGE_OPTIMIZATION_TIMEOUT=\"${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export SMTP_HOST=\"${{ secrets.SMTP_HOST }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export SMTP_PORT=\"${{ secrets.SMTP_PORT }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export SMTP_SECURE=\"${{ secrets.SMTP_SECURE }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export SMTP_USER=\"${{ secrets.SMTP_USER }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export SMTP_PASSWORD=\"${{ secrets.SMTP_PASSWORD }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export ADMIN_EMAIL=\"${{ secrets.ADMIN_EMAIL }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export STORE_NAME=\"${{ secrets.STORE_NAME }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export PORTONE_API_SECRET_KEY=\"${{ secrets.PORTONE_API_SECRET_KEY }}\"' >> /tmp/env_setup.sh"
-                  ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} \
-                    "echo 'export TZ=\"Asia/Seoul\"' >> /tmp/env_setup.sh"
+                # 단 한 번의 SSH 접속으로 모든 환경변수를 서버의 임시 파일에 안전하게 기록합니다.
+                # 이 방식은 여러 번 접속하는 것보다 훨씬 빠르고 안정적입니다.
+                ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} 'cat > /tmp/env_setup.sh' <<EOF
+                export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+                export NAVER_CLIENT_ID="${{ secrets.NAVER_CLIENT_ID }}"
+                export NAVER_CLIENT_SECRET="${{ secrets.NAVER_CLIENT_SECRET }}"
+                export KAKAO_CLIENT_ID="${{ secrets.KAKAO_CLIENT_ID }}"
+                export KAKAO_CLIENT_SECRET="${{ secrets.KAKAO_CLIENT_SECRET }}"
+                export NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}"
+                export R2_TOKEN="${{ secrets.R2_TOKEN }}"
+                export R2_ACCOUNT_ID="${{ secrets.R2_ACCOUNT_ID }}"
+                export R2_ACCESS_KEY_ID="${{ secrets.R2_ACCESS_KEY_ID }}"
+                export R2_SECRET_ACCESS_KEY="${{ secrets.R2_SECRET_ACCESS_KEY }}"
+                export R2_BUCKET_NAME="${{ secrets.R2_BUCKET_NAME }}"
+                export R2_FILE_DOMAIN="${{ secrets.R2_FILE_DOMAIN }}"
+                export MONGODB_URI="${{ secrets.MONGODB_URI }}"
+                export NEXT_IMAGE_OPTIMIZATION_TIMEOUT="${{ secrets.NEXT_IMAGE_OPTIMIZATION_TIMEOUT }}"
+                export SMTP_HOST="${{ secrets.SMTP_HOST }}"
+                export SMTP_PORT="${{ secrets.SMTP_PORT }}"
+                export SMTP_SECURE="${{ secrets.SMTP_SECURE }}"
+                export SMTP_USER="${{ secrets.SMTP_USER }}"
+                export SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}"
+                export ADMIN_EMAIL="${{ secrets.ADMIN_EMAIL }}"
+                export STORE_NAME="${{ secrets.STORE_NAME }}"
+                export PORTONE_API_SECRET_KEY="${{ secrets.PORTONE_API_SECRET_KEY }}"
+                export TZ="Asia/Seoul"
+                EOF
+                
+                # 생성된 임시 파일에 보안을 위한 실행 권한을 설정합니다.
+                ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} "chmod 600 /tmp/env_setup.sh"
 
             - name: Remote Deploy to Development
               run: |
@@ -158,7 +134,7 @@ jobs:
                     docker-compose up -d dev-nextjs
 
                     echo "⏳ Waiting for application to become healthy..."
-                    
+
                     max_retries=30
                     interval=2
                     for i in $(seq 1 $max_retries); do
