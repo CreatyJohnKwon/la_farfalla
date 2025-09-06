@@ -157,32 +157,61 @@ jobs:
                     
                     echo "📥 Pulling latest Docker image..."
                     docker pull "$APP_IMAGE_TAG"
+
+                    echo "🔍 Getting the image tag of the currently running container for potential rollback..."
+                    PREVIOUS_IMAGE_TAG=$(docker inspect --format='{{.Config.Image}}' $(docker-compose ps -q nextjs) | cut -d':' -f2)
+
+                    if [ -z "$PREVIOUS_IMAGE_TAG" ]; then
+                        echo "⚠️  Could not determine the previous image tag. Rollback might not be possible."
+                        PREVIOUS_IMAGE_TAG="latest"
+                    fi
+                    echo "✅ Previous image tag is: $PREVIOUS_IMAGE_TAG"
                     
                     echo "🚀 Starting Docker containers..."
                     docker-compose down nextjs
+                    docker-compose pull nextjs
                     docker-compose up -d nextjs
                     
                     echo "⏳ Waiting for containers to start..."
-                    sleep 15
+                    max_retries=30
+                    interval=2
+                    for i in $(seq 1 $max_retries); do
+                        # localhost 대신 실제 서비스 컨테이너의 내부 도커 네트워크 주소를 사용하는 것이 더 안정적일 수 있습니다.
+                        if curl -f http://localhost:3000 > /dev/null 2>&1; then
+                            echo "✅ Application is up and running!"
+                            break
+                        fi
+                        echo "Attempt $i/$max_retries: Application not ready yet. Retrying in $interval seconds..."
+                        sleep $interval
+                    done
                     
+                    echo "🔍 Service health check: "
+                    if ! curl -f http://localhost:3000 > /dev/null 2>&1; then
+                        echo "⚠️ Application health check failed after $((max_retries * interval)) seconds."
+                        
+                        echo "🔄 Rolling back to the previous version ($PREVIOUS_IMAGE_TAG)..."
+                        docker-compose down nextjs # 실패한 컨테이너 제거
+                        
+                        # 저장해둔 이전 이미지 태그를 환경변수로 주입하여 컨테이너 실행
+                        IMAGE_TAG=$PREVIOUS_IMAGE_TAG docker-compose up -d nextjs
+                        
+                        echo "롤백 완료 후 상태:"
+                        docker ps
+                        
+                        echo "🚨 DEPLOYMENT FAILED AND ROLLED BACK. 🚨"
+                        exit 1 # 롤백 후 배포 실패로 종료
+                    fi
+
                     echo "🔄 Reloading nginx configuration..."
                     docker-compose exec nginx nginx -s reload || echo "Nginx reload failed, but continuing..."
-                    
+
                     echo "🧹 Cleaning up unused Docker images..."
-                    docker image prune -af || true
-                    
-                    echo "✅ Deployment to production completed successfully!"
-                    echo "📊 Container status:"
+                    sudo docker image prune -af
+
+                    echo "📊 Final container status:"
                     docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-                    
-                    echo "🔍 Service health check:"
-                    sleep 5
-                    if curl -f http://localhost:3000 > /dev/null 2>&1; then
-                        echo "✅ Application is responding on port 3000"
-                    else
-                        echo "⚠️  Application health check failed"
-                        exit 1
-                    fi
+
+                    echo "✅ Deployment to production completed successfully!"
                   EOF
               env:
                   AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}

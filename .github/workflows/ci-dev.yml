@@ -152,15 +152,40 @@ jobs:
                     
                     echo "🚀 Starting Docker containers with new image..."
                     cd "$DEPLOY_DIR"
-                    
+
                     docker-compose down dev-nextjs
                     docker-compose pull dev-nextjs
                     docker-compose up -d dev-nextjs
+
+                    echo "⏳ Waiting for application to become healthy..."
                     
-                    # echo "🧹 Cleaning up unused Docker images..."
-                    # docker image prune -af
-                    
-                    echo "✅ Deployment to development completed successfully!"
+                    max_retries=30
+                    interval=2
+                    for i in $(seq 1 $max_retries); do
+                        if curl -f http://localhost:3000 > /dev/null 2>&1; then
+                            echo "✅ Application is up and running!"
+                            break
+                        fi
+                        echo "Attempt $i/$max_retries: Application not ready yet. Retrying in $interval seconds..."
+                        sleep $interval
+                    done
+
+                    if ! curl -f http://localhost:3000 > /dev/null 2>&1; then
+                        echo "⚠️ Application health check failed after $((max_retries * interval)) seconds."
+                        exit 1
+                    fi
+
+                    echo "🔄 Reloading nginx configuration..."
+                    docker-compose exec nginx nginx -s reload || echo "Nginx reload failed, but continuing..."
+
+                    echo "🧹 Cleaning up unused Docker images..."
+                    sudo docker image prune -af
+
+                    echo "📊 Final container status:"
+                    docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+                    # --- "성공" 메시지를 여기로 이동 ---
+                    echo "✅ Deployment to production completed successfully!"
                   EOF
 
             - name: Cleanup
