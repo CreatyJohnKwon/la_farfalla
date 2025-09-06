@@ -100,7 +100,7 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                             {`KRW ${priceResult(product)}`}
                         </span>
                     ) : (
-                        <div className="font-amstel-thin sm:font-amstel space-y-1">
+                        <div className="font-amstel-thin sm:font-amstel -space-y-1">
                             <span className="text-xs text-gray-500 line-through sm:text-base">
                                 {`KRW ${priceResult(product)}`}
                             </span>

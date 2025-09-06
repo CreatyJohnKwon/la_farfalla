@@ -58,7 +58,7 @@ const useUsers = () => {
           ];
 
     const navStartData = session
-        ? [{ text: "cart" }, { text: "profile" }]
+        ? [{ text: "cart" }, { text: "profile" }, {text: "logout"}]
         : [{ text: "cart" }, { text: "login" }];
 
     return {

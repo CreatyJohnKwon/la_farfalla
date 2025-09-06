@@ -9,6 +9,7 @@ import Link from "next/link";
 import Cart from "@src/features/cart/Cart";
 import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "../drop/DropdownMenu";
+import useUsers from "@src/shared/hooks/useUsers";
 
 const NavbarClient = () => {
     const {
@@ -24,6 +25,8 @@ const NavbarClient = () => {
         navStartData,
         shopMenuItems,
     } = usePage();
+
+    const { logoutHandler } = useUsers();
 
     useEffect(() => {
         switch (pathName) { 
@@ -114,6 +117,15 @@ const NavbarClient = () => {
                                         </button>
                                     </li>
                                 )
+                            ) : navList.text === "logout" ? (
+                                <li key={`nav_list_${index}`}>
+                                    <button
+                                        onClick={logoutHandler}
+                                        className="block pe-4 sm:pe-6"
+                                    >
+                                        {navList.text}
+                                    </button>
+                                </li>
                             ) : (
                                 <li key={`nav_list_${index}`}>
                                     <Link
