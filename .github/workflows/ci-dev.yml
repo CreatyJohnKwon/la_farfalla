@@ -135,7 +135,7 @@ jobs:
 
                     echo "⏳ Waiting for application to become healthy..."
 
-                    max_retries=30
+                    max_retries=150
                     interval=2
                     for i in $(seq 1 $max_retries); do
                         if curl -f http://localhost:3000 > /dev/null 2>&1; then
