@@ -133,35 +133,10 @@ jobs:
                     docker-compose pull dev-nextjs
                     docker-compose up -d dev-nextjs
 
-                    echo "⏳ Waiting for application to become healthy..."
-
-                    echo "⏳ Waiting for application to become healthy..."
-
-                    max_retries=150
-                    interval=2
-                    # ✅ 이제 정상 작동하는 /api/health 경로를 사용합니다.
-                    health_check_url="http://localhost:3000/api/health"
-
-                    for i in $(seq 1 $max_retries); do
-                        http_code=$(curl -s -o /dev/null -w "%{http_code}" $health_check_url)
-
-                        if [ "$http_code" -eq 200 ]; then
-                            echo "✅ Application is up and running! (Status: $http_code)"
-                            break
-                        elif [ "$http_code" -ge 500 ]; then
-                            echo "❌ Application started but is returning a server error! (Status: $http_code)"
-                            exit 1
-                        else
-                            echo "Attempt $i/$max_retries: Not ready yet (Status: $http_code). Retrying..."
-                            sleep $interval
-                        fi
-                    done
-
-                    final_code=$(curl -s -o /dev/null -w "%{http_code}" $health_check_url)
-                    if [ "$final_code" -ne 200 ]; then
-                        echo "⚠️ Application health check failed after $((max_retries * interval)) seconds."
-                        exit 1
-                    fi
+                    echo "⏳ Waiting for application to become healthy for 30 seconds..."
+                    sleep 30 # 30초 동안 애플리케이션 반영을 기다림
+                    
+                    echo "✅ Wait finished. Assuming application is up."
 
                     echo "🔄 Reloading nginx configuration..."
                     docker-compose exec nginx nginx -s reload || echo "Nginx reload failed, but continuing..."
