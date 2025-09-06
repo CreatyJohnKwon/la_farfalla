@@ -135,18 +135,33 @@ jobs:
 
                     echo "⏳ Waiting for application to become healthy..."
 
+                    echo "⏳ Waiting for application to become healthy..."
+
                     max_retries=150
                     interval=2
+                    health_check_url="http://localhost:3000/api/health" # 개선된 엔드포인트 사용
+
                     for i in $(seq 1 $max_retries); do
-                        if curl -f http://localhost:3000 > /dev/null 2>&1; then
-                            echo "✅ Application is up and running!"
-                            break
+                        # -s: silent 모드, -o /dev/null: 응답 바디 버림, -w "%{http_code}": HTTP 상태 코드만 출력
+                        http_code=$(curl -s -o /dev/null -w "%{http_code}" $health_check_url)
+
+                        if [ "$http_code" -eq 200 ]; then
+                            echo "✅ Application is up and running! (Status: $http_code)"
+                            break # 성공 시 즉시 루프 탈출
+                        elif [ "$http_code" -ge 500 ]; then
+                            echo "❌ Application started but is returning a server error! (Status: $http_code)"
+                            echo "Deployment failed immediately."
+                            exit 1 # 서버 에러(5xx) 발생 시 즉시 배포 실패 처리
+                        else
+                            # 000은 연결 거부, 4xx는 클라이언트 에러 등. 아직 준비 안 된 상태로 간주.
+                            echo "Attempt $i/$max_retries: Not ready yet (Status: $http_code). Retrying..."
+                            sleep $interval
                         fi
-                        echo "Attempt $i/$max_retries: Application not ready yet. Retrying in $interval seconds..."
-                        sleep $interval
                     done
 
-                    if ! curl -f http://localhost:3000 > /dev/null 2>&1; then
+                    # 최종 확인
+                    final_code=$(curl -s -o /dev/null -w "%{http_code}" $health_check_url)
+                    if [ "$final_code" -ne 200 ]; then
                         echo "⚠️ Application health check failed after $((max_retries * interval)) seconds."
                         exit 1
                     fi
