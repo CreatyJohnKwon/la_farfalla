@@ -1,13 +1,14 @@
 import { OrderData } from "@/src/entities/type/interfaces";
 import { X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-// 🆕 환불/취소 요청 모달 컴포넌트 (기존 디자인 스타일 유지)
+// 🆕 취소/교환및반품 요청 모달 컴포넌트 (기존 디자인 스타일 유지)
 const RefundCancelModal = ({
     isOpen,
     onClose,
     onSubmit,
     order,
+    type,
 }: {
     isOpen: boolean;
     onClose: () => void;
@@ -17,12 +18,28 @@ const RefundCancelModal = ({
         orderInfo: string;
     }) => void;
     order: OrderData;
+    type: "cancel" | "exchange" | "return";
 }) => {
-    const [requestType, setRequestType] = useState<"cancel" | "refund">(
-        "refund",
-    );
+    const [requestType, setRequestType] = useState<"cancel" | "exchange" | "return">(type);
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        setRequestType(type);
+    }, [type]);
+
+    const actionText = (): string => {
+        switch (requestType) {
+            case "cancel":
+                return "주문 취소";
+            case "exchange":
+                return "교환";
+            case "return":
+                return "반품";
+            default:
+                return "";
+        }
+    }
 
     const handleSubmit = async () => {
         if (!reason.trim()) {
@@ -36,9 +53,7 @@ const RefundCancelModal = ({
             주문상품: ${order.items.map((item) => `${item.productNm} (${item.size}/${item.color})`).join(", ")}
             주문금액: ${formatPrice(order.totalPrice)}
             주문일시: ${formatDate(order.createdAt)}
-        `.trim();
-
-        const actionText = requestType === "cancel" ? "주문 취소" : "환불";
+        `.trim();        
 
         if (
             confirm(
@@ -89,7 +104,7 @@ const RefundCancelModal = ({
                 {/* 헤더 */}
                 <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
                     <h3 className="font-pretendard text-lg font-bold text-gray-900">
-                        {requestType === "cancel" ? "주문 취소" : "환불"} 요청
+                        {actionText()} 요청
                     </h3>
                     <button
                         onClick={onClose}
@@ -101,52 +116,54 @@ const RefundCancelModal = ({
 
                 <div className="space-y-4 p-4">
                     {/* 요청 타입 선택 */}
-                    <div>
-                        <label className="mb-2 block font-pretendard text-sm font-medium text-gray-700">
-                            요청 유형
-                        </label>
-                        <div className="space-y-2">
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="requestType"
-                                    value="cancel"
-                                    checked={requestType === "cancel"}
-                                    onChange={(e) =>
-                                        setRequestType(
-                                            e.target.value as "cancel",
-                                        )
-                                    }
-                                    className="mr-2"
-                                />
-                                <span className="font-pretendard text-sm text-gray-700">
-                                    주문 취소
-                                </span>
+                    {requestType !== "cancel" ? (
+                        <div>
+                            <label className="mb-2 block font-pretendard text-sm font-medium text-gray-700">
+                                요청 유형
                             </label>
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="requestType"
-                                    value="refund"
-                                    checked={requestType === "refund"}
-                                    onChange={(e) =>
-                                        setRequestType(
-                                            e.target.value as "refund",
-                                        )
-                                    }
-                                    className="mr-2"
-                                />
-                                <span className="font-pretendard text-sm text-gray-700">
-                                    환불 요청
-                                </span>
-                            </label>
+                            <div className="space-y-2">
+                                <label className="flex items-center">
+                                    <input
+                                        type="radio"
+                                        name="requestType"
+                                        value="exchange"
+                                        checked={requestType === "exchange"}
+                                        onChange={(e) =>
+                                            setRequestType(
+                                                e.target.value as "exchange",
+                                            )
+                                        }
+                                        className="mr-2"
+                                    />
+                                    <span className="font-pretendard text-sm text-gray-700">
+                                        교환 요청
+                                    </span>
+                                </label>
+                                <label className="flex items-center">
+                                    <input
+                                        type="radio"
+                                        name="requestType"
+                                        value="return"
+                                        checked={requestType === "return"}
+                                        onChange={(e) =>
+                                            setRequestType(
+                                                e.target.value as "return",
+                                            )
+                                        }
+                                        className="mr-2"
+                                    />
+                                    <span className="font-pretendard text-sm text-gray-700">
+                                        반품 요청
+                                    </span>
+                                </label>
+                            </div>
                         </div>
-                    </div>
+                    ) : <></>}
 
                     {/* 사유 입력 */}
                     <div>
                         <label className="mb-2 block font-pretendard text-sm font-medium text-gray-700">
-                            {requestType === "cancel" ? "취소" : "환불"} 사유{" "}
+                            {actionText()} 사유
                             <span className="text-red-500">*</span>
                         </label>
                         <textarea
@@ -154,7 +171,7 @@ const RefundCancelModal = ({
                             onChange={(e) => setReason(e.target.value)}
                             className="w-full resize-none border border-gray-300 bg-white p-3 text-sm focus:border-black focus:outline-none"
                             rows={4}
-                            placeholder={`${requestType === "cancel" ? "취소" : "환불"} 사유를 상세히 작성해주세요...`}
+                            placeholder={requestType === "exchange" ? "교환 요청 시, 교환을 원하시는 상품을 명확히 기재해주시기 바랍니다.\n예시) 사이즈: m, 색상: navy" : `${actionText()} 사유를 상세히 작성해주세요...`}
                             maxLength={500}
                         />
                         <div className="mt-1 flex justify-between">
@@ -176,10 +193,8 @@ const RefundCancelModal = ({
                             </p>
                             <ul className="space-y-1 font-pretendard text-xs">
                                 <li>• 요청 접수 후 2-3일 내 처리됩니다</li>
-                                <li>
-                                    • 카카오톡 채널로 진행상황을 안내드립니다
-                                </li>
-                                <li>• 환불은 원래 결제수단으로 처리됩니다</li>
+                                {requestType === "return" && <li>• 반품 시, 환불은 원래 결제수단으로 처리됩니다</li>}
+                                {requestType === "exchange" && <li>• 교환 시, 카카오톡 채널로 진행상황을 안내드립니다</li>}
                             </ul>
                         </div>
                     </div>

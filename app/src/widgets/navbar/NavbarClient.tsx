@@ -74,7 +74,7 @@ const NavbarClient = () => {
                 {/* 왼쪽 메뉴 : Mobile */}
                 <button onClick={() => setOpenSidebar(true)}>
                     <RxHamburgerMenu
-                        className={`ms-6 block text-[1.5em] sm:hidden`}
+                        className={`ms-6 block text-2xl sm:hidden`}
                     />
                 </button>
 
@@ -90,13 +90,13 @@ const NavbarClient = () => {
                     <ul className="flex space-x-2 sm:hidden">
                         <button onClick={() => setCartView(true)}>
                             <HiOutlineShoppingBag
-                                className={`me-4 text-[1.5em] ${session ? "block" : "hidden"}`}
+                                className={`me-4 text-2xl ${session ? "block" : "hidden"}`}
                             />
                         </button>
 
                         <Link href={session ? "/profile" : "/login"}>
                             <AiOutlineUser
-                                className={`text-[1.5em] ${session ? "me-4" : "me-2"}`}
+                                className={`text-2xl ${session ? "me-4" : "me-2"}`}
                             />
                         </Link>
                     </ul>

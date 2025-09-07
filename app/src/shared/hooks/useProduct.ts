@@ -48,11 +48,6 @@ const useProduct = () => {
         }
     };
 
-    useEffect(() => {
-        console.log(filteredProducts)
-    }, [])
-
-
     return {
         openSidebar,
         setOpenSidebar,

@@ -114,6 +114,7 @@ interface OrderData {
     paymentId?: string;
     shippingStatus: ShippingStatus;
     shippedAt?: string;
+    confirmAt?: Date;
     trackingNumber?: string;
 }
 

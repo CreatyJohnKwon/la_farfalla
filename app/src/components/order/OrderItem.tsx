@@ -34,19 +34,19 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                         </p>
                     </div>
                     <div className="text-right">
-                        <p className="text-sm font-semibold text-gray-900 sm:text-base">
+                        <p className="text-sm text-gray-900 sm:text-base font-amstel-bold">
                             {item.totalPrice.toLocaleString()}
                         </p>
-                        <p className="text-xs text-gray-500">KRW</p>
+                        <p className="text-xs text-gray-500 font-amstel">KRW</p>
                     </div>
                 </div>
 
                 {/* 상품 정보 */}
                 <div className="mb-4">
-                    <p className="mb-2 text-xs font-medium text-gray-700 sm:text-sm">
+                    <p className="mb-2 text-xs text-gray-700 sm:text-sm font-pretendard">
                         주문상품 {item.items.length}개
                     </p>
-                    <div className="space-y-2">
+                    <div className="space-y-2 font-pretendard">
                         {item.items.slice(0, 2).map((product, i) => (
                             <div
                                 key={i}
@@ -56,7 +56,7 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                                     <p className="truncate text-xs text-gray-900 sm:text-sm">
                                         {product.productNm}
                                     </p>
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs text-gray-500 font-amstel">
                                         {product.color} · {product.size}
                                     </p>
                                 </div>
@@ -89,7 +89,7 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                                           : "bg-red-400"
                             }`}
                         />
-                        <p className="text-xs text-gray-600">
+                        <p className="text-xs text-gray-600 font-pretendard font-[400]">
                             {item.shippingStatus === "pending"
                                 ? "주문완료"
                                 : item.shippingStatus === "ready"

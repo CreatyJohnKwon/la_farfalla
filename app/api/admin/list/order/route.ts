@@ -24,6 +24,10 @@ export async function POST(req: NextRequest) {
             updateData.shippedAt = new Date();
         }
 
+        if (shippingStatus === "confirm") {
+            updateData.confirmAt = new Date();
+        }
+
         const updatedOrder = await Order.findByIdAndUpdate(
             orderId,
             {

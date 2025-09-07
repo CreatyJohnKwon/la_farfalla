@@ -44,6 +44,8 @@ const orderSchema = new mongoose.Schema(
         },
         shippedAt: { type: Date, required: false }, // 출고 일시
         trackingNumber: { type: String, required: false, default: "" }, // 운송장 번호
+
+        confirmAt: { type: Date, required: false }, // 구매 확정 날짜        
         deletedAt: {
             type: Date,
             default: null, // 삭제 예약 일시

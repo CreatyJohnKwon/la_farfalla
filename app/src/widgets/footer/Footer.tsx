@@ -20,7 +20,7 @@ const Footer = () => {
     }
 
     return (
-        <footer className="flex flex-col justify-center items-center py-4">
+        <footer className="flex flex-col justify-center items-center py-2">
             <div 
                 className={`
                     w-full transition-all duration-300 ease-in-out overflow-hidden
