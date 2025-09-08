@@ -181,6 +181,7 @@ const ReviewSystem = ({
                         content: newReview,
                         productId,
                         imageFiles: uploadedPhotos,
+                        rating: 0
                     });
 
                     // 폼 초기화

@@ -3,7 +3,7 @@
 import { ModalProps } from "@/src/entities/type/interfaces";
 import { motion } from "framer-motion";
 
-const Modal = ({
+const ModalWrap = ({
     onClose,
     children,
     className,
@@ -31,4 +31,4 @@ const Modal = ({
     );
 };
 
-export default Modal;
+export default ModalWrap;

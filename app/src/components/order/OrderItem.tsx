@@ -1,12 +1,21 @@
 "use client";
 
 import OrderDetailModal from "@/src/widgets/modal/OrderDetailModal";
-import { OrderData } from "@src/entities/type/interfaces";
 import { format } from "date-fns";
 import { useState } from "react";
+import { specialReviewItem } from "../product/interface";
+import SpecialReviewModal from "@/src/widgets/modal/SpecialReviewModal";
+import { OrderData } from "./interface";
 
 const OrderItem = ({ item }: { item: OrderData }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [productItem, setProductItem] = useState<specialReviewItem>({
+        orderId: "",
+        productId: "",
+        productImage: [],
+        productName: ""
+    });
 
     return (
         <>
@@ -102,21 +111,43 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                         </p>
                     </div>
 
-                    {/* 더보기 인디케이터 */}
                     <div className="flex items-center text-gray-400 group-active:text-gray-600 sm:group-hover:text-gray-600">
-                        <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M9 5l7 7-7 7"
-                            />
-                        </svg>
+                        {/* 더보기 인디케이터 */}
+                        {item.shippingStatus === "confirm" ? (
+                            <span 
+                                className="text-red-500 text-xs underline" 
+                                onClick={(e) => {
+                                    if (item.items.length > 1) alert("리뷰 쓸 상품을 골라주세요") 
+                                    else {
+                                        e.stopPropagation();
+                                        if (!item) return;
+                                        setProductItem({
+                                            orderId: item._id,
+                                            productId: item.items[0].productId,
+                                            productName: item.items[0].productNm,
+                                            productImage: item.items[0].image,
+                                        });
+                                        setIsReviewModalOpen(true);
+                                    }
+                                }}
+                            >
+                                리뷰 쓰기
+                            </span>
+                        ) : (
+                            <svg
+                                className="h-4 w-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={1.5}
+                                    d="M9 5l7 7-7 7"
+                                />
+                            </svg>
+                        )}
                     </div>
                 </div>
             </li>
@@ -126,6 +157,13 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     order={item}
+                />
+            )}
+
+            {isReviewModalOpen && (
+                <SpecialReviewModal
+                    onClose={() => setIsReviewModalOpen(false)}
+                    productItem={productItem}
                 />
             )}
         </>

@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import { Order } from "@src/entities/models/Order";
 import Product from "@src/entities/models/Product";
-import mongoose from "mongoose";
-import { OrderItem } from "@/src/entities/type/interfaces";
+import { OrderItem } from "@/src/components/order/interface";
 
 export async function GET(req: NextRequest) {
     const userId = req.nextUrl.searchParams.get("userId");

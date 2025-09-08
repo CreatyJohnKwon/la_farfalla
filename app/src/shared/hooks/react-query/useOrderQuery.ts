@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { OrderData, OrderUpdateInput } from "@src/entities/type/interfaces";
 import {
     getOrder,
     getOrderList,
@@ -11,6 +10,7 @@ import { useSetAtom } from "jotai";
 import { resetProductFormAtom } from "../../lib/atom";
 import { ProductOption } from "@/src/components/product/interface";
 import { AddressUpdateInput } from "@/src/entities/type/order";
+import { OrderData, OrderUpdateInput } from "@/src/components/order/interface";
 
 const useAllOrderQuery = () => {
     return useQuery<OrderData[], Error>({
@@ -153,7 +153,7 @@ const useUpdateAddressOrder = () => {
                 queryKey: ["order-list", data.userId],
             });
 
-            console.log("✅ 배송지 변경 완료:", data);
+            // console.log("✅ 배송지 변경 완료:", data);
         },
 
         onError: (error, variables) => {

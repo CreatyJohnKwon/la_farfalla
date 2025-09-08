@@ -1,5 +1,5 @@
-import { OrderData, OrderItem } from "@/src/entities/type/interfaces";
-import { useOneUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
+
+import { OrderData, OrderItem } from "@/src/components/order/interface";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
 

@@ -381,7 +381,7 @@ import { Product } from "@/src/components/product/interface";
                                     <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
                                         대표 이미지
                                     </th>
-                                    <th className="w-[20%] px-4 py-3 text-xs font-medium sm:text-sm">
+                                    <th className="w-[15%] px-4 py-3 text-xs font-medium sm:text-sm">
                                         <div className="flex items-center gap-1">
                                             상품명
                                             {(sortOption === "name_asc" ||
@@ -406,7 +406,7 @@ import { Product } from "@/src/components/product/interface";
                                         시즌
                                     </th>
                                     <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
-                                        <div className="flex items-center gap-1">
+                                        <div className="flex items-center gap-1 whitespace-nowrap">
                                             가격
                                             {(sortOption === "price_asc" ||
                                                 sortOption ===
@@ -426,6 +426,9 @@ import { Product } from "@/src/components/product/interface";
                                                 </svg>
                                             )}
                                         </div>
+                                    </th>
+                                    <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
+                                        상품평
                                     </th>
                                     <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
                                         할인율
@@ -498,6 +501,9 @@ import { Product } from "@/src/components/product/interface";
                                             </td>
                                             <td className="px-4 py-3 text-xs font-medium text-gray-900 sm:text-sm">
                                                 {`${Number(product.price).toLocaleString()}원`}
+                                            </td>
+                                            <td className="px-4 py-3 text-xs font-medium text-gray-900 sm:text-sm">
+                                                {`${Number(product.averageRating)}/5`}
                                             </td>
                                             <td className="px-4 py-3 text-xs sm:text-sm">
                                                 {Number(product.discount) >

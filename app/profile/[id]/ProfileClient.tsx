@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import ProfileNavbar from "@src/widgets/navbar/ProfileNav";
 import EditProfile from "@/src/components/profile/EditProfile";
 import ProfileInfo from "@/src/components/profile/ProfileInfo";
@@ -8,48 +7,39 @@ import CouponList from "@src/components/coupon/CouponList";
 import MileageList from "@src/components/mileage/MileageList";
 import OrderList from "@src/components/order/OrderList";
 import { redirect } from "next/navigation";
+import { useMemo } from "react";
 
 const ProfileClient = ({ id }: { id: string }) => {
-    const [title, setTitle] = useState<string | "">("");
-    const [child, setChild] = useState<React.ReactNode | null>(null);
-
-    useEffect(() => {
+    const { title, Component } = useMemo(() => {
         switch (id) {
             case "order":
-                setTitle("Order List");
-                setChild(<OrderList />);
-                break;
+                return { title: "Order List", Component: <OrderList /> };
             case "edit":
-                setTitle("Edit Profile");
-                setChild(<EditProfile />);
-                break;
+                return { title: "Edit Profile", Component: <EditProfile /> };
             case "mileage":
-                setTitle("Mileage");
-                setChild(<MileageList />);
-                break;
+                return { title: "Mileage", Component: <MileageList /> };
             case "coupon":
-                setTitle("Coupon");
-                setChild(<CouponList />);
-                break;
+                return { title: "Coupon", Component: <CouponList /> };
             default:
                 redirect("/profile/order");
         }
     }, [id]);
 
     return (
-        <div className="h-screen w-full">
-            <div className="grid h-full w-full items-center justify-center sm:grid-cols-10">
+        <div className="min-h-screen w-full">
+            <div className="grid w-full items-start justify-center sm:grid-cols-10">
                 <ProfileNavbar id={id} />
 
-                <div className="col-span-8 mt-32 flex h-full w-[85vw] flex-col items-start justify-center sm:mt-0 sm:w-[90%]">
+                <div className="col-span-8 mt-32 flex w-[85vw] flex-col items-start justify-center sm:mt-0 sm:w-[90%]">
                     <ProfileInfo />
 
-                    <div className="mt-5 flex h-full w-full flex-col items-center justify-start gap-5 text-5xl sm:m-0 sm:items-stretch">
-                        <span className="font-amstel-thin w-full text-[0.8em]">
+                    <div className="mt-5 flex w-full flex-col items-center justify-start gap-5 text-5xl sm:m-0 sm:items-stretch">
+                        <span className="font-amstel-thin w-full text-2xl sm:text-4xl">
                             {title}
                         </span>
                         <span className="h-0 w-full border-b border-gray-200 sm:w-full" />
-                        <div>{child}</div>
+                        
+                        <div>{Component}</div>
                     </div>
                 </div>
             </div>

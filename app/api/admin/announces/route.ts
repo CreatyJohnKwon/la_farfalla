@@ -198,8 +198,6 @@ export async function PATCH(req: NextRequest) {
                     ? updateData.backgroundColor
                     : currentBackgroundColor;
 
-            console.log(updateData.textColor, updateData.backgroundColor);
-
             // 최종 색상 값이 모두 있는지 확인
             if (!finalTextColor || !finalBackgroundColor) {
                 return NextResponse.json(

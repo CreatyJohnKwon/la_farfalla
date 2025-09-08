@@ -34,6 +34,7 @@ const usePostReviewMutation = () => {
             productId?: string;
             images?: string[]; // 🆕 이미지 URL 배열
             imageFiles?: File[]; // 🆕 파일 객체 배열
+            rating: number;
         }) => {
             // imageFiles가 있으면 파일 업로드 포함 함수 사용
             if (data.imageFiles && data.imageFiles.length > 0) {
@@ -44,6 +45,7 @@ const usePostReviewMutation = () => {
                 content: data.content,
                 productId: data.productId,
                 images: data.images,
+                rating: data.rating || 0
             });
         },
         onSuccess: (data, variables) => {

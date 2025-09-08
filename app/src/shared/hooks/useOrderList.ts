@@ -1,4 +1,4 @@
-import { OrderData, ShippingStatus } from "@/src/entities/type/interfaces";
+import { OrderData, ShippingStatus } from "@/src/components/order/interface";
 import { useAllOrderQuery } from "@/src/shared/hooks/react-query/useOrderQuery";
 import { useState } from "react";
 

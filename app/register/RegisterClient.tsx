@@ -65,7 +65,7 @@ const RegisterClient = () => {
             sessionStorage.removeItem("verificationEmail");
             sessionStorage.removeItem("verificationExpires");
 
-            console.log("인증 시간이 만료되었습니다.");
+            alert("인증 시간이 만료되었습니다.");
         }
         return () => clearInterval(interval);
     }, [timeLeft, isEmailSent]);

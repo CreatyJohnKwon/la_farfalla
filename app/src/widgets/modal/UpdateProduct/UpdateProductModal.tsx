@@ -9,13 +9,13 @@ import {
     Product,
 } from "@/src/components/product/interface";
 // 자식 컴포넌트
-import Modal from "../Modal";
 import Size from "./Size";
 import Options from "./Options";
 import Section from "./Section";
-import DescriptionInfo from "./DescriptionInfo";
-import ProductTitle from "./ProductTitle";
+import ModalWrap from "../ModalWrap";
 import UploadImage from "./UploadImage";
+import ProductTitle from "./ProductTitle";
+import DescriptionInfo from "./DescriptionInfo";
 // 리액트라이브러리
 import { useState, useEffect } from "react";
 import { useSetAtom } from "jotai";
@@ -440,7 +440,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
     }
 
     return (
-        <Modal onClose={() => confirm("작성을 취소하시겠습니까?") && onClose()}>
+        <ModalWrap onClose={() => confirm("작성을 취소하시겠습니까?") && onClose()}>
             <h1 className="mb-8 text-center text-2xl font-bold text-gray-900">
                 {mode === "update" ? "상품 수정" : "상품 등록"}
             </h1>
@@ -531,7 +531,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                     </button>
                 </div>
             </form>
-        </Modal>
+        </ModalWrap>
     );
 };
 

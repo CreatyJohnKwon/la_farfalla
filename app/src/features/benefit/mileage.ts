@@ -1,6 +1,6 @@
 "use server";
 
-import { MileageItem } from "@/src/entities/type/interfaces";
+import { MileageItem } from "@/src/components/order/interface";
 import { Mileage } from "@/src/entities/models/Mileage";
 import User from "@/src/entities/models/User";
 import mongoose from "mongoose";

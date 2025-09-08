@@ -17,6 +17,7 @@ interface Review {
     hasImages?: boolean;
     isAdmin?: string;
     createdAt: Date;
+    rating: number;
 }
 
 interface IComment {

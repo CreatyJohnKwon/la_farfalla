@@ -1,4 +1,3 @@
-import { OrderData } from "@/src/entities/type/interfaces";
 import { EmailService } from "@/src/shared/lib/emailService";
 import { NextRequest, NextResponse } from "next/server";
 

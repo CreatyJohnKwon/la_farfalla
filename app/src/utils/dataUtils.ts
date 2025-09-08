@@ -41,10 +41,20 @@ const adminMenuItems = [
     { label: "Coupon", path: "/admin/list/coupons" },
 ];
 
+const textareaPlaceholder = `리뷰 작성시 적립금 안내
+텍스트후기 : 마일리지 500원 지급
+포토후기 : 기본 마일리지 1,000원 지급
+(3장 이상의 사진 첨부 시 1,500원 지급)
+
+*다음과 같은 경우 마일리지 지급이 어렵습니다.
+(중복된 사진 및 내용이 포함된 경우, 부적절한 내용이 담긴 경우, 브랜드와 무관한 경우)
+`
+
 export {
     getCurrentDateTime,
     getDateTimeAfterHours,
     isImageUrl,
     aboutMenuItems,
-    adminMenuItems
+    adminMenuItems,
+    textareaPlaceholder
 }

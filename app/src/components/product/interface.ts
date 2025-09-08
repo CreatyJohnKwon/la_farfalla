@@ -11,6 +11,8 @@ interface Product {
     quantity: string;
     options?: ProductOption[];
     createdAt?: Date;
+    averageRating?: number;
+    ratingCount?: number;
 }
 
 interface ProductOption {
@@ -114,6 +116,13 @@ interface ProductDropProps {
     type?: "size" | "color"; // 타입 구분
 }
 
+interface specialReviewItem {
+    orderId?: string;
+    productId: string;
+    productName: string;
+    productImage?: string[];
+}
+
 export type {
     Product,
     ProductOption,
@@ -128,4 +137,5 @@ export type {
     DropdownItem,
     SearchFloatingButtonProps,
     SearchResult,
+    specialReviewItem
 };

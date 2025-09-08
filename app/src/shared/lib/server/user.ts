@@ -135,8 +135,9 @@ const getFormValue = (formData: FormData, key: string): string => {
     return typeof value === "string" ? value : "";
 };
 
-const getMileage = async (userId: string) => {
-    const res = await fetch(`/api/user/mileage?userId=${userId}`);
+const getMileage = async ({ pageParam = 1, userId }: { pageParam?: number, userId: string }) => {
+    const limit = 5;
+    const res = await fetch(`/api/user/mileage?userId=${userId}&page=${pageParam}&limit=${limit}`);
     if (!res.ok) throw new Error("마일리지 불러오기 실패");
     return await res.json();
 };

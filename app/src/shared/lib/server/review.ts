@@ -31,6 +31,7 @@ const postReview = async (data: {
     productId?: string;
     imageFiles?: File[]; // 파일 객체 배열
     images?: string[]; // 또는 이미 업로드된 URL 배열
+    rating: number;
 }): Promise<{ message: string; data: Review }> => {
     let imageUrls: string[] = data.images || [];
 
@@ -49,12 +50,14 @@ const postReview = async (data: {
         content: data.content,
         productId: data.productId,
         images: imageUrls,
+        rating: data.rating
     });
 };
 
 // 🆕 기본 API 호출만 하는 함수 (이름 변경)
 const submitReviewToAPI = async (data: {
     content: string;
+    rating: number;
     productId?: string;
     images?: string[];
 }): Promise<{ message: string; data: Review }> => {

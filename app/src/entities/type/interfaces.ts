@@ -60,8 +60,6 @@ type SelectedItem = {
     originalPrice: number;
 };
 
-type ShippingStatus = "pending" | "ready" | "shipped" | "confirm" | "cancel";
-
 interface UserProfileData {
     _id: string;
     provider: "local" | "naver" | "kakao";
@@ -78,46 +76,6 @@ interface UserProfileData {
     createdAt?: Date;
 }
 
-interface MileageItem {
-    _id?: string;
-    userId: string;
-    type: "earn" | "spend";
-    amount: number;
-    description?: string;
-    relatedOrderId?: string;
-    createdAt: string;
-}
-
-interface OrderItem {
-    productId: string;
-    productNm: string;
-    size: string;
-    color: string;
-    quantity: number;
-    price?: number;
-    image?: string[];
-}
-
-interface OrderData {
-    _id?: string;
-    userId: string;
-    userNm: string;
-    phoneNumber: string;
-    address: string;
-    detailAddress: string;
-    deliveryMemo: string;
-    postcode: string;
-    items: OrderItem[];
-    totalPrice: number;
-    createdAt?: string;
-    payMethod: "NAVER_PAY" | "KAKAO_PAY" | "CARD";
-    paymentId?: string;
-    shippingStatus: ShippingStatus;
-    shippedAt?: string;
-    confirmAt?: Date;
-    trackingNumber?: string;
-}
-
 interface AddressModalProps {
     onComplete: (address: string) => void;
     onClose: () => void;
@@ -126,12 +84,6 @@ interface AddressModalProps {
 interface AddressData {
     address: string;
     zonecode: string;
-}
-
-interface OrderUpdateInput {
-    orderId: string | undefined;
-    shippingStatus: string;
-    trackingNumber: string | undefined;
 }
 
 interface IDProps {
@@ -218,19 +170,6 @@ interface UserCouponWithPopulate {
     updatedAt: Date;
 }
 
-interface SMSOrderData {
-    orderNumber: string;
-    customerName: string;
-    totalAmount: number;
-    itemCount: number;
-}
-
-interface SMSResult {
-    success: boolean;
-    requestId?: string;
-    statusCode?: string;
-    statusName?: string;
-}
 
 export type {
     ICoupon,
@@ -250,17 +189,10 @@ export type {
     NavbarProps,
     RegistReqData,
     UserProfileData,
-    OrderData,
-    OrderItem,
     SelectedItem,
     Season,
     MenuItem,
-    MileageItem,
     AddressModalProps,
     AddressData,
-    ShippingStatus,
-    OrderUpdateInput,
     IDProps,
-    SMSOrderData,
-    SMSResult,
 };

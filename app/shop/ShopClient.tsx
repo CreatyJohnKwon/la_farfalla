@@ -70,9 +70,9 @@
 
              // Logging for search analysis (optional) 
              if (query.length > 0) { 
-                 console.log( 
-                     `검색어: "${query}", 결과: ${searchResults.length}개`, 
-                 ); 
+                //  console.log( 
+                //      `검색어: "${query}", 결과: ${searchResults.length}개`, 
+                //  ); 
              } 
          }, 
          [], 

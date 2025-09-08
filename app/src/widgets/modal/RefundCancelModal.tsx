@@ -1,4 +1,4 @@
-import { OrderData } from "@/src/entities/type/interfaces";
+import { OrderData } from "@/src/components/order/interface";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -16,7 +16,7 @@ const RefundCancelModal = ({
         type: string;
         reason: string;
         orderInfo: string;
-    }) => void;
+    }) => Promise<void>;
     order: OrderData;
     type: "cancel" | "exchange" | "return";
 }) => {
@@ -57,7 +57,7 @@ const RefundCancelModal = ({
 
         if (
             confirm(
-                `정말로 ${actionText}를 요청하시겠습니까?\n\n처리까지 2-3일 소요될 수 있습니다.`,
+                `정말로 ${actionText()}를 요청하시겠습니까?\n\n처리까지 2-3일 소요될 수 있습니다.`,
             )
         ) {
             setIsSubmitting(true);
@@ -171,12 +171,12 @@ const RefundCancelModal = ({
                             onChange={(e) => setReason(e.target.value)}
                             className="w-full resize-none border border-gray-300 bg-white p-3 text-sm focus:border-black focus:outline-none"
                             rows={4}
-                            placeholder={requestType === "exchange" ? "교환 요청 시, 교환을 원하시는 상품을 명확히 기재해주시기 바랍니다.\n예시) 사이즈: m, 색상: navy" : `${actionText()} 사유를 상세히 작성해주세요...`}
+                            placeholder={requestType === "exchange" ? "교환 요청 시, 교환을 원하시는 상품을 명확히 기재해주시기 바랍니다.\n예시) 사이즈: m, 색상: navy" : `${actionText()} 사유를 상세히 작성해주세요.`}
                             maxLength={500}
                         />
                         <div className="mt-1 flex justify-between">
                             <p className="font-pretendard text-xs text-gray-500">
-                                상세한 사유를 작성하면 더 빠른 처리가
+                                상세하게 작성해주시면 더 빠른 처리가
                                 가능합니다.
                             </p>
                             <span className="font-pretendard text-xs text-gray-400">
@@ -193,8 +193,7 @@ const RefundCancelModal = ({
                             </p>
                             <ul className="space-y-1 font-pretendard text-xs">
                                 <li>• 요청 접수 후 2-3일 내 처리됩니다</li>
-                                {requestType === "return" && <li>• 반품 시, 환불은 원래 결제수단으로 처리됩니다</li>}
-                                {requestType === "exchange" && <li>• 교환 시, 카카오톡 채널로 진행상황을 안내드립니다</li>}
+                                {requestType === "return" && <li>• 반품 완료 시, 환불은 원래 결제수단으로 처리됩니다</li>}
                             </ul>
                         </div>
                     </div>
@@ -213,7 +212,7 @@ const RefundCancelModal = ({
                         disabled={!reason.trim() || isSubmitting}
                         className="flex-1 bg-black px-6 py-2.5 font-pretendard text-sm font-medium text-white transition-colors duration-200 hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
                     >
-                        {isSubmitting ? "처리 중..." : "요청 제출"}
+                        {isSubmitting ? "처리 중" : "요청 제출"}
                     </button>
                 </div>
             </div>

@@ -4,9 +4,9 @@ import { useState, useCallback, useMemo } from "react";
 import StatusUpdateSelectedModal from "@/src/widgets/modal/StatusUpdateSelectedModal";
 import StatusUpdateModal from "@/src/widgets/modal/StatusUpdateModal";
 import UserInfoModal from "@/src/widgets/modal/UserInfoModal";
-import { OrderData } from "@/src/entities/type/interfaces";
 import useOrderList from "@/src/shared/hooks/useOrderList";
 import ProductInfoModal from "@/src/widgets/modal/ProductInfoModal";
+import { OrderData } from "@/src/components/order/interface";
 
 type SortOption = "none" | "name_asc" | "name_desc";
 type StatusFilter = "all" | string; // "all" 또는 실제 상태값

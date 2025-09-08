@@ -12,7 +12,6 @@ import {
     useGetUserCouponsListQuery,
     useUpdateUserCouponMutation,
 } from "@src/shared/hooks/react-query/useBenefitQuery";
-import { MileageItem, OrderData } from "@/src/entities/type/interfaces";
 import { orderAccept } from "@/src/features/order/order";
 import { earnMileage, spendMileage } from "@/src/features/benefit/mileage";
 import { updateUser } from "../lib/server/user";
@@ -25,6 +24,7 @@ import {
 import { ProductOption } from "@/src/components/product/interface";
 import { v4 as uuidv4 } from "uuid";
 import { adminEmails } from "public/data/common";
+import { MileageItem, OrderData } from "@/src/components/order/interface";
 
 const useOrder = () => {
     const { session } = useUser();
@@ -378,16 +378,16 @@ const useOrder = () => {
         }
     };
 
-    const addEarnMileage = (res: any, description: string) => {
+    const addEarnMileage = async (orderId: string, description: string, mileage?: number) => {
         const addMileage: MileageItem = {
             userId: user?._id,
             type: "earn",
-            amount: totalMileage,
+            amount: mileage ? mileage : totalMileage,
             description: description || "마일리지 적립",
-            relatedOrderId: res?.orderId,
+            relatedOrderId: orderId,
             createdAt: new Date().toISOString(),
         };
-        earnMileage(addMileage);
+        await earnMileage(addMileage);
     };
 
     const saveNewAddress = async () => {
@@ -408,6 +408,7 @@ const useOrder = () => {
         isLoading,
         coupons, // ✅ IUserCouponPopulated 배열 반환
         isCouponsLoading,
+        addEarnMileage,
 
         orderDatas,
         setOrderDatas,

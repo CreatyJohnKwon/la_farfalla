@@ -46,6 +46,8 @@ const orderSchema = new mongoose.Schema(
         trackingNumber: { type: String, required: false, default: "" }, // 운송장 번호
 
         confirmAt: { type: Date, required: false }, // 구매 확정 날짜        
+        commented: { type: Boolean, require: false, default: false }, // 구매 확정 이후 리뷰 1번만 쓸수 있음
+
         deletedAt: {
             type: Date,
             default: null, // 삭제 예약 일시

@@ -1,7 +1,7 @@
+import { OrderItem } from "@/src/components/order/interface";
 import { connectDB } from "@/src/entities/models/db/mongoose";
 import { Order } from "@/src/entities/models/Order";
 import User from "@/src/entities/models/User";
-import { OrderItem } from "@/src/entities/type/interfaces";
 import { ReviewPermissionResponse } from "@/src/entities/type/review";
 import { NextRequest } from "next/server";
 import { adminEmails } from "public/data/common";

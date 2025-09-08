@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema(
         },
         mileage: {
             type: Number,
-            required: false,
+            required: true,
             default: 0,
         },
         deletedAt: {

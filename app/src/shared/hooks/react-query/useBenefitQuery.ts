@@ -1,9 +1,8 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { getMileage } from "@src/shared/lib/server/user";
 import {
     CouponResponse,
     ICoupon,
-    MileageItem,
 } from "@src/entities/type/interfaces";
 import { updateCoupon } from "@src/shared/lib/server/order";
 import {
@@ -113,11 +112,19 @@ const useDeleteManageCouponMutation = () => {
 };
 
 const useMileageQuery = (userId?: string) => {
-    return useQuery<MileageItem[], Error>({
+    return useInfiniteQuery({
         queryKey: ["mileage", userId],
-        queryFn: () => getMileage(userId!),
-        enabled: Boolean(userId), // userId 준비되면 요청
-        retry: false, // 실패 시 재시도 OFF
+        queryFn: ({ pageParam }) => getMileage({ pageParam, userId: userId! }),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage, allPages) => {
+            const limit = 5;
+            if (lastPage && lastPage.length === limit) {
+                return allPages.length + 1;
+            }
+            return undefined; 
+        },
+        enabled: Boolean(userId),
+        retry: false,
     });
 };
 

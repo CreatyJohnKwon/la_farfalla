@@ -1,5 +1,4 @@
-import { EmailResult } from "@/src/components/order/interface";
-import { OrderData, ShippingStatus } from "@/src/entities/type/interfaces";
+import { EmailResult, OrderData, ShippingStatus } from "@/src/components/order/interface";
 import nodemailer, { Transporter } from "nodemailer";
 
 export class EmailService {
@@ -547,7 +546,7 @@ export class EmailService {
 
       try {
           const info = await this.transporter.sendMail(mailOptions);
-          console.log("임시 비밀번호 이메일 전송 성공:", info.messageId);
+          // console.log("임시 비밀번호 이메일 전송 성공:", info.messageId);
           return { success: true, messageId: info.messageId };
       } catch (error) {
           console.error("이메일 전송 실패:", error);

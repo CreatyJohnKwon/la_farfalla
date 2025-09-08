@@ -1,4 +1,3 @@
-import { OrderData, ShippingStatus } from "@/src/entities/type/interfaces";
 import {
     useOrderQuery,
     useSmartUpdateOrderMutation,
@@ -10,9 +9,12 @@ import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
 import { useState } from "react";
 import RefundCancelModal from "./RefundCancelModal";
-import DeliveryChangeModal from "./DeliveryChangeModal"; // 🆕 추가
+import DeliveryChangeModal from "./DeliveryChangeModal";
+import SpecialReviewModal from "./SpecialReviewModal";
+import { specialReviewItem } from "@/src/components/product/interface";
+import { OrderData, ShippingStatus } from "@/src/components/order/interface";
+import useOrder from "@/src/shared/hooks/useOrder";
 
-// 주문 상세 모달 컴포넌트
 // 주문 상세 모달 컴포넌트
 const OrderDetailModal = ({
     isOpen,
@@ -23,16 +25,25 @@ const OrderDetailModal = ({
     onClose: () => void;
     order: OrderData;
 }) => {
-    const { data: user } = useUserQuery();
+    const { data: user , refetch: refetchUser } = useUserQuery();
     const { mutateAsync: smartUpdateOrder } = useSmartUpdateOrderMutation();
     const { refetch: orderListRefetch } = useOrderQuery(user?._id);
 
     const updateAddressMutation = useUpdateAddressOrder();
 
+    const [productItem, setProductItem] = useState<specialReviewItem>({
+        orderId: "",
+        productId: "",
+        productImage: [],
+        productName: ""
+    });
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
     const [cancelType, setCancelType] = useState<"cancel" | "exchange" | "return">("cancel");
     const [isDeliveryChangeModalOpen, setIsDeliveryChangeModalOpen] =
         useState(false); // 🆕 추가
+
+    const { addEarnMileage } = useOrder();
 
     if (!isOpen) return null;
 
@@ -176,9 +187,10 @@ const OrderDetailModal = ({
         id: string,
         status: string,
         waybillNumber: string | undefined,
+        totalPrice: number
     ) => {
         if (
-            confirm("구매를 확정하시겠습니까?\n반품 및 교환을 할 수 없게됩니다.")
+            confirm("구매를 확정하시겠습니까?\n구매확정 시, 7일 이내에 반품 및 교환을 할 수 있게 됩니다.")
         ) {
             try {
                 await smartUpdateOrder({
@@ -186,6 +198,8 @@ const OrderDetailModal = ({
                     shippingStatus: status,
                     trackingNumber: waybillNumber,
                 });
+                await addEarnMileage(id, "상품 구매 적립", Math.round(totalPrice/100));
+                refetchUser();
                 orderListRefetch();
                 onClose();
             } catch (err) {
@@ -337,10 +351,10 @@ const OrderDetailModal = ({
                     </div>
                     <button
                         onClick={onClose}
-                        className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full transition-colors hover:bg-gray-100 active:bg-gray-200"
+                        className="flex text-2xl flex-shrink-0 items-center justify-center font-[300] hover:text-gray-500 text-gray-400 "
                         style={{ touchAction: "manipulation" }}
                     >
-                        <X className="h-5 w-5 text-gray-600" />
+                        &times;
                     </button>
                 </div>
 
@@ -440,9 +454,9 @@ const OrderDetailModal = ({
 
                     {/* 주문 상품 섹션 */}
                     <div>
-                        <h3 className="mb-3 flex items-center font-pretendard text-base font-semibold text-gray-900">
+                        <span className="mb-3 flex items-center font-pretendard text-base font-semibold text-gray-900">
                             주문 상품 ({order.items.length}개)
-                        </h3>
+                        </span>
                         <div className="space-y-2">
                             {order.items.map((item, index) => (
                                 <div
@@ -464,7 +478,7 @@ const OrderDetailModal = ({
                                         />
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <h4 className="truncate font-pretendard text-sm font-medium text-gray-900">
+                                        <h4 className="truncate text-sm font-pretendard text-gray-900">
                                             {item.productNm}
                                         </h4>
                                         <div className="mt-1 text-xs text-gray-600">
@@ -475,6 +489,23 @@ const OrderDetailModal = ({
                                             <span>수량: {item.quantity}개</span>
                                         </div>
                                     </div>
+
+                                    {order.shippingStatus === "confirm" ? (
+                                        <button 
+                                            className="text-xs underline text-red-500 me-1"
+                                            onClick={() => {
+                                                setProductItem({
+                                                    orderId: order._id || "",
+                                                    productId: item.productId,
+                                                    productName: item.productNm,
+                                                    productImage: item.image,
+                                                });
+                                                setIsReviewModalOpen(true);
+                                            }}
+                                        >
+                                            리뷰 쓰기
+                                        </button>
+                                    ) : (<></>)}
                                 </div>
                             ))}
                         </div>
@@ -611,6 +642,7 @@ const OrderDetailModal = ({
                                             order._id || "",
                                             "confirm",
                                             "",
+                                            order.totalPrice
                                         )
                                     }
                                     className="w-full cursor-pointer rounded-md bg-black px-4 py-3 font-pretendard text-sm font-medium text-white transition-colors hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 active:bg-black/90"
@@ -620,8 +652,8 @@ const OrderDetailModal = ({
                                 </button>
                                 <div className="text-xs leading-relaxed text-red-500">
                                     <p className="mb-1">
-                                        구매확정 이후에는 단순 변심에 의한 교환
-                                        및 반품이 불가합니다.
+                                        구매확정 후, 7일 이내까지 단순 변심에 의한 교환
+                                        및 반품이 가능합니다.
                                     </p>
                                     <p>
                                         제품에 이상이 있는 경우에는 구매확정 전
@@ -650,6 +682,13 @@ const OrderDetailModal = ({
                     order={order}
                 />
             </div>
+
+            {isReviewModalOpen && (
+                <SpecialReviewModal 
+                    onClose={() => setIsReviewModalOpen(false)} 
+                    productItem={productItem}
+                />
+            )}
         </div>
     );
 };

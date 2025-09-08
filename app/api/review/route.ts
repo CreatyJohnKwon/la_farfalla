@@ -6,6 +6,7 @@ import User from "@/src/entities/models/User";
 import { Review } from "@/src/entities/models/Review";
 import { UserProfileData } from "@/src/entities/type/interfaces";
 import { adminEmails } from "public/data/common";
+import Product from "@/src/entities/models/Product";
 
 // 🆕 요청자 권한에 따른 이메일 표시 함수
 const getEmailDisplay = (
@@ -220,7 +221,7 @@ export async function POST(req: NextRequest) {
     try {
         await connectDB();
 
-        const { content, productId, images } = await req.json();
+        const { content, productId, images, rating } = await req.json();
 
         if (!content) {
             return NextResponse.json(
@@ -293,9 +294,34 @@ export async function POST(req: NextRequest) {
             likesCount: 0,
             images: images || [],
             comments: [],
+            rating
         });
 
         await newReview.save();
+
+        const product = await Product.findById(productId);
+
+        if (product) {
+            const averageRating = product.averageRating || 0;
+            const ratingCount = product.ratingCount || 0;
+
+            const currentTotalRating = averageRating * ratingCount;
+            const newRatingCount = ratingCount + 1;
+            
+            // 새로운 평균 평점 계산 (소수점 2자리까지)
+            const newAverageRating = parseFloat(
+                ((currentTotalRating + rating) / newRatingCount).toFixed(2)
+            );
+
+            // Product 문서에 새로운 값으로 업데이트
+            product.averageRating = newAverageRating;
+            product.ratingCount = newRatingCount;
+
+            await product.save();
+        } else {
+            // 해당 productId를 가진 제품이 없을 경우에 대한 예외 처리
+            console.warn(`리뷰가 작성되었지만, productId ${productId}에 해당하는 제품을 찾을 수 없어 평점을 업데이트하지 못했습니다.`);
+        }
 
         const savedReview = newReview.toObject();
 

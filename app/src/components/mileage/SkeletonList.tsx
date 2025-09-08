@@ -1,14 +1,15 @@
 const SkeletonList = () => (
   <>
-    {Array.from({ length: 3 }).map((_, i) => (
+    {Array.from({ length: 5 }).map((_, i) => (
       <li
           key={`mileage_skeleton_${i}`}
-          className="animate-pulse border border-gray-200 bg-slate-100 p-4"
+          className="rounded-md border p-5"
       >
-          <div className="mb-2 h-4 w-1/3 bg-gray-300" />
-          <div className="mb-2 h-3 w-1/3 bg-gray-300" />
-          <div className="mb-2 h-3 w-1/3 bg-gray-300" />
-          <div className="mb-2 h-3 w-1/3 bg-gray-300" />
+        <div className="flex items-center justify-between h-5 animate-fade-in">
+          <div className="h-full w-12 sm:w-16 bg-gray-300 rounded-sm" />
+          <div className="h-full w-20 bg-gray-300 rounded-sm -ms-12 sm:-ms-[28vw]" />
+          <div className="h-full w-10 bg-gray-300 rounded-sm" />
+        </div>
       </li>
     ))}
   </>

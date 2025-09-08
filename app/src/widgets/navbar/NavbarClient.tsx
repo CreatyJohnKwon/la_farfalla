@@ -41,7 +41,7 @@ const NavbarClient = () => {
 
     return (
         <nav
-            className={`fixed top-0 z-40 h-auto w-full ps-0 pt-4 pb-3 sm:pb-0 text-base shadow-none ${pathName === "/home" ? "bg-transparent" : "bg-white/70"} ${textColor}`}
+            className={`fixed top-0 z-40 h-auto w-full ps-0 pt-4 pb-3 sm:pb-0 text-base shadow-none ${pathName === "/home" ? "bg-transparent" : "bg-white"} ${textColor}`}
         >
             <div
                 className={`max-w-screen-w_max relative mx-auto flex items-center justify-between p-0 sm:p-4 text-xl md:text-2xl c_xl:text-3xl`}

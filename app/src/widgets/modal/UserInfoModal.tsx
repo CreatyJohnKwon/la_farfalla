@@ -1,7 +1,6 @@
-import { OrderData, OrderItem } from "@/src/entities/type/interfaces";
+import { OrderData } from "@/src/components/order/interface";
 import { useOneUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
 import { motion } from "framer-motion";
-import { useMemo } from "react";
 
 const UserInfoModal = ({
     orderData,

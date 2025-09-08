@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import Modal from "../Modal";
+import ModalWrap from "../ModalWrap";
 import {
     useCreateAnnounceMutation,
     useAnnouncesQuery,
@@ -445,7 +445,7 @@ export default function CreateAnnounceModal({ onClose }: Props) {
     }, [imagePreviewUrl, cleanupImageUrl]);
 
     return (
-        <Modal
+        <ModalWrap
             onClose={onClose}
             className="relative h-[90vh] w-[90vw] overflow-y-auto bg-white shadow-2xl sm:h-[80vh] sm:w-[60vw]"
         >
@@ -575,6 +575,6 @@ export default function CreateAnnounceModal({ onClose }: Props) {
                     />
                 )}
             </div>
-        </Modal>
+        </ModalWrap>
     );
 }
