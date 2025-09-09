@@ -64,6 +64,7 @@ interface OrderData {
     shippedAt?: string;
     confirmAt?: Date;
     trackingNumber?: string;
+    description?: string;
 }
 
 interface OrderUpdateInput {
@@ -72,7 +73,7 @@ interface OrderUpdateInput {
     trackingNumber: string | undefined;
 }
 
-type ShippingStatus = "pending" | "ready" | "shipped" | "confirm" | "cancel";
+type ShippingStatus = "pending" | "ready" | "shipped" | "confirm" | "cancel" | "return" | "exchange";
 
 export type {
     EmailResult,

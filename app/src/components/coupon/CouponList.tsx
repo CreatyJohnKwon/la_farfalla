@@ -122,7 +122,7 @@ const CouponList = () => {
     // 쿠폰이 하나라도 있을 때
     if (validCoupons.length > 0) {
         return (
-            <ul className="flex w-[85vw] flex-col gap-4 overflow-y-scroll pb-5 sm:h-[40vh] sm:w-auto">
+            <ul className="flex w-[85vw] flex-col gap-4 overflow-y-scroll pb-5 sm:w-auto">
                 {validCoupons.map((coupon: any) => {
                     // 사용자가 보유한 쿠폰 중에서 현재 쿠폰과 매칭되는 것을 찾기
                     const userCoupon = userCoupons.find(
@@ -279,7 +279,7 @@ const CouponList = () => {
     // 빈 상태
     return (
         <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
-            <li className="font-pretendard-thin mt-20 w-full text-center text-[0.5em] text-black/60">
+            <li className="font-pretendard-thin mt-20 w-full text-center text-base text-black/60">
                 사용 가능한 쿠폰이 없습니다
             </li>
         </ul>

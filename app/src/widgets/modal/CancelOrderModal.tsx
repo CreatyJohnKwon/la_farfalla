@@ -1,9 +1,9 @@
-import { OrderData } from "@/src/components/order/interface";
+import { OrderData } from '@/src/components/order/interface';
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 // 🆕 취소/교환및반품 요청 모달 컴포넌트 (기존 디자인 스타일 유지)
-const RefundCancelModal = ({
+const CancelOrder = ({
     isOpen,
     onClose,
     onSubmit,
@@ -53,7 +53,7 @@ const RefundCancelModal = ({
             주문상품: ${order.items.map((item) => `${item.productNm} (${item.size}/${item.color})`).join(", ")}
             주문금액: ${formatPrice(order.totalPrice)}
             주문일시: ${formatDate(order.createdAt)}
-        `.trim();        
+        `.trim();
 
         if (
             confirm(
@@ -69,6 +69,7 @@ const RefundCancelModal = ({
                 });
                 onClose();
             } finally {
+                setReason("");
                 setIsSubmitting(false);
             }
         }
@@ -220,4 +221,4 @@ const RefundCancelModal = ({
     );
 };
 
-export default RefundCancelModal;
+export default CancelOrder;

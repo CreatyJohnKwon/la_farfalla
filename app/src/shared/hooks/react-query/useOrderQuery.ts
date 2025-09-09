@@ -11,6 +11,8 @@ import { resetProductFormAtom } from "../../lib/atom";
 import { ProductOption } from "@/src/components/product/interface";
 import { AddressUpdateInput } from "@/src/entities/type/order";
 import { OrderData, OrderUpdateInput } from "@/src/components/order/interface";
+import { adminEmails } from "public/data/common";
+import useUsers from "../useUsers";
 
 const useAllOrderQuery = () => {
     return useQuery<OrderData[], Error>({
@@ -24,6 +26,7 @@ const useAllOrderQuery = () => {
 const useSmartUpdateOrderMutation = () => {
     const queryClient = useQueryClient();
     const resetProductForm = useSetAtom(resetProductFormAtom);
+    const { session } = useUsers();
 
     return useMutation({
         mutationFn: async (input: OrderUpdateInput | OrderUpdateInput[]) => {
@@ -62,10 +65,10 @@ const useSmartUpdateOrderMutation = () => {
 
             // 배열인지 단일인지에 따른 메시지 구분
             const count = Array.isArray(variables) ? variables.length : 1;
-            if (count === 1) {
-                alert(`총 ${count}개의 주문 상태가 업데이트 되었습니다`);
-            } else {
+            if (count === 1 && adminEmails.includes(session?.user?.email || "")) {
                 alert(`주문의 상태가 업데이트 되었습니다`);
+            } else {
+                alert(`총 ${count}개의 주문 상태가 업데이트 되었습니다`);
             }
             resetProductForm();
         },

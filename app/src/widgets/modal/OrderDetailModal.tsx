@@ -4,16 +4,18 @@ import {
     useUpdateAddressOrder,
 } from "@/src/shared/hooks/react-query/useOrderQuery";
 import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
-import { CheckCircle, X, XCircle } from "lucide-react";
+import { CheckCircle, XCircle } from "lucide-react";
 import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
 import { useState } from "react";
-import RefundCancelModal from "./RefundCancelModal";
+import CancelOrderModal from "./CancelOrderModal";
 import DeliveryChangeModal from "./DeliveryChangeModal";
 import SpecialReviewModal from "./SpecialReviewModal";
 import { specialReviewItem } from "@/src/components/product/interface";
 import { OrderData, ShippingStatus } from "@/src/components/order/interface";
 import useOrder from "@/src/shared/hooks/useOrder";
+import { sendMail } from "@/src/shared/lib/server/order";
+import { spendMileage } from '@/src/features/benefit/mileage';
 
 // 주문 상세 모달 컴포넌트
 const OrderDetailModal = ({
@@ -40,32 +42,39 @@ const OrderDetailModal = ({
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
     const [cancelType, setCancelType] = useState<"cancel" | "exchange" | "return">("cancel");
-    const [isDeliveryChangeModalOpen, setIsDeliveryChangeModalOpen] =
-        useState(false); // 🆕 추가
+    const [isDeliveryChangeModalOpen, setIsDeliveryChangeModalOpen] =useState(false); // 🆕 추가
 
-    const { addEarnMileage } = useOrder();
+    const { useSpendMileage, addEarnMileage } = useOrder();
 
     if (!isOpen) return null;
 
-    let predefinedMessage: string;
-
     // 🆕 개선된 handleChannel 함수 (환불/취소/교환)
-    const handleChannel = async (data: {
+    const handleSubmit = async (data: {
         type: string;
         reason: string;
         orderInfo: string;
     }) => {
         try {
-            const actionName =
-                data.type === "cancel"
-                    ? "주문 취소"
-                    : data.type === "refund"
-                      ? "환불"
-                      : data.type === "exchange"
-                        ? "교환"
-                        : "처리";
+            await smartUpdateOrder({
+                orderId: order._id,
+                shippingStatus: data.type,
+                trackingNumber: order.trackingNumber || "",
+            });
 
-            predefinedMessage = `
+            const actionName = data.type === "cancel" ? "주문 취소가" : data.type === "return" ? "상품 반품이" : data.type === "exchange" ? "상품 교환이" : "상담이";
+            const body = JSON.stringify({
+                ...order,
+                shippingStatus: data.type,
+                description: data.reason
+            });
+
+            sendMail(body);
+
+            alert(`${actionName} 성공적으로 요청되었습니다.`);
+        } catch (error) {
+            // 클립보드 실패 시 prompt 사용
+            const actionName = data.type === "cancel" ? "주문 취소" : data.type === "return" ? "반품" : data.type === "exchange" ? "교환" : "상담";
+            const predefinedMessage: string = `
                 ${actionName} 요청드립니다.
 
                 ${data.orderInfo}
@@ -75,13 +84,14 @@ const OrderDetailModal = ({
 
                 빠른 처리 부탁드립니다.
             `.trim();
-
             // 클립보드에 복사
             await navigator.clipboard.writeText(predefinedMessage);
 
-            alert(
-                `${actionName} 요청 메시지가 복사되었습니다!\n카카오톡 채널에서 붙여넣기(Ctrl+V) 해주세요.`,
-            );
+            alert(`${actionName} 요청 메시지가 복사되었습니다!\n카카오톡 채널에서 붙여넣기(Ctrl+V) 해주세요.`,);
+            const message = `${actionName} 요청 메시지를 복사해서 채널에 보내주세요:`;
+
+            //prompt 시작
+            prompt(message, predefinedMessage);
 
             // 1초 후 채널 열기
             setTimeout(() => {
@@ -90,22 +100,9 @@ const OrderDetailModal = ({
                     "channel_talk_request",
                 );
             }, 1000);
-        } catch (error) {
-            // 클립보드 실패 시 prompt 사용
-            const actionName =
-                data.type === "cancel"
-                    ? "취소"
-                    : data.type === "refund"
-                      ? "환불"
-                      : data.type === "exchange"
-                        ? "교환"
-                        : "처리";
-            const message = `${actionName} 요청 메시지를 복사해서 채널에 보내주세요:`;
-            prompt(message, predefinedMessage);
-            window.open(
-                "https://pf.kakao.com/_Uxfaxin/chat",
-                "channel_talk_request",
-            );
+        } finally {
+            refetchUser();
+            orderListRefetch();
         }
     };
 
@@ -251,6 +248,22 @@ const OrderDetailModal = ({
                     bgColor: "bg-red-50",
                     borderColor: "border-red-200",
                 };
+            case "return":
+                return {
+                    text: "반품요청",
+                    description: "반품이 요청되었습니다",
+                    color: "text-red-600",
+                    bgColor: "bg-red-50",
+                    borderColor: "border-red-200",
+                };
+            case "exchange":
+                return {
+                    text: "교환요청",
+                    description: "교환이 요청되었습니다",
+                    color: "text-red-600",
+                    bgColor: "bg-red-50",
+                    borderColor: "border-red-200",
+                };
             default:
                 return {
                     text: status,
@@ -291,7 +304,6 @@ const OrderDetailModal = ({
             { key: "ready", label: "상품준비중" },
             { key: "shipped", label: "출고" },
             { key: "confirm", label: "구매확정" },
-            // { key: "cancel", label: "구매취소" }, // 구매 취소 UI 변경
         ];
 
         const currentIndex = steps.findIndex((step) => step.key === status);
@@ -332,7 +344,7 @@ const OrderDetailModal = ({
             style={{ touchAction: "manipulation" }}
         >
             <div
-                className="max-h-[90vh] w-[90vw] overflow-y-auto rounded-lg bg-white sm:w-[35vw]"
+                className="max-h-[90vh] w-[90vw] overflow-y-auto rounded-lg bg-white sm:w-[40vw]"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                     WebkitOverflowScrolling: "touch",
@@ -378,12 +390,15 @@ const OrderDetailModal = ({
 
 
                         {/* 배송 진행 상태 바 또는 취소 아이콘 */}
-                        {order.shippingStatus === "cancel" ? (
-                            // 주문 취소 상태일 때 보여줄 아이콘과 텍스트
+                        {order.shippingStatus === "cancel" ||
+                            order.shippingStatus === "return" || 
+                            order.shippingStatus === "exchange" ? (
+                            // 주문 취소/교환 및 반품 상태일 때 보여줄 아이콘과 텍스트
                             <div className={`mt-4 flex flex-col items-center justify-center space-y-2 ${statusInfo.color}`}>
                                 <XCircle className="h-10 w-10" />
                                 <p className="font-pretendard text-sm font-medium">
-                                    주문이 취소되었습니다.
+                                    {`${order.shippingStatus === "cancel" ? "주문이 취소되었습니다" : 
+                                        order.shippingStatus === "exchange" ? "교환 요청 중" : "반품 요청 중"}`}
                                 </p>
                             </div>
                         ) : (
@@ -538,7 +553,13 @@ const OrderDetailModal = ({
                                     <span className="whitespace-nowrap font-pretendard text-sm font-[500] text-gray-700">
                                         결제번호
                                     </span>
-                                    <span className="ms-20 break-all text-end font-mono text-xs text-gray-600">
+                                    <span 
+                                        className="ms-20 break-all text-end font-mono text-xs text-gray-600 truncate hover:text-gray-900 cursor-pointer hover:underline"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(`${order.paymentId}`);
+                                            alert("복사 되었습니다")
+                                        }}
+                                    >
                                         {order.paymentId}
                                     </span>
                                 </div>
@@ -666,10 +687,10 @@ const OrderDetailModal = ({
                 </div>
 
                 {/* 🆕 환불/취소 모달 */}
-                <RefundCancelModal
+                <CancelOrderModal
                     isOpen={isRefundModalOpen}
                     onClose={() => setIsRefundModalOpen(false)}
-                    onSubmit={handleChannel}
+                    onSubmit={handleSubmit}
                     order={order}
                     type={cancelType}
                 />

@@ -247,17 +247,7 @@ const useOrder = () => {
                     createdAt: new Date().toISOString(),
                 });
 
-                const notificationResponse = await sendMail(body);
-                const notificationResult = await notificationResponse.json();
-                if (notificationResult.success) {
-                    console.log("notification send successful");
-                } else {
-                    console.error(
-                        "관리자 알림 발송 실패:",
-                        notificationResult.error,
-                    );
-                }
-
+                sendMail(body); // 서버 로그가 찍히기 때문에, 비동기 해제
                 alert(res.message);
                 orderListRefetch();
                 UserDataRefetch();
@@ -364,25 +354,23 @@ const useOrder = () => {
         setCouponMemo("");
     };
 
-    const useSpendMileage = (res: any) => {
-        if (usedMileage > 0 && res) {
-            const useSpendMileage: MileageItem = {
-                userId: user?._id,
-                type: "spend",
-                amount: usedMileage,
-                description: "마일리지 사용",
-                relatedOrderId: res.orderId,
-                createdAt: new Date().toISOString(),
-            };
-            spendMileage(useSpendMileage);
-        }
+    const useSpendMileage = async (res: any, description?: string, mileage?: number, orderId?: string) => {
+        const useSpendMileage: MileageItem = {
+            userId: user?._id,
+            type: "spend",
+            amount: mileage || usedMileage,
+            description: description || "마일리지 사용",
+            relatedOrderId: orderId || res.orderId,
+            createdAt: new Date().toISOString(),
+        };
+        spendMileage(useSpendMileage);
     };
 
-    const addEarnMileage = async (orderId: string, description: string, mileage?: number) => {
+    const addEarnMileage = async (orderId: string, description?: string, mileage?: number) => {
         const addMileage: MileageItem = {
             userId: user?._id,
             type: "earn",
-            amount: mileage ? mileage : totalMileage,
+            amount: mileage || totalMileage,
             description: description || "마일리지 적립",
             relatedOrderId: orderId,
             createdAt: new Date().toISOString(),
@@ -409,6 +397,7 @@ const useOrder = () => {
         coupons, // ✅ IUserCouponPopulated 배열 반환
         isCouponsLoading,
         addEarnMileage,
+        useSpendMileage,
 
         orderDatas,
         setOrderDatas,

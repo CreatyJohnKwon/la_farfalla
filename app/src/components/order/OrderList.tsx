@@ -15,7 +15,7 @@ const OrderList = () => {
 
     if (isUserLoading || isOrderListLoading) {
         return (
-            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
+            <ul className="flex w-[85vw] flex-col gap-4 overflow-y-auto pb-5 sm:w-auto">
                 <SkeletonList />
             </ul>
         );
@@ -33,7 +33,7 @@ const OrderList = () => {
 
     if (order && order.length > 0) {
         return (
-            <ul className="flex w-[85vw] flex-col gap-4 overflow-y-auto pb-5 sm:h-[40vh] sm:w-auto">
+            <ul className="flex w-[85vw] flex-col gap-4 overflow-y-auto pb-5 sm:w-auto">
                 {order.map((item, index) => (
                     <OrderItem key={`order_${index}`} item={item} />
                 ))}

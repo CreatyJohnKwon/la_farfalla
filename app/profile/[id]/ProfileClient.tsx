@@ -10,16 +10,16 @@ import { redirect } from "next/navigation";
 import { useMemo } from "react";
 
 const ProfileClient = ({ id }: { id: string }) => {
-    const { title, Component } = useMemo(() => {
+    const { title, children } = useMemo(() => {
         switch (id) {
             case "order":
-                return { title: "Order List", Component: <OrderList /> };
+                return { title: "Order List", children: <OrderList /> };
             case "edit":
-                return { title: "Edit Profile", Component: <EditProfile /> };
+                return { title: "Edit Profile", children: <EditProfile /> };
             case "mileage":
-                return { title: "Mileage", Component: <MileageList /> };
+                return { title: "Mileage", children: <MileageList /> };
             case "coupon":
-                return { title: "Coupon", Component: <CouponList /> };
+                return { title: "Coupon", children: <CouponList /> };
             default:
                 redirect("/profile/order");
         }
@@ -34,12 +34,12 @@ const ProfileClient = ({ id }: { id: string }) => {
                     <ProfileInfo />
 
                     <div className="mt-5 flex w-full flex-col items-center justify-start gap-5 text-5xl sm:m-0 sm:items-stretch">
-                        <span className="font-amstel-thin w-full text-2xl sm:text-4xl">
+                        <span className="font-amstel-thin w-full text-2xl sm:text-3xl">
                             {title}
                         </span>
                         <span className="h-0 w-full border-b border-gray-200 sm:w-full" />
                         
-                        <div>{Component}</div>
+                        <div>{children}</div>
                     </div>
                 </div>
             </div>

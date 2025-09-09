@@ -3,7 +3,7 @@
 const License = () => {
     return (
         <div
-            className="w-full text-start font-pretendard font-[300] text-[9px] sm:text-xs ps-5 sm:ps-6"
+            className="w-full text-start font-pretendard font-[300] text-[9px] sm:text-xs"
         >
             <p className="tracking-wide">라파팔라, 010-6788-3834 유현주</p>
             <p className="tracking-wide">

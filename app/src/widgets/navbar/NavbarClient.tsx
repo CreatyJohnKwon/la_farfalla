@@ -13,11 +13,11 @@ import useUsers from "@src/shared/hooks/useUsers";
 
 const NavbarClient = () => {
     const {
-        session,
-        setCartView,
-        cartView,
         setOpenSidebar,
         setTextColor,
+        setCartView,
+        session,
+        cartView,
         menuData,
         menuTitle,
         textColor,
@@ -52,7 +52,6 @@ const NavbarClient = () => {
                         className="font-amstel block ps-4 sm:ps-6"
                         key={"shop-menu"}
                     >
-                        {/* children 상태 대신 DropdownMenu를 직접 렌더링합니다. */}
                         <DropdownMenu
                             title="shop"
                             items={shopMenuItems}

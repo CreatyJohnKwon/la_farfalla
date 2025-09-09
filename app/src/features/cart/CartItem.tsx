@@ -31,7 +31,7 @@ const CartItem = ({ item }: { item: SelectedItem }) => {
 
     if (!isLoaded || !product) {
         return (
-            <div className="flex w-[90%] animate-pulse items-center justify-between">
+            <div className="flex w-[90%] animate-fade-in items-center justify-between">
                 <div className="h-[5em] w-[3em] bg-gray-300 c_md:w-[5em]" />
                 <div className="flex w-32 flex-col items-center c_md:w-auto c_md:gap-2">
                     <div className="mb-1 h-3 w-24 bg-gray-300" />

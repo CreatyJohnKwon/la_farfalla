@@ -29,7 +29,7 @@ const MileageList = () => {
         if (inView && hasNextPage && !isFetchingNextPage) {
             timer = setTimeout(() => {
                 fetchNextPage();
-            }, 100);
+            }, 0);
         }
 
         return () => {
@@ -42,7 +42,7 @@ const MileageList = () => {
     // 로딩 처리 (첫 페이지 로딩 시)
     if (isUserLoading || isMileageLoading) {
         return (
-            <ul className="flex w-[85vw] flex-col gap-3 overflow-y-auto pb-5 sm:h-[40vh] sm:w-auto whitespace-nowrap">
+            <ul className="flex w-[85vw] flex-col gap-3 overflow-y-auto pb-5 sm:w-auto whitespace-nowrap">
                 <SkeletonList />
             </ul>
         );
@@ -72,7 +72,7 @@ const MileageList = () => {
 
     {
         return (
-            <ul className="flex w-[85vw] flex-col gap-3 overflow-y-auto pb-5 sm:h-[40vh] sm:w-auto whitespace-nowrap">
+            <ul className="flex w-[85vw] flex-col gap-3 overflow-y-auto pb-5 sm:w-auto whitespace-nowrap">
                 {data.pages.map((page, pageIndex) => (
                     // React는 fragment key를 지원하므로 key를 여기에 둡니다.
                     <Fragment key={pageIndex}>

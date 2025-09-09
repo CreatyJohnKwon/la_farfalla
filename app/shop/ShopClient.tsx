@@ -128,64 +128,62 @@
          ); 
      } 
 
-     return ( 
-         <div className="h-full w-full"> 
-             <main className="flex h-full w-full flex-col"> 
-                 <div 
-                     className="h-full w-full overflow-y-auto" 
-                     onScroll={handleProductListScroll} 
-                 > 
-                     <div className="flex min-h-full flex-col items-center justify-center"> 
-                         <SearchButton 
-                             products={searchableProducts} 
-                             onSearch={handleRealTimeSearch} 
-                         /> 
+    return (
+    <div className="flex w-full min-h-full flex-col">
+        <main className="flex w-full flex-col flex-grow">
+            <div 
+                className="w-full" 
+            >
+                <div className="flex flex-col items-center">
+                    <SearchButton
+                        products={searchableProducts}
+                        onSearch={handleRealTimeSearch}
+                    />
 
-                         {/* No search results message */} 
-                         {isEmptyResults ? ( 
-                            <div className="flex flex-col text-center h-full text-gray-900 font-pretendard items-center justify-center mt-[25vh]"> 
-                                <div className="mb-4"> 
-                                    <svg 
-                                        className="mx-auto h-16 w-16 text-gray-400" 
-                                        fill="none" 
-                                        stroke="currentColor" 
-                                        viewBox="0 0 24 24" 
-                                    > 
-                                        <path 
-                                            strokeLinecap="round" 
-                                            strokeLinejoin="round" 
-                                            strokeWidth={1.5} 
-                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
-                                        /> 
-                                    </svg> 
-                                </div> 
-                                <h3 className="mb-2 text-lg font-medium text-gray-700"> 
-                                    검색 결과가 없습니다 
-                                </h3> 
-                                <p className="mb-4 text-gray-500"> 
-                                    '{searchQuery}'에 대한 상품을 찾을 수 
-                                    없습니다. 
-                                </p> 
-                            </div> 
-                         ) : ( 
-                            <div> 
-                                {/* Product grid */} 
-                                <ul className="mt-4 grid w-[90vw] md:w-[85vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3"> 
-                                    {displayProducts.map((item, index) => ( 
-                                        <ProductsList 
-                                            key={`${item._id}-${isSearchMode ? "search" : section}-${index}`} 
-                                            product={item} 
-                                            index={index} 
-                                        /> 
-                                    ))} 
-                                </ul> 
-                            </div> 
-                         )} 
-                     </div> 
-                 </div> 
-             </main> 
-         </div> 
-     ); 
+                    {isEmptyResults ? (
+                        <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[30vh]">
+                            <div className="mb-4">
+                                <svg
+                                    className="mx-auto h-16 w-16 text-gray-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={1.5}
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                    />
+                                </svg>
+                            </div>
+                            <h3 className="mb-2 text-lg font-medium text-gray-700">
+                                검색 결과가 없습니다
+                            </h3>
+                            <p className="mb-4 text-gray-500">
+                                '{searchQuery}'에 대한 상품을 찾을 수
+                                없습니다.
+                            </p>
+                        </div>
+                    ) : (
+                        <div>
+                            {/* Product grid */}
+                            <ul className="mt-4 grid w-[90vw] md:w-[85vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3">
+                                {displayProducts.map((item, index) => (
+                                    <ProductsList
+                                        key={`${item._id}-${isSearchMode ? "search" : section}-${index}`}
+                                        product={item}
+                                        index={index}
+                                    />
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </main>
+    </div>
+);
  } 
 
  export default ShopClient;

@@ -959,7 +959,7 @@ import { Product } from "@/src/components/product/interface";
                                     {[...Array(3)].map((_, index) => (
                                         <div
                                             key={`mobile-skeleton-${index}`}
-                                            className="animate-pulse rounded-lg border border-gray-200 bg-white p-4"
+                                            className="animate-fade-in rounded-lg border border-gray-200 bg-white p-4"
                                         >
                                             <div className="flex gap-3">
                                                 <div className="h-20 w-20 rounded-md bg-gray-200" />
@@ -987,7 +987,7 @@ import { Product } from "@/src/components/product/interface";
                                     {[...Array(3)].map((_, index) => (
                                         <tr
                                             key={`desktop-skeleton-${index}`}
-                                            className="animate-pulse border-b"
+                                            className="animate-fade-in border-b"
                                         >
                                             <td className="px-4 py-3">
                                                 <div className="h-20 w-20 rounded-md bg-gray-200" />

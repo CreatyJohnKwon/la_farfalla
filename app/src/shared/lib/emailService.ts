@@ -65,362 +65,391 @@ export class EmailService {
         ready: "상품 준비 중",
         shipped: "출고",
         confirm: "구매 확정",
-        cancel: "주문 취소 (교환/환불)",
+        cancel: "주문 취소",
+        return: "반품 요청",
+        exchange: "교환 요청",
     };
     const shippingStatusText = shippingStatusMap[orderData.shippingStatus];
+    const description = orderData.description;
 
     // 상품 목록 HTML 생성 (price가 없는 경우 처리)
     const itemsHtml = orderData.items
         .map(
-            (item: any) => `
-                          <tr style="border-bottom: 1px solid #e5e7eb;">
-                            <td style="padding: 12px 16px; color: #374151;">
-                              <div style="font-weight: 600; margin-bottom: 4px;">${item.name}</div>
-                              ${item.sku ? `<div style="font-size: 12px; color: #6b7280;">SKU: ${item.sku}</div>` : ""}
-                              ${item.description ? `<div style="font-size: 13px; color: #6b7280; margin-top: 2px;">${item.description}</div>` : ""}
-                            </td>
-                            <td style="padding: 12px 16px; text-align: center; color: #374151; font-weight: 500;">
-                              ${item.quantity}개
-                            </td>
-                            <td style="padding: 12px 16px; text-align: right; color: #374151;">
-                              ${item.price ? item.price.toLocaleString() + "원" : "-"}
-                            </td>
-                            <td style="padding: 12px 16px; text-align: right; font-weight: 600; color: #dc2626;">
-                              ${item.price ? (item.quantity * item.price).toLocaleString() + "원" : "-"}
-                            </td>
-                          </tr>
-                        `,
-        )
-        .join("");
+            (item: any) => 
+              `
+                <tr style="border-bottom: 1px solid #e5e7eb;">
+                  <td style="padding: 12px 16px; color: #374151;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">${item.name}</div>
+                    ${item.sku ? `<div style="font-size: 12px; color: #6b7280;">UUID: ${item.sku}</div>` : ""}
+                    ${item.description ? `<div style="font-size: 13px; color: #6b7280; margin-top: 2px;">${item.description}</div>` : ""}
+                  </td>
+                  <td style="padding: 12px 16px; text-align: center; color: #374151; font-weight: 500;">
+                    ${item.quantity}개
+                  </td>
+                  <td style="padding: 12px 16px; text-align: right; color: #374151;">
+                    ${item.price ? item.price.toLocaleString() + "원" : "-"}
+                  </td>
+                  <td style="padding: 12px 16px; text-align: right; font-weight: 600; color: #dc2626;">
+                    ${item.price ? (item.quantity * item.price).toLocaleString() + "원" : "-"}
+                  </td>
+                </tr>
+              `,
+          ).join("");
+
+    const isRequest = ['cancel', 'return', 'exchange'].includes(orderData.shippingStatus);
+    let emailTitle = "새로운 주문 알림";
+    let headerTitle = "🚨 새로운 주문 접수";
+    let headerSubtitle = "즉시 확인이 필요한 주문이 들어왔습니다";
+    let actionText = `새로운 주문이 접수되었습니다.<br><strong style="color: #dc2626;">관리자 페이지에서 즉시 확인하고 처리해주세요.</strong>`;
+    
+    // ✨ '취소/반품/교환' 요청일 경우, 이메일 제목과 내용을 변경합니다.
+    if (isRequest) {
+        emailTitle = `${shippingStatusText} 알림`;
+        headerTitle = `⚠️ ${shippingStatusText} 접수`;
+        headerSubtitle = `고객의 ${shippingStatusText}이 접수되었습니다.`;
+        actionText = `${shippingStatusText}이 접수되었습니다.<br><strong style="color: #dc2626;">관리자 페이지에서 즉시 확인하고 처리해주세요.</strong>`;
+    }
+
+    // ✨ 2. '취소/반품/교환' 요청 시 고객이 작성한 사유를 표시할 HTML 섹션입니다.
+    const descriptionSection = (isRequest && description) ? `
+      <div class="section" style="border-color: #f87171; background-color: #fef2f2;">
+          <div class="section-title" style="color: #b91c1c;">📝 요청 상세 사유</div>
+          <p style="font-size: 14px; color: #4b5563; padding: 8px; line-height: 1.7;">
+              ${description}
+          </p>
+      </div>
+    ` : "";
 
     return `
-          <!DOCTYPE html>
-            <html lang="ko">
-            <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>새로운 주문 알림</title>
-              <style>
-                * { margin: 0; padding: 0; box-sizing: border-box; }
-                body {
-                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
-                  background-color: #f9fafb;
-                  color: #111827;
-                  line-height: 1.6;
-                }
-                .container {
-                  max-width: 600px;
-                  margin: 32px auto;
-                  background: #fff;
-                  border: 1px solid #e5e7eb;
-                  border-radius: 4px;
-                }
-                .header {
-                  background-color: #1f2937;
-                  color: #fff;
-                  padding: 24px 20px;
-                  text-align: center;
-                }
-                .urgent-badge {
-                  display: inline-block;
-                  background-color: #facc15;
-                  color: #78350f;
-                  padding: 4px 12px;
-                  font-size: 12px;
-                  font-weight: 600;
-                  text-transform: uppercase;
-                  margin-bottom: 12px;
-                }
-                .header h1 {
-                  font-size: 20px;
-                  font-weight: 700;
-                  margin-bottom: 6px;
-                }
-                .header p {
-                  font-size: 14px;
-                }
-                .content {
-                  padding: 24px 20px;
-                }
-                .section {
-                  border: 1px solid #e5e7eb;
-                  padding: 16px;
-                  margin-bottom: 24px;
-                  border-radius: 4px;
-                }
-                .section-title {
-                  font-size: 16px;
-                  font-weight: 700;
-                  margin-bottom: 16px;
-                  color: #111827;
-                }
-                .info-grid {
-                  display: grid;
-                  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                  gap: 12px;
-                }
-                .info-item {
-                  display: flex;
-                  align-items: flex-start;
-                  gap: 8px;
-                }
-                .info-label {
-                  font-weight: 600;
-                  color: #6b7280;
-                  font-size: 13px;
-                  min-width: 80px;
-                }
-                .info-value {
-                  font-size: 14px;
-                  font-weight: 500;
-                  color: #111827;
-                }
-                .highlight {
-                  font-weight: 700;
-                  color: #dc2626;
-                }
-                .order-table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-top: 12px;
-                }
-                .order-table th, .order-table td {
-                  padding: 12px;
-                  border: 1px solid #e5e7eb;
-                  font-size: 13px;
-                }
-                .order-table th {
-                  background-color: #f3f4f6;
-                  font-weight: 600;
-                  text-align: left;
-                }
-                .order-table td:nth-child(2),
-                .order-table th:nth-child(2) {
-                  text-align: center;
-                }
-                .order-table td:nth-child(3),
-                .order-table td:nth-child(4),
-                .order-table th:nth-child(3),
-                .order-table th:nth-child(4) {
-                  text-align: right;
-                }
-                .total-section {
-                  text-align: right;
-                  padding: 16px;
-                  background-color: #fefce8;
-                  border: 1px solid #fde68a;
-                  border-radius: 4px;
-                }
-                .total-label {
-                  font-size: 14px;
-                  font-weight: 600;
-                  color: #78350f;
-                  margin-bottom: 4px;
-                }
-                .total-amount {
-                  font-size: 20px;
-                  font-weight: 700;
-                  color: #dc2626;
-                }
-                .action-section {
-                  padding: 20px;
-                  text-align: center;
-                  border: 1px solid #e5e7eb;
-                  background-color: #f9fafb;
-                  border-radius: 4px;
-                }
-                .action-section p {
-                  font-size: 14px;
-                  color: #374151;
-                  margin: 12px 0;
-                }
-                .action-button {
-                  display: inline-block;
-                  background-color: #1f2937;
-                  color: #fff;
-                  padding: 10px 20px;
-                  font-weight: 600;
-                  font-size: 14px;
-                  text-decoration: none;
-                  border-radius: 4px;
-                }
-                .footer {
-                  background-color: #f3f4f6;
-                  color: #6b7280;
-                  font-size: 12px;
-                  text-align: center;
-                  padding: 16px;
-                  border-top: 1px solid #e5e7eb;
-                }
-                .status-badge {
-                  display: inline-block;
-                  padding: 2px 8px;
-                  border-radius: 4px;
-                  font-size: 12px;
-                  font-weight: 600;
-                }
-                .status-pending { background-color: #fef3c7; color: #92400e; }
-                .status-confirm { background-color: #d1fae5; color: #065f46; }
-                .status-ready { background-color: #dbeafe; color: #1e40af; }
-                .status-shipped { background-color: #e0e7ff; color: #3730a3; }
-                .status-delivered { background-color: #dcfce7; color: #166534; }
-                .status-cancel { background-color: #fee2e2; color: #991b1b; }
-                @media (max-width: 600px) {
-                  .container { margin: 10px; }
-                  .info-grid { grid-template-columns: 1fr; }
-                  .total-amount { font-size: 18px; }
-                }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <div class="header">
-                  <div class="header-content">
-                    <span class="urgent-badge">긴급 처리 필요</span>
-                    <h1>🚨 새로운 주문 접수</h1>
-                    <p>즉시 확인이 필요한 주문이 들어왔습니다</p>
-                  </div>
+        <!DOCTYPE html>
+          <html lang="ko">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${emailTitle}</title>
+            <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+                background-color: #f9fafb;
+                color: #111827;
+                line-height: 1.6;
+              }
+              .container {
+                max-width: 600px;
+                margin: 32px auto;
+                background: #fff;
+                border: 1px solid #e5e7eb;
+                border-radius: 4px;
+              }
+              .header {
+                background-color: #1f2937;
+                color: #fff;
+                padding: 24px 20px;
+                text-align: center;
+              }
+              .urgent-badge {
+                display: inline-block;
+                background-color: #facc15;
+                color: #78350f;
+                padding: 4px 12px;
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                margin-bottom: 12px;
+              }
+              .header h1 {
+                font-size: 20px;
+                font-weight: 700;
+                margin-bottom: 6px;
+              }
+              .header p {
+                font-size: 14px;
+              }
+              .content {
+                padding: 24px 20px;
+              }
+              .section {
+                border: 1px solid #e5e7eb;
+                padding: 16px;
+                margin-bottom: 24px;
+                border-radius: 4px;
+              }
+              .section-title {
+                font-size: 16px;
+                font-weight: 700;
+                margin-bottom: 16px;
+                color: #111827;
+              }
+              .info-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 12px;
+              }
+              .info-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+              }
+              .info-label {
+                font-weight: 600;
+                color: #6b7280;
+                font-size: 13px;
+                min-width: 80px;
+              }
+              .info-value {
+                font-size: 14px;
+                font-weight: 500;
+                color: #111827;
+              }
+              .highlight {
+                font-weight: 700;
+                color: #dc2626;
+              }
+              .order-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 12px;
+              }
+              .order-table th, .order-table td {
+                padding: 12px;
+                border: 1px solid #e5e7eb;
+                font-size: 13px;
+              }
+              .order-table th {
+                background-color: #f3f4f6;
+                font-weight: 600;
+                text-align: left;
+              }
+              .order-table td:nth-child(2),
+              .order-table th:nth-child(2) {
+                text-align: center;
+              }
+              .order-table td:nth-child(3),
+              .order-table td:nth-child(4),
+              .order-table th:nth-child(3),
+              .order-table th:nth-child(4) {
+                text-align: right;
+              }
+              .total-section {
+                text-align: right;
+                padding: 16px;
+                background-color: #fefce8;
+                border: 1px solid #fde68a;
+                border-radius: 4px;
+              }
+              .total-label {
+                font-size: 14px;
+                font-weight: 600;
+                color: #78350f;
+                margin-bottom: 4px;
+              }
+              .total-amount {
+                font-size: 20px;
+                font-weight: 700;
+                color: #dc2626;
+              }
+              .action-section {
+                padding: 20px;
+                text-align: center;
+                border: 1px solid #e5e7eb;
+                background-color: #f9fafb;
+                border-radius: 4px;
+              }
+              .action-section p {
+                font-size: 14px;
+                color: #374151;
+                margin: 12px 0;
+              }
+              .action-button {
+                display: inline-block;
+                background-color: #1f2937;
+                color: #fff;
+                padding: 10px 20px;
+                font-weight: 600;
+                font-size: 14px;
+                text-decoration: none;
+                border-radius: 4px;
+              }
+              .footer {
+                background-color: #f3f4f6;
+                color: #6b7280;
+                font-size: 12px;
+                text-align: center;
+                padding: 16px;
+                border-top: 1px solid #e5e7eb;
+              }
+              .status-badge {
+                display: inline-block;
+                padding: 2px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: 600;
+              }
+              .status-pending { background-color: #fef3c7; color: #92400e; }
+              .status-confirm { background-color: #d1fae5; color: #065f46; }
+              .status-ready { background-color: #dbeafe; color: #1e40af; }
+              .status-shipped { background-color: #e0e7ff; color: #3730a3; }
+              .status-delivered { background-color: #dcfce7; color: #166534; }
+              .status-cancel, .status-return, .status-exchange { background-color: #fee2e2; color: #991b1b; }
+              @media (max-width: 600px) {
+                .container { margin: 10px; }
+                .info-grid { grid-template-columns: 1fr; }
+                .total-amount { font-size: 18px; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <div class="header-content">
+                  ${isRequest ? '' : '<span class="urgent-badge">긴급 처리 필요</span>'}
+                  <h1>${headerTitle}</h1>
+                  <p>${headerSubtitle}</p>
                 </div>
+              </div>
 
-                <div class="content">
-                  <!-- 주문 기본 정보 -->
-                  <div class="section">
-                    <div class="section-title">📋 주문 정보</div>
-                    <div class="info-grid">
-                      <div class="info-item">
-                        <span class="info-label">주문 ID:</span>
-                        <span class="info-value highlight">${orderData._id || "N/A"}</span>
-                      </div>
-                      <div class="info-item">
-                        <span class="info-label">주문일시:</span>
-                        <span class="info-value">${orderDateTime}</span>
-                      </div>
-                      <div class="info-item">
-                        <span class="info-label">결제방법:</span>
-                        <span class="info-value">${payMethodText}</span>
-                      </div>
-                      <div class="info-item">
-                        <span class="info-label">배송상태:</span>
-                        <span class="info-value">
-                          <span class="status-badge status-${orderData.shippingStatus}">${shippingStatusText}</span>
-                        </span>
-                      </div>
-                      ${
-                          orderData.paymentId
-                              ? `
-                      <div class="info-item">
-                        <span class="info-label">결제 ID:</span>
-                        <span class="info-value">${orderData.paymentId}</span>
-                      </div>
-                      `
-                              : ""
-                      }
-                      ${
-                          orderData.trackingNumber
-                              ? `
-                      <div class="info-item">
-                        <span class="info-label">송장번호:</span>
-                        <span class="info-value">${orderData.trackingNumber}</span>
-                      </div>
-                      `
-                              : ""
-                      }
-                    </div>
-                  </div>
+              <div class="content">
+                ${descriptionSection}
 
-                  <!-- 고객 정보 -->
-                  <div class="section">
-                    <div class="section-title">👤 고객 정보</div>
-                    <div class="info-grid">
-                      <div class="info-item">
-                        <span class="info-label">고객 ID:</span>
-                        <span class="info-value">${orderData.userId}</span>
-                      </div>
-                      <div class="info-item">
-                        <span class="info-label">이름:</span>
-                        <span class="info-value highlight">${orderData.userNm}</span>
-                      </div>
-                      <div class="info-item">
-                        <span class="info-label">연락처:</span>
-                        <span class="info-value">
-                          <a href="tel:${orderData.phoneNumber}" style="color: #2563eb; text-decoration: none;">
-                            ${orderData.phoneNumber}
-                          </a>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 배송 정보 -->
-                  <div class="section">
-                    <div class="section-title">🚚 배송 정보</div>
+                <!-- 주문 기본 정보 -->
+                <div class="section">
+                  <div class="section-title">📋 주문 정보</div>
+                  <div class="info-grid">
                     <div class="info-item">
-                      <span class="info-label">배송지:</span>
-                      <span class="info-value">${fullAddress}</span>
+                      <span class="info-label">주문 ID:</span>
+                      <span class="info-value highlight">${orderData._id || "N/A"}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">주문일시:</span>
+                      <span class="info-value">${orderDateTime}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">결제방법:</span>
+                      <span class="info-value">${payMethodText}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">배송상태:</span>
+                      <span class="info-value">
+                        <span class="status-badge status-${orderData.shippingStatus}">${shippingStatusText}</span>
+                      </span>
                     </div>
                     ${
-                        orderData.deliveryMemo
+                        orderData.paymentId
                             ? `
-                    <div class="info-item" style="margin-top: 12px;">
-                      <span class="info-label">배송메모:</span>
-                      <span class="info-value" style="font-style: italic; color: #6b7280; background-color: #f9fafb; padding: 8px 12px; border-radius: 6px; margin-left: 0;">
-                        "${orderData.deliveryMemo}"
-                      </span>
+                    <div class="info-item">
+                      <span class="info-label">결제 ID:</span>
+                      <span class="info-value">${orderData.paymentId}</span>
+                    </div>
+                    `
+                            : ""
+                    }
+                    ${
+                        orderData.trackingNumber
+                            ? `
+                    <div class="info-item">
+                      <span class="info-label">송장번호:</span>
+                      <span class="info-value">${orderData.trackingNumber}</span>
                     </div>
                     `
                             : ""
                     }
                   </div>
+                </div>
 
-                  <!-- 주문 상품 -->
-                  <div class="section">
-                    <div class="section-title">🛍️ 주문 상품 (총 ${orderData.items.length}개)</div>
-                    <div class="table-container">
-                      <table class="order-table">
-                        <thead>
-                          <tr>
-                            <th>상품 정보</th>
-                            <th>수량</th>
-                            <th>단가</th>
-                            <th>소계</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          ${itemsHtml}
-                        </tbody>
-                      </table>
+                <!-- 고객 정보 -->
+                <div class="section">
+                  <div class="section-title">👤 고객 정보</div>
+                  <div class="info-grid">
+                    <div class="info-item">
+                      <span class="info-label">고객 UUID:</span>
+                      <span class="info-value">${orderData.userId}</span>
                     </div>
-                  </div>
-
-                  <!-- 총 주문금액 -->
-                  <div class="total-section">
-                    <div class="total-label">총 주문금액</div>
-                    <div class="total-amount">${orderData.totalPrice.toLocaleString()}원</div>
-                  </div>
-
-                  <!-- 처리 안내 -->
-                  <div class="action-section">
-                    <div class="section-title" style="justify-content: center; color: #1e40af;">⚡ 처리 안내</div>
-                    <p style="margin: 12px 0; color: #374151; font-size: 16px; line-height: 1.6;">
-                      새로운 주문이 접수되었습니다.<br>
-                      <strong style="color: #dc2626;">관리자 페이지에서 즉시 확인하고 처리해주세요.</strong>
-                    </p>
-                    <a href="https://lafarfalla.kr/admin/list/orders" 
-                      class="action-button">📋 주문 상세보기</a>
+                    <div class="info-item">
+                      <span class="info-label">이름:</span>
+                      <span class="info-value highlight">${orderData.userNm}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">연락처:</span>
+                      <span class="info-value">
+                        <a href="tel:${orderData.phoneNumber}" style="color: #2563eb; text-decoration: none;">
+                          ${orderData.phoneNumber}
+                        </a>
+                      </span>
+                    </div>
+  
                   </div>
                 </div>
 
-                <div class="footer">
-                  <p><strong>라파팔라</strong> | 자동 발송 알림</p>
-                  <p style="margin-top: 8px; font-size: 12px;">
-                    문의사항: cofsl0411@naver.com
+                <!-- 배송 정보 -->
+                <div class="section">
+                  <div class="section-title">🚚 배송 정보</div>
+                  <div class="info-item">
+                    <span class="info-label">배송지:</span>
+                    <span class="info-value">${fullAddress}</span>
+                  </div>
+                  ${
+                      orderData.deliveryMemo
+                          ? `
+                  <div class="info-item" style="margin-top: 12px;">
+                    <span class="info-label">배송메모:</span>
+                    <span class="info-value" style="font-style: italic; color: #6b7280; background-color: #f9fafb; padding: 8px 12px; border-radius: 6px; margin-left: 0;">
+                      "${orderData.deliveryMemo}"
+                    </span>
+                  </div>
+                  `
+                          : ""
+                  }
+                </div>
+
+                <!-- 주문 상품 -->
+                <div class="section">
+                  <div class="section-title">🛍️ 주문 상품 (총 ${orderData.items.length}개)</div>
+                  <div class="table-container">
+                    <table class="order-table">
+                      <thead>
+                        <tr>
+                          <th>상품 정보</th>
+                          <th>수량</th>
+                          <th>단가</th>
+                          <th>소계</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${itemsHtml}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- 총 주문금액 -->
+                <div class="total-section">
+                  <div class="total-label">총 주문금액</div>
+                  <div class="total-amount">${orderData.totalPrice.toLocaleString()}원</div>
+                </div>
+
+                <!-- 처리 안내 -->
+                <div class="action-section">
+                  <div class="section-title" style="justify-content: center; color: #1e40af;">⚡ 처리 안내</div>
+                  <p style="margin: 12px 0; color: #374151; font-size: 16px; line-height: 1.6;">
+                    ${actionText}
                   </p>
+                  <a href="https://lafarfalla.kr/admin/list/orders" 
+                    class="action-button">📋 주문 상세보기</a>
                 </div>
               </div>
-            </body>
-          </html>
-        `;
-  }
+
+              <div class="footer">
+                <p><strong>라파팔라</strong> | 자동 발송 알림</p>
+                <p style="margin-top: 8px; font-size: 12px;">
+                  문의사항: cofsl0411@naver.com
+                </p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
+  };
 
   public async sendEmailAuthNotification(
     email: string,

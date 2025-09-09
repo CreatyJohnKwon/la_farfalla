@@ -1,3 +1,4 @@
+import { OrderData } from "@/src/components/order/interface";
 import { EmailService } from "@/src/shared/lib/emailService";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
         }
 
         // 실제 데이터 구조에 맞춰 안전하게 변환
-        const safeOrderData = {
+        const safeOrderData: OrderData = {
             _id: orderData._id || `temp_${Date.now()}`,
             userId: orderData.userId,
             userNm: orderData.userNm,
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest) {
                 id: item.productId || item.id,
                 name: item.productNm || item.name || item.title || "상품명",
                 quantity: item.quantity || 1,
-                price: item.price || 0, // price가 없으면 0으로 설정
+                price: item.price || 0,
                 description:
                     `${item.color || ""} ${item.size || ""}`.trim() ||
                     item.description,
@@ -59,6 +60,7 @@ export async function POST(request: NextRequest) {
             shippingStatus: orderData.shippingStatus || "pending",
             shippedAt: orderData.shippedAt,
             trackingNumber: orderData.trackingNumber || "",
+            description: orderData.description || ""
         };
 
         // 이메일 서비스 초기화

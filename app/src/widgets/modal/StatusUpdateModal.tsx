@@ -51,7 +51,7 @@ const StatusUpdateModal = ({
     };
 
     const handleCancelUpdate = async () => {
-        if (confirm("정말로 배송을 취소하시겠습니까?")) {
+        if (confirm("정말로 주문수령을 취소하시겠습니까?")) {
             try {
                 await smartUpdateOrder({
                     orderId: orderData?._id,
@@ -89,7 +89,9 @@ const StatusUpdateModal = ({
                     <div className="rounded-md bg-gray-50 p-6 shadow-sm transition">
                         {/* 라디오 버튼 그룹 */}
                         {Object.entries(statusResult).map(([key, label]) => {
-                            if (key === "cancel") {
+                            if (key === "return" || key === "exchange") {
+                                return null;
+                            } else if (key === "cancel") {
                                 return (
                                     <div key={key} className="place-self-end">
                                         <button
