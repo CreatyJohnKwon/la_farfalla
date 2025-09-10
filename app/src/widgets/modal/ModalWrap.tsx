@@ -1,6 +1,6 @@
 "use client";
 
-import { ModalProps } from "@/src/entities/type/interfaces";
+import { ModalProps } from "@src/entities/type/interfaces";
 import { motion } from "framer-motion";
 
 const ModalWrap = ({

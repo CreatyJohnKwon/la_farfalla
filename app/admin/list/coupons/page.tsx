@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState, useMemo } from "react";
-import { ICoupon } from "@/src/entities/type/interfaces";
+import { ICoupon } from "@src/entities/type/interfaces";
 import {
     useGetUserCouponsListQuery,
     useDeleteManageCouponMutation,
@@ -9,10 +9,10 @@ import {
     useUpdateManageCouponMutation,
     useDeleteUserCouponMutation,
     usePostSpecialUserCouponMutation,
-} from "@/src/shared/hooks/react-query/useBenefitQuery";
-import CouponCreateModal from "@/src/widgets/modal/CouponCreateModal";
-import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
-import PersonalCouponDistribution from "@/src/components/coupon/PersonalCouponDistribution";
+} from "@src/shared/hooks/react-query/useBenefitQuery";
+import CouponCreateModal from "@src/widgets/modal/CouponCreateModal";
+import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
+import PersonalCouponDistribution from "@src/components/coupon/PersonalCouponDistribution";
 
 const CouponAdmin = () => {
     const [selectedCoupon, setSelectedCoupon] = useState<ICoupon | null>(null);

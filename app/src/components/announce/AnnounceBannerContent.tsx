@@ -1,4 +1,4 @@
-import { IAnnounceDTO } from "@/src/entities/type/announce";
+import { IAnnounceDTO } from "@src/entities/type/announce";
 
 const AnnounceBannerContent = ({ announce }: { announce: IAnnounceDTO }) => {
     // 헥스 코드 유효성 검사 함수

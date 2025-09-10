@@ -12,8 +12,8 @@ import {
     useGetUserCouponsListQuery,
     useUpdateUserCouponMutation,
 } from "@src/shared/hooks/react-query/useBenefitQuery";
-import { orderAccept } from "@/src/features/order/order";
-import { earnMileage, spendMileage } from "@/src/features/benefit/mileage";
+import { orderAccept } from "@src/features/order/order";
+import { earnMileage, spendMileage } from "@src/features/benefit/mileage";
 import { updateUser } from "../lib/server/user";
 import * as PortOne from "@portone/browser-sdk/v2";
 import { sendMail } from "../lib/server/order";
@@ -21,10 +21,10 @@ import {
     useOrderQuery,
     useUpdateStockMutation,
 } from "./react-query/useOrderQuery";
-import { ProductOption } from "@/src/components/product/interface";
+import { ProductOption } from "@src/components/product/interface";
 import { v4 as uuidv4 } from "uuid";
 import { adminEmails } from "public/data/common";
-import { MileageItem, OrderData } from "@/src/components/order/interface";
+import { MileageItem, OrderData } from "@src/components/order/interface";
 
 const useOrder = () => {
     const { session } = useUser();

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import User from "@/src/entities/models/User";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import User from "@src/entities/models/User";
 import bcrypt from "bcryptjs";
-import { EmailService } from "@/src/shared/lib/emailService";
+import { EmailService } from "@src/shared/lib/emailService";
 
 // 임시 비밀번호 생성 함수 (8자리)
 const generateTempPassword = (length = 8) => {

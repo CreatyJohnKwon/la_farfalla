@@ -1,5 +1,5 @@
-import { OrderData } from "@/src/components/order/interface";
-import { useOneUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
+import { OrderData } from "@src/components/order/interface";
+import { useOneUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 import { motion } from "framer-motion";
 
 const UserInfoModal = ({

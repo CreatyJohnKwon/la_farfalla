@@ -3,11 +3,22 @@ interface MenuItem {
     link: string;
 }
 
-interface Season {
+interface Category {
     _id: string;
-    title: string;
-    year: string;
+    name: string;
+    slug: string;
+    description?: string;
+    displayOrder?: number;
+    createdAt: string;
+    updatedAt: string;
 }
+
+// 카테고리 생성을 위해 API에 보내는 데이터 타입
+// (id, slug, timestamps 등은 서버에서 자동 생성)
+type CreateCategoryData = Omit<Category, '_id' | 'slug' | 'createdAt' | 'updatedAt'>;
+
+// 카테고리 수정을 위해 API에 보내는 데이터 타입
+type UpdateCategoryData = Partial<CreateCategoryData> & { _id: string };
 
 type RegistReqData = FormData | { [key: string]: any };
 
@@ -190,9 +201,11 @@ export type {
     RegistReqData,
     UserProfileData,
     SelectedItem,
-    Season,
+    Category,
     MenuItem,
     AddressModalProps,
     AddressData,
     IDProps,
+    CreateCategoryData,
+    UpdateCategoryData
 };

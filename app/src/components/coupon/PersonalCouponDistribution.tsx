@@ -1,4 +1,4 @@
-import { ICoupon } from "@/src/entities/type/interfaces";
+import { ICoupon } from "@src/entities/type/interfaces";
 import { X, Send, Mail, AlertCircle } from "lucide-react";
 import { useState } from "react";
 

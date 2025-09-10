@@ -1,4 +1,4 @@
-import { CreateAnnounceData, IAnnounceDTO } from "@/src/entities/type/announce";
+import { CreateAnnounceData, IAnnounceDTO } from "@src/entities/type/announce";
 import { baseUrl } from "public/data/common";
 
 // 공지 목록 조회 : ISR 적용

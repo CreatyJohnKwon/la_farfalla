@@ -2,11 +2,11 @@ import { SelectedItem } from "@src/entities/type/interfaces";
 import { Session } from "next-auth";
 import { atomWithStorage } from "jotai/utils";
 import { atom } from "jotai";
-import { Product } from "@/src/components/product/interface";
+import { Product } from "@src/components/product/interface";
 
 export const isLoggedInAtom = atomWithStorage<boolean>("login", false);
 export const sessionAtom = atomWithStorage<Session | null>("session", null);
-export const sectionAtom = atomWithStorage<string>("section", "");
+export const sectionAtom = atom<string>("");
 export const pagesAtom = atom<"o" | "e" | "m" | "c" | string>("");
 export const sidebarAtom = atom<boolean>(false);
 export const cartViewAtom = atom<boolean>(false);
@@ -29,9 +29,9 @@ export const productFormDatasAtom = atom<Product>({
     price: "",
     discount: "",
     image: [],
-    seasonName: "",
     size: [],
     quantity: "",
+    categories: []
 });
 export const resetProductFormAtom = atom(null, (get, set) => {
     set(productFormDatasAtom, { ...INITIAL_PRODUCT_FORM_DATA });
@@ -49,7 +49,7 @@ const INITIAL_PRODUCT_FORM_DATA: Product = {
     price: "",
     discount: "",
     image: [],
-    seasonName: "",
     size: [],
     quantity: "",
+    categories: []
 };

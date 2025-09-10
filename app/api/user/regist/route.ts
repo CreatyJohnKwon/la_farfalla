@@ -2,7 +2,7 @@
 
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
-import { benefitWelcomeCoupon } from "@/src/features/benefit/coupon";
+import { benefitWelcomeCoupon } from "@src/features/benefit/coupon";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 

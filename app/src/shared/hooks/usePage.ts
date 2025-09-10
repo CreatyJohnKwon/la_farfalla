@@ -2,10 +2,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import useCart from "./useCart";
 import useProduct from "./useProduct";
-import { useSeasonQuery } from "./react-query/useSeasonQuery";
 import useUsers from "./useUsers";
 import { adminEmails } from "public/data/common";
-import { aboutMenuItems, adminMenuItems } from "@/src/utils/dataUtils";
+import { aboutMenuItems, adminMenuItems } from "@src/utils/dataUtils";
+import { useCategoriesQuery } from "./react-query/useCategoryQuery";
 
 const usePage = () => {
     const router = useRouter(); // useRouter 초기화
@@ -13,7 +13,7 @@ const usePage = () => {
 
     const [pages, setPages] = useState("");
     const { navStartData, session } = useUsers();
-    const { data: category, isLoading: isCategoryLoad } = useSeasonQuery();
+    const { data: category, isLoading: isCategoryLoad } = useCategoriesQuery();
     const { openSidebar, setOpenSidebar, setSection } = useProduct(); // setSection 가져오기
     const { cartView, setCartView } = useCart();
 
@@ -44,9 +44,9 @@ const usePage = () => {
             }
         },
         ...category.map((list) => ({
-            label: list.title,
+            label: list.name,
             onClick: () => {
-                setSection(list.title);
+                setSection(list.name);
                 router.push("/shop");
             },
         }))

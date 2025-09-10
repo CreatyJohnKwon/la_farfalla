@@ -3,8 +3,8 @@ import {
     Product,
     ProductVariant,
     ImageData,
-} from "@/src/components/product/interface";
-import { Season } from "@/src/entities/type/interfaces";
+} from "@src/components/product/interface";
+import { Category } from "@src/entities/type/interfaces";
 import { SetStateAction } from "jotai";
 import { Dispatch } from "react";
 
@@ -29,7 +29,7 @@ interface SectionProps {
             HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
         >,
     ) => void;
-    season: Season[] | undefined;
+    // category: Category[] | undefined;
     variants: ProductVariant[];
 }
 

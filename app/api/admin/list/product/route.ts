@@ -1,5 +1,5 @@
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import Product from "@/src/entities/models/Product";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import Product from "@src/entities/models/Product";
 import { NextRequest, NextResponse } from "next/server";
 
 // 미사용중

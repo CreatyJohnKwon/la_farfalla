@@ -1,9 +1,9 @@
 // app/api/review/[reviewId]/comment/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
-import { Review } from "@/src/entities/models/Review";
-import { getAuthSession } from "@/src/shared/lib/session";
-import User from "@/src/entities/models/User";
+import { Review } from "@src/entities/models/Review";
+import { getAuthSession } from "@src/shared/lib/session";
+import User from "@src/entities/models/User";
 
 // app/api/review/[reviewId]/comment/route.ts
 export async function POST(

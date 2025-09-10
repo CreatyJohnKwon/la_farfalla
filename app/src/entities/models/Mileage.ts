@@ -10,7 +10,10 @@ const mileageSchema = new Schema(
         relatedOrderId: { type: Types.ObjectId, ref: "Order", default: null },
         createdAt: { type: Date, default: Date.now },
     },
-    { timestamps: true },
+    {
+        timestamps: true,
+        collection: "mileages",
+    },
 );
 
 // ✅ 핵심: 이미 정의된 모델이면 그걸 재사용

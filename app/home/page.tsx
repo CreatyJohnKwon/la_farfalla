@@ -1,8 +1,8 @@
 "use server";
 
-import { IAnnounceDTO } from "@/src/entities/type/announce";
+import { IAnnounceDTO } from "@src/entities/type/announce";
 import HomeClient from "./HomeClient";
-import { getAnnouncesISR } from "@/src/shared/lib/server/announce";
+import { getAnnouncesISR } from "@src/shared/lib/server/announce";
 
 // ISR
 

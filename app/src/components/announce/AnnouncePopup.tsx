@@ -1,4 +1,4 @@
-import { IAnnounceDTO } from "@/src/entities/type/announce";
+import { IAnnounceDTO } from "@src/entities/type/announce";
 import Image from "next/image";
 import { useState } from "react";
 import ImgData from "../../../../public/images/chill.png";

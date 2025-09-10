@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import BackgroundImg from "../../public/images/bg_250905.jpg";
-import AnnounceLayer from "@/src/components/announce/AnnounceLayer";
-import { AnnouncesProps } from "@/src/entities/type/announce";
+import AnnounceLayer from "@src/components/announce/AnnounceLayer";
+import { AnnouncesProps } from "@src/entities/type/announce";
 
 const HomeClient = ({ bannerAnnounce, popupAnnounces }: AnnouncesProps) => {
   useEffect(() => {

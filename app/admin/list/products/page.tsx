@@ -3,34 +3,32 @@
 import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
 import { useState, useMemo } from "react";
-import UpdateProductModal from "@/src/widgets/modal/UpdateProduct/UpdateProductModal";
-import UpdateSeasonModal from "@/src/widgets/modal/UpdateSeasonModal";
+import UpdateProductModal from "@src/widgets/modal/UpdateProduct/UpdateProductModal";
+import UpdateCategoryModal from "@src/widgets/modal/UpdateCategoryModal";
 import Link from "next/link";
-import { Product } from "@/src/components/product/interface";
-    import useProduct from "@/src/shared/hooks/useProduct";
+import { Product } from "@src/components/product/interface";
+import useProduct from "@src/shared/hooks/useProduct";
 
-    type SortOption =
-        | "none"
-        | "latest"
-        | "oldest"
-        | "name_asc"
-        | "name_desc"
-        | "price_asc"
-        | "price_desc";
+type SortOption =
+    | "none"
+    | "latest"
+    | "oldest"
+    | "name_asc"
+    | "name_desc"
+    | "price_asc"
+    | "price_desc";
 
-    const Products = () => {
+const Products = () => {
     const [isOpenUpdateModal, setIsOpenUpdateModal] = useState<boolean>(false);
-    const [isOpenUpdateSeasonModal, setIsOpenUpdateSeasonModal] =
+    const [isOpenUpdateCategoryModal, setIsOpenUpdateCategoryModal] =
         useState<boolean>(false);
     const [onStatus, setOnStatus] = useState<"create" | "update">();
     const [editProduct, setEditProduct] = useState<Product>();
 
     // 필터 상태
-    const [seasonFilter, setSeasonFilter] = useState<string>("all");
+    const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
     const [sortOption, setSortOption] = useState<SortOption>("none");
-    const [stockFilter, setStockFilter] = useState<
-        "all" | "in_stock" | "out_of_stock"
-    >("all");
+    const [stockFilter, setStockFilter] = useState<"all" | "in_stock" | "out_of_stock">("all");
 
     const {
         deleteProduct,
@@ -38,43 +36,37 @@ import { Product } from "@/src/components/product/interface";
         useRefetchProducts,
         products,
         productsLoading,
-        filteredProducts: originalFilteredProducts,
         isFetchingNextPage,
+        returnCategories,
+        returnCategory
     } = useProduct();
 
-    // 고유한 시즌 목록 추출
-    const uniqueSeasons = useMemo(() => {
-        if (!originalFilteredProducts) return [];
-        const seasons = [
-            ...new Set(
-                originalFilteredProducts.map((product) =>
-                    product.seasonName && product.seasonName !== ""
-                        ? product.seasonName
-                        : "All",
-                ),
-            ),
-        ];
-        return seasons.sort();
-    }, [originalFilteredProducts]);
+    const filteredProducts = useMemo(() => {
+        if (!products?.pages) return [];
+        const allProducts = products.pages.flatMap(page => page.data);
+        return allProducts;
+    }, [products]);
+
+    // 고유한 카테고리 목록 추출
+    const uniqueCategory = useMemo(() => {
+        if (!filteredProducts) return [];
+        const allCategories = filteredProducts.flatMap(p => p.categories || []);
+        return [...new Set(allCategories)].sort();
+    }, [filteredProducts]);
 
     // 필터링된 상품 목록
     const filteredAndSortedProducts = useMemo(() => {
-        if (!originalFilteredProducts) return [];
+        if (!filteredProducts) return [];
+        let result = [...filteredProducts];
 
-        let result = [...originalFilteredProducts];
-
-        // 시즌 필터링
-        if (seasonFilter !== "all") {
-            result = result.filter((product) => {
-                const productSeason =
-                    product.seasonName && product.seasonName !== ""
-                        ? product.seasonName
-                        : "All";
-                return productSeason === seasonFilter;
-            });
+        // [수정] 카테고리 필터링: 선택된 카테고리가 하나라도 상품에 포함되면 true
+        if (categoryFilter.length > 0) {
+            result = result.filter((product) =>
+                product.categories.some(cat => categoryFilter.includes(cat))
+            );
         }
 
-        // 재고 필터링
+        // 재고 필터링 (기존 로직 유지)
         if (stockFilter !== "all") {
             if (stockFilter === "in_stock") {
                 result = result.filter((product) => product.quantity !== "0");
@@ -83,31 +75,19 @@ import { Product } from "@/src/components/product/interface";
             }
         }
 
-        // 정렬
+        // 정렬 (기존 로직 유지)
         switch (sortOption) {
             case "latest":
-                result.sort(
-                    (a, b) =>
-                        new Date(b.createdAt || 0).getTime() -
-                        new Date(a.createdAt || 0).getTime(),
-                );
+                result.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
                 break;
             case "oldest":
-                result.sort(
-                    (a, b) =>
-                        new Date(a.createdAt || 0).getTime() -
-                        new Date(b.createdAt || 0).getTime(),
-                );
+                result.sort((a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime());
                 break;
             case "name_asc":
-                result.sort((a, b) =>
-                    a.title.kr.localeCompare(b.title.kr, "ko-KR"),
-                );
+                result.sort((a, b) => a.title.kr.localeCompare(b.title.kr, "ko-KR"));
                 break;
             case "name_desc":
-                result.sort((a, b) =>
-                    b.title.kr.localeCompare(a.title.kr, "ko-KR"),
-                );
+                result.sort((a, b) => b.title.kr.localeCompare(a.title.kr, "ko-KR"));
                 break;
             case "price_asc":
                 result.sort((a, b) => Number(a.price) - Number(b.price));
@@ -116,16 +96,27 @@ import { Product } from "@/src/components/product/interface";
                 result.sort((a, b) => Number(b.price) - Number(a.price));
                 break;
             default:
-                // "none"인 경우 원본 순서 유지
                 break;
         }
 
         return result;
-    }, [originalFilteredProducts, seasonFilter, sortOption, stockFilter]);
+    }, [filteredProducts, categoryFilter, sortOption, stockFilter]);
+
+    const handleCategoryToggle = (categoryId: string) => {
+        setCategoryFilter((prev) => {
+            if (prev.includes(categoryId)) {
+                // 이미 선택된 카테고리면 배열에서 제거
+                return prev.filter((c) => c !== categoryId);
+            } else {
+                // 선택되지 않은 카테고리면 배열에 추가
+                return [...prev, categoryId];
+            }
+        });
+    };
 
     // 필터 초기화
     const resetFilters = () => {
-        setSeasonFilter("all");
+        setCategoryFilter([]);
         setSortOption("none");
         setStockFilter("all");
     };
@@ -168,11 +159,11 @@ import { Product } from "@/src/components/product/interface";
                         <div className="flex gap-2 sm:h-10 sm:gap-3">
                             <button
                                 onClick={() => {
-                                    setIsOpenUpdateSeasonModal(true);
+                                    setIsOpenUpdateCategoryModal(true);
                                 }}
                                 className="flex h-9 min-h-[44px] items-center justify-center whitespace-nowrap rounded border border-gray-300 bg-gray-100 px-3 text-sm text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800 sm:h-auto sm:px-4"
                             >
-                                시즌 관리
+                                카테고리 관리
                             </button>
 
                             <button
@@ -194,22 +185,23 @@ import { Product } from "@/src/components/product/interface";
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:flex lg:items-center lg:gap-4">
                                 <div className="flex items-center gap-2">
                                     <span className="whitespace-nowrap text-sm text-gray-600">
-                                        시즌:
+                                        카테고리:
                                     </span>
-                                    <select
-                                        value={seasonFilter}
-                                        onChange={(e) =>
-                                            setSeasonFilter(e.target.value)
-                                        }
-                                        className="min-h-[44px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[120px]"
-                                    >
-                                        <option value="all">전체 시즌</option>
-                                        {uniqueSeasons.map((season) => (
-                                            <option key={season} value={season}>
-                                                {season}
-                                            </option>
+                                    <div className="flex flex-wrap gap-2">
+                                        {uniqueCategory.map((categoryId) => (
+                                            <button
+                                                key={categoryId}
+                                                onClick={() => handleCategoryToggle(categoryId)}
+                                                className={`min-h-[35px] rounded-md border p-3 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2
+                                                    ${categoryFilter.includes(categoryId)
+                                                        ? "border-blue-600 bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
+                                                        : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-blue-500"
+                                                    }`}
+                                            >
+                                                {returnCategory(categoryId)}
+                                            </button>
                                         ))}
-                                    </select>
+                                    </div>
                                 </div>
 
                                 <div className="flex items-center gap-2">
@@ -223,7 +215,7 @@ import { Product } from "@/src/components/product/interface";
                                                 e.target.value as any,
                                             )
                                         }
-                                        className="min-h-[44px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[120px]"
+                                        className="min-h-[35px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[120px]"
                                     >
                                         <option value="all">전체</option>
                                         <option value="in_stock">
@@ -246,7 +238,7 @@ import { Product } from "@/src/components/product/interface";
                                                 e.target.value as SortOption,
                                             )
                                         }
-                                        className="min-h-[44px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[140px]"
+                                        className="min-h-[35px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[140px]"
                                     >
                                         <option value="none">기본 순서</option>
                                         <option value="latest">
@@ -270,7 +262,7 @@ import { Product } from "@/src/components/product/interface";
                                     </select>
                                 </div>
 
-                                {(seasonFilter !== "all" ||
+                                {(categoryFilter.length > 0 ||
                                     sortOption !== "none" ||
                                     stockFilter !== "all") && (
                                     <button
@@ -287,38 +279,34 @@ import { Product } from "@/src/components/product/interface";
                                         {filteredAndSortedProducts.length}
                                     </span>
                                     개 상품
-                                    {originalFilteredProducts &&
+                                    {filteredProducts &&
                                         filteredAndSortedProducts.length !==
-                                            originalFilteredProducts.length && (
+                                            filteredProducts.length && (
                                             <span className="ml-1 text-gray-500">
                                                 (전체{" "}
-                                                {originalFilteredProducts.length}개
+                                                {filteredProducts.length}개
                                                 중)
                                             </span>
                                         )}
                                 </div>
                             </div>
-
-                            {/* 결과 정보 */}
-
+                            
                             {/* 활성 필터 태그 */}
-                            {(seasonFilter !== "all" ||
+                            {(categoryFilter.length > 0 ||
                                 sortOption !== "none" ||
                                 stockFilter !== "all") && (
                                 <div className="flex flex-wrap gap-2">
-                                    {seasonFilter !== "all" && (
-                                        <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
-                                            시즌: {seasonFilter}
+                                    {categoryFilter.map((catId) => (
+                                        <span key={catId} className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
+                                            카테고리: {returnCategory(catId)}
                                             <button
-                                                onClick={() =>
-                                                    setSeasonFilter("all")
-                                                }
+                                                onClick={() => handleCategoryToggle(catId)}
                                                 className="ml-1 hover:text-blue-600"
                                             >
                                                 ×
                                             </button>
                                         </span>
-                                    )}
+                                    ))}
                                     {stockFilter !== "all" && (
                                         <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
                                             재고:{" "}
@@ -403,7 +391,7 @@ import { Product } from "@/src/components/product/interface";
                                         </div>
                                     </th>
                                     <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
-                                        시즌
+                                        카테고리
                                     </th>
                                     <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
                                         <div className="flex items-center gap-1 whitespace-nowrap">
@@ -494,16 +482,16 @@ import { Product } from "@/src/components/product/interface";
                                             </td>
                                             <td className="px-4 py-3 text-xs sm:text-sm">
                                                 <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800">
-                                                    {product.seasonName !== ""
-                                                        ? product.seasonName
-                                                        : "All"}
+                                                    {product.categories && product.categories.length > 0
+                                                        ? returnCategories(product.categories).join(",\t")
+                                                            : "All"}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3 text-xs font-medium text-gray-900 sm:text-sm">
                                                 {`${Number(product.price).toLocaleString()}원`}
                                             </td>
                                             <td className="px-4 py-3 text-xs font-medium text-gray-900 sm:text-sm">
-                                                {`${Number(product.averageRating)}/5`}
+                                                {`${product.averageRating ? Number(product.averageRating) : 0}/5`}
                                             </td>
                                             <td className="px-4 py-3 text-xs sm:text-sm">
                                                 {Number(product.discount) >
@@ -759,13 +747,12 @@ import { Product } from "@/src/components/product/interface";
                                                     )}
                                                 </div>
 
-                                                {/* 시즌 및 재고 */}
+                                                {/* 카테고리 및 재고 */}
                                                 <div className="mb-2 flex items-center gap-2">
                                                     <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800">
-                                                        {product.seasonName !==
-                                                        ""
-                                                            ? product.seasonName
-                                                            : "All"}
+                                                        {product.categories && product.categories.length > 0
+                                                            ? product.categories.join(", ")
+                                                                : "All"}
                                                     </span>
                                                     {product.quantity ===
                                                     "0" ? (
@@ -1023,14 +1010,14 @@ import { Product } from "@/src/components/product/interface";
                             />
                         </svg>
                         <h3 className="mt-2 text-sm font-medium text-gray-900">
-                            {seasonFilter !== "all" ||
+                            {categoryFilter.length > 0 ||
                             sortOption !== "none" ||
                             stockFilter !== "all"
                                 ? "필터 조건에 맞는 상품이 없습니다"
                                 : "상품이 없습니다"}
                         </h3>
                         <p className="mt-1 text-sm text-gray-500">
-                            {seasonFilter !== "all" ||
+                            {categoryFilter.length > 0 ||
                             sortOption !== "none" ||
                             stockFilter !== "all"
                                 ? "다른 필터 조건을 시도해보세요."
@@ -1048,9 +1035,9 @@ import { Product } from "@/src/components/product/interface";
                     mode={onStatus}
                 />
             )}
-            {isOpenUpdateSeasonModal && (
-                <UpdateSeasonModal
-                    onClose={() => setIsOpenUpdateSeasonModal(false)}
+            {isOpenUpdateCategoryModal && (
+                <UpdateCategoryModal
+                    onClose={() => setIsOpenUpdateCategoryModal(false)}
                 />
             )}
         </div>

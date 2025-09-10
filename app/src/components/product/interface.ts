@@ -6,8 +6,8 @@ interface Product {
     price: string;
     discount: string;
     image: string[];
-    seasonName: string;
-    size: Array<string>;
+    categories: string[];
+    size: string[];
     quantity: string;
     options?: ProductOption[];
     createdAt?: Date;

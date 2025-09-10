@@ -9,7 +9,7 @@ import { RiKakaoTalkFill } from "react-icons/ri";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import FindPasswordModal from "@/src/widgets/modal/FindPasswordModal";
+import FindPasswordModal from "@src/widgets/modal/FindPasswordModal";
 
 const LoginClient = () => {
     const [pwdVisible, setPwdVisible] = useState<boolean>(false);

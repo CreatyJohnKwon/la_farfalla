@@ -1,4 +1,4 @@
-import { Product } from "@/src/components/product/interface";
+import { Product } from "@src/components/product/interface";
 
 const getProductList = async (page = 1, limit = 9) => {
     const res = await fetch(`/api/product?page=${page}&limit=${limit}`);

@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation"; 
 import useProduct from "@src/shared/hooks/useProduct";
-import usePage from "@/src/shared/hooks/usePage";
+import usePage from "@src/shared/hooks/usePage";
 
 // MenuItem 인터페이스를 확장하여 path를 옵셔널로 만들고,
 // onClick 콜백 함수를 추가합니다.
@@ -30,7 +29,7 @@ const DropdownMenu = ({
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
-    const clickClasses = `${open ? "max-h-40 opacity-100 visible" : "max-h-0 opacity-0 invisible"}`;
+    const clickClasses = `${open ? "sm:max-h-40 opacity-100 visible" : "sm:max-h-0 opacity-0 invisible"}`;
     const hoverClasses = "group-hover:max-h-40 group-hover:opacity-100 group-hover:visible max-h-0 opacity-0 invisible";
 
     useEffect(() => {
@@ -47,9 +46,7 @@ const DropdownMenu = ({
     useEffect(() => {
         if (triggerType === "click") {
             const handleClickOutside = (event: MouseEvent) => {
-                if (ref.current && !ref.current.contains(event.target as Node)) {
-                    setOpen(false);
-                }
+                if (ref.current && !ref.current.contains(event.target as Node)) setOpen(false);
             };
             document.addEventListener("mousedown", handleClickOutside);
             return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -78,14 +75,10 @@ const DropdownMenu = ({
                         <button
                             onClick={() => {
                                 // 1. item에 onClick 핸들러가 있으면 그것을 실행합니다.
-                                if (item.onClick) {
-                                    item.onClick();
-                                } 
+                                if (item.onClick) item.onClick();
                                 // 2. 없으면 기존처럼 path로 라우팅합니다.
-                                else if (item.path) {
-                                    router.push(item.path);
-                                }
-                                
+                                else if (item.path) router.push(item.path);
+
                                 // 공통 로직은 항상 실행됩니다.
                                 setOpenSidebar(false);
                                 if (triggerType === "click") setOpen(false);

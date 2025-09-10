@@ -1,6 +1,6 @@
-import { OrderData, ShippingStatus } from "@/src/components/order/interface";
-import { useSmartUpdateOrderMutation } from "@/src/shared/hooks/react-query/useOrderQuery";
-import useOrderList from "@/src/shared/hooks/useOrderList";
+import { OrderData, ShippingStatus } from "@src/components/order/interface";
+import { useSmartUpdateOrderMutation } from "@src/shared/hooks/react-query/useOrderQuery";
+import useOrderList from "@src/shared/hooks/useOrderList";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 

@@ -11,7 +11,7 @@ import {
     postReviewComment,
     getReviewComments,
     checkReviewPermission,
-} from "@/src/shared/lib/server/review";
+} from "@src/shared/lib/server/review";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useUsers from "../useUsers";
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import AnnounceBannerContent from "./AnnounceBannerContent";
-import { IAnnounceDTO } from "@/src/entities/type/announce";
+import { IAnnounceDTO } from "@src/entities/type/announce";
 import AnnouncePopup from "./AnnouncePopup";
 
 interface AnnounceLayerProps {

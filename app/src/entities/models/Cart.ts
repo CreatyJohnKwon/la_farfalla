@@ -18,7 +18,7 @@ const cartSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
-        collection: "cart",
+        collection: "carts",
     },
 );
 

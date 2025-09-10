@@ -1,4 +1,4 @@
-import { FormContentProps } from "@/src/entities/type/announce";
+import { FormContentProps } from "@src/entities/type/announce";
 import { memo } from "react";
 
 const FormContent = memo(

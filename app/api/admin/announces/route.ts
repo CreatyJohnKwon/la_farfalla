@@ -1,5 +1,5 @@
-import { AnnounceModel } from "@/src/entities/models/Announce";
-import { connectDB } from "@/src/entities/models/db/mongoose";
+import { AnnounceModel } from "@src/entities/models/Announce";
+import { connectDB } from "@src/entities/models/db/mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 // MongoDB Document를 평문 객체로 변환하는 헬퍼 함수

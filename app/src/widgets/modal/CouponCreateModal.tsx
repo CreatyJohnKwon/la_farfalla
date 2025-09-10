@@ -1,4 +1,4 @@
-import { usePostManageCouponMutation } from "@/src/shared/hooks/react-query/useBenefitQuery";
+import { usePostManageCouponMutation } from "@src/shared/hooks/react-query/useBenefitQuery";
 import { useState } from "react";
 
 interface CouponCreateModalProps {

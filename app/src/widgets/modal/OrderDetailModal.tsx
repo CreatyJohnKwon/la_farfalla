@@ -2,8 +2,8 @@ import {
     useOrderQuery,
     useSmartUpdateOrderMutation,
     useUpdateAddressOrder,
-} from "@/src/shared/hooks/react-query/useOrderQuery";
-import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
+} from "@src/shared/hooks/react-query/useOrderQuery";
+import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 import { CheckCircle, XCircle } from "lucide-react";
 import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
@@ -11,11 +11,11 @@ import { useState } from "react";
 import CancelOrderModal from "./CancelOrderModal";
 import DeliveryChangeModal from "./DeliveryChangeModal";
 import SpecialReviewModal from "./SpecialReviewModal";
-import { specialReviewItem } from "@/src/components/product/interface";
-import { OrderData, ShippingStatus } from "@/src/components/order/interface";
-import useOrder from "@/src/shared/hooks/useOrder";
-import { sendMail } from "@/src/shared/lib/server/order";
-import { spendMileage } from '@/src/features/benefit/mileage';
+import { specialReviewItem } from "@src/components/product/interface";
+import { OrderData, ShippingStatus } from "@src/components/order/interface";
+import useOrder from "@src/shared/hooks/useOrder";
+import { sendMail } from "@src/shared/lib/server/order";
+import { spendMileage } from '@src/features/benefit/mileage';
 
 // 주문 상세 모달 컴포넌트
 const OrderDetailModal = ({
@@ -583,12 +583,9 @@ const OrderDetailModal = ({
                             <span className="font-pretendard text-base font-semibold text-gray-900">
                                 배송지 정보
                             </span>
-                            {order.shippingStatus === "confirm" ||
-                                order.shippingStatus === "shipped" ||
-                                order.shippingStatus === "cancel" ? 
+                            {order.shippingStatus === "ready" ||
+                                order.shippingStatus === "pending" ? 
                             (
-                                <></>
-                            ) : (
                                 <span
                                     className="cursor-pointer font-pretendard text-xs font-[500] text-gray-500 underline hover:text-gray-900"
                                     onClick={() =>
@@ -597,6 +594,8 @@ const OrderDetailModal = ({
                                 >
                                     배송지 변경하기
                                 </span>
+                            ) : (
+                                <></>
                             )}
                         </div>
                         <div className="space-y-2 rounded-md bg-gray-50 p-3">

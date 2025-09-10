@@ -1,6 +1,6 @@
-import { connectDB } from "@/src/entities/models/db/mongoose";
+import { connectDB } from "@src/entities/models/db/mongoose";
 import { NextRequest, NextResponse } from "next/server";
-import Product from "@/src/entities/models/Product";
+import Product from "@src/entities/models/Product";
 import { Types } from "mongoose";
 
 class ObjectIdUtils {

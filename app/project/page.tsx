@@ -1,7 +1,7 @@
 "use client";
 
 import chillImg from "../../public/images/chill.png"; // 첫 번째 이미지 경로
-import ProjectLink from "@/src/components/project/ProjectLink";
+import ProjectLink from "@src/components/project/ProjectLink";
 
 const page = () => {
     return (

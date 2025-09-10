@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef, Ref } from "react";
-import ProductInfo from "../../src/components/product/ProductInfo";
-import Slider from "@/src/components/product/Slider";
-import { useProductQuery } from "@/src/shared/hooks/react-query/useProductQuery";
-import { useIntersectionObserver } from "@/src/shared/hooks/useIntersectionObserver";
-import DescriptionImage from "@/src/components/product/DescriptionImage";
-import ReviewSystem from "@/src/components/review/ReviewSystem";
-import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
-import { useGetReviewsListQuery } from "@/src/shared/hooks/react-query/useReviewQuery";
+import ProductInfo from "@src/components/product/ProductInfo";
+import Slider from "@src/components/product/Slider";
+import { useProductQuery } from "@src/shared/hooks/react-query/useProductQuery";
+import { useIntersectionObserver } from "@src/shared/hooks/useIntersectionObserver";
+import DescriptionImage from "@src/components/product/DescriptionImage";
+import ReviewSystem from "@src/components/review/ReviewSystem";
+import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
+import { useGetReviewsListQuery } from "@src/shared/hooks/react-query/useReviewQuery";
 
 const ProductClient = ({ id }: { id: string }) => {
     const {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Coupon } from "@src/entities/models/Coupon";
-import { UserCoupon } from "@/src/entities/models/UserCoupon";
-import { connectDB } from "@/src/entities/models/db/mongoose";
+import { UserCoupon } from "@src/entities/models/UserCoupon";
+import { connectDB } from "@src/entities/models/db/mongoose";
 
 export async function GET(req: NextRequest) {
     try {

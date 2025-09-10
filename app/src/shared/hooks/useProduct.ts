@@ -6,7 +6,9 @@ import {
     sidebarAtom,
 } from "@src/shared/lib/atom";
 import { useDeleteProductMutation, useProductListQuery } from "./react-query/useProductQuery";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
+import { useCategoriesQuery } from "./react-query/useCategoryQuery";
+import { Category } from "@/src/entities/type/interfaces";
 
 const useProduct = () => {
     const [section, setSection] = useAtom(sectionAtom);
@@ -23,16 +25,35 @@ const useProduct = () => {
         hasNextPage,
         isFetchingNextPage,
     } = useProductListQuery(9);
+    const { data: category, isLoading: categoryLoading, error: categoryError } = useCategoriesQuery();
+
+    const returnCategories = (categoryIds?: string[]): string[] => {
+        if (!category || !categoryIds) return [];
+
+        return category
+            .filter(cat => categoryIds.includes(cat._id))
+            .map(cat => cat.name);
+    };
+
+    const returnCategory = (categoryId?: string): string => {
+        if (!category || !categoryId) return "";
+
+        const foundCategory = category.find(cat => cat._id === categoryId);
+
+        return foundCategory?.name ?? "";
+    };
+
+    // 의존성을 나누어 메모이제이션 다중 콜링 오류를 제거
+    const allProducts = useMemo(() => {
+        return products?.pages?.flatMap(page => page.data) ?? [];
+    }, [products?.pages]);
 
     // product list data memoization
     const filteredProducts = useMemo(() => {
-        if (!products?.pages) return [];
-
-        // pages 안에 있는 모든 data 배열을 펼쳐서 하나로 만듦
-        const allProducts = products.pages.flatMap(page => page.data);
-
-        return allProducts.filter(item => section === "" || item.seasonName === section);
-    }, [products, section]);
+        if (section === "") return allProducts;
+        
+        return allProducts.filter(item => returnCategories(item.categories).includes(section));
+    }, [allProducts, section]);
 
     const handleProductListScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
@@ -71,7 +92,14 @@ const useProduct = () => {
 
         // 페이징 관련
         useRefetchProducts,
-        filteredProducts
+        filteredProducts,
+
+        // 카테고리
+        category,
+        categoryLoading,
+        categoryError,
+        returnCategories,
+        returnCategory
     };
 };
 

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import { AddressUpdateRequest } from "@/src/entities/type/order";
-import { Order } from "@/src/entities/models/Order";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import { AddressUpdateRequest } from "@src/entities/type/order";
+import { Order } from "@src/entities/models/Order";
 
 // 배송지 변경 PATCH API
 export async function PATCH(request: NextRequest) {

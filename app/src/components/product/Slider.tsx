@@ -98,22 +98,7 @@ const Slider = ({ images }: { images: string[] }) => {
                             );
                         })}
                     </motion.div>
-
-                    {/* 인디케이터: indicator */}
-                    <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 gap-2">
-                        {images.map((_, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => slideTo(idx)}
-                                className={`h-2 w-2 rounded-full ${
-                                    current === idx
-                                        ? "scale-125 bg-white"
-                                        : "bg-gray-400"
-                                } transition`}
-                            />
-                        ))}
-                    </div>
-
+                    
                     {/* 모던한 큰 화살표 버튼 */}
                     <button
                         onClick={() =>
@@ -155,6 +140,22 @@ const Slider = ({ images }: { images: string[] }) => {
                             />
                         </svg>
                     </button>
+
+                    {/* 인디케이터: indicator */}
+                    <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 gap-2">
+                        {images.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => slideTo(idx)}
+                                className={`h-2 w-2 rounded-full ${
+                                    current === idx
+                                        ? "scale-125 bg-white"
+                                        : "bg-gray-400"
+                                } transition`}
+                            />
+                        ))}
+                    </div>
+
                 </div>
             </div>
         </div>

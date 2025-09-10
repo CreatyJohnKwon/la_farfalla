@@ -1,4 +1,4 @@
-import { Product } from "@/src/components/product/interface";
+import { Product } from "@src/components/product/interface";
 
 const ProductTitle = ({
     formData,

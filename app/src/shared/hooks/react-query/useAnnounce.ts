@@ -3,7 +3,7 @@ import {
     IAnnounceDTO,
     MutationContext,
     UpdateAnnounceParams,
-} from "@/src/entities/type/announce";
+} from "@src/entities/type/announce";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     createAnnounce,

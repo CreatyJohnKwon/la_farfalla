@@ -1,5 +1,5 @@
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import User from "@/src/entities/models/User";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import User from "@src/entities/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

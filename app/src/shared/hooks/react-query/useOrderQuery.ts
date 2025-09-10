@@ -8,9 +8,9 @@ import {
 } from "../../lib/server/order";
 import { useSetAtom } from "jotai";
 import { resetProductFormAtom } from "../../lib/atom";
-import { ProductOption } from "@/src/components/product/interface";
-import { AddressUpdateInput } from "@/src/entities/type/order";
-import { OrderData, OrderUpdateInput } from "@/src/components/order/interface";
+import { ProductOption } from "@src/components/product/interface";
+import { AddressUpdateInput } from "@src/entities/type/order";
+import { OrderData, OrderUpdateInput } from "@src/components/order/interface";
 import { adminEmails } from "public/data/common";
 import useUsers from "../useUsers";
 

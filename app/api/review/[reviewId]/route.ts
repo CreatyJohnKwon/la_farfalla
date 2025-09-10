@@ -2,9 +2,9 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
-import { getAuthSession } from "@/src/shared/lib/session";
-import User from "@/src/entities/models/User";
-import { Review } from "@/src/entities/models/Review";
+import { getAuthSession } from "@src/shared/lib/session";
+import User from "@src/entities/models/User";
+import { Review } from "@src/entities/models/Review";
 
 // PUT - 리뷰 수정 (이미지 포함)
 export async function PUT(

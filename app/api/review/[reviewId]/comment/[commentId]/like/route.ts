@@ -1,9 +1,9 @@
 // app/api/review/[reviewId]/comment/[commentId]/like/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
-import { getAuthSession } from "@/src/shared/lib/session";
-import { Review } from "@/src/entities/models/Review";
-import User from "@/src/entities/models/User";
+import { getAuthSession } from "@src/shared/lib/session";
+import { Review } from "@src/entities/models/Review";
+import User from "@src/entities/models/User";
 
 interface RouteParams {
     params: Promise<{ reviewId: string; commentId: string }>;

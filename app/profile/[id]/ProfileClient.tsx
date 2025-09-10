@@ -1,8 +1,8 @@
 "use client";
 
 import ProfileNavbar from "@src/widgets/navbar/ProfileNav";
-import EditProfile from "@/src/components/profile/EditProfile";
-import ProfileInfo from "@/src/components/profile/ProfileInfo";
+import EditProfile from "@src/components/profile/EditProfile";
+import ProfileInfo from "@src/components/profile/ProfileInfo";
 import CouponList from "@src/components/coupon/CouponList";
 import MileageList from "@src/components/mileage/MileageList";
 import OrderList from "@src/components/order/OrderList";

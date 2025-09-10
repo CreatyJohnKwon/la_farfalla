@@ -1,6 +1,6 @@
 "use client";
 
-import { AddressModalProps } from "@/src/entities/type/interfaces";
+import { AddressModalProps } from "@src/entities/type/interfaces";
 import { useEffect, useRef } from "react";
 
 declare global {

@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
 import { isValidObjectId } from "mongoose";
-import { UserCoupon } from "@/src/entities/models/UserCoupon";
-import { Review } from "@/src/entities/models/Review";
-import { Order } from "@/src/entities/models/Order";
-import { Cart } from "@/src/entities/models/Cart";
+import { UserCoupon } from "@src/entities/models/UserCoupon";
+import { Review } from "@src/entities/models/Review";
+import { Order } from "@src/entities/models/Order";
+import { Cart } from "@src/entities/models/Cart";
 
 export async function GET(req: NextRequest) {
     const userId = req.nextUrl.searchParams.get("userId");

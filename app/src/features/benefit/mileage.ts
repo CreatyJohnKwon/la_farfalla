@@ -1,8 +1,8 @@
 "use server";
 
-import { MileageItem } from "@/src/components/order/interface";
-import { Mileage } from "@/src/entities/models/Mileage";
-import User from "@/src/entities/models/User";
+import { MileageItem } from "@src/components/order/interface";
+import { Mileage } from "@src/entities/models/Mileage";
+import User from "@src/entities/models/User";
 import mongoose from "mongoose";
 
 // 상품 구매시에 들어올 마일리지 정보

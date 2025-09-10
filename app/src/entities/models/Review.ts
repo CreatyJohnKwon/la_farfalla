@@ -1,5 +1,5 @@
 // src/entities/models/Review.ts
-import { IReviewDocument } from "@/src/components/review/interface";
+import { IReviewDocument } from "@src/components/review/interface";
 import { randomBytes } from "crypto";
 import { Schema, model, models } from "mongoose";
 

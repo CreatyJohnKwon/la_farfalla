@@ -5,7 +5,7 @@ import Image from "next/image";
 import { memo } from "react";
 import DefaultImage from "../../../../public/images/chill.png";
 import { priceResult, priceDiscount } from "@src/features/calculate";
-import { useOptimizedImage } from "@/src/shared/hooks/useOptimizedImage";
+import { useOptimizedImage } from "@src/shared/hooks/useOptimizedImage";
 import LoadingSpinner from "../../widgets/spinner/LoadingSpinner";
 import { ProductsListProps } from "./interface";
 

@@ -3,7 +3,7 @@
 import {
     DropdownItem,
     ProductDropProps,
-} from "@/src/components/product/interface";
+} from "@src/components/product/interface";
 import { useState, useEffect, useRef } from "react";
 import { IoChevronDown } from "react-icons/io5";
 

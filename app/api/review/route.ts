@@ -1,12 +1,12 @@
 // app/api/review/route.ts (요청자 권한별 이메일 표시 버전)
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
-import { getAuthSession } from "@/src/shared/lib/session";
-import User from "@/src/entities/models/User";
-import { Review } from "@/src/entities/models/Review";
-import { UserProfileData } from "@/src/entities/type/interfaces";
+import { getAuthSession } from "@src/shared/lib/session";
+import User from "@src/entities/models/User";
+import { Review } from "@src/entities/models/Review";
+import { UserProfileData } from "@src/entities/type/interfaces";
 import { adminEmails } from "public/data/common";
-import Product from "@/src/entities/models/Product";
+import Product from "@src/entities/models/Product";
 
 // 🆕 요청자 권한에 따른 이메일 표시 함수
 const getEmailDisplay = (

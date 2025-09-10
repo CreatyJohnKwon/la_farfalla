@@ -1,4 +1,4 @@
-import { OrderData } from '@/src/components/order/interface';
+import { OrderData } from '@src/components/order/interface';
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 

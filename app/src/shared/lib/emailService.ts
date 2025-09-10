@@ -1,4 +1,4 @@
-import { EmailResult, OrderData, ShippingStatus } from "@/src/components/order/interface";
+import { EmailResult, OrderData, ShippingStatus } from "@src/components/order/interface";
 import nodemailer, { Transporter } from "nodemailer";
 
 export class EmailService {

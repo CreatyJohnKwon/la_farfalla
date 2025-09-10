@@ -1,11 +1,11 @@
 "use client";
 
-import OrderDetailModal from "@/src/widgets/modal/OrderDetailModal";
+import OrderDetailModal from "@src/widgets/modal/OrderDetailModal";
 import { format } from "date-fns";
 import { useState } from "react";
 import { specialReviewItem } from "../product/interface";
-import SpecialReviewModal from "@/src/widgets/modal/SpecialReviewModal";
-import { OrderData } from "./interface";
+import SpecialReviewModal from "@src/widgets/modal/SpecialReviewModal";
+import { OrderData, OrderItem as OrderItemInterface } from "./interface";
 
 const OrderItem = ({ item }: { item: OrderData }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,6 +16,29 @@ const OrderItem = ({ item }: { item: OrderData }) => {
         productImage: [],
         productName: ""
     });
+
+    const handleWriteReviewClick = (e: any, item: OrderData) => {
+        e.stopPropagation();
+
+        if (!item || !item.items || item.items.length === 0) {
+            return;
+        }
+
+        const uniqueProductIds = new Set(item.items.map((p: OrderItemInterface) => p.productId));
+
+        if (uniqueProductIds.size > 1) {
+            alert("리뷰를 작성할 상품을 선택해주세요.");
+        } else {
+            const product = item.items[0];
+            setProductItem({
+                orderId: item._id,
+                productId: product.productId,
+                productName: product.productNm,
+                productImage: product.image,
+            });
+            setIsReviewModalOpen(true);
+        }
+    };
 
     return (
         <>
@@ -116,20 +139,7 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                         {item.shippingStatus === "confirm" ? (
                             <span 
                                 className="text-red-500 text-xs underline" 
-                                onClick={(e) => {
-                                    if (item.items.length > 1) alert("리뷰 쓸 상품을 골라주세요") 
-                                    else {
-                                        e.stopPropagation();
-                                        if (!item) return;
-                                        setProductItem({
-                                            orderId: item._id,
-                                            productId: item.items[0].productId,
-                                            productName: item.items[0].productNm,
-                                            productImage: item.items[0].image,
-                                        });
-                                        setIsReviewModalOpen(true);
-                                    }
-                                }}
+                                onClick={(e) => handleWriteReviewClick(e, item)}
                             >
                                 리뷰 쓰기
                             </span>

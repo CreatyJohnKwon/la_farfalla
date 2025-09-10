@@ -1,173 +1,130 @@
 "use client"; 
 
- import { Product } from "@/src/components/product/interface"; 
- import ProductsList from "@/src/components/product/ProductsList"; 
- import useProduct from "@/src/shared/hooks/useProduct"; 
- import SearchButton from "@/src/widgets/button/SearchButton"; 
- import { useMemo, useCallback, useState, useEffect } from "react"; 
+import CategoryList from "@/src/components/product/CategoryList";
+import { Product } from "@src/components/product/interface"; 
+import ProductsList from "@src/components/product/ProductsList"; 
+import useProduct from "@src/shared/hooks/useProduct"; 
+import SearchButton from "@src/widgets/button/SearchButton"; 
+import { useMemo, useCallback, useState, useEffect } from "react"; 
 
- const ShopClient = () => { 
-     const { 
-         products, 
-         productsLoading, 
-         filteredProducts, 
-         section, 
-         isFetchingNextPage, // 추후에 무한 스크롤 할 경우 스켈레톤 UI 를 위한
-         handleProductListScroll, 
-     } = useProduct(); 
+const ShopClient = () => { 
+    const { 
+        category,
+        products, 
+        productsLoading, 
+        filteredProducts, 
+        section, 
+    } = useProduct(); 
 
-     // Prepare product data for search bar (flattened array) 
-     const searchableProducts = useMemo(() => { 
-         // If filteredProducts is already a Product[] array, use it as is. 
-         if (Array.isArray(filteredProducts)) return filteredProducts; 
+    const searchableProducts = useMemo(() => { 
+        if (Array.isArray(filteredProducts)) return filteredProducts; 
+        if (products && typeof products === "object" && "pages" in products) { 
+            return products.pages?.flatMap((page: any) => page.data || page) || []; 
+        } 
+        return []; 
+    }, [products, filteredProducts]); 
 
-         // If products is in InfiniteQueryResult format, flatten it. 
-         if (products && typeof products === "object" && "pages" in products) { 
-             return ( 
-                 products.pages?.flatMap((page: any) => page.data || page) || [] 
-             ); 
-         } 
+    const [searchQuery, setSearchQuery] = useState<string>(""); 
+    const [searchFilteredProducts, setSearchFilteredProducts] = useState<Product[]>([]); 
+    const [isSearchMode, setIsSearchMode] = useState<boolean>(false); 
 
-         // Default value 
-         return []; 
-     }, [products, filteredProducts]); 
+    const preloadImages = useCallback(() => { 
+        const productsToPreload = isSearchMode 
+            ? searchFilteredProducts.slice(0, 3) 
+            : filteredProducts.slice(0, 3); 
 
-     // Search related states 
-     const [searchQuery, setSearchQuery] = useState<string>(""); 
-     const [searchFilteredProducts, setSearchFilteredProducts] = useState<Product[]>([]); 
-     const [isSearchMode, setIsSearchMode] = useState<boolean>(false); 
+        if (productsToPreload.length > 0) { 
+            productsToPreload.forEach((item) => { 
+                if (item.image?.[0]) { 
+                    const img = new window.Image(); 
+                    img.src = item.image[0]; 
+                    if (item.image[0].includes("r2.dev")) { 
+                        const url = new URL(item.image[0]); 
+                        url.searchParams.set("width", "500"); 
+                        url.searchParams.set("quality", "80"); 
+                        url.searchParams.set("format", "webp"); 
+                        img.src = url.toString(); 
+                    } 
+                } 
+            }); 
+        } 
+    }, [isSearchMode, searchFilteredProducts, filteredProducts]); 
 
-     // Function to preload images 
-     const preloadImages = useCallback(() => { 
-         const productsToPreload = isSearchMode 
-             ? searchFilteredProducts.slice(0, 3) 
-             : filteredProducts.slice(0, 3); 
+    const handleRealTimeSearch = useCallback( 
+        (query: string, searchResults: Product[]) => { 
+            setSearchQuery(query); 
+            setSearchFilteredProducts(searchResults); 
+            setIsSearchMode(query.length > 0); 
+        }, []
+    ); 
 
-         if (productsToPreload.length > 0) { 
-             productsToPreload.forEach((item) => { 
-                 if (item.image?.[0]) { 
-                     const img = new window.Image(); 
-                     img.src = item.image[0]; 
-                     // Add R2 optimization parameters 
-                     if (item.image[0].includes("r2.dev")) { 
-                         const url = new URL(item.image[0]); 
-                         url.searchParams.set("width", "500"); 
-                         url.searchParams.set("quality", "80"); 
-                         url.searchParams.set("format", "webp"); 
-                         img.src = url.toString(); 
-                     } 
-                 } 
-             }); 
-         } 
-     }, [isSearchMode, searchFilteredProducts, filteredProducts]); 
+    useEffect(() => { 
+        if (!productsLoading && (filteredProducts.length > 0 || searchFilteredProducts.length > 0)) { 
+            requestAnimationFrame(() => { 
+                setTimeout(preloadImages, 100); 
+            }); 
+        } 
+    }, [productsLoading, filteredProducts, searchFilteredProducts, preloadImages]); 
 
-     // Function to handle real-time search 
-     const handleRealTimeSearch = useCallback( 
-         (query: string, searchResults: Product[]) => { 
-             setSearchQuery(query); 
-             setSearchFilteredProducts(searchResults); 
-             setIsSearchMode(query.length > 0); 
+    const displayProducts = isSearchMode ? searchFilteredProducts : filteredProducts; 
+    const isEmptyResults = isSearchMode && searchQuery && searchFilteredProducts.length === 0; 
+    
+    // [수정] 필터링 결과 상품이 없는 경우를 별도 변수로 관리한다 (검색 모드가 아닐 때)
+    const isProductListEmpty = !isSearchMode && filteredProducts.length === 0;
 
-             // Logging for search analysis (optional) 
-             if (query.length > 0) { 
-                //  console.log( 
-                //      `검색어: "${query}", 결과: ${searchResults.length}개`, 
-                //  ); 
-             } 
-         }, 
-         [], 
-     ); 
-
-     // Preload images on component mount 
-     useEffect(() => { 
-         if ( 
-             !productsLoading && 
-             (filteredProducts.length > 0 || searchFilteredProducts.length > 0) 
-         ) { 
-             // Execute preload on the next frame 
-             requestAnimationFrame(() => { 
-                 setTimeout(preloadImages, 100); 
-             }); 
-         } 
-     }, [ 
-         productsLoading, 
-         filteredProducts, 
-         searchFilteredProducts, 
-         preloadImages, 
-     ]); 
-
-     // Determine the list of products to display 
-     const displayProducts = isSearchMode 
-         ? searchFilteredProducts 
-         : filteredProducts; 
-     const isEmptyResults = 
-         isSearchMode && searchQuery && searchFilteredProducts.length === 0; 
-
-     if (productsLoading) { 
-         return ( 
+    if (productsLoading) { 
+        return ( 
             <div className="h-screen w-full flex items-center justify-center font-amstel text-xl sm:text-2xl">         
                 <span>Loading...</span>
             </div> 
-         ); 
-     } 
-
-     if ( 
-         !searchableProducts || 
-         (filteredProducts.length === 0 && !isSearchMode) 
-     ) { 
-         return ( 
-             <div className="h-screen w-full"> 
-                <main className="flex h-full w-full flex-col items-center justify-center"> 
-                    <div className="text-center"> 
-                        <span className="text-lg text-gray-600"> 
-                            상품이 없습니다.
-                        </span> 
-                    </div> 
-                </main> 
-             </div> 
-         ); 
-     } 
+        ); 
+    } 
 
     return (
-    <div className="flex w-full min-h-full flex-col">
-        <main className="flex w-full flex-col flex-grow">
-            <div 
-                className="w-full" 
-            >
+        <div className="flex w-full min-h-full flex-col">
+            <main className="flex w-full flex-col flex-grow">
                 <div className="flex flex-col items-center">
-                    <SearchButton
-                        products={searchableProducts}
-                        onSearch={handleRealTimeSearch}
-                    />
+                    <div className="w-[85vw] h-[18vh] sm:h-[24vh] flex flex-col sm:flex-row items-start sm:items-center justify-center mt-24">
+                        <SearchButton
+                            products={searchableProducts}
+                            onSearch={handleRealTimeSearch}
+                        />
 
-                    {isEmptyResults ? (
-                        <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[30vh]">
+                        {category && category.length > 0 && (
+                            <CategoryList category={category} />
+                        )}
+                    </div>
+
+                    {isProductListEmpty ? (
+                        <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[15vh]">
                             <div className="mb-4">
-                                <svg
-                                    className="mx-auto h-16 w-16 text-gray-400"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={1.5}
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                    />
+                                <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={0.7} stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                                </svg>
+                            </div>
+                            <h3 className="mb-2 text-lg font-medium text-gray-700">
+                                상품이 없습니다
+                            </h3>
+                            <p className="text-gray-500">
+                                선택하신 카테고리에 해당하는 상품이 없습니다.
+                            </p>
+                        </div>
+                    ) : isEmptyResults ? (
+                        <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[15vh]">
+                            <div className="mb-4">
+                                <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.7} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
                             <h3 className="mb-2 text-lg font-medium text-gray-700">
                                 검색 결과가 없습니다
                             </h3>
                             <p className="mb-4 text-gray-500">
-                                '{searchQuery}'에 대한 상품을 찾을 수
-                                없습니다.
+                                '{searchQuery}'에 대한 상품을 찾을 수 없습니다.
                             </p>
                         </div>
                     ) : (
                         <div>
-                            {/* Product grid */}
                             <ul className="mt-4 grid w-[90vw] md:w-[85vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3">
                                 {displayProducts.map((item, index) => (
                                     <ProductsList
@@ -180,10 +137,9 @@
                         </div>
                     )}
                 </div>
-            </div>
-        </main>
-    </div>
-);
- } 
+            </main>
+        </div>
+    );
+} 
 
- export default ShopClient;
+export default ShopClient;

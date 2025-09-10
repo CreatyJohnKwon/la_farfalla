@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchFloatingButtonProps } from "@/src/components/product/interface";
+import { SearchFloatingButtonProps } from "@src/components/product/interface";
 import { useState, useCallback, useRef } from "react";
 
 const SearchButton: React.FC<SearchFloatingButtonProps> = ({
@@ -32,9 +32,9 @@ const SearchButton: React.FC<SearchFloatingButtonProps> = ({
                     return true;
                 }
 
-                // 시즌 매칭
+                // 카테고리 매칭
                 if (
-                    product.seasonName.toLowerCase().includes(normalizedQuery)
+                    product.categories.includes(normalizedQuery)
                 ) {
                     return true;
                 }
@@ -88,7 +88,7 @@ const SearchButton: React.FC<SearchFloatingButtonProps> = ({
     return (
         <div
             ref={containerRef}
-            className="w-[90vw] md:w-[85vw] flex items-center justify-start pt-24"
+            className="z-10"
         >
             <div className="flex items-center space-x-2 w-[12vw]">
                 {/* 돋보기 아이콘 */}

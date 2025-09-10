@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import usePage from "@/src/shared/hooks/usePage";
+import usePage from "@src/shared/hooks/usePage";
 import License from "./License";
 
 const Footer = () => {

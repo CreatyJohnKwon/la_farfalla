@@ -1,5 +1,5 @@
-import { OrderData } from "@/src/components/order/interface";
-import { EmailService } from "@/src/shared/lib/emailService";
+import { OrderData } from "@src/components/order/interface";
+import { EmailService } from "@src/shared/lib/emailService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

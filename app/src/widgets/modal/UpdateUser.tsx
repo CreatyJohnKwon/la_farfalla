@@ -1,9 +1,9 @@
-import { UserProfileData } from "@/src/entities/type/interfaces";
+import { UserProfileData } from "@src/entities/type/interfaces";
 import {
     useDeleteUserMutation,
     useUpdateUserMutation,
-} from "@/src/shared/hooks/react-query/useUserQuery";
-import { useAddress } from "@/src/shared/hooks/useAddress";
+} from "@src/shared/hooks/react-query/useUserQuery";
+import { useAddress } from "@src/shared/hooks/useAddress";
 import { motion } from "framer-motion";
 import { useState } from "react";
 

@@ -1,8 +1,8 @@
 "use server";
 
-import { OrderData } from "@/src/components/order/interface";
-import { Order } from "@/src/entities/models/Order";
-import User from "@/src/entities/models/User";
+import { OrderData } from "@src/components/order/interface";
+import { Order } from "@src/entities/models/Order";
+import User from "@src/entities/models/User";
 import mongoose from "mongoose";
 
 const orderAccept = async (orderData: OrderData) => {

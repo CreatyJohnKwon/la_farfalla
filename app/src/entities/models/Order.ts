@@ -55,7 +55,7 @@ const orderSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
-        collection: "order",
+        collection: "orders",
     },
 );
 

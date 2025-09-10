@@ -1,10 +1,10 @@
 import { useState } from "react"
 import ModalWrap from "./ModalWrap"
 import DefaultImage from "../../../../public/images/chill.png"
-import { textareaPlaceholder } from "@/src/utils/dataUtils"
-import { specialReviewItem } from "@/src/components/product/interface"
+import { textareaPlaceholder } from "@src/utils/dataUtils"
+import { specialReviewItem } from "@src/components/product/interface"
 import { usePostReviewMutation } from "@src/shared/hooks/react-query/useReviewQuery"
-import useOrder from "@/src/shared/hooks/useOrder"
+import useOrder from "@src/shared/hooks/useOrder"
 
 const TEXT_REVIEW_MILEAGE = 500;       // 텍스트 후기 마일리지
 const PHOTO_REVIEW_BASE_MILEAGE = 1000;  // 기본 포토 후기 마일리지

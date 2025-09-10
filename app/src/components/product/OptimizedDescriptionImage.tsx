@@ -1,11 +1,11 @@
 "use client";
 
-import { useOptimizedImage } from "@/src/shared/hooks/useOptimizedImage";
+import { useOptimizedImage } from "@src/shared/hooks/useOptimizedImage";
 import DefaultImage from "../../../../public/images/chill.png";
 import { useIntersectionObserver } from "../../shared/hooks/useIntersectionObserver";
 import { useEffect } from "react";
 import Image from "next/image";
-import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
+import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
 
 // 개별 Description 이미지 컴포넌트
 const OptimizedDescriptionImage = ({

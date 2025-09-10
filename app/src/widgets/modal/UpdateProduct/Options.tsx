@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ProductVariant } from "@/src/components/product/interface";
+import { ProductVariant } from "@src/components/product/interface";
 import { OptionsProps } from "./interface";
 
 const Options = ({

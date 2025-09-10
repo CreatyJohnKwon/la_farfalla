@@ -5,11 +5,11 @@ import Image from "next/image";
 import useOrder from "@src/shared/hooks/useOrder";
 
 import DefaultImage from "../../public/images/chill.png";
-import { useAddress } from "@/src/shared/hooks/useAddress";
-import AddressModal from "@/src/features/address/AddressModal";
-import LoadingSpinner from "@/src/widgets/spinner/LoadingSpinner";
-import AgreementModal from "@/src/widgets/modal/Agreement/AgreementModal";
-import BuyAgreement from "@/src/components/agreement/BuyAgreement";
+import { useAddress } from "@src/shared/hooks/useAddress";
+import AddressModal from "@src/features/address/AddressModal";
+import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
+import AgreementModal from "@src/widgets/modal/Agreement/AgreementModal";
+import BuyAgreement from "@src/components/agreement/BuyAgreement";
 
 const Order = () => {
     const { orderDatas } = useOrder();

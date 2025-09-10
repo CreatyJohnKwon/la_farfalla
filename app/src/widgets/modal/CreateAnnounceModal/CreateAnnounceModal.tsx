@@ -6,7 +6,7 @@ import {
     useCreateAnnounceMutation,
     useAnnouncesQuery,
     useUpdateAnnounceMutation,
-} from "@/src/shared/hooks/react-query/useAnnounce";
+} from "@src/shared/hooks/react-query/useAnnounce";
 import {
     AnnounceForm,
     IAnnounceDTO,
@@ -14,14 +14,14 @@ import {
     MAX_FILE_SIZE,
     ACCEPTED_IMAGE_TYPES,
     CreateAnnounceData,
-} from "@/src/entities/type/announce";
-import { deleteAnnounce } from "@/src/shared/lib/server/announce";
-import { uploadImagesToServer } from "@/src/shared/lib/uploadToR2";
+} from "@src/entities/type/announce";
+import { deleteAnnounce } from "@src/shared/lib/server/announce";
+import { uploadImagesToServer } from "@src/shared/lib/uploadToR2";
 import {
     getCurrentDateTime,
     getDateTimeAfterHours,
     isImageUrl,
-} from "@/src/utils/dataUtils";
+} from "@src/utils/dataUtils";
 
 // 합성 컴포넌트들
 import { ModalHeader } from "./ModalHeader";

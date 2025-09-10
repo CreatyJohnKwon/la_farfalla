@@ -9,12 +9,12 @@ import Link from "next/link";
 
 import { registUserAction } from "./actions";
 import { useAddress } from "@src/shared/hooks/useAddress";
-import { sendAuthMail } from "@/src/shared/lib/server/user";
+import { sendAuthMail } from "@src/shared/lib/server/user";
 
 import AddressModal from "@src/features/address/AddressModal";
-import AgreementModal from "@/src/widgets/modal/Agreement/AgreementModal";
-import UserAgreeOne from "@/src/components/agreement/UserAgreeOne";
-import UserAgreeTwo from "@/src/components/agreement/UserAgreeTwo";
+import AgreementModal from "@src/widgets/modal/Agreement/AgreementModal";
+import UserAgreeOne from "@src/components/agreement/UserAgreeOne";
+import UserAgreeTwo from "@src/components/agreement/UserAgreeTwo";
 
 const RegisterClient = () => {
     const router = useRouter();

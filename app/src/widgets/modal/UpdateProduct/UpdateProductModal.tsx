@@ -1,14 +1,12 @@
 "use client";
 
-// 타입
 import {
     UpdateProductModalProps,
     ImageData,
     ProductVariant,
     NewVariantType,
     Product,
-} from "@/src/components/product/interface";
-// 자식 컴포넌트
+} from "@src/components/product/interface";
 import Size from "./Size";
 import Options from "./Options";
 import Section from "./Section";
@@ -16,25 +14,22 @@ import ModalWrap from "../ModalWrap";
 import UploadImage from "./UploadImage";
 import ProductTitle from "./ProductTitle";
 import DescriptionInfo from "./DescriptionInfo";
-// 리액트라이브러리
 import { useState, useEffect } from "react";
 import { useSetAtom } from "jotai";
-import { loadingAtom } from "@/src/shared/lib/atom";
-import { uploadImagesToServer } from "@/src/shared/lib/uploadToR2";
-// 훅
-import useProduct from "@/src/shared/hooks/useProduct";
-// 리액트 쿼리
-import { useSeasonQuery } from "@/src/shared/hooks/react-query/useSeasonQuery";
+import { loadingAtom } from "@src/shared/lib/atom";
+import { uploadImagesToServer } from "@src/shared/lib/uploadToR2";
+import useProduct from "@src/shared/hooks/useProduct";
 import {
     usePostProductMutation,
     useUpdateProductMutation,
-} from "@/src/shared/hooks/react-query/useProductQuery";
+} from "@src/shared/hooks/react-query/useProductQuery";
+import CategorySelector from "./CategorySelector";
 
-const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
+const UpdateProductModal = ({
     onClose,
     product,
     mode = "create",
-}) => {
+}: UpdateProductModalProps) => {
     // 이미지 상태
     const [hasImageChanges, setHasImageChanges] = useState<boolean>(false);
     const [hasDescriptionImageChanges, setHasDescriptionImageChanges] =
@@ -51,6 +46,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
             existingUrls: [],
         },
     );
+    const setLoading = useSetAtom(loadingAtom);
 
     // 사이즈 상태
     const [sizeInput, setSizeInput] = useState<string>("");
@@ -63,12 +59,16 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
     });
 
     // Hooks
-    const { formData, setFormData } = useProduct();
-    const { data: season, isLoading, error } = useSeasonQuery();
     const { mutateAsync: createProduct } = usePostProductMutation();
     const { mutateAsync: updateProduct } = useUpdateProductMutation();
-    const setLoading = useSetAtom(loadingAtom);
-
+    const { 
+        category,
+        formData, 
+        setFormData,
+        categoryLoading,
+        categoryError
+    } = useProduct();
+    
     // 초기화 함수
     const resetAll = (): void => {
         if (mode === "update" && product) {
@@ -79,7 +79,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 price: product.price,
                 discount: product.discount || "",
                 image: product.image,
-                seasonName: product.seasonName,
+                categories: product.categories,
                 size: product.size,
                 quantity: product.quantity,
             });
@@ -125,9 +125,9 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 price: "",
                 discount: "",
                 image: [],
-                seasonName: "",
                 size: [],
                 quantity: "",
+                categories: []
             });
 
             setImageData({
@@ -164,8 +164,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 price: product.price,
                 discount: product.discount || "",
                 image: product.image,
-
-                seasonName: product.seasonName,
+                categories: product.categories,
                 size: product.size,
                 quantity: product.quantity,
             });
@@ -357,12 +356,6 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                     stockQuantity: variant.stockQuantity,
                 }));
 
-                // 호환성을 위한 기존 필드들
-                const uniqueColors = [
-                    ...new Set(
-                        variants.map((v: ProductVariant) => v.colorName),
-                    ),
-                ];
                 const totalStock = variants.reduce(
                     (sum: number, v: ProductVariant) => sum + v.stockQuantity,
                     0,
@@ -408,7 +401,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
     };
 
     // 로딩 상태
-    if (isLoading) {
+    if (categoryLoading) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
                 <div className="bg-white p-8">
@@ -419,7 +412,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
     }
 
     // 에러 상태
-    if (error) {
+    if (categoryError) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
                 <div className="bg-white p-8">
@@ -473,11 +466,18 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                     setDescriptionImageData={setDescriptionImageData}
                 />
 
-                {/* 시즌, 가격, 할인율, 수량 */}
+                {/* 카테고리 */}
+                <CategorySelector
+                    selectedCategories={formData.categories} 
+                    setSelectedCategories={(newCategories) => 
+                        setFormData((prev: Product) => ({ ...prev, categories: newCategories }))}
+                    allCategories={category}
+                />
+
+                {/* 가격, 할인율, 수량 */}
                 <Section
                     formData={formData}
                     handleInputChange={handleInputChange}
-                    season={season}
                     variants={variants}
                 />
 

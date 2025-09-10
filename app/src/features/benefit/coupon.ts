@@ -2,7 +2,7 @@
 
 import { ObjectId } from "mongoose";
 import { Coupon } from "@src/entities/models/Coupon";
-import { UserCoupon } from "@/src/entities/models/UserCoupon";
+import { UserCoupon } from "@src/entities/models/UserCoupon";
 
 const benefitWelcomeCoupon = async (userId: ObjectId) => {
     // Step 1. 쿠폰 정의 존재 여부 확인

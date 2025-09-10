@@ -1,9 +1,9 @@
 import {
     Review,
     ToggleReviewLikeResponse,
-} from "@/src/components/review/interface";
+} from "@src/components/review/interface";
 import { uploadImagesToServer } from "../uploadToR2";
-import { ReviewPermissionResponse } from "@/src/entities/type/review";
+import { ReviewPermissionResponse } from "@src/entities/type/review";
 
 // 리뷰 목록 조회
 const getReviewList = async (

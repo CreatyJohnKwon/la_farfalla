@@ -1,4 +1,4 @@
-import { EmailService } from "@/src/shared/lib/emailService";
+import { EmailService } from "@src/shared/lib/emailService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

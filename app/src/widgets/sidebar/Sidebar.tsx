@@ -7,7 +7,7 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { IoCloseOutline } from "react-icons/io5";
 import { RxInstagramLogo } from "react-icons/rx";
 import { AiOutlineUser } from "react-icons/ai";
-import DropdownMenu from "@/src/widgets/drop/DropdownMenu";
+import DropdownMenu from "@src/widgets/drop/DropdownMenu";
 import { useEffect } from "react";
 
 const Sidebar = () => {
@@ -75,7 +75,7 @@ const Sidebar = () => {
                     </ul>
                     
                     {/* 메뉴 리스트 */}
-                    <ul className="absolute top-1/4 flex flex-col items-center gap-8 text-center text-3xl text-black">
+                    <ul className="absolute top-1/4 flex flex-row items-start gap-20 text-center text-3xl text-black">
                         <li className="relative">
                             {/* ShopDrop을 DropdownMenu로 완벽하게 대체 */}
                             <DropdownMenu 

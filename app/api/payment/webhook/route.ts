@@ -1,4 +1,4 @@
-import { syncPayment } from "@/src/shared/lib/payments";
+import { syncPayment } from "@src/shared/lib/payments";
 import { Webhook } from "@portone/server-sdk";
 import { NextRequest, NextResponse } from "next/server";
 

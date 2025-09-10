@@ -1,10 +1,10 @@
 // app/api/coupons/distribute/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import { Coupon } from "@/src/entities/models/Coupon";
-import { UserCoupon } from "@/src/entities/models/UserCoupon";
-import User from "@/src/entities/models/User";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import { Coupon } from "@src/entities/models/Coupon";
+import { UserCoupon } from "@src/entities/models/UserCoupon";
+import User from "@src/entities/models/User";
 
 export async function POST(req: NextRequest) {
     try {

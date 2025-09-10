@@ -1,4 +1,4 @@
-import { ProductOption } from "@/src/components/product/interface";
+import { ProductOption } from "@src/components/product/interface";
 import axios from "axios";
 
 const updateCoupon = async (couponId: string) => {

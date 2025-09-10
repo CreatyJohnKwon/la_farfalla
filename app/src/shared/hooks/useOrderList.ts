@@ -1,5 +1,5 @@
-import { OrderData, ShippingStatus } from "@/src/components/order/interface";
-import { useAllOrderQuery } from "@/src/shared/hooks/react-query/useOrderQuery";
+import { OrderData, ShippingStatus } from "@src/components/order/interface";
+import { useAllOrderQuery } from "@src/shared/hooks/react-query/useOrderQuery";
 import { useState } from "react";
 
 const useOrderList = () => {

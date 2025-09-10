@@ -8,7 +8,7 @@ import {
 } from "../../lib/server/product";
 import { useSetAtom } from "jotai";
 import { loadingAtom, resetProductFormAtom } from "../../lib/atom";
-import { Product } from "@/src/components/product/interface";
+import { Product } from "@src/components/product/interface";
 
 type ProductPage = {
   data: Product[];    // 실제 상품 리스트

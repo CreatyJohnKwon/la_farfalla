@@ -1,4 +1,4 @@
-import { IAnnounceDTO } from "@/src/entities/type/announce";
+import { IAnnounceDTO } from "@src/entities/type/announce";
 import LoadingSpinner from "../../spinner/LoadingSpinner";
 import AnnounceList from "./AnnounceList";
 

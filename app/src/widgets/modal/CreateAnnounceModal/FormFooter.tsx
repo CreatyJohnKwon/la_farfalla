@@ -2,7 +2,7 @@ import {
     CreateAnnounceData,
     IAnnounceDTO,
     UpdateAnnounceParams,
-} from "@/src/entities/type/announce";
+} from "@src/entities/type/announce";
 import { UseMutationResult } from "@tanstack/react-query";
 
 interface MutationContext {

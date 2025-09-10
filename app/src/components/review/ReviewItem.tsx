@@ -8,10 +8,10 @@ import {
 import ReviewCommentItem from "./ReviewCommentItem";
 import { useState } from "react";
 import { ReviewItemProps } from "./interface";
-import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
-import { uploadImagesToServer } from "@/src/shared/lib/uploadToR2";
+import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
+import { uploadImagesToServer } from "@src/shared/lib/uploadToR2";
 import ReviewContents from "./ReviewContents";
-import ImageViewerModal from "@/src/widgets/modal/ImageViewerModal";
+import ImageViewerModal from "@src/widgets/modal/ImageViewerModal";
 
 const ReviewItem: React.FC<ReviewItemProps> = ({
     review,

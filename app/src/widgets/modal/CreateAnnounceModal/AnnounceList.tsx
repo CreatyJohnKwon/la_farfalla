@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { IAnnounceDTO } from "@/src/entities/type/announce";
+import { IAnnounceDTO } from "@src/entities/type/announce";
 import {
     useDeleteAnnounceMutation,
     useUpdateAnnounceMutation,
-} from "@/src/shared/hooks/react-query/useAnnounce";
+} from "@src/shared/hooks/react-query/useAnnounce";
 import LoadingSpinner from "../../spinner/LoadingSpinner";
 import ImageViewerModal from "../ImageViewerModal";
 import Image from "next/image";

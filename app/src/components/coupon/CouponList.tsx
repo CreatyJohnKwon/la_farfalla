@@ -7,8 +7,8 @@ import SkeletonList from "./SkeletonList";
 import {
     CouponResponse,
     UserCouponWithPopulate,
-} from "@/src/entities/type/interfaces";
-import { useUserQuery } from "@/src/shared/hooks/react-query/useUserQuery";
+} from "@src/entities/type/interfaces";
+import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 
 const CouponList = () => {
     // 유저가 가지고 있는 쿠폰 정보 (UserCoupon)
