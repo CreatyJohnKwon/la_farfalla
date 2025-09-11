@@ -151,6 +151,12 @@ jobs:
                     echo "✅ Deployment to production completed successfully!"
                   EOF
 
+              env:
+                AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+                EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+                DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+                DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
             - name: Cleanup
               if: always()
               run: |

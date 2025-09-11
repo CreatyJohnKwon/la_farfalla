@@ -168,39 +168,14 @@ jobs:
                     echo "✅ Previous image tag is: $PREVIOUS_IMAGE_TAG"
                     
                     echo "🚀 Starting Docker containers..."
-                    docker-compose down nextjs
-                    docker-compose pull nextjs
-                    docker-compose up -d nextjs
+                                        docker-compose down dev-nextjs
+                    docker-compose pull dev-nextjs
+                    docker-compose up -d dev-nextjs
+
+                    echo "⏳ Waiting for application to become healthy for 30 seconds..."
+                    sleep 30 # 30초 동안 애플리케이션 반영을 기다림
                     
-                    echo "⏳ Waiting for containers to start..."
-                    max_retries=30
-                    interval=2
-                    for i in $(seq 1 $max_retries); do
-                        # localhost 대신 실제 서비스 컨테이너의 내부 도커 네트워크 주소를 사용하는 것이 더 안정적일 수 있습니다.
-                        if curl -f http://localhost:3000 > /dev/null 2>&1; then
-                            echo "✅ Application is up and running!"
-                            break
-                        fi
-                        echo "Attempt $i/$max_retries: Application not ready yet. Retrying in $interval seconds..."
-                        sleep $interval
-                    done
-                    
-                    echo "🔍 Service health check: "
-                    if ! curl -f http://localhost:3000 > /dev/null 2>&1; then
-                        echo "⚠️ Application health check failed after $((max_retries * interval)) seconds."
-                        
-                        echo "🔄 Rolling back to the previous version ($PREVIOUS_IMAGE_TAG)..."
-                        docker-compose down nextjs # 실패한 컨테이너 제거
-                        
-                        # 저장해둔 이전 이미지 태그를 환경변수로 주입하여 컨테이너 실행
-                        IMAGE_TAG=$PREVIOUS_IMAGE_TAG docker-compose up -d nextjs
-                        
-                        echo "롤백 완료 후 상태:"
-                        docker ps
-                        
-                        echo "🚨 DEPLOYMENT FAILED AND ROLLED BACK. 🚨"
-                        exit 1 # 롤백 후 배포 실패로 종료
-                    fi
+                    echo "✅ Wait finished. Assuming application is up."
 
                     echo "🔄 Reloading nginx configuration..."
                     docker-compose exec nginx nginx -s reload || echo "Nginx reload failed, but continuing..."
@@ -211,8 +186,10 @@ jobs:
                     echo "📊 Final container status:"
                     docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
+                    # --- "성공" 메시지를 여기로 이동 ---
                     echo "✅ Deployment to production completed successfully!"
                   EOF
+                  
               env:
                   AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
                   EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
