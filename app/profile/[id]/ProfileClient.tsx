@@ -13,13 +13,13 @@ const ProfileClient = ({ id }: { id: string }) => {
     const { title, children } = useMemo(() => {
         switch (id) {
             case "order":
-                return { title: "Order List", children: <OrderList /> };
+                return { title: "ORDER LIST", children: <OrderList /> };
             case "edit":
-                return { title: "Edit Profile", children: <EditProfile /> };
+                return { title: "EDIT PROFILE", children: <EditProfile /> };
             case "mileage":
-                return { title: "Mileage", children: <MileageList /> };
+                return { title: "MILEAGE LIST", children: <MileageList /> };
             case "coupon":
-                return { title: "Coupon", children: <CouponList /> };
+                return { title: "COUPON LIST", children: <CouponList /> };
             default:
                 redirect("/profile/order");
         }

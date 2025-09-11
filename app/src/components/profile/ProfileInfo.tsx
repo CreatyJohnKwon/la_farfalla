@@ -51,10 +51,10 @@ const ProfileInfo = () => {
                     <div className="flex h-full w-full items-start justify-end">
                         {isLoading ? (
                             <div className="flex animate-fade-in flex-row items-center gap-4">
-                                Mileage : <div className="h-6 w-16 bg-slate-200" />
+                                MILEAGE : <div className="h-6 w-16 bg-slate-200" />
                             </div>
                         ) : (
-                            <span>{`Mileage : ${(user?.mileage ?? 0).toLocaleString()}`}</span>
+                            <span>{`MILEAGE : ${(user?.mileage ?? 0).toLocaleString()}`}</span>
                         )}
                     </div>
 
@@ -62,10 +62,10 @@ const ProfileInfo = () => {
                     <div className="flex h-full w-full items-start justify-end pb-24">
                         {isLoading ? (
                             <div className="flex animate-fade-in flex-row items-center gap-4">
-                                Coupon : <div className="h-6 w-16 bg-slate-200" />
+                                COUPON : <div className="h-6 w-16 bg-slate-200" />
                             </div>
                         ) : (
-                            <span>{`Coupon : ${user?.coupon ?? 0}`}</span>
+                            <span>{`COUPON : ${user?.coupon ?? 0}`}</span>
                         )}
                     </div>
                 </section>

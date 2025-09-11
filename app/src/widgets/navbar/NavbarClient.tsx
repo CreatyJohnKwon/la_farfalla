@@ -44,7 +44,7 @@ const NavbarClient = () => {
             className={`fixed top-0 z-40 h-auto w-full ps-0 pt-5 pb-3 sm:pb-4 text-base shadow-none ${pathName === "/home" || pathName === "/introduce" ? "bg-transparent" : "bg-white"} ${textColor}`}
         >
             <div
-                className={`max-w-screen-w_max w-[92vw] relative mx-auto flex items-center justify-between sm:pt-4 text-xl sm:text-base`}
+                className={`max-w-screen-w_max w-[93vw] relative mx-auto flex items-center justify-between sm:pt-4 text-xl sm:text-base`}
             >
                 {/* 왼쪽 메뉴 : PC */}
                 <ul className="hidden border-gray-100 sm:flex sm:space-x-4">

@@ -6,6 +6,7 @@ import SkeletonList from "./SkeletonList";
 import { MileageItem } from "../order/interface";
 import { useInView } from "react-intersection-observer";
 import { Fragment, useEffect } from "react";
+import { format } from 'date-fns';
 
 const MileageList = () => {
     const { data: user, isLoading: isUserLoading } = useUserQuery();
@@ -83,7 +84,7 @@ const MileageList = () => {
                             >
                                 <div className="flex items-center justify-between h-5">
                                     <span className="font-amstel text-sm xs:text-base">
-                                        {new Date(item.createdAt).toLocaleDateString().slice(0, -1)}
+                                        {format(new Date(item.createdAt), 'MM.dd HH:mm')}
                                     </span>
                                 <div className="w-[52vw] sm:w-[50vw] h-5 flex flex-row items-center justify-between">
                                     <span className="text-gray-400 font-pretendard font-[300] text-xs xs:text-sm">
