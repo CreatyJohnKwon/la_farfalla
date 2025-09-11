@@ -3,10 +3,10 @@
 import { SearchFloatingButtonProps } from "@src/components/product/interface";
 import { useState, useCallback, useRef } from "react";
 
-const SearchButton: React.FC<SearchFloatingButtonProps> = ({
+const SearchButton = ({
     products,
     onSearch,
-}) => {
+}: SearchFloatingButtonProps) => {
     // 상태 관리
     const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -90,7 +90,7 @@ const SearchButton: React.FC<SearchFloatingButtonProps> = ({
             ref={containerRef}
             className="z-10"
         >
-            <div className="flex items-center space-x-2 w-[12vw]">
+            <div className="flex items-center space-x-2 w-full">
                 {/* 돋보기 아이콘 */}
                 <svg
                     className="flex-shrink-0 h-6 w-6 text-gray-500"
@@ -113,7 +113,7 @@ const SearchButton: React.FC<SearchFloatingButtonProps> = ({
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
-                        className="flex-grow outline-none"
+                        className="flex-grow outline-none w-[14vh]"
                     />
                 </div>
 

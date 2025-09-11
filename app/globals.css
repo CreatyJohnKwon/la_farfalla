@@ -36,9 +36,10 @@ html {
         font-family: "Amstelvar Alpha", serif;
         font-variation-settings:
             "wght" 70,
-            "wdth" 400,
+            "wdth" 500,
             "GRAD" 88;
-        letter-spacing: -0.07em;
+        /* letter-spacing: -0.07em; */
+        letter-spacing: -0.01em;
     }
 
     .font-amstel-thin {

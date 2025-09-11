@@ -26,7 +26,7 @@ const usePage = () => {
 
     const isUserAdmin = adminEmails.includes(session?.user?.email ?? "");
     const menuData = isUserAdmin ? adminMenuItems : aboutMenuItems;
-    const menuTitle = isUserAdmin ? "admin" : "about";
+    const menuTitle = isUserAdmin ? "ADMIN" : "ABOUT";
 
     const instagramHandler = () =>
         window.open(

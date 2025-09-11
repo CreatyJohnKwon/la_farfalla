@@ -193,7 +193,7 @@ const CancelOrder = ({
                                 처리 안내
                             </p>
                             <ul className="space-y-1 font-pretendard text-xs">
-                                <li>• 요청 접수 후 2-3일 내 처리됩니다</li>
+                                <li>• 요청 접수 후 3일~7일 내 처리됩니다</li>
                                 {requestType === "return" && <li>• 반품 완료 시, 환불은 원래 결제수단으로 처리됩니다</li>}
                             </ul>
                         </div>

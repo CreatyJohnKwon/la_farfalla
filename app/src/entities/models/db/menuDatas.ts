@@ -3,10 +3,10 @@ import { profNavDataProps, navDataProps } from "@src/entities/type/interfaces";
 const navData: navDataProps = [{ text: "home" }, { text: "" }];
 
 const profileNavData: profNavDataProps = [
-    { id: "Order", title: "주문정보" },
-    { id: "Edit", title: "정보수정" },
-    { id: "Mileage", title: "적립금" },
-    { id: "Coupon", title: "쿠폰" },
+    { id: "ORDER", title: "주문정보" },
+    { id: "EDIT", title: "정보수정" },
+    { id: "MILEAGE", title: "적립금" },
+    { id: "COUPON", title: "쿠폰" },
 ];
 
 const menuData = [

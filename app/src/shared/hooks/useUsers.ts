@@ -45,21 +45,19 @@ const useUsers = () => {
 
     const menusData = session
         ? [
-              { text: "Profile", link: "/profile" },
-              { text: "Shop", link: "/shop" },
-              { text: "Introduce", link: "/introduce" },
-              { text: "Notice", link: "/notice" },
+              { text: "PROFILE", link: "/profile" },
+              { text: "SHOP", link: "/shop" },
+              { text: "INTRODUCE", link: "/introduce" },
           ]
         : [
-              { text: "Login", link: "/login" },
-              { text: "Shop", link: "/shop" },
-              { text: "Introduce", link: "/introduce" },
-              { text: "Notice", link: "/notice" },
+              { text: "LOGIN", link: "/login" },
+              { text: "SHOP", link: "/shop" },
+              { text: "INTRODUCE", link: "/introduce" },
           ];
 
     const navStartData = session
-        ? [{ text: "cart" }, { text: "profile" }, {text: "logout"}]
-        : [{ text: "cart" }, { text: "login" }];
+        ? [{ text: "CART" }, { text: "PROFILE" }, {text: "LOGOUT"}]
+        : [{ text: "CART" }, { text: "LOGIN" }];
 
     return {
         email,

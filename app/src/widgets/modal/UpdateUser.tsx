@@ -74,13 +74,13 @@ const UpdateUser = ({
                 className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-lg bg-white p-6"
                 onClick={(e) => e.stopPropagation()}
             >
-                <h2 className="mb-4 text-xl font-semibold">유저 정보 수정</h2>
+                <h2 className="mb-4 text-xl font-pretendard font-[600]">유저 정보 수정</h2>
                 <div className="space-y-4">
                     <div>
                         <label className="text-sm text-gray-500">
                             유저 ID (이메일)
                         </label>
-                        <p className="text-base font-medium text-gray-800">
+                        <p className="text-base font-pretendard font-[400] text-gray-800">
                             {user.email}
                         </p>
                         <p className="mt-1 font-mono text-xs text-gray-500">
@@ -88,7 +88,7 @@ const UpdateUser = ({
                         </p>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-pretendard font-[400] text-gray-700">
                             이름
                         </label>
                         <input
@@ -101,7 +101,7 @@ const UpdateUser = ({
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-pretendard font-[400] text-gray-700">
                             전화번호
                         </label>
                         <input
@@ -125,8 +125,9 @@ const UpdateUser = ({
                             className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-black/50 focus:outline-none focus:ring-2 focus:ring-gray-50"
                         />
                     </div>
+                    
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-pretendard font-[400] text-gray-700">
                             마일리지
                         </label>
                         <input
@@ -139,7 +140,7 @@ const UpdateUser = ({
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-pretendard font-[400] text-gray-700">
                             주소
                         </label>
                         <input
@@ -152,7 +153,7 @@ const UpdateUser = ({
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-pretendard font-[400] text-gray-700">
                             상세 주소
                         </label>
                         <input
@@ -165,7 +166,7 @@ const UpdateUser = ({
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-pretendard font-[400] text-gray-700">
                             우편번호
                         </label>
                         <input

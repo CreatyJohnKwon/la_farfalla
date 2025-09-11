@@ -18,11 +18,10 @@ const ShopClient = () => {
 
     const searchableProducts = useMemo(() => { 
         if (Array.isArray(filteredProducts)) return filteredProducts; 
-        if (products && typeof products === "object" && "pages" in products) { 
+        if (products && typeof products === "object" && "pages" in products)
             return products.pages?.flatMap((page: any) => page.data || page) || []; 
-        } 
-        return []; 
-    }, [products, filteredProducts]); 
+        return [];
+    }, [products, filteredProducts]);
 
     const [searchQuery, setSearchQuery] = useState<string>(""); 
     const [searchFilteredProducts, setSearchFilteredProducts] = useState<Product[]>([]); 
@@ -84,15 +83,16 @@ const ShopClient = () => {
         <div className="flex w-full min-h-full flex-col">
             <main className="flex w-full flex-col flex-grow">
                 <div className="flex flex-col items-center">
-                    <div className="w-[85vw] h-[18vh] sm:h-[24vh] flex flex-col sm:flex-row items-start sm:items-center justify-center mt-24">
-                        <SearchButton
-                            products={searchableProducts}
-                            onSearch={handleRealTimeSearch}
-                        />
+                    <div className="relative flex w-[85vw] flex-col items-center justify-center py-12 mt-20 md:flex-row">
+                        <div className="w-[10vh] md:w-auto md:absolute md:left-0">
+                            <SearchButton
+                                products={searchableProducts}
+                                onSearch={handleRealTimeSearch}
+                            />
+                        </div>
 
-                        {category && category.length > 0 && (
-                            <CategoryList category={category} />
-                        )}
+                        {category && category.length > 0 && 
+                            <CategoryList category={category} />}
                     </div>
 
                     {isProductListEmpty ? (
@@ -125,7 +125,7 @@ const ShopClient = () => {
                         </div>
                     ) : (
                         <div>
-                            <ul className="mt-4 grid w-[90vw] md:w-[85vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3">
+                            <ul className="mt-4 grid w-[95vw] md:w-[92vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3">
                                 {displayProducts.map((item, index) => (
                                     <ProductsList
                                         key={`${item._id}-${isSearchMode ? "search" : section}-${index}`}

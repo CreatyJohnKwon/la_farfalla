@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useRef } from "react";
-import DefaultImage from "../../../../public/images/sample_file.jpeg";
+import DefaultImage from "../../../../public/images/chill.png";
 import { motion, useMotionValue, useAnimation } from "framer-motion";
 
 const Slider = ({ images }: { images: string[] }) => {
@@ -55,7 +55,7 @@ const Slider = ({ images }: { images: string[] }) => {
                     containerRef.current = el;
                 }}
             >
-                <div className="relative">
+                <div className="relative group">
                     <motion.div
                         className="flex"
                         drag="x"
@@ -74,7 +74,7 @@ const Slider = ({ images }: { images: string[] }) => {
                                 >
                                     {/* 스켈레톤 로딩 */}
                                     {!isLoaded && (
-                                        <div className="absolute inset-0 z-10 animate-fade-in bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200"></div>
+                                        <div className="absolute inset-0 z-10 animate-fade-in"></div>
                                     )}
 
                                     <Image
@@ -106,10 +106,10 @@ const Slider = ({ images }: { images: string[] }) => {
                                 current > 0 ? current - 1 : images.length - 1,
                             )
                         }
-                        className="group absolute -left-4 top-1/2 z-10 -translate-y-1/2 rounded-full p-4 transition-all"
+                        className="group absolute -left-4 top-1/2 z-10 -translate-y-1/2 ps-5 opacity-0 group-hover:opacity-100 transition-all duration-300 sm:block hidden"
                     >
                         <svg
-                            className="h-16 w-16 text-black/40 transition-transform group-hover:-translate-x-1"
+                            className="h-[5vh] w-[5vh] text-black/40 transition-transform group-hover:-translate-x-1"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -124,10 +124,10 @@ const Slider = ({ images }: { images: string[] }) => {
                     </button>
                     <button
                         onClick={() => slideTo((current + 1) % images.length)}
-                        className="group absolute -right-4 top-1/2 z-10 -translate-y-1/2 rounded-full p-4 transition-all"
+                        className="group absolute -right-4 top-1/2 z-10 -translate-y-1/2 pe-5 opacity-0 group-hover:opacity-100 transition-all duration-300 sm:block hidden"
                     >
                         <svg
-                            className="h-16 w-16 text-black/40 transition-transform group-hover:translate-x-1"
+                            className="h-[5vh] w-[5vh] text-black/40 transition-transform group-hover:translate-x-1"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -147,7 +147,7 @@ const Slider = ({ images }: { images: string[] }) => {
                             <button
                                 key={idx}
                                 onClick={() => slideTo(idx)}
-                                className={`h-2 w-2 rounded-full ${
+                                className={`h-[0.8vh] w-[0.8vh] rounded-full ${
                                     current === idx
                                         ? "scale-125 bg-white"
                                         : "bg-gray-400"
@@ -155,7 +155,6 @@ const Slider = ({ images }: { images: string[] }) => {
                             />
                         ))}
                     </div>
-
                 </div>
             </div>
         </div>

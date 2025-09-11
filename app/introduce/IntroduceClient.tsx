@@ -1,9 +1,20 @@
 "use client";
 
+import Image from "next/image";
+import imageUrl from "../../public/images/bg_introduce_250911.jpg"
+
 const IntroduceClient = () => {
     return (
-        <div className="flex h-screen w-full flex-col overflow-hidden">
-            <main className="relative flex h-full w-full flex-col items-center justify-center p-5 text-center">
+        <div className="flex min-h-screen w-full flex-col overflow-hidden group relative">
+            {/* 배경 이미지 */}
+            <Image
+                src={imageUrl}
+                alt={"asdfase"}
+                fill
+                className="object-contain transition-transform duration-500"
+            />
+
+            {/* <main className="relative flex h-full w-full flex-col items-center justify-center p-5 text-center bg-white/60">
                 <div className="-mt-16 hidden space-y-3 font-pretendard text-[1.25em] tracking-tightest transition-all duration-300 ease-in-out sm:block">
                     <p>사이의 여유, 선택의 아름다움</p>
                     <br />
@@ -43,10 +54,10 @@ const IntroduceClient = () => {
                 <span className="font-amstel-thin sm:font-amstel text-[0.5em] sm:text-base">
                     © 2025. lafarfalla. All rights reserved.
                 </span>
-                <span className="font-amstel absolute bottom-0 left-10 text-[6em] text-[#FAF6EB] transition-all duration-300 ease-in-out sm:-bottom-16 sm:text-[12.3em] c_xl:-bottom-32 c_xl:text-[20.2em]">
+                {/* <span className="font-amstel absolute bottom-0 left-10 text-[6em] text-[#FAF6EB]/50 transition-all duration-300 ease-in-out sm:-bottom-16 sm:text-[12.3em] c_xl:-bottom-32 c_xl:text-[20.2em]">
                     introduce
                 </span>
-            </main>
+            </main> */}
         </div>
     );
 };

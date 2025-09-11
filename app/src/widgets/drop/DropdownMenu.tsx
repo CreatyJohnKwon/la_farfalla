@@ -4,17 +4,15 @@ import { useState, useRef, useEffect } from "react";
 import useProduct from "@src/shared/hooks/useProduct";
 import usePage from "@src/shared/hooks/usePage";
 
-// MenuItem 인터페이스를 확장하여 path를 옵셔널로 만들고,
-// onClick 콜백 함수를 추가합니다.
-interface MenuItem {
+interface DropdownMenuItem {
     label: string;
-    path?: string; // path는 더 이상 필수가 아닙니다.
-    onClick?: () => void; // 커스텀 클릭 핸들러를 위한 속성
+    path?: string;
+    onClick?: () => void;
 }
 
 interface DropdownMenuProps {
     title: string;
-    items: MenuItem[];
+    items: DropdownMenuItem[];
     triggerType?: "click" | "hover";
 }
 
@@ -29,8 +27,8 @@ const DropdownMenu = ({
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
-    const clickClasses = `${open ? "sm:max-h-40 opacity-100 visible" : "sm:max-h-0 opacity-0 invisible"}`;
-    const hoverClasses = "group-hover:max-h-40 group-hover:opacity-100 group-hover:visible max-h-0 opacity-0 invisible";
+    const clickClasses = `${open ? "sm:max-h-96 opacity-100 visible" : "sm:max-h-0 opacity-0 invisible"}`;
+    const hoverClasses = "group-hover:max-h-96 group-hover:opacity-100 group-hover:visible max-h-0 opacity-0 invisible";
 
     useEffect(() => {
         switch (pathName) { 
@@ -41,7 +39,7 @@ const DropdownMenu = ({
                 setMenuBg("bg-white/70 sm:pe-10");
                 break;
         }
-    }, [pathName]);
+    }, [pathName, setMenuBg]);
 
     useEffect(() => {
         if (triggerType === "click") {
@@ -66,7 +64,7 @@ const DropdownMenu = ({
             </button>
             <ul
                 className={`
-                    mt-2 sm:mt-4 sm:absolute text-xl transition-all duration-300 ease-in-out font-amstel font-[500] whitespace-nowrap ${menuBg}
+                    mt-2 sm:mt-4 sm:absolute text-base c_xl:text-xl transition-all duration-300 ease-in-out font-amstel font-[500] whitespace-nowrap ${menuBg}
                     ${triggerType === "click" ? clickClasses : hoverClasses}
                 `}
             >

@@ -5,30 +5,26 @@ const CategoryList = ({ category }: { category?: Category[]}) => {
     const { section, setSection } = useProduct();
 
     return (
-        <div className="flex flex-grow place-self-center items-center sm:justify-center sm:-ms-56">
+        <div className="flex items-center justify-center pt-6 md:pt-0">
             {!category ?
                 (<span className="text-sm font-pretendard-bold text-red-600">
                     상품 정보 송신 에러: 405 productlist
                 </span>) : (
-                <ul className="flex flex-row font-amstel text-xl sm:text-3xl gap-5">
+                <ul className="flex flex-row font-amstel text-base gap-5">
                     {/* 2. 'All' 메뉴에 조건부 스타일을 적용합니다. */}
                     <li
                         key={"All_section"}
                         onClick={() => setSection("")}
-                        className={`cursor-pointer transition-colors hover:text-black ${
-                            section === "" ? "text-black" : "text-gray-300"
-                        }`}
+                        className={`cursor-pointer transition-colors hover:text-black`}
                     >
                         All
                     </li> 
                     {category.map((cat) => 
-                        // 3. 각 카테고리 메뉴에 조건부 스타일을 적용합니다.
+                        /* 3. 각 카테고리 메뉴에 조건부 스타일을 적용합니다. */
                         <li
                             key={cat._id}
                             onClick={() => setSection(cat.name)}
-                            className={`cursor-pointer transition-colors hover:text-black ${
-                                section === cat.name ? "text-black" : "text-gray-300"
-                            }`}
+                            className={`cursor-pointer transition-colors hover:text-black`}
                         >
                             {cat.name}
                         </li>

@@ -29,16 +29,16 @@ const isImageUrl = (description: string) => {
 
 // About 드롭다운 메뉴 아이템
 const aboutMenuItems = [
-    { label: "introduce", path: "/introduce" },
-    { label: "project", path: "/project" },
+    { label: "INTRODUCE", path: "/introduce" },
+    { label: "PROJECT", path: "/project" },
 ];
 
 // Admin 드롭다운 메뉴 아이템
 const adminMenuItems = [
-    { label: "Order", path: "/admin/list/orders" },
-    { label: "Product", path: "/admin/list/products" },
-    { label: "User", path: "/admin/list/users" },
-    { label: "Coupon", path: "/admin/list/coupons" },
+    { label: "ORDER", path: "/admin/list/orders" },
+    { label: "PRODUCT", path: "/admin/list/products" },
+    { label: "USER", path: "/admin/list/users" },
+    { label: "COUPON", path: "/admin/list/coupons" },
 ];
 
 const textareaPlaceholder = `리뷰 작성시 적립금 안내

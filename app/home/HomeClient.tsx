@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
-import BackgroundImg from "../../public/images/bg_250905.jpg";
+import BackgroundImg from "../../public/images/bg_new_250911.jpeg";
 import AnnounceLayer from "@src/components/announce/AnnounceLayer";
 import { AnnouncesProps } from "@src/entities/type/announce";
 
@@ -21,9 +21,9 @@ const HomeClient = ({ bannerAnnounce, popupAnnounces }: AnnouncesProps) => {
         <Image
           src={BackgroundImg}
           alt="background"
-          height={1080}
-          width={1920}
-          className="h-full w-full object-cover object-[70%_center] sm:object-left"
+          height={1000}
+          width={1000}
+          className="h-full w-full object-cover object-[70%_center] sm:object-top"
         />
       </div>
 

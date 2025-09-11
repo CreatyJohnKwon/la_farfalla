@@ -41,19 +41,19 @@ const NavbarClient = () => {
 
     return (
         <nav
-            className={`fixed top-0 z-40 h-auto w-full ps-0 pt-4 pb-3 sm:pb-0 text-base shadow-none ${pathName === "/home" ? "bg-transparent" : "bg-white"} ${textColor}`}
+            className={`fixed top-0 z-40 h-auto w-full ps-0 pt-5 pb-3 sm:pb-4 text-base shadow-none ${pathName === "/home" || pathName === "/introduce" ? "bg-transparent" : "bg-white"} ${textColor}`}
         >
             <div
-                className={`max-w-screen-w_max relative mx-auto flex items-center justify-between p-0 sm:p-4 text-xl md:text-2xl c_xl:text-3xl`}
+                className={`max-w-screen-w_max w-[92vw] relative mx-auto flex items-center justify-between sm:pt-4 text-xl sm:text-base`}
             >
                 {/* 왼쪽 메뉴 : PC */}
-                <ul className="hidden border-gray-100 ps-4 sm:flex sm:space-x-8">
+                <ul className="hidden border-gray-100 sm:flex sm:space-x-4">
                     <li
-                        className="font-amstel block ps-4 sm:ps-6"
+                        className="ps-4 sm:ps-0 font-amstel block"
                         key={"shop-menu"}
                     >
                         <DropdownMenu
-                            title="shop"
+                            title="SHOP"
                             items={shopMenuItems}
                             triggerType="hover"
                         />
@@ -78,12 +78,12 @@ const NavbarClient = () => {
                 </button>
 
                 {/* 가운데 중앙 로고 (절대 위치) */}
-                <div className="font-amstel absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/3 sm:-translate-y-1/2 text-base sm:text-xl md:text-3xl c_xl:text-4xl">
-                    <Link href="/home">La farfalla</Link>
+                <div className="font-amstel absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1 text-base sm:text-2xl">
+                    <Link href="/home">LA FARFALLA</Link>
                 </div>
 
                 <div
-                    className={`font-amstel me-2 ml-auto justify-center bg-transparent sm:order-1 sm:me-4`}
+                    className={`font-amstel ml-auto justify-center bg-transparent sm:order-1`}
                 >
                     {/* 오른쪽 메뉴 : Mobile */}
                     <ul className="flex space-x-2 sm:hidden">
@@ -101,9 +101,9 @@ const NavbarClient = () => {
                     </ul>
 
                     {/* 오른쪽 메뉴 : PC */}
-                    <ul className="hidden sm:flex sm:space-x-8">
+                    <ul className="hidden sm:flex sm:space-x-4">
                         {navStartData.map((navList, index) =>
-                            navList.text === "cart" ? (
+                            navList.text === "CART" ? (
                                 session && (
                                     <li key={`nav_list_${index}`}>
                                         <button
@@ -112,15 +112,15 @@ const NavbarClient = () => {
                                                 setCartView(true)
                                             }
                                         >
-                                            cart
+                                            CART
                                         </button>
                                     </li>
                                 )
-                            ) : navList.text === "logout" ? (
+                            ) : navList.text === "LOGOUT" ? (
                                 <li key={`nav_list_${index}`}>
                                     <button
                                         onClick={logoutHandler}
-                                        className="block pe-4 sm:pe-6"
+                                        className="block pe-4 sm:pe-0"
                                     >
                                         {navList.text}
                                     </button>
@@ -128,10 +128,10 @@ const NavbarClient = () => {
                             ) : (
                                 <li key={`nav_list_${index}`}>
                                     <Link
-                                        href={navList.text === "login" && session ? "/profile" : `/${navList.text}`}
-                                        className="block pe-4 sm:pe-6"
+                                        href={navList.text === "LOGIN" && session ? "/profile" : `/${navList.text.toLowerCase()}`}
+                                        className={`${navList.text === "LOGIN" || navList.text === "LOGOUT" ? "pe-0" : "pe-4 sm:pe-6"} block`}
                                     >
-                                        {navList.text === "login" && session ? "profile" : navList.text}
+                                        {navList.text === "LOGIN" && session ? "PROFILE" : navList.text}
                                     </Link>
                                 </li>
                             ),
