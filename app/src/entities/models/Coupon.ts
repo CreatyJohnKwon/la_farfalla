@@ -42,6 +42,7 @@ const couponSchema = new Schema<ICouponDocument>(
     },
     {
         timestamps: true,
+        collection: "coupons"
     },
 );
 

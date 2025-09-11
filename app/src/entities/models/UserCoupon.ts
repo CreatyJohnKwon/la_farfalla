@@ -46,6 +46,7 @@ const userCouponSchema = new Schema(
     },
     {
         timestamps: true,
+        collection: "usercoupons",
     },
 );
 

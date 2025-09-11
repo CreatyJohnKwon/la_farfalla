@@ -83,6 +83,7 @@ const reviewSchema = new Schema<IReviewDocument>(
     },
     {
         timestamps: true,
+        collection: "reviews",
     },
 );
 
