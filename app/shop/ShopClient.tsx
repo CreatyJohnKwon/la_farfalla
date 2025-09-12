@@ -83,7 +83,7 @@ const ShopClient = () => {
         <div className="flex w-full min-h-full flex-col">
             <main className="flex w-full flex-col flex-grow">
                 <div className="flex flex-col items-center">
-                    <div className="relative flex w-[85vw] flex-col items-center justify-center py-12 mt-20 md:flex-row">
+                    <div className="relative flex w-[93vw] flex-col items-center justify-center py-12 mt-20 md:flex-row">
                         <div className="w-[10vh] md:w-auto md:absolute md:left-0">
                             <SearchButton
                                 products={searchableProducts}
@@ -125,7 +125,7 @@ const ShopClient = () => {
                         </div>
                     ) : (
                         <div>
-                            <ul className="mt-4 grid w-[95vw] md:w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3">
+                            <ul className="mt-4 grid w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3">
                                 {displayProducts.map((item, index) => (
                                     <ProductsList
                                         key={`${item._id}-${isSearchMode ? "search" : section}-${index}`}

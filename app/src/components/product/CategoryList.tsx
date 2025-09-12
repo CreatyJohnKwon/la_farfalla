@@ -10,7 +10,7 @@ const CategoryList = ({ category }: { category?: Category[]}) => {
                 (<span className="text-sm font-pretendard-bold text-red-600">
                     상품 정보 송신 에러: 405 productlist
                 </span>) : (
-                <ul className="flex flex-row font-amstel text-base gap-5">
+                <ul className="flex flex-row font-amstel text-xs sm:text-base gap-4 sm:gap-5">
                     <li
                         key={"All_section"}
                         onClick={() => setSection("")}

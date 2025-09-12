@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import imageUrl from "../../public/images/bg_introduce_250911.jpg"
+import imageUrlMobile from "../../public/images/bg_introduce_250912_mobile.jpeg"
 
 const IntroduceClient = () => {
     return (
@@ -9,9 +10,15 @@ const IntroduceClient = () => {
             {/* 배경 이미지 */}
             <Image
                 src={imageUrl}
-                alt={"asdfase"}
+                alt={"introduce_pc_bg_img"}
                 fill
-                className="object-contain transition-transform duration-500"
+                className="object-cover transition-transform duration-500 sm:block hidden"
+            />
+            <Image
+                src={imageUrlMobile}
+                alt={"introduce_mobile_bg_img"}
+                fill
+                className="object-cover transition-transform duration-500 sm:hidden block"
             />
 
             {/* <main className="relative flex h-full w-full flex-col items-center justify-center p-5 text-center bg-white/60">

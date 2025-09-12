@@ -73,12 +73,12 @@ const NavbarClient = () => {
                 {/* 왼쪽 메뉴 : Mobile */}
                 <button onClick={() => setOpenSidebar(true)}>
                     <RxHamburgerMenu
-                        className={`ms-6 block text-2xl sm:hidden`}
+                        className={`ms-1 block text-2xl sm:hidden`}
                     />
                 </button>
 
                 {/* 가운데 중앙 로고 (절대 위치) */}
-                <div className="font-amstel absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1 text-base sm:text-2xl">
+                <div className="font-amstel absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:-translate-y-1 text-base sm:text-2xl">
                     <Link href="/home">LA FARFALLA</Link>
                 </div>
 
@@ -95,7 +95,7 @@ const NavbarClient = () => {
 
                         <Link href={session ? "/profile" : "/login"}>
                             <AiOutlineUser
-                                className={`text-2xl ${session ? "me-4" : "me-2"}`}
+                                className={`text-2xl ${session ? "me-2" : "me-1"}`}
                             />
                         </Link>
                     </ul>

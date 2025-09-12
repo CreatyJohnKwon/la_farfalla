@@ -64,7 +64,7 @@ const DropdownMenu = ({
             </button>
             <ul
                 className={`
-                    mt-2 sm:mt-4 sm:absolute text-base c_xl:text-xl transition-all duration-300 ease-in-out font-amstel font-[500] whitespace-nowrap ${menuBg}
+                    mt-2 sm:mt-4 sm:absolute text-sm transition-all duration-300 ease-in-out font-amstel font-[500] whitespace-nowrap ${menuBg}
                     ${triggerType === "click" ? clickClasses : hoverClasses}
                 `}
             >

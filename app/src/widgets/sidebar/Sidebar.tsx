@@ -54,9 +54,9 @@ const Sidebar = () => {
                     >
                         <IoCloseOutline />
                     </button>
-                    <div className="font-amstel absolute left-1/2 top-8 -translate-x-1/2 -translate-y-1/3 text-base">
+                    <div className="font-amstel absolute left-1/2 top-8 -translate-x-1/2 -translate-y-1/2 text-base">
                         <Link href="/home" onClick={() => setOpenSidebar(false)}>
-                            La farfalla
+                            LA FARFALLA
                         </Link>
                     </div>
                     <ul className="absolute right-4 top-5 flex space-x-2 transition-all duration-300 ease-in-out">

@@ -18,7 +18,7 @@ const Footer = () => {
 
     return (
         // 1. 부모 요소에 'relative'를 추가하여 자식의 absolute 포지셔닝 기준으로 만듭니다.
-        <footer className={`w-full y-full ${pathName === "/home" ? "mt-0" : "mt-[20vh]"} w-[90vw] sm:w-[95vw] ps-5 sm:ps-10`}>
+        <footer className={`w-full y-full ${pathName === "/home" ? "mt-0" : "mt-[20vh] sm:mt-[15vh]"} w-[90vw] sm:w-[95vw] ps-5 sm:ps-10`}>
             <div className="flex flex-col justify-center items-center w-full y-full relative">
                 {/* 2. License 래퍼 div의 스타일을 absolute 포지셔닝 및 transform 애니메이션으로 변경합니다. */}
                 <div
