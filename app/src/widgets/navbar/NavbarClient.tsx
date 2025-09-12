@@ -73,7 +73,7 @@ const NavbarClient = () => {
                 {/* 왼쪽 메뉴 : Mobile */}
                 <button onClick={() => setOpenSidebar(true)}>
                     <RxHamburgerMenu
-                        className={`ms-2 block text-2xl sm:hidden`}
+                        className={`ms-1 block text-2xl sm:hidden`}
                     />
                 </button>
 
@@ -95,7 +95,7 @@ const NavbarClient = () => {
 
                         <Link href={session ? "/profile" : "/login"}>
                             <AiOutlineUser
-                                className={`text-2xl ${session ? "me-2" : "me-0"}`}
+                                className={`text-2xl ${session ? "me-1" : "me-0"}`}
                             />
                         </Link>
                     </ul>
@@ -129,7 +129,7 @@ const NavbarClient = () => {
                                 <li key={`nav_list_${index}`}>
                                     <Link
                                         href={navList.text === "LOGIN" && session ? "/profile" : `/${navList.text.toLowerCase()}`}
-                                        className={`${navList.text === "LOGIN" || navList.text === "LOGOUT" ? "pe-0" : "pe-4 sm:pe-6"} block`}
+                                        className={`${navList.text === "LOGIN" || navList.text === "LOGOUT" ? "pe-0" : "pe-4"} block`}
                                     >
                                         {navList.text === "LOGIN" && session ? "PROFILE" : navList.text}
                                     </Link>

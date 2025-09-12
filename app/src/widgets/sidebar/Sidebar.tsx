@@ -49,10 +49,10 @@ const Sidebar = () => {
                 <div className="relative flex h-full w-full flex-col items-center justify-center">
                     {/* 상단 UI (동일) */}
                     <button
-                        className="absolute left-4 top-5 text-2xl text-black"
+                        className="absolute left-4 top-3 mt-0.5 text-2xl font-amstel font-[600] text-black"
                         onClick={() => setOpenSidebar(false)}
                     >
-                        <IoCloseOutline />
+                        &times;
                     </button>
                     <div className="font-amstel absolute left-1/2 top-8 -translate-x-1/2 -translate-y-1/2 text-base">
                         <Link href="/home" onClick={() => setOpenSidebar(false)}>

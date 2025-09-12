@@ -36,7 +36,7 @@ const RootLayout = async ({
     return (
         <html lang="en" suppressHydrationWarning>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
+                className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen min-w-screen flex-col antialiased`}
             >
                 <JotaiProvider>
                     <RQProvider>
