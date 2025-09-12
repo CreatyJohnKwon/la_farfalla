@@ -48,26 +48,6 @@ const CouponList = () => {
         );
     };
 
-    // 로딩 중엔 스켈레톤만
-    if (isCouponsLoading || isCouponManageLoading) {
-        return (
-            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
-                <SkeletonList />
-            </ul>
-        );
-    }
-
-    // 에러
-    if (isError || isCouponManageError) {
-        return (
-            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
-                <li className="mt-10 text-center font-pretendard text-xl font-[300] text-red-400">
-                    쿠폰 로딩 실패
-                </li>
-            </ul>
-        );
-    }
-
     // 데이터 추출
     const userCoupons = couponResponse?.data || [];
     const allCoupons = couponManageResponse?.data || [];
@@ -119,10 +99,30 @@ const CouponList = () => {
         return hasQuotaLeft;
     });
 
+    // 로딩 중엔 스켈레톤만
+    if (isCouponsLoading || isCouponManageLoading) {
+        return (
+            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
+                <SkeletonList />
+            </ul>
+        );
+    }
+
+    // 에러
+    if (isError || isCouponManageError) {
+        return (
+            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
+                <li className="mt-10 text-center font-pretendard text-xl font-[300] text-red-400">
+                    쿠폰 로딩 실패
+                </li>
+            </ul>
+        );
+    }
+
     // 쿠폰이 하나라도 있을 때
     if (validCoupons.length > 0) {
         return (
-            <ul className="flex w-[85vw] flex-col gap-4 overflow-y-scroll pb-5 sm:w-auto">
+            <ul className="flex w-full flex-col gap-4 overflow-y-scroll pb-5 sm:w-auto">
                 {validCoupons.map((coupon: any) => {
                     // 사용자가 보유한 쿠폰 중에서 현재 쿠폰과 매칭되는 것을 찾기
                     const userCoupon = userCoupons.find(
@@ -279,7 +279,7 @@ const CouponList = () => {
     // 빈 상태
     return (
         <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
-            <li className="font-pretendard-thin mt-20 w-full text-center text-base text-black/60">
+            <li className="font-pretendard-thin mt-16 w-full text-center text-base text-black/60">
                 사용 가능한 쿠폰이 없습니다
             </li>
         </ul>

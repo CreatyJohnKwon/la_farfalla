@@ -41,7 +41,7 @@ const NavbarClient = () => {
 
     return (
         <nav
-            className={`fixed top-0 z-40 h-auto w-full ps-0 pt-5 pb-3 sm:pb-4 text-base shadow-none ${pathName === "/home" || pathName === "/introduce" ? "bg-transparent" : "bg-white"} ${textColor}`}
+            className={`fixed top-0 z-40 h-auto w-full pt-5 pb-3 sm:pb-4 text-base shadow-none ${pathName === "/home" || pathName === "/introduce" ? "bg-transparent" : "bg-white"} ${textColor}`}
         >
             <div
                 className={`max-w-screen-w_max w-[93vw] relative mx-auto flex items-center justify-between sm:pt-4 text-xl sm:text-base`}
@@ -49,7 +49,7 @@ const NavbarClient = () => {
                 {/* 왼쪽 메뉴 : PC */}
                 <ul className="hidden border-gray-100 sm:flex sm:space-x-4">
                     <li
-                        className="ps-4 sm:ps-0 font-amstel block"
+                        className="font-amstel block"
                         key={"shop-menu"}
                     >
                         <DropdownMenu
@@ -59,7 +59,7 @@ const NavbarClient = () => {
                         />
                     </li>
                     <li
-                        className="block ps-4 sm:ps-6"
+                        className="block ps-6"
                         key={"about-admin-menu"}
                     >
                         <DropdownMenu
@@ -73,7 +73,7 @@ const NavbarClient = () => {
                 {/* 왼쪽 메뉴 : Mobile */}
                 <button onClick={() => setOpenSidebar(true)}>
                     <RxHamburgerMenu
-                        className={`ms-1 block text-2xl sm:hidden`}
+                        className={`ms-2 block text-2xl sm:hidden`}
                     />
                 </button>
 
@@ -89,13 +89,13 @@ const NavbarClient = () => {
                     <ul className="flex space-x-2 sm:hidden">
                         <button onClick={() => setCartView(true)}>
                             <HiOutlineShoppingBag
-                                className={`me-4 text-2xl ${session ? "block" : "hidden"}`}
+                                className={`me-3 text-2xl ${session ? "block" : "hidden"}`}
                             />
                         </button>
 
                         <Link href={session ? "/profile" : "/login"}>
                             <AiOutlineUser
-                                className={`text-2xl ${session ? "me-2" : "me-1"}`}
+                                className={`text-2xl ${session ? "me-2" : "me-0"}`}
                             />
                         </Link>
                     </ul>

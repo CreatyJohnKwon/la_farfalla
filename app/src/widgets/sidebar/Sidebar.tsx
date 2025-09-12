@@ -67,19 +67,19 @@ const Sidebar = () => {
                             }}
                             className={`${session ? "block" : "hidden"}`}
                         >
-                            <HiOutlineShoppingBag className={`me-4 text-2xl text-black ${session ? "block" : "hidden"}`} />
+                            <HiOutlineShoppingBag className={`me-3 text-2xl text-black ${session ? "block" : "hidden"}`} />
                         </button>
                         <Link href={session ? "/profile" : "/login"} onClick={() => setOpenSidebar(false)}>
-                            <AiOutlineUser className={`me-2 text-2xl text-black`} />
+                            <AiOutlineUser className={`me-1 text-2xl text-black`} />
                         </Link>
                     </ul>
                     
                     {/* 메뉴 리스트 */}
-                    <ul className="absolute top-1/4 flex flex-row items-start gap-20 text-center text-3xl text-black">
+                    <ul className="absolute top-36 flex flex-row items-start gap-12 text-center text-xl text-black">
                         <li className="relative">
                             {/* ShopDrop을 DropdownMenu로 완벽하게 대체 */}
                             <DropdownMenu 
-                                title="shop"
+                                title="SHOP"
                                 items={shopMenuItems}
                                 triggerType="click" 
                             />

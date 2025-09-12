@@ -43,7 +43,7 @@ const MileageList = () => {
     // 로딩 처리 (첫 페이지 로딩 시)
     if (isUserLoading || isMileageLoading) {
         return (
-            <ul className="flex w-[85vw] flex-col gap-3 overflow-y-auto pb-5 sm:w-auto whitespace-nowrap">
+            <ul className="flex w-[90vw] flex-col gap-3 overflow-y-auto pb-5 sm:w-auto whitespace-nowrap">
                 <SkeletonList />
             </ul>
         );
@@ -53,7 +53,7 @@ const MileageList = () => {
     if (isError) {
         return (
             <ul>
-                <li className="font-pretendard-thin mt-20 w-full text-center text-[0.5em] text-black/60">
+                <li className="font-pretendard-thin mt-16 w-full text-center text-base text-black/60">
                     마일리지 내역 에러 : Error
                 </li>
             </ul>
@@ -63,8 +63,8 @@ const MileageList = () => {
     // 데이터가 없을 때
     if (!data || data.pages.every(page => page.length === 0)) {
         return (
-            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
-                <li className="font-pretendard-thin mt-20 w-full text-center text-[0.5em] text-black/60">
+            <ul className="flex flex-col gap-4 sm:w-auto">
+                <li className="font-pretendard-thin mt-16 w-full text-center text-base text-black/60">
                     마일리지 내역이 없습니다
                 </li>
             </ul>
@@ -73,7 +73,7 @@ const MileageList = () => {
 
     {
         return (
-            <ul className="flex w-[85vw] flex-col gap-3 overflow-y-auto pb-5 sm:w-auto whitespace-nowrap">
+            <ul className="flex w-full flex-col gap-3 overflow-y-auto pb-5 sm:w-auto whitespace-nowrap">
                 {data.pages.map((page, pageIndex) => (
                     // React는 fragment key를 지원하므로 key를 여기에 둡니다.
                     <Fragment key={pageIndex}>
