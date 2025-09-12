@@ -81,7 +81,7 @@ const Sidebar = () => {
                             <DropdownMenu 
                                 title="SHOP"
                                 items={shopMenuItems}
-                                triggerType="click" 
+                                triggerType="click"
                             />
                         </li>
                         <li className="relative">
