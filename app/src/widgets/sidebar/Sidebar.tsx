@@ -1,8 +1,9 @@
 "use client";
 
+import useUsers from "@/src/shared/hooks/useUsers";
 import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "@src/widgets/drop/DropdownMenu";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Sidebar = () => {
     const {
@@ -18,36 +19,54 @@ const Sidebar = () => {
         setAnimationClass,
         onCloseSidebar
     } = usePage();
+    const { session, logoutHandler } = useUsers();
+    const [backdropOpacityClass, setBackdropOpacityClass] = useState("bg-black/0");
+    const firstRender = useRef(true);
 
     useEffect(() => {
+        // 첫 번째 렌더링 시에는 애니메이션을 실행하지 않음
+        if (firstRender.current) {
+            firstRender.current = false;
+            setBackdropOpacityClass("bg-black/0");
+            setAnimationClass("");
+            return;
+        }
+
         if (openSidebar) {
-            setIsVisible(true);
-            setAnimationClass("animate-slide-in-left");
+            waitforSlideOpen();
         } else {
+            setBackdropOpacityClass("bg-black/0");
             setAnimationClass("animate-slide-out-left");
-            setTimeout(() => {
-                setIsVisible(false);
-            }, 500);
         }
     }, [openSidebar]);
 
-    if (!isVisible) return null;
+    // openSidebar 애니메이션
+    const waitforSlideOpen = () => {
+        setAnimationClass("animate-slide-in-left")
+        setTimeout(() => setBackdropOpacityClass("bg-black/50"), 100);
+    }
+
+    // DOM에서 사이드바를 완전히 제거할지 결정
+    if (animationClass === "animate-slide-out-left" && !openSidebar) {
+        setTimeout(() => {
+            setAnimationClass("");
+        }, 500);
+    }
+
+    if (animationClass === "") return null;
 
     return (
         !isCategoryLoad &&
         category && (
-            // 검은 배경 (부모) - 애니메이션이 적용되지 않습니다.
             <div 
-                className="fixed inset-0 z-50 bg-black/50"
+                className={`fixed inset-0 z-50 transition-colors duration-500 ${backdropOpacityClass}`}
                 onClick={() => onCloseSidebar()}
             >
-                {/* 흰색 사이드바 (자식) - 애니메이션만 적용됩니다. */}
                 <div 
                     className={`fixed left-0 top-0 h-full w-[72vw] bg-white z-50 ${animationClass}`}
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="relative flex h-full w-full flex-col items-center justify-center">
-                        {/* 상단 UI (동일) */}
                         <button
                             className="absolute left-4 top-3 mt-0.5 text-2xl font-amstel font-[500] text-black"
                             onClick={() => onCloseSidebar()}
@@ -72,6 +91,15 @@ const Sidebar = () => {
                                 />
                             </li>
                         </ul>
+
+                        {session?.user?.email ?
+                            <span 
+                                className="absolute bottom-0 left-0 p-5 font-amstel text-sm underline"
+                                onClick={() => logoutHandler()}
+                            >
+                                LOGOUT
+                            </span> : <></>
+                        }
                     </div>
                 </div>
             </div>
