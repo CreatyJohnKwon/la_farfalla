@@ -24,9 +24,16 @@ const usePage = () => {
     const [children, setChildren] = useState<any>(null);
     const [menuBg, setMenuBg] = useState<string>("bg-transparent");
 
+    const onCloseSidebar = () => setOpenSidebar(false);
+    const onOpenSidebar = () => setOpenSidebar(true);
     const isUserAdmin = adminEmails.includes(session?.user?.email ?? "");
     const menuData = isUserAdmin ? adminMenuItems : aboutMenuItems;
     const menuTitle = isUserAdmin ? "ADMIN" : "ABOUT";
+    const sideBarMenuData = [
+        { label: "INTRODUCE", link: "/introduce" },
+        { label: "PROJECT", link: "/project" },
+        // { label: "NOTICE", link: "/notice" }, // 추후에 추가
+    ]
 
     const instagramHandler = () =>
         window.open(
@@ -52,9 +59,6 @@ const usePage = () => {
         }))
     ] : [];
 
-    const onCloseSidebar = () => setOpenSidebar(false);
-    const onOpenSidebar = () => setOpenSidebar(true);
-
     return {
         instagramHandler,
 
@@ -78,6 +82,7 @@ const usePage = () => {
         openSidebar,
         menuData,
         menuTitle,
+        sideBarMenuData,
         isVisible,
         animationClass,
         isCategoryLoad,

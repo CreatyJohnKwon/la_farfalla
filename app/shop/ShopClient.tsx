@@ -83,7 +83,7 @@ const ShopClient = () => {
         <div className="flex w-full min-h-full flex-col">
             <main className="flex w-full flex-col flex-grow">
                 <div className="flex flex-col items-center">
-                    <div className="relative flex w-[93vw] flex-col items-center justify-center py-12 mt-20 md:flex-row">
+                    <div className="relative flex w-[93vw] flex-col items-center justify-center py-12 mt-16 sm:mt-20 md:flex-row">
                         <div className="w-[10vh] md:w-auto md:absolute md:left-0 self-start">
                             <SearchButton
                                 products={searchableProducts}
@@ -96,7 +96,7 @@ const ShopClient = () => {
                     </div>
 
                     {isProductListEmpty ? (
-                        <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[30vh]">
+                        <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[20vh] sm:py-[30vh]">
                             <div className="mb-4">
                                 <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={0.7} stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
@@ -110,7 +110,7 @@ const ShopClient = () => {
                             </p>
                         </div>
                     ) : isEmptyResults ? (
-                        <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[30vh]">
+                        <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[20vh] sm:py-[30vh]">
                             <div className="mb-4">
                                 <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.7} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

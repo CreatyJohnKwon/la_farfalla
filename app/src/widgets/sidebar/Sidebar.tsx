@@ -3,25 +3,28 @@
 import useUsers from "@/src/shared/hooks/useUsers";
 import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "@src/widgets/drop/DropdownMenu";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 const Sidebar = () => {
     const {
-        menuData,
-        menuTitle,
-        isVisible,
+        sideBarMenuData,
         animationClass,
         isCategoryLoad,
         category,
         shopMenuItems,
         openSidebar,
-        setIsVisible,
         setAnimationClass,
         onCloseSidebar
     } = usePage();
     const { session, logoutHandler } = useUsers();
     const [backdropOpacityClass, setBackdropOpacityClass] = useState("bg-black/0");
+    const [isClient, setIsClient] = useState<boolean>(false);
     const firstRender = useRef(true);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     useEffect(() => {
         // 첫 번째 렌더링 시에는 애니메이션을 실행하지 않음
@@ -75,31 +78,38 @@ const Sidebar = () => {
                         </button>
                         
                         {/* 메뉴 리스트 */}
-                        <ul className="absolute top-48 flex flex-row items-start gap-12 text-center text-xl text-black">
-                            <li className="relative">
-                                <DropdownMenu 
+                        <ul className="absolute top-36 gap-4 -ms-5 flex flex-col items-start text-start text-lg text-black font-amstel">
+                            <li className="relative -mb-1.5" key={"shop-menu"}>
+                                {isClient && <DropdownMenu 
                                     title="SHOP"
                                     items={shopMenuItems}
                                     triggerType="click"
-                                />
+                                />}
                             </li>
+                            {sideBarMenuData.map((data: any, index: number) =>
+                                <li className="relative" key={index}>
+                                    <Link href={data.link} onClick={() => onCloseSidebar()}>{data.label}</Link>
+                                </li>
+                            )}
+                            {/* 추후에 위 map 에 병합 */}
                             <li className="relative">
-                                <DropdownMenu 
-                                    title={menuTitle}
-                                    items={menuData}
-                                    triggerType="click"
-                                />
+                                <span 
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        alert("기능개발 중입니다")
+                                    }}
+                                >NOTICE</span>
                             </li>
+                            {session?.user?.email &&
+                                <li 
+                                    className="relative"
+                                    key={"logout-button"}
+                                    onClick={() => logoutHandler()}
+                                >
+                                    LOGOUT
+                                </li>
+                            }
                         </ul>
-
-                        {session?.user?.email ?
-                            <span 
-                                className="absolute bottom-0 left-0 p-5 font-amstel text-sm underline"
-                                onClick={() => logoutHandler()}
-                            >
-                                LOGOUT
-                            </span> : <></>
-                        }
                     </div>
                 </div>
             </div>

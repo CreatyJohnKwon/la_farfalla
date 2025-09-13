@@ -27,7 +27,7 @@ const DropdownMenu = ({
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
-    const clickClasses = `${open ? "sm:max-h-96 opacity-100 visible" : "sm:max-h-0 opacity-0 invisible"}`;
+    const clickClasses = `${open ? "sm:max-h-96 opacity-100 visible" : "max-h-0 sm:max-h-0 opacity-0 invisible"}`;
     const hoverClasses = "group-hover:max-h-96 group-hover:opacity-100 group-hover:visible max-h-0 opacity-0 invisible";
 
     useEffect(() => {
@@ -64,7 +64,7 @@ const DropdownMenu = ({
             </button>
             <ul
                 className={`
-                    mt-2 sm:mt-4 sm:absolute text-sm transition-all duration-300 ease-in-out font-amstel font-[500] whitespace-nowrap ${menuBg}
+                    mt-2 sm:mt-4 sm:absolute text-sm sm:transition-all sm:duration-300 ease-in-out font-amstel font-[500] whitespace-nowrap ${menuBg}
                     ${triggerType === "click" ? clickClasses : hoverClasses}
                 `}
             >

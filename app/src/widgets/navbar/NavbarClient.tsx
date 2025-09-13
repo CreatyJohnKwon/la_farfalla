@@ -4,7 +4,7 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineUser } from "react-icons/ai";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Cart from "@src/features/cart/Cart";
 import usePage from "@src/shared/hooks/usePage";
@@ -25,8 +25,12 @@ const NavbarClient = () => {
         navStartData,
         shopMenuItems,
     } = usePage();
-
     const { logoutHandler } = useUsers();
+    const [isClient, setIsClient] = useState<boolean>(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     useEffect(() => {
         switch (pathName) { 
@@ -52,21 +56,21 @@ const NavbarClient = () => {
                         className="font-amstel block"
                         key={"shop-menu"}
                     >
-                        <DropdownMenu
+                        {isClient && <DropdownMenu
                             title="SHOP"
                             items={shopMenuItems}
                             triggerType="hover"
-                        />
+                        />}
                     </li>
                     <li
                         className="block ps-6"
                         key={"about-admin-menu"}
                     >
-                        <DropdownMenu
+                        {isClient && <DropdownMenu
                             title={menuTitle}
                             items={menuData}
                             triggerType="hover"
-                        />
+                        />}
                     </li>
                 </ul>
 
