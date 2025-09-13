@@ -7,16 +7,12 @@ const KakaoFloatingButton = () => {
     // 반응형 패딩과 버튼 크기 (정사각형)
     const getResponsiveValues = useCallback(() => {
         const isMobile = window.innerWidth < 768;
-        return {
-            BUTTON_SIZE: isMobile ? 64 : 70, // 텍스트를 포함할 수 있는 정사각형 크기
-            ICON_SIZE: isMobile ? 20 : 22,
-        };
+        return { BUTTON_SIZE: isMobile ? 52 : 70 };
     }, []);
 
     const [mounted, setMounted] = useState<boolean>(false);
     const [responsiveValues, setResponsiveValues] = useState({
         BUTTON_SIZE: 70,
-        ICON_SIZE: 20,
     });
 
     const pathname = usePathname();
@@ -57,7 +53,7 @@ const KakaoFloatingButton = () => {
 
     return (
         <button
-            className={`group fixed bottom-5 right-5 flex cursor-pointer select-none flex-row items-center justify-center rounded-[25px] bg-white/70 transition-all duration-200 shadow-gray-950 shadow-2xl sm:hover:bg-gray-600/50 ${pathname.includes("/home") ? "z-30" : "z-40"} ${visable ? "block" : "hidden"}`}
+            className={`group fixed bottom-5 h-6 right-5 flex cursor-pointer select-none flex-row items-center justify-center rounded-[20px] md:rounded-[25px] bg-white/70 transition-all duration-200 shadow-gray-950 shadow-2xl sm:hover:bg-gray-600/50 ${pathname.includes("/home") ? "z-30" : "z-40"} ${visable ? "block" : "hidden"}`}
             style={{
                 width: `${responsiveValues.BUTTON_SIZE}px`,
                 height: `${responsiveValues.BUTTON_SIZE}px`,
@@ -97,9 +93,9 @@ const KakaoFloatingButton = () => {
             </svg> */}
 
             {/* 상담하기 텍스트 */}
-            <span className={`text-xl font-amstel-bold text-black group-hover:text-white`}>Q</span>
-            <span className="font-pretendard-bold text-black group-hover:text-white">&</span>
-            <span className={`text-xl font-amstel-bold text-black group-hover:text-white`}>A</span>
+            <span className={`text-base md:text-xl font-amstel-bold text-black group-hover:text-white`}>Q</span>
+            <span className="text-base md:text-xl font-pretendard-bold text-black group-hover:text-white">&</span>
+            <span className={`text-base md:text-xl font-amstel-bold text-black group-hover:text-white`}>A</span>
         </button>
     );
 };

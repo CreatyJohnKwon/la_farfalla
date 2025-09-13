@@ -44,33 +44,33 @@ const FindPasswordModal = ({ onClose }: { onClose: () => void }) => {
 
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm" onClick={onClose}>
-            <div className="relative w-full max-w-md rounded-md bg-white p-6 shadow-xl md:w-3/4" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={onClose}>
+            <div className="relative w-[90vw] rounded-sm bg-white p-6 shadow-xl md:w-3/4" onClick={(e) => e.stopPropagation()}>
                 <button
                     onClick={onClose}
-                    className="absolute right-4 top-4 text-gray-500 hover:text-gray-900"
+                    className="absolute right-4 top-5 text-2xl font-amstel font-[600] text-gray-500 hover:text-gray-900"
                 >
-                    <FiX size={24} />
+                    &times;
                 </button>
-                <h2 className="mb-4 text-center text-xl font-bold">비밀번호 찾기</h2>
+                <h2 className="mb-4 text-start text-xl font-bold">비밀번호 찾기</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <p className="text-sm text-gray-600">
-                        가입 시 입력했던 이메일을 입력하시면 임시 비밀번호를 보내드립니다.
+                        가입된 이메일을 입력하시면 임시 비밀번호가 전송됩니다.
                     </p>
                     <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="이메일 주소"
-                        className="h-12 w-full rounded-none border border-gray-200 bg-gray-50 px-4 text-black transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                        className="h-12 w-full rounded-none border border-gray-200 bg-gray-50 px-4 text-black text-sm sm:text-base transition-all duration-300 ease-in-out placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         required
                     />
                     <button
                         type="submit"
-                        disabled={isPending}
-                        className={`w-full px-6 py-3 font-semibold text-white transition-colors ${
-                            isPending ? "cursor-not-allowed bg-gray-400" : "bg-black hover:bg-black/50"
-                        }`}
+                        disabled={isPending || email.length === 0}
+                        className={`w-full px-6 py-3 font-semibold text-white transition-colors 
+                            ${isPending || email.length === 0 ? "cursor-not-allowed bg-gray-400" : "bg-black hover:bg-black/50"}
+                        `}
                     >
                         {isPending ? "전송 중..." : "임시 비밀번호 받기"}
                     </button>

@@ -52,6 +52,9 @@ const usePage = () => {
         }))
     ] : [];
 
+    const onCloseSidebar = () => setOpenSidebar(false);
+    const onOpenSidebar = () => setOpenSidebar(true);
+
     return {
         instagramHandler,
 
@@ -85,6 +88,9 @@ const usePage = () => {
         pathName,
         navStartData,
         cartView,
+
+        onCloseSidebar,
+        onOpenSidebar
     };
 };
 

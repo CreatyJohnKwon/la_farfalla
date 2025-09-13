@@ -9,8 +9,8 @@ module.exports = {
     theme: {
         extend: {
             animation: {
-                "slide-in-left": "slideInLeft 0.2s ease-out forwards",
-                "slide-out-left": "slideOutLeft 0.3s ease-in forwards",
+                "slide-in-left": "slideInLeft 0.5s ease-out forwards",
+                "slide-out-left": "slideOutLeft 0.5s ease-in forwards",
                 "fade-in": "fade-in 0.5s ease-in-out forwards",
                 "fade-out": "fade-out 0.5s ease-in-out forwards",
                 marquee: "marquee 30s linear infinite",
