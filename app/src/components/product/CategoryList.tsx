@@ -17,15 +17,20 @@ const CategoryList = ({ category }: { category?: Category[]}) => {
                         className={`cursor-pointer transition-colors hover:text-black`}
                     >
                         All
-                    </li> 
+                    </li>
                     {category.map((cat) => 
-                        <li
-                            key={cat._id}
-                            onClick={() => setSection(cat.name)}
-                            className={`cursor-pointer transition-colors hover:text-black`}
-                        >
-                            {cat.name}
-                        </li>
+                        cat.name === "MVP" ?
+                        (
+                            <li key={cat._id} className="-m-2"></li>
+                        ) : (
+                            <li
+                                key={cat._id}
+                                onClick={() => setSection(cat.name)}
+                                className={`cursor-pointer transition-colors hover:text-black`}
+                            >
+                                {cat.name}
+                            </li>
+                        )
                     )}
                 </ul>)
             }

@@ -45,7 +45,7 @@ const CouponAdmin = () => {
         data: userCoupons,
         isLoading: userCouponLoading,
         refetch: userCouponRefetch,
-    } = useGetUserCouponsListQuery("all");
+    } = useGetUserCouponsListQuery(false);
 
     // 쿠폰 삭제 mutation
     const deleteManageCouponMutation = useDeleteManageCouponMutation();

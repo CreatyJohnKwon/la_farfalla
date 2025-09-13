@@ -2,7 +2,7 @@ import { CouponResponse, ICoupon } from "@src/entities/type/interfaces";
 
 const getMyCoupon = async (): Promise<CouponResponse> => {
     const res = await fetch(`/api/user/coupon`);
-    if (!res.ok) throw new Error("쿠폰 불러오기 실패");
+    if (!res.ok) throw new Error("사용자 쿠폰 불러오기 실패");
     return await res.json();
 };
 
@@ -15,10 +15,7 @@ const postUserCoupon = async (data: Partial<any>): Promise<any> => {
         body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-        throw new Error("쿠폰 생성 실패");
-    }
-
+    if (!res.ok) throw new Error("일반 사용자 쿠폰 생성 실패");
     return res.json();
 };
 
@@ -31,14 +28,21 @@ const postSpecialUserCoupon = async (data: Partial<any>): Promise<any> => {
         body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-        const errorData = await res.json();
-        const errorMessage = errorData.message || "알 수 없는 쿠폰 생성 실패 오류";
-        
-        return res.json();
-    }
 
+    if (!res.ok) throw new Error("스페셜 쿠폰 생성 실패 오류");
+    return res.json();
+};
 
+const postCouponCodeUserCoupon = async (data: Partial<{ couponCode: string }>): Promise<any> => {
+    const res = await fetch("/api/user/coupon/code-apply", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!res.ok) throw new Error("쿠폰 코드 등록 실패 오류");
     return res.json();
 };
 
@@ -56,7 +60,7 @@ const deleteUserCoupon = async (_id: string | undefined) => {
 
 const getCouponList = async (): Promise<CouponResponse> => {
     const res = await fetch(`/api/admin/list/coupon`);
-    if (!res.ok) throw new Error("쿠폰 불러오기 실패");
+    if (!res.ok) throw new Error("사용자 쿠폰 리스트 불러오기 실패");
     return await res.json();
 };
 
@@ -65,7 +69,7 @@ const getManageCouponList = async (): Promise<{
     count: number;
 }> => {
     const res = await fetch(`/api/admin/list/coupon/manage`);
-    if (!res.ok) throw new Error("쿠폰 불러오기 실패");
+    if (!res.ok) throw new Error("어드민 쿠폰 리스트 불러오기 실패");
     return await res.json();
 };
 
@@ -78,10 +82,7 @@ const postCoupon = async (data: Partial<ICoupon>): Promise<ICoupon> => {
         body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-        throw new Error("쿠폰 생성 실패");
-    }
-
+    if (!res.ok) throw new Error("쿠폰 템플릿 생성 실패");
     return res.json();
 };
 
@@ -101,7 +102,7 @@ const patchCoupon = async ({
             isActive: !currentIsActive,
         }),
     });
-    if (!res.ok) throw new Error("쿠폰 수정 실패");
+    if (!res.ok) throw new Error("쿠폰 상태 업데이트 실패");
     return res.json();
 };
 
@@ -124,6 +125,7 @@ export {
     postCoupon,
     postUserCoupon,
     postSpecialUserCoupon,
+    postCouponCodeUserCoupon,
     patchCoupon,
     deleteCoupon,
     deleteUserCoupon,

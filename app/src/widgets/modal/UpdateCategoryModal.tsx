@@ -209,11 +209,12 @@ const UpdateCategoryModal = ({ onClose }: { onClose: () => void }) => {
                             <div className="rounded-lg border border-gray-200 bg-gray-50/80 p-4">
                                 <h3 className="mb-4 text-lg font-pretendard font-[500] text-gray-800">{editingCategory ? "카테고리 수정" : "새 카테고리"}</h3>
                                 <div className="space-y-4">
-                                    <div>
-                                        <div className="sm:col-span-2">
-                                            <label htmlFor="name" className="mb-1 block text-sm text-gray-700">카테고리명 <span className="text-red-500">*</span></label>
-                                            <input type="text" id="name" name="name" value={editingCategory?.name ?? newCategory.name} onChange={handleInputChange} placeholder="예: 상의" className="w-full border-gray-300 focus:border-gray-500 focus:ring-gray-500 sm:text-sm" />
-                                        </div>
+                                    <div className="sm:col-span-2">
+                                        <label htmlFor="name" className="mb-1 block text-sm text-gray-700">카테고리명 <span className="text-red-500">*</span></label>
+                                        {editingCategory?.name !== "MVP" 
+                                            ? <input type="text" id="name" name="name" value={editingCategory?.name ?? newCategory.name} onChange={handleInputChange} placeholder="예: 상의" className="w-full border-gray-300 focus:border-gray-500 focus:ring-gray-500 sm:text-sm" />
+                                            : <span>{editingCategory?.name}</span>
+                                        }
                                     </div>
                                     <div>
                                         <label htmlFor="description" className="mb-1 block text-sm text-gray-700">설명 (선택)</label>
@@ -283,9 +284,11 @@ const UpdateCategoryModal = ({ onClose }: { onClose: () => void }) => {
                                                     <button onClick={() => startEditing(categoryItem)} disabled={!!editingCategory} className="p-2 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-40">
                                                         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z" /></svg>
                                                     </button>
-                                                    <button onClick={() => handleDeleteCategory(categoryItem._id)} disabled={deleteMutation.isPending || !!editingCategory} className="p-2 text-gray-400 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40">
-                                                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                                    </button>
+                                                    { categoryItem.name !== "MVP" &&
+                                                        <button onClick={() => handleDeleteCategory(categoryItem._id)} disabled={deleteMutation.isPending || !!editingCategory} className="p-2 text-gray-400 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40">
+                                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                        </button>
+                                                    }
                                                 </div>
                                             </div>
                                         </Reorder.Item>

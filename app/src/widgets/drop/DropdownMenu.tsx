@@ -69,6 +69,8 @@ const DropdownMenu = ({
                 `}
             >
                 {items.map((item) => (
+                    item.label === "MVP" ? 
+                    <li key={item.label}></li> :
                     <li key={item.label} className="py-1">
                         <button
                             onClick={() => {

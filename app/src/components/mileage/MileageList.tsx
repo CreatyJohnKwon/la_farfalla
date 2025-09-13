@@ -53,7 +53,7 @@ const MileageList = () => {
     if (isError) {
         return (
             <ul>
-                <li className="font-pretendard-thin mt-16 w-full text-center text-base text-black/60">
+                <li className="font-pretendard-thin mt-16 w-[90vw] sm:w-auto text-center text-base text-black/60">
                     마일리지 내역 에러 : Error
                 </li>
             </ul>
@@ -64,28 +64,27 @@ const MileageList = () => {
     if (!data || data.pages.every(page => page.length === 0)) {
         return (
             <ul className="flex flex-col gap-4 sm:w-auto">
-                <li className="font-pretendard-thin mt-16 w-full text-center text-base text-black/60">
+                <li className="font-pretendard-thin mt-16 w-[90vw] sm:w-auto text-center text-base text-black/60">
                     마일리지 내역이 없습니다
                 </li>
             </ul>
         );
     }
 
-    {
-        return (
-            <ul className="flex w-full flex-col gap-3 overflow-y-auto pb-5 sm:w-auto whitespace-nowrap">
-                {data.pages.map((page, pageIndex) => (
-                    // React는 fragment key를 지원하므로 key를 여기에 둡니다.
-                    <Fragment key={pageIndex}>
-                        {page.map((item: MileageItem) => (
-                            <li 
-                                key={item._id} 
-                                className="rounded-md border sm:hover:border-gray-300 p-5"
-                            >
-                                <div className="flex items-center justify-between h-5">
-                                    <span className="font-amstel text-sm xs:text-base">
-                                        {format(new Date(item.createdAt), 'MM.dd HH:mm')}
-                                    </span>
+    return (
+        <ul className="flex w-[90vw] sm:w-auto flex-col gap-3 overflow-y-auto pb-5 whitespace-nowrap">
+            {data.pages.map((page: MileageItem[], pageIndex: number) => (
+                // React는 fragment key를 지원하므로 key를 여기에 둡니다.
+                <Fragment key={pageIndex}>
+                    {page.map((item: MileageItem) => (
+                        <li 
+                            key={item._id} 
+                            className="border sm:hover:border-gray-300 p-5"
+                        >
+                            <div className="flex items-center justify-between h-5">
+                                <span className="font-amstel text-xs xs:text-sm">
+                                    {format(new Date(item.createdAt), 'MM.dd HH:mm')}
+                                </span>
                                 <div className="w-[52vw] sm:w-[50vw] h-5 flex flex-row items-center justify-between">
                                     <span className="text-gray-400 font-pretendard font-[300] text-xs xs:text-sm">
                                         {item.description ? item.description : item.type === "earn" ? "마일리지 적립" : "마일리지 사용"}
@@ -102,17 +101,16 @@ const MileageList = () => {
                                     </span>
                                 </div>
                             </div>
-                            </li>
-                        ))}
-                    </Fragment>
-                ))}
+                        </li>
+                    ))}
+                </Fragment>
+            ))}
 
-                {hasNextPage && <li ref={ref} style={{ height: "1px" }} />}
+            {hasNextPage && <li ref={ref} style={{ height: "1px" }} />}
 
-                {isFetchingNextPage && <SkeletonList />}
-            </ul>
-        );
-    }
+            {isFetchingNextPage && <SkeletonList />}
+        </ul>
+    );
 };
 
 export default MileageList;

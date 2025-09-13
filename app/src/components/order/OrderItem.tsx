@@ -43,7 +43,7 @@ const OrderItem = ({ item }: { item: OrderData }) => {
     return (
         <>
             <li
-                className="group z-40 cursor-pointer rounded-lg border border-gray-100 bg-white p-5 transition-all duration-200 active:bg-gray-50 sm:border-gray-200 sm:p-6 sm:hover:border-gray-300"
+                className="group z-40 cursor-pointer border border-gray-100 bg-white p-5 transition-all duration-200 active:bg-gray-50 sm:border-gray-200 sm:p-6 sm:hover:border-gray-300"
                 onClick={() => setIsModalOpen(true)}
                 style={{ touchAction: "manipulation" }}
             >

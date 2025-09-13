@@ -1,5 +1,3 @@
-// app/api/coupons/distribute/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import { Coupon } from "@src/entities/models/Coupon";

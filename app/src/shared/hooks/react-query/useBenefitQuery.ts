@@ -13,15 +13,21 @@ import {
     getMyCoupon,
     patchCoupon,
     postCoupon,
+    postCouponCodeUserCoupon,
     postSpecialUserCoupon,
     postUserCoupon,
 } from "../../lib/server/coupon";
 
+const USER_COUPON: string = "userCoupons";
+const ALL_COUPON: string = "allCoupons"
+const MANAGE_COUPON: string = "manageCoupons"
+const USER_MILEAGE: string = "userMileages"
+
 // ✅ 사용자 쿠폰 조회
-const useGetUserCouponsListQuery = (type: "user" | "all") => {
+const useGetUserCouponsListQuery = (isforUser: boolean) => {
     return useQuery<CouponResponse, Error>({
-        queryKey: [`${type}Coupons`],
-        queryFn: () => (type === "user" ? getMyCoupon() : getCouponList()),
+        queryKey: [isforUser ? USER_COUPON : ALL_COUPON],
+        queryFn: () => (isforUser ? getMyCoupon() : getCouponList()),
         retry: false,
     });
 };
@@ -32,7 +38,9 @@ const useUpdateUserCouponMutation = () => {
     return useMutation({
         mutationFn: (couponId: string) => updateCoupon(couponId),
         onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: ["userCoupons"] }),
+            queryClient.invalidateQueries({ queryKey: [USER_COUPON] }),
+        onError: (error: any) =>
+            alert("쿠폰 업데이트 중 오류 발생: " + error.message)
     });
 };
 
@@ -42,9 +50,9 @@ const usePostUserCouponMutation = () => {
     return useMutation({
         mutationFn: postUserCoupon,
         onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: ["userCoupons"] }),
+            queryClient.invalidateQueries({ queryKey: [USER_COUPON] }),
         onError: (error: any) =>
-            alert(error.message || "쿠폰 생성 중 오류 발생"),
+            alert("일반 쿠폰 생성 중 오류 발생: " + error.message),
     });
 };
 
@@ -53,9 +61,21 @@ const usePostSpecialUserCouponMutation = () => {
     return useMutation({
         mutationFn: postSpecialUserCoupon,
         onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: ["userCoupons"] }),
+            queryClient.invalidateQueries({ queryKey: [USER_COUPON] }),
         onError: (error) =>
-            alert(error.message),
+            alert("스페셜 쿠폰 생성 중 오류 발생: " + error.message),
+    });
+};
+
+// 코드로 쿠폰 등록하는 뮤테이션
+const usePostByCouponCodeMutation = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: postCouponCodeUserCoupon,
+        onSuccess: () =>
+            queryClient.invalidateQueries({ queryKey: [USER_COUPON] }),
+        onError: (error) =>
+            alert("쿠폰 코드 등록 중 오류 발생: " + error.message),
     });
 };
 
@@ -65,7 +85,9 @@ const useDeleteUserCouponMutation = () => {
     return useMutation({
         mutationFn: deleteUserCoupon,
         onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: ["userCoupons"] }),
+            queryClient.invalidateQueries({ queryKey: [USER_COUPON] }),
+        onError: (error) =>
+            alert("쿠폰 삭제 중 오류 발생: " + error.message),
     });
 };
 
@@ -73,7 +95,7 @@ const useDeleteUserCouponMutation = () => {
 const useGetManageCouponsListQuery = () => {
     // 우측: 쿠폰 템플릿 조회
     return useQuery<{ data: ICoupon[]; count: number }, Error>({
-        queryKey: ["manageCoupons"],
+        queryKey: [MANAGE_COUPON],
         queryFn: getManageCouponList,
         retry: false,
     });
@@ -85,7 +107,7 @@ const usePostManageCouponMutation = () => {
     return useMutation({
         mutationFn: postCoupon,
         onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: ["manageCoupons"] }),
+            queryClient.invalidateQueries({ queryKey: [MANAGE_COUPON] }),
         onError: (error: any) =>
             alert(error.message || "쿠폰 생성 중 오류 발생"),
     });
@@ -97,7 +119,9 @@ const useUpdateManageCouponMutation = () => {
     return useMutation({
         mutationFn: patchCoupon,
         onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: ["manageCoupons"] }),
+            queryClient.invalidateQueries({ queryKey: [MANAGE_COUPON] }),
+        onError: (error) =>
+            alert("어드민 쿠폰 업데이트 중 오류 발생: " + error.message),
     });
 };
 
@@ -107,13 +131,16 @@ const useDeleteManageCouponMutation = () => {
     return useMutation({
         mutationFn: deleteCoupon,
         onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: ["manageCoupons"] }),
+            queryClient.invalidateQueries({ queryKey: [MANAGE_COUPON] }),
+        onError: (error) =>
+            alert("어드민 쿠폰 삭제 중 오류 발생: " + error.message),
     });
 };
 
+// 마일리지 조회 인피니티 뮤테이션 (무한스크롤)
 const useMileageQuery = (userId?: string) => {
     return useInfiniteQuery({
-        queryKey: ["mileage", userId],
+        queryKey: [USER_MILEAGE, userId],
         queryFn: ({ pageParam }) => getMileage({ pageParam, userId: userId! }),
         initialPageParam: 1,
         getNextPageParam: (lastPage, allPages) => {
@@ -137,6 +164,7 @@ export {
     useGetManageCouponsListQuery,
     usePostManageCouponMutation,
     usePostSpecialUserCouponMutation,
+    usePostByCouponCodeMutation,
     useUpdateManageCouponMutation,
     useDeleteManageCouponMutation,
 };

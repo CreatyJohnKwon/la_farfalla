@@ -33,7 +33,7 @@ const useOrder = () => {
 
     // ✅ IUserCouponPopulated 배열로 타입 지정
     const { data: coupons, isLoading: isCouponsLoading } =
-        useGetUserCouponsListQuery("user");
+        useGetUserCouponsListQuery(true);
     const { refetch: orderListRefetch } = useOrderQuery(user?._id);
 
     const updateCoupon = useUpdateUserCouponMutation();

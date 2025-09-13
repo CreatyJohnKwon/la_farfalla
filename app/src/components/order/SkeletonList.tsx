@@ -3,7 +3,7 @@ const SkeletonList = () => (
         {Array.from({ length: 3 }).map((_, i) => (
             <li
                 key={`mileage_skeleton_${i}`}
-                className="animate-fade-in border border-gray-200 bg-slate-100 p-6 rounded-md"
+                className="animate-fade-in border border-gray-200 bg-slate-100 p-6"
             >
                 <div className="mb-3 h-4 w-1/3 bg-gray-300" />
                 <div className="mb-5 h-2 w-1/12 bg-gray-300" />
