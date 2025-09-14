@@ -31,6 +31,7 @@ const isImageUrl = (description: string) => {
 const aboutMenuItems = [
     { label: "INTRODUCE", path: "/introduce" },
     { label: "PROJECT", path: "/project" },
+    { label: "NOTICE", path: "/notice" },
 ];
 
 // Admin 드롭다운 메뉴 아이템

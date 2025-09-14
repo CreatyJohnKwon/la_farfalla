@@ -85,7 +85,7 @@ const CouponCreateModal = ({
             onClick={onClose}
         >
             <div
-                className="mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-md bg-white p-6"
+                className="mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-sm bg-white p-6"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="mb-4 flex items-center justify-between">
@@ -127,7 +127,7 @@ const CouponCreateModal = ({
                             <input
                                 name="name"
                                 type="text"
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
                                 placeholder="쿠폰명을 입력하세요"
                                 required
                             />
@@ -139,7 +139,7 @@ const CouponCreateModal = ({
                             <input
                                 name="code"
                                 type="text"
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm uppercase"
+                                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm uppercase"
                                 placeholder="COUPON2024"
                                 required
                             />
@@ -152,7 +152,7 @@ const CouponCreateModal = ({
                         </label>
                         <textarea
                             name="description"
-                            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                            className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
                             rows={3}
                             placeholder="쿠폰 설명을 입력하세요"
                             required
@@ -167,7 +167,7 @@ const CouponCreateModal = ({
                             </label>
                             <select
                                 name="type"
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
                                 onChange={(e) => setSelectType(e.target.value)}
                                 required
                             >
@@ -183,7 +183,7 @@ const CouponCreateModal = ({
                             </label>
                             <select
                                 name="discountType"
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
                                 onChange={handleDiscountTypeChange}
                                 required
                             >
@@ -199,7 +199,7 @@ const CouponCreateModal = ({
                             <input
                                 name="discountValue"
                                 type="number"
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
                                 placeholder={
                                     selectDiscountType === "percentage"
                                         ? "50"
@@ -227,7 +227,7 @@ const CouponCreateModal = ({
                             <input
                                 name="startAt"
                                 type="datetime-local"
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
                                 required
                             />
                         </div>
@@ -238,7 +238,7 @@ const CouponCreateModal = ({
                             <input
                                 name="endAt"
                                 type="datetime-local"
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
                                 required
                             />
                         </div>
@@ -253,7 +253,7 @@ const CouponCreateModal = ({
                             <input
                                 name="maxUsagePerUser"
                                 type="number"
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
                                 placeholder="0"
                                 defaultValue="1"
                                 min="1"
@@ -268,7 +268,7 @@ const CouponCreateModal = ({
                                 <input
                                     name="maxUsage"
                                     type="number"
-                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                    className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
                                     placeholder="무제한"
                                     min="1"
                                 />
@@ -296,13 +296,13 @@ const CouponCreateModal = ({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="rounded-md bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                            className="rounded-sm bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
                         >
                             취소
                         </button>
                         <button
                             type="submit"
-                            className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                            className="rounded-sm bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
                         >
                             생성
                         </button>

@@ -34,7 +34,7 @@ const Size = ({
                     type="text"
                     value={sizeInput}
                     onChange={(e) => setSizeInput(e.target.value)}
-                    className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
+                    className="flex-1 rounded-sm border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                     placeholder="사이즈를 입력하세요"
                     onKeyPress={(e) =>
                         e.key === "Enter" && (e.preventDefault(), addSize())
@@ -43,7 +43,7 @@ const Size = ({
                 <button
                     type="button"
                     onClick={addSize}
-                    className="rounded-md bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
+                    className="rounded-sm bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
                 >
                     추가
                 </button>

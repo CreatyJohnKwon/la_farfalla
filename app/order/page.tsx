@@ -609,7 +609,7 @@ const Order = () => {
                                     </div>
 
                                     {/* 사용 불가능한 쿠폰들 표시 */}
-                                    {/* <div className="rounded-md bg-gray-50 p-3">
+                                    {/* <div className="rounded-sm bg-gray-50 p-3">
                                         <p className="mb-2 text-xs font-medium text-gray-600">
                                             💡 보유 중인 쿠폰들:
                                         </p>
@@ -764,7 +764,7 @@ const Order = () => {
 
                             {/* ✅ 적용된 쿠폰 표시 부분 */}
                             {applyCoupon !== 0 && appliedCouponName && (
-                                <div className="mt-4 rounded-md border border-dashed border-green-300 bg-green-50 p-4">
+                                <div className="mt-4 rounded-sm border border-dashed border-green-300 bg-green-50 p-4">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
                                             <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-green-100">
@@ -861,7 +861,7 @@ const Order = () => {
                             ) : (
                                 /* 적립금 사용 영역 */
                                 <div className="space-y-4">
-                                    <div className="rounded-md border border-blue-200 bg-blue-50 p-4">
+                                    <div className="rounded-sm border border-blue-200 bg-blue-50 p-4">
                                         <div className="mb-3 flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100">
@@ -913,7 +913,7 @@ const Order = () => {
                                                             )
                                                         }
                                                         placeholder="사용할 적립금 입력"
-                                                        className="w-full rounded-md border border-gray-300 px-3 py-2 pr-8 text-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        className="w-full rounded-sm border border-gray-300 px-3 py-2 pr-8 text-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                     />
                                                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">
                                                         마일리지
@@ -943,7 +943,7 @@ const Order = () => {
 
                                         {/* 사용 적립금 표시 */}
                                         {usedMileage > 0 && (
-                                            <div className="mt-3 rounded-md border border-blue-200 bg-white p-3">
+                                            <div className="mt-3 rounded-sm border border-blue-200 bg-white p-3">
                                                 <div className="flex items-center justify-between text-sm">
                                                     <span className="text-gray-600">
                                                         사용 적립금:
@@ -977,7 +977,7 @@ const Order = () => {
                                     </div>
 
                                     {/* 적립금 안내 */}
-                                    <div className="rounded-md bg-gray-50 p-3">
+                                    <div className="rounded-sm bg-gray-50 p-3">
                                         <div className="flex items-start gap-2">
                                             <svg
                                                 className="mt-0.5 h-4 w-4 flex-shrink-0 text-gray-400"

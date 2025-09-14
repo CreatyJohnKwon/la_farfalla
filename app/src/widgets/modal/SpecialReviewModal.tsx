@@ -106,7 +106,7 @@ const SpecialReviewModal = ({
     return (
         <ModalWrap 
             onClose={onClose} 
-            className="relative h-[80vh] sm:h-[75vh] w-[90vw] overflow-y-auto bg-white shadow-2xl sm:w-[35vw] p-5 text-base rounded-md"
+            className="relative h-[80vh] sm:h-[75vh] w-[90vw] overflow-y-auto bg-white shadow-2xl sm:w-[35vw] p-5 text-base rounded-sm"
         >
             {/* 헤더 */}
             <div className="flex items-center justify-between pb-4 border-b">
@@ -176,7 +176,7 @@ const SpecialReviewModal = ({
                         rows={8}
                         placeholder={textareaPlaceholder}
                         maxLength={1200}
-                        className="w-full rounded-md border border-gray-300 p-3 pr-16 focus:outline-none focus:ring-1 focus:ring-gray-300 resize-none font-pretendard"
+                        className="w-full rounded-sm border border-gray-300 p-3 pr-16 focus:outline-none focus:ring-1 focus:ring-gray-300 resize-none font-pretendard"
                     />
                     <p className="absolute bottom-3 right-3 text-sm text-gray-400 font-amstel">
                         {reviewText.length} / 1200
@@ -190,7 +190,7 @@ const SpecialReviewModal = ({
                         {photos.length < 5 && (
                             <label
                                 htmlFor="photo-upload"
-                                className="flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100"
+                                className="flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-sm border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-gray-400">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -211,7 +211,7 @@ const SpecialReviewModal = ({
                                 <img
                                     src={URL.createObjectURL(file)}
                                     alt={`preview ${index}`}
-                                    className="h-24 w-24 rounded-md object-cover"
+                                    className="h-24 w-24 rounded-sm object-cover"
                                 />
                                 <button
                                     type="button"
@@ -230,14 +230,14 @@ const SpecialReviewModal = ({
                     <button
                         type="button"
                         onClick={onClose}
-                        className="flex-1 rounded-md border border-gray-300 py-3 text-gray-700 transition-colors hover:bg-gray-50"
+                        className="flex-1 rounded-sm border border-gray-300 py-3 text-gray-700 transition-colors hover:bg-gray-50"
                     >
                         닫기
                     </button>
                     <button
                         type="submit"
                         disabled={postReviewMutation.isPending}
-                        className="flex-1 rounded-md bg-gray-900 py-3 text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-500"
+                        className="flex-1 rounded-sm bg-gray-900 py-3 text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-500"
                     >
                         {postReviewMutation.isPending ? "등록 중..." : "구매평 등록"}
                     </button>

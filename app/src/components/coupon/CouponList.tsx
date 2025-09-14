@@ -162,7 +162,7 @@ const CouponList = () => {
                 return (
                     <li
                         key={coupon._id}
-                        className="shadow-xs rounded-md border border-gray-200 bg-white p-4 transition-shadow hover:shadow-sm"
+                        className="shadow-xs rounded-sm border border-gray-200 bg-white p-4 transition-shadow hover:shadow-sm"
                     >
                         <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">

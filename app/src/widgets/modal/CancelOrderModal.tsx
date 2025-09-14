@@ -187,7 +187,7 @@ const CancelOrder = ({
                     </div>
 
                     {/* 주의사항 */}
-                    <div className="rounded-md border border-yellow-200 bg-yellow-50 p-3">
+                    <div className="rounded-sm border border-yellow-200 bg-yellow-50 p-3">
                         <div className="text-sm text-yellow-800">
                             <p className="mb-1 font-pretendard font-medium">
                                 처리 안내

@@ -170,7 +170,7 @@ const UpdateCategoryModal = ({ onClose }: { onClose: () => void }) => {
     if (!category || categoryLoading || categoryError) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-                <div className="rounded-md bg-white p-8 text-center shadow-xl">
+                <div className="rounded-sm bg-white p-8 text-center shadow-xl">
                     {!category || categoryLoading ? "데이터를 불러오는 중..." : "오류가 발생했습니다."}
                     {categoryError && <button onClick={onClose} className="mt-4 rounded bg-gray-200 px-4 py-2">닫기</button>}
                 </div>
@@ -185,7 +185,7 @@ const UpdateCategoryModal = ({ onClose }: { onClose: () => void }) => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 30 }}
                 transition={{ duration: 0.2 }}
-                className="relative flex h-full max-h-[90vh] w-full max-w-2xl flex-col rounded-md bg-white"
+                className="relative flex h-full max-h-[90vh] w-full max-w-2xl flex-col rounded-sm bg-white"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* 헤더 */}
@@ -201,7 +201,7 @@ const UpdateCategoryModal = ({ onClose }: { onClose: () => void }) => {
                     {/* 카테고리 추가 UI */}
                     <div className="mb-6">
                         {!isAdding && !editingCategory ? (
-                            <button onClick={() => setIsAdding(true)} className="flex w-full items-center justify-center gap-2 rounded-md border-2 border-dashed border-gray-300 py-4 text-gray-500 transition hover:border-gray-400 hover:text-gray-700 font-pretendard">
+                            <button onClick={() => setIsAdding(true)} className="flex w-full items-center justify-center gap-2 rounded-sm border-2 border-dashed border-gray-300 py-4 text-gray-500 transition hover:border-gray-400 hover:text-gray-700 font-pretendard">
                                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                                 새 카테고리 추가
                             </button>
@@ -262,7 +262,7 @@ const UpdateCategoryModal = ({ onClose }: { onClose: () => void }) => {
                                     {orderedCategories.map((categoryItem) => (
                                         // ⬇️ div를 Reorder.Item으로 변경합니다 ⬇️
                                         <Reorder.Item key={categoryItem._id} value={categoryItem}>
-                                            <div className={`flex items-center justify-between rounded-md border p-3 transition-all ${editingCategory?._id === categoryItem._id ? "bg-blue-50 ring-1 ring-indigo-200" : "border-gray-200 bg-white"}`}>
+                                            <div className={`flex items-center justify-between rounded-sm border p-3 transition-all ${editingCategory?._id === categoryItem._id ? "bg-blue-50 ring-1 ring-indigo-200" : "border-gray-200 bg-white"}`}>
                                                 <div className="flex items-center gap-5">
                                                     {/* ⬇️ 드래그 핸들 아이콘 추가 ⬇️ */}
                                                     <div className="cursor-grab text-gray-400 touch-none">

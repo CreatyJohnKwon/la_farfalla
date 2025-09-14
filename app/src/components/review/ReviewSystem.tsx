@@ -420,7 +420,7 @@ const ReviewSystem = ({
                         </div>
                     </div>
                 ) : (
-                    <div className="rounded-md border border-gray-200 bg-gray-50 p-6 text-center">
+                    <div className="rounded-sm border border-gray-200 bg-gray-50 p-6 text-center">
                         <div className="mb-2">
                             <svg
                                 className="mx-auto h-12 w-12 text-gray-400"

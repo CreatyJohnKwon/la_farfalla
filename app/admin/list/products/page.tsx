@@ -192,7 +192,7 @@ const Products = () => {
                                             <button
                                                 key={categoryId}
                                                 onClick={() => handleCategoryToggle(categoryId)}
-                                                className={`min-h-[35px] rounded-md border p-3 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2
+                                                className={`min-h-[35px] rounded-sm border p-3 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2
                                                     ${categoryFilter.includes(categoryId)
                                                         ? "border-blue-600 bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
                                                         : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-blue-500"
@@ -215,7 +215,7 @@ const Products = () => {
                                                 e.target.value as any,
                                             )
                                         }
-                                        className="min-h-[35px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[120px]"
+                                        className="min-h-[35px] w-full rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[120px]"
                                     >
                                         <option value="all">전체</option>
                                         <option value="in_stock">
@@ -238,7 +238,7 @@ const Products = () => {
                                                 e.target.value as SortOption,
                                             )
                                         }
-                                        className="min-h-[35px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[140px]"
+                                        className="min-h-[35px] w-full rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[140px]"
                                     >
                                         <option value="none">기본 순서</option>
                                         <option value="latest">
@@ -267,7 +267,7 @@ const Products = () => {
                                     stockFilter !== "all") && (
                                     <button
                                         onClick={resetFilters}
-                                        className="min-h-[44px] whitespace-nowrap rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800 sm:px-4"
+                                        className="min-h-[44px] whitespace-nowrap rounded-sm border border-gray-300 px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800 sm:px-4"
                                     >
                                         필터 초기화
                                     </button>
@@ -457,7 +457,7 @@ const Products = () => {
                                                                 : DefaultImage
                                                         }
                                                         alt="대표 이미지"
-                                                        className="h-20 w-20 rounded-md object-cover"
+                                                        className="h-20 w-20 rounded-sm object-cover"
                                                     />
                                                 </Link>
                                             </td>
@@ -639,7 +639,7 @@ const Products = () => {
                                                                 product,
                                                             );
                                                         }}
-                                                        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
+                                                        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
                                                         title="수정"
                                                     >
                                                         <svg
@@ -670,7 +670,7 @@ const Products = () => {
                                                                 );
                                                             }
                                                         }}
-                                                        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                                                        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
                                                         title="삭제"
                                                     >
                                                         <svg
@@ -719,7 +719,7 @@ const Products = () => {
                                                             : DefaultImage
                                                     }
                                                     alt="상품 이미지"
-                                                    className="h-20 w-20 flex-shrink-0 rounded-md object-cover"
+                                                    className="h-20 w-20 flex-shrink-0 rounded-sm object-cover"
                                                 />
                                             </Link>
 
@@ -886,7 +886,7 @@ const Products = () => {
                                                                 product,
                                                             );
                                                         }}
-                                                        className="flex h-10 w-10 items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
+                                                        className="flex h-10 w-10 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
                                                         title="수정"
                                                     >
                                                         <svg
@@ -916,7 +916,7 @@ const Products = () => {
                                                                 );
                                                             }
                                                         }}
-                                                        className="flex h-10 w-10 items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                                                        className="flex h-10 w-10 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
                                                         title="삭제"
                                                     >
                                                         <svg
@@ -949,7 +949,7 @@ const Products = () => {
                                             className="animate-fade-in rounded-lg border border-gray-200 bg-white p-4"
                                         >
                                             <div className="flex gap-3">
-                                                <div className="h-20 w-20 rounded-md bg-gray-200" />
+                                                <div className="h-20 w-20 rounded-sm bg-gray-200" />
                                                 <div className="flex-1 space-y-2">
                                                     <div className="h-4 w-3/4 rounded bg-gray-200" />
                                                     <div className="h-3 w-1/2 rounded bg-gray-200" />
@@ -977,7 +977,7 @@ const Products = () => {
                                             className="animate-fade-in border-b"
                                         >
                                             <td className="px-4 py-3">
-                                                <div className="h-20 w-20 rounded-md bg-gray-200" />
+                                                <div className="h-20 w-20 rounded-sm bg-gray-200" />
                                             </td>
                                             <td colSpan={8}>
                                                 <div className="space-y-2">

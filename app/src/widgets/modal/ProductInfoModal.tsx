@@ -34,7 +34,7 @@ const ProductInfoModal = ({
                 </h1>
 
                 <div className="space-y-4 text-base text-gray-700">
-                    <div className="rounded-md bg-gray-50 p-6">
+                    <div className="rounded-sm bg-gray-50 p-6">
                         <p className="mb-5 border-b pb-2 text-base font-semibold text-gray-700">
                             주문 상품 목록 (총 {totalQuantity}개)
                         </p>
@@ -42,7 +42,7 @@ const ProductInfoModal = ({
                             {orderData?.items.map((item: OrderItem, i) => (
                                 <div
                                     key={i}
-                                    className="flex flex-col gap-1 rounded-md border border-gray-200 bg-white px-4 py-3"
+                                    className="flex flex-col gap-1 rounded-sm border border-gray-200 bg-white px-4 py-3"
                                 >
                                     <div className="text-sm font-medium text-gray-800">
                                         {item.productNm}
@@ -70,7 +70,7 @@ const ProductInfoModal = ({
 
                 <button
                     onClick={onClose}
-                    className="mt-6 w-full rounded-md bg-gray-800 py-2 text-lg text-white hover:bg-gray-700"
+                    className="mt-6 w-full rounded-sm bg-gray-800 py-2 text-lg text-white hover:bg-gray-700"
                 >
                     닫기
                 </button>

@@ -151,7 +151,7 @@ const DeliveryChangeModal = ({
                         </button>
                     </div>
                     <div className="p-4">
-                        <div className="rounded-md border border-red-200 bg-red-50 p-3">
+                        <div className="rounded-sm border border-red-200 bg-red-50 p-3">
                             <p className="font-pretendard text-sm text-red-800">
                                 상품이 이미 출고되어 배송지 변경이 불가능합니다.
                             </p>
@@ -281,7 +281,7 @@ const DeliveryChangeModal = ({
                         </div>
 
                         {/* 주의사항 */}
-                        <div className="rounded-md border border-yellow-200 bg-yellow-50 p-3">
+                        <div className="rounded-sm border border-yellow-200 bg-yellow-50 p-3">
                             <div className="text-sm text-yellow-800">
                                 <p className="mb-1 font-pretendard font-medium">
                                     배송지 변경 안내

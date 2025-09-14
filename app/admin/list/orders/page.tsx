@@ -231,7 +231,7 @@ const Orders = () => {
                                             e.target.value as SortOption,
                                         )
                                     }
-                                    className="min-h-[44px] rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                    className="min-h-[44px] rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
                                 >
                                     <option value="none">기본 순서</option>
                                     <option value="name_asc">
@@ -253,7 +253,7 @@ const Orders = () => {
                                     onChange={(e) =>
                                         setStatusFilter(e.target.value)
                                     }
-                                    className="focus:border-gray-5000 min-h-[44px] rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                    className="focus:border-gray-5000 min-h-[44px] rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
                                 >
                                     <option value="all">전체 상태</option>
                                     {uniqueStatuses.map((status) => (
@@ -269,7 +269,7 @@ const Orders = () => {
                                 statusFilter !== "all") && (
                                 <button
                                     onClick={resetFilters}
-                                    className="min-h-[44px] rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800"
+                                    className="min-h-[44px] rounded-sm border border-gray-300 px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800"
                                 >
                                     필터 초기화
                                 </button>

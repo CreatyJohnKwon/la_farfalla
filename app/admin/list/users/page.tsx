@@ -416,7 +416,7 @@ const Users = () => {
                                                         setUserData(user);
                                                         setOpenModal(true);
                                                     }}
-                                                    className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
+                                                    className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
                                                     title="수정"
                                                 >
                                                     <svg
@@ -448,7 +448,7 @@ const Users = () => {
                                                                 );
                                                             }
                                                         }}
-                                                        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                                                        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
                                                         title="복구"
                                                     >
                                                         <svg
@@ -513,7 +513,7 @@ const Users = () => {
                         {searchQuery && (
                             <button
                                 onClick={clearSearch}
-                                className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                                className="mt-4 rounded-sm bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
                             >
                                 검색어 초기화
                             </button>

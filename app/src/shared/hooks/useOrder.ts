@@ -213,9 +213,9 @@ const useOrder = () => {
 
                 if (response.code === "PAY_PROCESS_CANCELED") {
                     alert("결제가 취소되었습니다.");
-                    console.error(response);
+                    console.error(response.code);
                 } else {
-                    console.error(response);
+                    console.error(response.code);
                     alert(
                         `결제 실패: ${response.message || "알 수 없는 오류"}`,
                     );

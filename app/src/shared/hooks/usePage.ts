@@ -32,7 +32,7 @@ const usePage = () => {
     const sideBarMenuData = [
         { label: "INTRODUCE", link: "/introduce" },
         { label: "PROJECT", link: "/project" },
-        // { label: "NOTICE", link: "/notice" }, // 추후에 추가
+        { label: "NOTICE", link: "/notice" }, // 추후에 추가
     ]
 
     const instagramHandler = () =>

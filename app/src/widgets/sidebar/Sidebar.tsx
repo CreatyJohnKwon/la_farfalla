@@ -91,15 +91,6 @@ const Sidebar = () => {
                                     <Link href={data.link} onClick={() => onCloseSidebar()}>{data.label}</Link>
                                 </li>
                             )}
-                            {/* 추후에 위 map 에 병합 */}
-                            <li className="relative">
-                                <span 
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        alert("기능개발 중입니다")
-                                    }}
-                                >NOTICE</span>
-                            </li>
                             {session?.user?.email &&
                                 <li 
                                     className="relative"

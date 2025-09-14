@@ -77,12 +77,12 @@ const FindPasswordModal = ({ onClose }: { onClose: () => void }) => {
                 </form>
 
                 {isSuccess && (
-                    <div className="mt-4 rounded-md bg-green-100 p-3 text-sm text-green-700">
+                    <div className="mt-4 rounded-sm bg-green-100 p-3 text-sm text-green-700">
                         <p>이메일로 임시 비밀번호가 전송되었습니다. 확인해주세요.</p>
                     </div>
                 )}
                 {isError && (
-                    <div className="mt-4 rounded-md bg-red-100 p-3 text-sm text-red-700">
+                    <div className="mt-4 rounded-sm bg-red-100 p-3 text-sm text-red-700">
                         <p>{getErrorMessage(error)}</p>
                     </div>
                 )}

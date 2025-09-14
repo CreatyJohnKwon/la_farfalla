@@ -442,7 +442,7 @@ const OrderDetailModal = ({
 
                         {/* 운송장 정보 */}
                         {order.trackingNumber && (order.shippingStatus === "shipped" || order.shippingStatus === "confirm") && (
-                            <div className="mt-3 rounded-md border border-gray-200 bg-white p-3">
+                            <div className="mt-3 rounded-sm border border-gray-200 bg-white p-3">
                                 <div className="flex flex-col space-y-1">
                                     <div className="flex justify-between">
                                         <span className="font-pretendard text-xs font-medium text-gray-700">
@@ -476,9 +476,9 @@ const OrderDetailModal = ({
                             {order.items.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="flex items-center rounded-md border border-gray-200 hover:border-gray-300 p-3"
+                                    className="flex items-center rounded-sm border border-gray-200 hover:border-gray-300 p-3"
                                 >
-                                    <div className="mr-3 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md p-1">
+                                    <div className="mr-3 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-sm p-1">
                                         <Image
                                             alt="image"
                                             className="h-auto w-auto"
@@ -531,7 +531,7 @@ const OrderDetailModal = ({
                         <h3 className="mb-3 flex items-center font-pretendard text-base font-semibold text-gray-900">
                             결제 정보
                         </h3>
-                        <div className="space-y-2 rounded-md bg-gray-50 p-3">
+                        <div className="space-y-2 rounded-sm bg-gray-50 p-3">
                             <div className="flex items-center justify-between">
                                 <span className="whitespace-nowrap font-pretendard text-sm font-[500] text-gray-700">
                                     결제방법
@@ -598,7 +598,7 @@ const OrderDetailModal = ({
                                 <></>
                             )}
                         </div>
-                        <div className="space-y-2 rounded-md bg-gray-50 p-3">
+                        <div className="space-y-2 rounded-sm bg-gray-50 p-3">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm font-medium text-gray-900">
                                     {order.userNm}
@@ -616,7 +616,7 @@ const OrderDetailModal = ({
                                 </div>
                             </div>
                             {order.deliveryMemo && (
-                                <div className="mt-2 rounded-md border border-yellow-200 bg-yellow-50 p-2">
+                                <div className="mt-2 rounded-sm border border-yellow-200 bg-yellow-50 p-2">
                                     <div className="text-xs">
                                         <span className="font-pretendard font-medium text-gray-800">
                                             배송요청사항:
@@ -665,7 +665,7 @@ const OrderDetailModal = ({
                                             order.totalPrice
                                         )
                                     }
-                                    className="w-full cursor-pointer rounded-md bg-black px-4 py-3 font-pretendard text-sm font-medium text-white transition-colors hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 active:bg-black/90"
+                                    className="w-full cursor-pointer rounded-sm bg-black px-4 py-3 font-pretendard text-sm font-medium text-white transition-colors hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 active:bg-black/90"
                                     style={{ touchAction: "manipulation" }}
                                 >
                                     구매확정하기
