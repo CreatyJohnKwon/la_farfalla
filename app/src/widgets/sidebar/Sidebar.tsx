@@ -75,7 +75,7 @@ const Sidebar = () => {
                         </button>
                         
                         <ul className="absolute top-36 gap-4 left-6 flex flex-col items-start text-start text-lg text-black font-amstel">
-                            <li className="relative -mb-1.5" key={"shop-menu"}>
+                            <li className="relative -mb-1.5 text-gray-500" key={"shop-menu"}>
                                 {isClient && <DropdownMenu 
                                     title="SHOP"
                                     items={shopMenuItems}
