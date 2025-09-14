@@ -27,8 +27,8 @@ const DropdownMenu = ({
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
-    const clickClasses = `${open ? "sm:max-h-96 opacity-100 visible" : "max-h-0 sm:max-h-0 opacity-0 invisible"}`;
-    const hoverClasses = "group-hover:max-h-96 group-hover:opacity-100 group-hover:visible max-h-0 opacity-0 invisible";
+    const clickClasses = `${open ? "max-h-96 opacity-100 visible" : "max-h-0 opacity-0 invisible"}`;
+    const hoverClasses = "sm:group-hover:max-h-96 sm:group-hover:opacity-100 sm:group-hover:visible sm:max-h-0 sm:opacity-0 sm:invisible";
 
     useEffect(() => {
         switch (pathName) { 
@@ -64,8 +64,9 @@ const DropdownMenu = ({
             </button>
             <ul
                 className={`
-                    mt-2 sm:mt-4 sm:absolute text-sm sm:transition-all sm:duration-300 ease-in-out font-amstel font-[500] whitespace-nowrap ${menuBg}
-                    ${triggerType === "click" ? clickClasses : hoverClasses}
+                    mt-2 sm:mt-4 sm:absolute text-sm font-amstel font-[500] whitespace-nowrap ${menuBg}
+                    sm:transition-all sm:duration-300 ease-in-out ${hoverClasses}
+                    ${triggerType === "click" ? `transition-all duration-300 ease-in-out ${clickClasses}` : ""}
                 `}
             >
                 {items.map((item) => (
@@ -74,12 +75,9 @@ const DropdownMenu = ({
                     <li key={item.label} className="py-1">
                         <button
                             onClick={() => {
-                                // 1. item에 onClick 핸들러가 있으면 그것을 실행합니다.
                                 if (item.onClick) item.onClick();
-                                // 2. 없으면 기존처럼 path로 라우팅합니다.
                                 else if (item.path) router.push(item.path);
 
-                                // 공통 로직은 항상 실행됩니다.
                                 setOpenSidebar(false);
                                 if (triggerType === "click") setOpen(false);
                             }}
@@ -94,4 +92,3 @@ const DropdownMenu = ({
 };
 
 export default DropdownMenu;
-

@@ -27,7 +27,6 @@ const Sidebar = () => {
     }, []);
 
     useEffect(() => {
-        // 첫 번째 렌더링 시에는 애니메이션을 실행하지 않음
         if (firstRender.current) {
             firstRender.current = false;
             setBackdropOpacityClass("bg-black/0");
@@ -43,13 +42,11 @@ const Sidebar = () => {
         }
     }, [openSidebar]);
 
-    // openSidebar 애니메이션
     const waitforSlideOpen = () => {
         setAnimationClass("animate-slide-in-left")
         setTimeout(() => setBackdropOpacityClass("bg-black/50"), 100);
     }
 
-    // DOM에서 사이드바를 완전히 제거할지 결정
     if (animationClass === "animate-slide-out-left" && !openSidebar) {
         setTimeout(() => {
             setAnimationClass("");
@@ -77,8 +74,7 @@ const Sidebar = () => {
                             &times;
                         </button>
                         
-                        {/* 메뉴 리스트 */}
-                        <ul className="absolute top-36 gap-4 -ms-5 flex flex-col items-start text-start text-lg text-black font-amstel">
+                        <ul className="absolute top-36 gap-4 left-6 flex flex-col items-start text-start text-lg text-black font-amstel">
                             <li className="relative -mb-1.5" key={"shop-menu"}>
                                 {isClient && <DropdownMenu 
                                     title="SHOP"
@@ -87,13 +83,13 @@ const Sidebar = () => {
                                 />}
                             </li>
                             {sideBarMenuData.map((data: any, index: number) =>
-                                <li className="relative" key={index}>
+                                <li className="relative sm:transition-all sm:duration-300 sm:ease-in-out" key={index}>
                                     <Link href={data.link} onClick={() => onCloseSidebar()}>{data.label}</Link>
                                 </li>
                             )}
                             {session?.user?.email &&
                                 <li 
-                                    className="relative"
+                                    className="relative sm:transition-all sm:duration-300 sm:ease-in-out"
                                     key={"logout-button"}
                                     onClick={() => logoutHandler()}
                                 >
