@@ -21,6 +21,7 @@ jobs:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+            # 'Dockerfile.full'을 사용하여 시크릿 없이 깨끗한 이미지를 빌드합니다.
             - name: Build and push Docker image
               uses: docker/build-push-action@v4
               with:
@@ -28,7 +29,6 @@ jobs:
                   file: ./Dockerfile.full
                   push: true
                   tags: ${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:dev
-                  # build-args 제거 - 런타임에 환경변수로 처리
 
     deploy:
         runs-on: ubuntu-latest
@@ -43,11 +43,12 @@ jobs:
                   echo "  StrictHostKeyChecking no" >> ~/.ssh/config
                   echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
 
+            # 모든 시크릿을 서버의 임시 스크립트 파일로 안전하게 전송합니다.
             - name: Transfer environment variables to server
               run: |
                 ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} 'cat > /tmp/env_setup.sh' <<EOF
                 export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
-                export DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}" # <--- 1. DOCKERHUB_TOKEN을 안전하게 서버로 전달
+                export DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}"
                 export NAVER_CLIENT_ID="${{ secrets.NAVER_CLIENT_ID }}"
                 export NAVER_CLIENT_SECRET="${{ secrets.NAVER_CLIENT_SECRET }}"
                 export KAKAO_CLIENT_ID="${{ secrets.KAKAO_CLIENT_ID }}"
@@ -74,6 +75,7 @@ jobs:
                 
                 ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} "chmod 600 /tmp/env_setup.sh"
 
+            # 원격 서버에서 배포 스크립트를 실행합니다.
             - name: Remote Deploy to Development
               run: |
                   ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'EOF'
@@ -81,14 +83,13 @@ jobs:
                     
                     echo "🔄 Starting remote deployment to development..."
                     
-                    # 환경변수 로드 (로그에 출력되지 않음)
+                    # 1. 임시 파일에서 환경변수 로드
                     source /tmp/env_setup.sh
                     
-                    # .env 파일 안전하게 생성 (내용이 로그에 출력되지 않음)
-                    echo "Creating environment file..."
+                    # 2. .env 파일 안전하게 생성 (로그에 출력 안 됨)
+                    echo "Creating .env file securely..."
                     {
                       echo "DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}"
-                      # .env 파일에도 DOCKERHUB_TOKEN 추가 (필요 시)
                       echo "DOCKERHUB_TOKEN=${DOCKERHUB_TOKEN}" 
                       echo "NAVER_CLIENT_ID=${NAVER_CLIENT_ID}"
                       echo "NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET}"
@@ -114,14 +115,13 @@ jobs:
                       echo "TZ=${TZ}"
                     } > "$DEPLOY_DIR/.env"
 
-                    # 파일 권한 설정
                     chmod 600 "$DEPLOY_DIR/.env"
                     
-                    # 임시 파일 삭제
+                    # 3. 사용한 임시 파일 즉시 삭제
                     rm -f /tmp/env_setup.sh
                     
+                    # 4. --password-stdin을 사용하여 안전하게 로그인
                     echo "Logging into Docker Hub..."
-                    # <--- 2. 가장 안전한 방법으로 Docker Hub에 로그인
                     echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
                     
                     echo "🚀 Starting Docker containers with new image..."
@@ -129,6 +129,7 @@ jobs:
 
                     docker-compose down dev-nextjs
                     docker-compose pull dev-nextjs
+                    # docker-compose는 .env 파일을 자동으로 읽어 컨테이너에 시크릿을 주입합니다.
                     docker-compose up -d dev-nextjs
 
                     echo "⏳ Waiting for application to become healthy for 30 seconds..."
@@ -145,13 +146,8 @@ jobs:
                     echo "📊 Final container status:"
                     docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
-                    echo "✅ Deployment to production completed successfully!"
+                    echo "✅ Deployment to development completed successfully!"
                   EOF
-
-            - name: Cleanup
-              if: always()
-              run: |
-                  # 로컬 파일 정리는 필요없음 (env_vars.sh 삭제)
 
             - name: Deployment Status
               if: always()
