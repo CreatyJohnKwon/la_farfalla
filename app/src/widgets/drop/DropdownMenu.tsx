@@ -31,17 +31,6 @@ const DropdownMenu = ({
     const hoverClasses = "sm:group-hover:max-h-96 group-hover:opacity-100 sm:group-hover:visible sm:max-h-0 sm:opacity-0 sm:invisible";
 
     useEffect(() => {
-        switch (pathName) { 
-            case "/home":
-                setMenuBg("bg-transparent sm:pe-0");
-                break;
-            default:
-                setMenuBg("bg-white/70 sm:pe-10");
-                break;
-        }
-    }, [pathName, setMenuBg]);
-
-    useEffect(() => {
         if (triggerType === "click") {
             const handleClickOutside = (event: MouseEvent) => {
                 if (ref.current && !ref.current.contains(event.target as Node)) setOpen(false);
@@ -57,7 +46,7 @@ const DropdownMenu = ({
             className={`z-40 ${triggerType === "hover" ? "group relative" : ""}`}
         >
             <button 
-                className="font-amstel font-[500]"
+                className={`font-amstel font-[500] ${pathName === "/home" ? "text-black sm:text-white" : "text-black"}`}
                 onClick={() => triggerType === "click" && setOpen(prev => !prev)}
             >
                 {title}
@@ -66,6 +55,7 @@ const DropdownMenu = ({
                 className={`
                     ms-4 sm:ms-0 text-start mt-2 sm:mt-4 sm:absolute text-sm font-amstel font-[500] whitespace-nowrap ${menuBg}
                     sm:transition-all sm:duration-300 ease-in-out ${hoverClasses}
+                    ${pathName === "/home" ? "bg-transparent sm:pe-0" : "bg-white/70 sm:pe-10"}
                     ${triggerType === "click" ? `transition-all duration-300 ease-in-out ${clickClasses}` : ""}
                 `}
             >

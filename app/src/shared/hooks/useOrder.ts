@@ -16,6 +16,7 @@ import { orderAccept } from "@src/features/order/order";
 import { earnMileage, spendMileage } from "@src/features/benefit/mileage";
 import { updateUser } from "../lib/server/user";
 import * as PortOne from "@portone/browser-sdk/v2";
+import * as Currency from "@portone/browser-sdk/v2";
 import { sendMail } from "../lib/server/order";
 import {
     useOrderQuery,
@@ -119,11 +120,59 @@ const useOrder = () => {
         setMileage(user.mileage - usedMileage);
     }, [usedMileage]);
 
+    const processSuccessfulPayment = async (response: any, orderData: OrderData, stockItems: ProductOption[]) => {
+        try {
+            const updatedOrderData = {
+                ...orderData,
+                paymentId: response.paymentId,
+            };
+
+            const res = await orderAccept(updatedOrderData);
+
+            if (res.success) {
+                await Promise.all([
+                    couponMemo !== "" ? useSpendCoupon() : Promise.resolve(),
+                    useSpendMileage(res),
+                    saveNewAddress(),
+                ]);
+
+                const body = JSON.stringify({
+                    ...updatedOrderData,
+                    _id: res.orderId,
+                    createdAt: new Date().toISOString(),
+                });
+
+                sendMail(body);
+                alert(res.message);
+                orderListRefetch();
+                UserDataRefetch();
+                router.replace("/profile/order");
+            } else {
+                console.error("error", res);
+                alert(res.message);
+                // 주문 처리 실패 시 재고 복구
+                await updateStockMutation.mutateAsync({
+                    items: stockItems,
+                    action: "restore",
+                });
+            }
+        } catch (error) {
+            console.error("결제 후 처리 중 오류:", error);
+            alert("결제는 성공했으나 주문 처리 중 오류가 발생했습니다. 관리자에게 문의해주세요.");
+            // 에러 발생 시 재고 복구
+            await updateStockMutation.mutateAsync({
+                items: stockItems,
+                action: "restore",
+            });
+        }
+    };
+
     const orderComplete = async () => {
         // 로딩 시작
         setIsSubmitting(true);
 
         let stockItems: ProductOption[] = [];
+
         // 필수 값 검증
         if (!phoneNumber || !address || !postcode) {
             alert("배송 정보를 모두 입력해주세요.");
@@ -176,7 +225,8 @@ const useOrder = () => {
                 action: "reduce",
             });
 
-            const response = await PortOne.requestPayment({
+            const isMobile = /Mobi/i.test(window.navigator.userAgent);
+            const paymentParams: any = {
                 storeId,
                 channelKey,
                 paymentId: uuidv4(),
@@ -192,69 +242,33 @@ const useOrder = () => {
                 customer: {
                     fullName: user.name,
                     phoneNumber: user.phoneNumber,
-                    email: user.email,
+                    email: user.email
                 },
-                // 🔥 모바일 대응을 위한 redirectUrl 추가
-                redirectUrl: `${window.location.origin}/payment/redirect`,
-            });
+            };
 
-            // ✅ 응답이 없는 경우 처리
-            if (!response) {
-                alert("결제 요청 실패");
-                return;
-            }
+            if (!isMobile) {
+                const response = await PortOne.requestPayment(paymentParams);
+                
+                // 응답이 없거나 에러 코드가 있는 경우 처리
+                if (!response || response.code !== undefined) {
+                    await updateStockMutation.mutateAsync({
+                        items: stockItems,
+                        action: "restore",
+                    });
 
-            // ✅ 에러 코드가 있는 경우 처리
-            if (response.code !== undefined) {
-                await updateStockMutation.mutateAsync({
-                    items: stockItems,
-                    action: "restore",
-                });
-
-                if (response.code === "PAY_PROCESS_CANCELED") {
-                    alert("결제가 취소되었습니다.");
-                    console.error(response.code);
-                } else {
-                    console.error(response.code);
-                    alert(
-                        `결제 실패: ${response.message || "알 수 없는 오류"}`,
-                    );
+                    alert(response?.message || response?.pgMessage);
+                    setIsSubmitting(false);
+                    return;
                 }
-                return;
-            }
 
-            orderData.paymentId = response.txId;
-
-            const res = await orderAccept({
-                ...orderData,
-                paymentId: response.txId,
-            });
-
-            if (res.success) {
-                await Promise.all([
-                    couponMemo !== "" ? useSpendCoupon() : Promise.resolve(),
-                    useSpendMileage(res),
-                    // 마일리지 사용 로직 프로세스 변경
-                    // order -> 주문 확정 시점으로 변경
-                    // addEarnMileage(res),
-                    saveNewAddress(),
-                ]);
-
-                const body = JSON.stringify({
-                    ...orderData,
-                    _id: res.orderId,
-                    paymentId: response.txId,
-                    createdAt: new Date().toISOString(),
-                });
-
-                sendMail(body); // 서버 로그가 찍히기 때문에, 비동기 해제
-                alert(res.message);
-                orderListRefetch();
-                UserDataRefetch();
-                router.replace("/profile/order");
+                // ✅ 분리한 함수를 직접 호출
+                await processSuccessfulPayment(response, orderData, stockItems);
             } else {
-                console.error("error", res);
-                alert(res.message);
+                // 📱 모바일 환경 로직
+                await PortOne.requestPayment({
+                    ...paymentParams,
+                    redirectUrl: `${window.location.origin}/payment/callback?stockItems=${JSON.stringify(stockItems)}`,
+                });
             }
         } catch (error) {
             console.error("결제 처리 중 오류:", error);
@@ -439,7 +453,8 @@ const useOrder = () => {
         setPayments,
 
         orderComplete,
-        isSubmitting
+        isSubmitting,
+        processSuccessfulPayment
     };
 };
 

@@ -1,3 +1,6 @@
+"use client";
+
+import { refundPayment } from '@/src/shared/lib/server/order';
 import { OrderData } from '@src/components/order/interface';
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -67,6 +70,13 @@ const CancelOrder = ({
                     reason: reason.trim(),
                     orderInfo,
                 });
+                if (type === "cancel") {
+                    const refundData = {
+                        paymentId: order.paymentId,
+                        reason
+                    }
+                    await refundPayment(refundData);
+                }
                 onClose();
             } finally {
                 setReason("");

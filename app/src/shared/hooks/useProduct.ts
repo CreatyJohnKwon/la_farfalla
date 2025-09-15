@@ -30,9 +30,11 @@ const useProduct = () => {
     const returnCategories = (categoryIds?: string[]): string[] => {
         if (!category || !categoryIds) return [];
 
-        return category
+        const result = category
             .filter(cat => categoryIds.includes(cat._id))
             .map(cat => cat.name);
+
+        return result
     };
 
     const returnCategory = (categoryId?: string): string => {

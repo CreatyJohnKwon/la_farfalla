@@ -1,9 +1,11 @@
 "use client";
 
 import useUsers from "@/src/shared/hooks/useUsers";
+import { adminMenuItems } from "@/src/utils/dataUtils";
 import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "@src/widgets/drop/DropdownMenu";
 import Link from "next/link";
+import { adminEmails } from "public/data/common";
 import { useEffect, useRef, useState } from "react";
 
 const Sidebar = () => {
@@ -82,6 +84,15 @@ const Sidebar = () => {
                                     triggerType="click"
                                 />}
                             </li>
+                            {adminEmails.includes(`${session?.user?.email}`) &&
+                                <li className="relative -mb-1.5 text-gray-500" key={"admin-menu"}>
+                                    {isClient && <DropdownMenu 
+                                        title="ADMIN"
+                                        items={adminMenuItems}
+                                        triggerType="click"
+                                    />}
+                                </li>
+                            }
                             {sideBarMenuData.map((data: any, index: number) =>
                                 <li className="relative sm:transition-all sm:duration-300 sm:ease-in-out" key={index}>
                                     <Link href={data.link} onClick={() => onCloseSidebar()}>{data.label}</Link>

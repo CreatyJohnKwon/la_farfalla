@@ -3,11 +3,11 @@
 import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
 import { useState, useMemo } from "react";
-import UpdateProductModal from "@src/widgets/modal/UpdateProduct/UpdateProductModal";
 import UpdateCategoryModal from "@src/widgets/modal/UpdateCategoryModal";
 import Link from "next/link";
 import { Product } from "@src/components/product/interface";
 import useProduct from "@src/shared/hooks/useProduct";
+import UpdateProductModal from "@/src/widgets/modal/updateProduct/UpdateProductModal";
 
 type SortOption =
     | "none"
@@ -751,7 +751,7 @@ const Products = () => {
                                                 <div className="mb-2 flex items-center gap-2">
                                                     <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800">
                                                         {product.categories && product.categories.length > 0
-                                                            ? product.categories.join(", ")
+                                                            ? returnCategories(product.categories).join(",\t")
                                                                 : "All"}
                                                     </span>
                                                     {product.quantity ===
@@ -886,7 +886,7 @@ const Products = () => {
                                                                 product,
                                                             );
                                                         }}
-                                                        className="flex h-10 w-10 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
+                                                        className="flex h-10 w-10 items-center justify-center rounded-sm text-gray-400 transition-colors hover:text-blue-600"
                                                         title="수정"
                                                     >
                                                         <svg
@@ -916,7 +916,7 @@ const Products = () => {
                                                                 );
                                                             }
                                                         }}
-                                                        className="flex h-10 w-10 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                                                        className="flex h-10 w-10 items-center justify-center rounded-sm text-gray-400 transition-colors hover:text-red-600"
                                                         title="삭제"
                                                     >
                                                         <svg

@@ -343,7 +343,10 @@ const Orders = () => {
                                 <th className="w-[15%] px-4 py-3 text-xs font-medium sm:text-sm">
                                     주문번호
                                 </th>
-                                <th className="w-[12%] px-4 py-3 text-xs font-medium sm:text-sm">
+                                <th className="w-[15%] px-4 py-3 text-xs font-medium sm:text-sm">
+                                    결제번호
+                                </th>
+                                <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
                                     <div className="flex items-center gap-1">
                                         주문자
                                         {(sortOption === "name_asc" ||
@@ -364,7 +367,7 @@ const Orders = () => {
                                         )}
                                     </div>
                                 </th>
-                                <th className="w-[12%] px-4 py-3 text-xs font-medium sm:text-sm">
+                                <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
                                     휴대전화번호
                                 </th>
                                 <th className="w-[20%] px-4 py-3 text-xs font-medium sm:text-sm">
@@ -373,7 +376,7 @@ const Orders = () => {
                                 <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
                                     상품목록
                                 </th>
-                                <th className="w-[15%] px-4 py-3 text-xs font-medium sm:text-sm">
+                                <th className="w-[10%] px-4 py-3 text-xs font-medium sm:text-sm">
                                     상태
                                 </th>
                                 <th className="w-[5%] px-4 py-3 text-xs font-medium sm:text-sm">
@@ -417,8 +420,26 @@ const Orders = () => {
                                             </td>
                                             {/* 주문번호 */}
                                             <td className="whitespace-nowrap px-4 py-3">
-                                                <div className="font-mono text-xs text-gray-600 sm:text-sm">
+                                                <div 
+                                                    className="font-mono text-xs text-gray-600 sm:text-sm cursor-pointer truncate w-[10vw] hover:underline"
+                                                    onClick={() => {
+                                                        navigator.clipboard.writeText(`${order._id}`);
+                                                        alert("주문번호가 클립보드에 복사되었습니다.");
+                                                    }}
+                                                >
                                                     {order._id}
+                                                </div>
+                                            </td>
+                                            {/* 결제번호 */}
+                                            <td className="whitespace-nowrap px-4 py-3">
+                                                <div 
+                                                    className="font-mono text-xs text-gray-600 sm:text-sm cursor-pointer truncate w-[10vw] hover:underline"
+                                                    onClick={() => {
+                                                        navigator.clipboard.writeText(`${order.paymentId}`);
+                                                        alert("결제번호가 클립보드에 복사되었습니다.");
+                                                    }}
+                                                >
+                                                    {order.paymentId}
                                                 </div>
                                             </td>
                                             {/* 주문자명 */}
@@ -447,7 +468,7 @@ const Orders = () => {
                                             </td>
                                             {/* 주소 */}
                                             <td className="px-4 py-3">
-                                                <div className="max-w-[200px] truncate text-xs text-gray-700 sm:text-sm">
+                                                <div className="max-w-full truncate text-xs text-gray-700 sm:text-sm">
                                                     {`${order.address}${order.detailAddress ? `, ${order.detailAddress}` : ""}${order.postcode ? ` (${order.postcode})` : ""}`}
                                                 </div>
                                             </td>

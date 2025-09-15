@@ -15,7 +15,6 @@ import { specialReviewItem } from "@src/components/product/interface";
 import { OrderData, ShippingStatus } from "@src/components/order/interface";
 import useOrder from "@src/shared/hooks/useOrder";
 import { sendMail } from "@src/shared/lib/server/order";
-import { spendMileage } from '@src/features/benefit/mileage';
 
 // 주문 상세 모달 컴포넌트
 const OrderDetailModal = ({
@@ -44,7 +43,7 @@ const OrderDetailModal = ({
     const [cancelType, setCancelType] = useState<"cancel" | "exchange" | "return">("cancel");
     const [isDeliveryChangeModalOpen, setIsDeliveryChangeModalOpen] =useState(false); // 🆕 추가
 
-    const { useSpendMileage, addEarnMileage } = useOrder();
+    const { addEarnMileage } = useOrder();
 
     if (!isOpen) return null;
 
@@ -87,7 +86,7 @@ const OrderDetailModal = ({
             // 클립보드에 복사
             await navigator.clipboard.writeText(predefinedMessage);
 
-            alert(`${actionName} 요청 메시지가 복사되었습니다!\n카카오톡 채널에서 붙여넣기(Ctrl+V) 해주세요.`,);
+            alert(`${actionName} 요청 메시지가 복사되었습니다!\n카카오톡 채널에서 붙여넣기(Ctrl+V) 해주세요.`);
             const message = `${actionName} 요청 메시지를 복사해서 채널에 보내주세요:`;
 
             //prompt 시작
@@ -557,7 +556,7 @@ const OrderDetailModal = ({
                                         className="ms-20 break-all text-end font-mono text-xs text-gray-600 truncate hover:text-gray-900 cursor-pointer hover:underline"
                                         onClick={() => {
                                             navigator.clipboard.writeText(`${order.paymentId}`);
-                                            alert("복사 되었습니다")
+                                            alert("클립보드에 복사 되었습니다")
                                         }}
                                     >
                                         {order.paymentId}
@@ -684,24 +683,24 @@ const OrderDetailModal = ({
                         )}
                     </div>
                 </div>
-
-                {/* 🆕 환불/취소 모달 */}
-                <CancelOrderModal
-                    isOpen={isRefundModalOpen}
-                    onClose={() => setIsRefundModalOpen(false)}
-                    onSubmit={handleSubmit}
-                    order={order}
-                    type={cancelType}
-                />
-
-                {/* 🆕 배송지 변경 모달 */}
-                <DeliveryChangeModal
-                    isOpen={isDeliveryChangeModalOpen}
-                    onClose={() => setIsDeliveryChangeModalOpen(false)}
-                    onSubmit={handleDeliveryChange}
-                    order={order}
-                />
             </div>
+
+            {/* 🆕 환불/취소 모달 */}
+            <CancelOrderModal
+                isOpen={isRefundModalOpen}
+                onClose={() => setIsRefundModalOpen(false)}
+                onSubmit={handleSubmit}
+                order={order}
+                type={cancelType}
+            />
+
+            {/* 🆕 배송지 변경 모달 */}
+            <DeliveryChangeModal
+                isOpen={isDeliveryChangeModalOpen}
+                onClose={() => setIsDeliveryChangeModalOpen(false)}
+                onSubmit={handleDeliveryChange}
+                order={order}
+            />
 
             {isReviewModalOpen && (
                 <SpecialReviewModal 

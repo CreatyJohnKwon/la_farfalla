@@ -1,5 +1,5 @@
 import { OrderData } from "@src/components/order/interface";
-import AddressModal from "@src/features/address/AddressModal";
+import AddressModal from "@/src/widgets/modal/address/AddressModal";
 import { useAddress } from "@src/shared/hooks/useAddress";
 import { X } from "lucide-react";
 import { useState } from "react";

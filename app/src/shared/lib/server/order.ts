@@ -54,6 +54,13 @@ const sendMail = async (body: any) =>
         body,
     });
 
+const refundPayment = async (refundData: any) =>
+    await fetch("/api/payments/cancel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(refundData)
+    });
+
 const updateStock = async (
     items: ProductOption[],
     action: "reduce" | "restore",
@@ -128,4 +135,5 @@ export {
     sendMail,
     updateStock,
     updateOrderAddress,
+    refundPayment
 };

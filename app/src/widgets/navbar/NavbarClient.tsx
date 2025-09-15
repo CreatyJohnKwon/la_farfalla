@@ -6,10 +6,10 @@ import { AiOutlineUser } from "react-icons/ai";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Cart from "@src/features/cart/Cart";
 import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "../drop/DropdownMenu";
 import useUsers from "@src/shared/hooks/useUsers";
+import Cart from "@/src/components/cart/Cart";
 
 const NavbarClient = () => {
     const {

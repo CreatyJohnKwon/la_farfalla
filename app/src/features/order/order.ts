@@ -37,4 +37,19 @@ const orderAccept = async (orderData: OrderData) => {
     }
 };
 
+// const increaseStock = () => {
+    
+
+//     const stockItems = orderDatas.map((item) => ({
+//         productId: item.productId,
+//         colorName: item.color,
+//         stockQuantity: item.quantity,
+//     }));
+
+//     await updateStockMutation.mutateAsync({
+//         items: stockItems,
+//         action: "reduce",
+//     });
+// }
+
 export { orderAccept };
