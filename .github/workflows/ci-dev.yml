@@ -37,20 +37,17 @@ jobs:
             - name: Set up SSH key
               run: |
                   mkdir -p ~/.ssh
-                  echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
+                  echo "${{ secrets.AWS_SSH_KEY }}" | base64 -d > ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
                   echo "Host *" >> ~/.ssh/config
                   echo "  StrictHostKeyChecking no" >> ~/.ssh/config
                   echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
-              env:
-                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
             - name: Transfer environment variables to server
               run: |
-                # 단 한 번의 SSH 접속으로 모든 환경변수를 서버의 임시 파일에 안전하게 기록합니다.
-                # 이 방식은 여러 번 접속하는 것보다 훨씬 빠르고 안정적입니다.
                 ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} 'cat > /tmp/env_setup.sh' <<EOF
                 export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+                export DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}" # <--- 1. DOCKERHUB_TOKEN을 안전하게 서버로 전달
                 export NAVER_CLIENT_ID="${{ secrets.NAVER_CLIENT_ID }}"
                 export NAVER_CLIENT_SECRET="${{ secrets.NAVER_CLIENT_SECRET }}"
                 export KAKAO_CLIENT_ID="${{ secrets.KAKAO_CLIENT_ID }}"
@@ -75,14 +72,12 @@ jobs:
                 export TZ="Asia/Seoul"
                 EOF
                 
-                # 생성된 임시 파일에 보안을 위한 실행 권한을 설정합니다.
                 ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} "chmod 600 /tmp/env_setup.sh"
 
             - name: Remote Deploy to Development
               run: |
                   ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'EOF'
                     DEPLOY_DIR="/home/ec2-user/la_farfalla"
-                    APP_IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:dev"
                     
                     echo "🔄 Starting remote deployment to development..."
                     
@@ -93,6 +88,8 @@ jobs:
                     echo "Creating environment file..."
                     {
                       echo "DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}"
+                      # .env 파일에도 DOCKERHUB_TOKEN 추가 (필요 시)
+                      echo "DOCKERHUB_TOKEN=${DOCKERHUB_TOKEN}" 
                       echo "NAVER_CLIENT_ID=${NAVER_CLIENT_ID}"
                       echo "NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET}"
                       echo "KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID}"
@@ -124,7 +121,8 @@ jobs:
                     rm -f /tmp/env_setup.sh
                     
                     echo "Logging into Docker Hub..."
-                    docker login -u ${DOCKERHUB_USERNAME} -p ${{ secrets.DOCKERHUB_TOKEN }}
+                    # <--- 2. 가장 안전한 방법으로 Docker Hub에 로그인
+                    echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
                     
                     echo "🚀 Starting Docker containers with new image..."
                     cd "$DEPLOY_DIR"
@@ -134,7 +132,7 @@ jobs:
                     docker-compose up -d dev-nextjs
 
                     echo "⏳ Waiting for application to become healthy for 30 seconds..."
-                    sleep 30 # 30초 동안 애플리케이션 반영을 기다림
+                    sleep 30 
                     
                     echo "✅ Wait finished. Assuming application is up."
 
@@ -147,15 +145,8 @@ jobs:
                     echo "📊 Final container status:"
                     docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
-                    # --- "성공" 메시지를 여기로 이동 ---
                     echo "✅ Deployment to production completed successfully!"
                   EOF
-
-              env:
-                AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
-                EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
-                DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-                DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
             - name: Cleanup
               if: always()
