@@ -1,3 +1,4 @@
+
 name: CI/CD Development
 
 on:
@@ -77,7 +78,6 @@ jobs:
                 
                 # 생성된 임시 파일에 보안을 위한 실행 권한을 설정합니다.
                 ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} "chmod 600 /tmp/env_setup.sh"
-
             - name: Remote Deploy to Development
               run: |
                   ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'EOF'
@@ -116,7 +116,6 @@ jobs:
                       echo "PORTONE_API_SECRET_KEY=${PORTONE_API_SECRET_KEY}"
                       echo "TZ=${TZ}"
                     } > "$DEPLOY_DIR/.env"
-
                     # 파일 권한 설정
                     chmod 600 "$DEPLOY_DIR/.env"
                     
@@ -128,34 +127,32 @@ jobs:
                     
                     echo "🚀 Starting Docker containers with new image..."
                     cd "$DEPLOY_DIR"
-
                     docker-compose down dev-nextjs
                     docker-compose pull dev-nextjs
                     docker-compose up -d dev-nextjs
-
                     echo "⏳ Waiting for application to become healthy for 30 seconds..."
                     sleep 30 # 30초 동안 애플리케이션 반영을 기다림
                     
                     echo "✅ Wait finished. Assuming application is up."
-
                     echo "🔄 Reloading nginx configuration..."
                     docker-compose exec nginx nginx -s reload || echo "Nginx reload failed, but continuing..."
-
                     echo "🧹 Cleaning up unused Docker images..."
                     sudo docker image prune -af
-
                     echo "📊 Final container status:"
                     docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-
                     # --- "성공" 메시지를 여기로 이동 ---
                     echo "✅ Deployment to production completed successfully!"
                   EOF
+              env:
+                AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+                EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+                DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+                DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
             - name: Cleanup
               if: always()
               run: |
                   # 로컬 파일 정리는 필요없음 (env_vars.sh 삭제)
-
             - name: Deployment Status
               if: always()
               run: |
