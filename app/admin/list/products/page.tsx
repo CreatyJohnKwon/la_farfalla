@@ -7,7 +7,7 @@ import UpdateCategoryModal from "@src/widgets/modal/UpdateCategoryModal";
 import Link from "next/link";
 import { Product } from "@src/components/product/interface";
 import useProduct from "@src/shared/hooks/useProduct";
-import UpdateProductModal from "@/src/widgets/modal/updateProduct/UpdateProductModal";
+import UpdateProductModal from "@/src/widgets/modal/UpdateProduct/UpdateProductModal";
 
 type SortOption =
     | "none"

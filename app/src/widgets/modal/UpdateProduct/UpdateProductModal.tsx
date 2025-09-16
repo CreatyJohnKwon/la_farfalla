@@ -7,13 +7,6 @@ import {
     NewVariantType,
     Product,
 } from "@src/components/product/interface";
-import Size from "./Size";
-import Options from "./Options";
-import Section from "./Section";
-import ModalWrap from "../ModalWrap";
-import UploadImage from "./UploadImage";
-import ProductTitle from "./ProductTitle";
-import DescriptionInfo from "./DescriptionInfo";
 import { useState, useEffect } from "react";
 import { useSetAtom } from "jotai";
 import { loadingAtom } from "@src/shared/lib/atom";
@@ -23,7 +16,14 @@ import {
     usePostProductMutation,
     useUpdateProductMutation,
 } from "@src/shared/hooks/react-query/useProductQuery";
+import ModalWrap from "../ModalWrap";
+import UploadImage from "./UploadImage";
+import ProductTitle from "./ProductTitle";
+import DescriptionInfo from "./DescriptionInfo";
 import CategorySelector from "./CategorySelector";
+import Section from "./Section";
+import Options from "./Options";
+import Size from "./Size";
 
 const UpdateProductModal = ({
     onClose,

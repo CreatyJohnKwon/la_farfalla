@@ -1,7 +1,7 @@
 "use client";
 
 import { searchUsers } from "@/src/features/search";
-import CreateAnnounceModal from "@/src/widgets/modal/createAnnounceModal/CreateAnnounceModal";
+import CreateAnnounceModal from "@/src/widgets/modal/CreateAnnounceModal/CreateAnnounceModal";
 import { UserProfileData } from "@src/entities/type/interfaces";
 import {
     useRestoreUserMutation,
