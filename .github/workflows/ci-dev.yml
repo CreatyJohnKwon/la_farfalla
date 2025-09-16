@@ -13,9 +13,7 @@ jobs:
               uses: actions/checkout@v3
 
             - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v3
-              with:
-                driver: docker
+              uses: docker/setup-buildx-action@v2
 
             - name: Login to Docker Hub
               uses: docker/login-action@v2
@@ -23,7 +21,6 @@ jobs:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-            # 'Dockerfile.full'을 사용하여 시크릿 없이 깨끗한 이미지를 빌드합니다.
             - name: Build and push Docker image
               uses: docker/build-push-action@v4
               with:
@@ -31,7 +28,7 @@ jobs:
                   file: ./Dockerfile.full
                   push: true
                   tags: ${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:dev
-                  no-cache: true
+                  # build-args 제거 - 런타임에 환경변수로 처리
 
     deploy:
         runs-on: ubuntu-latest
@@ -40,18 +37,20 @@ jobs:
             - name: Set up SSH key
               run: |
                   mkdir -p ~/.ssh
-                  echo "${{ secrets.AWS_SSH_KEY }}" | base64 -d > ~/.ssh/id_rsa
+                  echo "$AWS_SSH_KEY" | base64 -d > ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
                   echo "Host *" >> ~/.ssh/config
                   echo "  StrictHostKeyChecking no" >> ~/.ssh/config
                   echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+              env:
+                  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
 
-            # 모든 시크릿을 서버의 임시 스크립트 파일로 안전하게 전송합니다.
             - name: Transfer environment variables to server
               run: |
+                # 단 한 번의 SSH 접속으로 모든 환경변수를 서버의 임시 파일에 안전하게 기록합니다.
+                # 이 방식은 여러 번 접속하는 것보다 훨씬 빠르고 안정적입니다.
                 ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} 'cat > /tmp/env_setup.sh' <<EOF
                 export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
-                export DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}"
                 export NAVER_CLIENT_ID="${{ secrets.NAVER_CLIENT_ID }}"
                 export NAVER_CLIENT_SECRET="${{ secrets.NAVER_CLIENT_SECRET }}"
                 export KAKAO_CLIENT_ID="${{ secrets.KAKAO_CLIENT_ID }}"
@@ -76,24 +75,24 @@ jobs:
                 export TZ="Asia/Seoul"
                 EOF
                 
+                # 생성된 임시 파일에 보안을 위한 실행 권한을 설정합니다.
                 ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} "chmod 600 /tmp/env_setup.sh"
 
-            # 원격 서버에서 배포 스크립트를 실행합니다.
             - name: Remote Deploy to Development
               run: |
                   ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'EOF'
                     DEPLOY_DIR="/home/ec2-user/la_farfalla"
+                    APP_IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/lafarfalla:dev"
                     
                     echo "🔄 Starting remote deployment to development..."
                     
-                    # 1. 임시 파일에서 환경변수 로드
+                    # 환경변수 로드 (로그에 출력되지 않음)
                     source /tmp/env_setup.sh
                     
-                    # 2. .env 파일 안전하게 생성 (로그에 출력 안 됨)
-                    echo "Creating .env file securely..."
+                    # .env 파일 안전하게 생성 (내용이 로그에 출력되지 않음)
+                    echo "Creating environment file..."
                     {
                       echo "DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}"
-                      echo "DOCKERHUB_TOKEN=${DOCKERHUB_TOKEN}" 
                       echo "NAVER_CLIENT_ID=${NAVER_CLIENT_ID}"
                       echo "NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET}"
                       echo "KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID}"
@@ -118,25 +117,24 @@ jobs:
                       echo "TZ=${TZ}"
                     } > "$DEPLOY_DIR/.env"
 
+                    # 파일 권한 설정
                     chmod 600 "$DEPLOY_DIR/.env"
                     
-                    # 3. 사용한 임시 파일 즉시 삭제
+                    # 임시 파일 삭제
                     rm -f /tmp/env_setup.sh
                     
-                    # 4. --password-stdin을 사용하여 안전하게 로그인
                     echo "Logging into Docker Hub..."
-                    echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+                    docker login -u ${DOCKERHUB_USERNAME} -p ${{ secrets.DOCKERHUB_TOKEN }}
                     
                     echo "🚀 Starting Docker containers with new image..."
                     cd "$DEPLOY_DIR"
 
                     docker-compose down dev-nextjs
                     docker-compose pull dev-nextjs
-                    # docker-compose는 .env 파일을 자동으로 읽어 컨테이너에 시크릿을 주입합니다.
                     docker-compose up -d dev-nextjs
 
                     echo "⏳ Waiting for application to become healthy for 30 seconds..."
-                    sleep 30 
+                    sleep 30 # 30초 동안 애플리케이션 반영을 기다림
                     
                     echo "✅ Wait finished. Assuming application is up."
 
@@ -149,8 +147,14 @@ jobs:
                     echo "📊 Final container status:"
                     docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
-                    echo "✅ Deployment to development completed successfully!"
+                    # --- "성공" 메시지를 여기로 이동 ---
+                    echo "✅ Deployment to production completed successfully!"
                   EOF
+
+            - name: Cleanup
+              if: always()
+              run: |
+                  # 로컬 파일 정리는 필요없음 (env_vars.sh 삭제)
 
             - name: Deployment Status
               if: always()
