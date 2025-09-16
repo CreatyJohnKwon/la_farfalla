@@ -16,7 +16,7 @@ import {
     usePostProductMutation,
     useUpdateProductMutation,
 } from "@src/shared/hooks/react-query/useProductQuery";
-import ModalWrap from "../ModalWrap";
+import ModalWrap from "./ModalWrap";
 import UploadImage from "./UploadImage";
 import ProductTitle from "./ProductTitle";
 import DescriptionInfo from "./DescriptionInfo";

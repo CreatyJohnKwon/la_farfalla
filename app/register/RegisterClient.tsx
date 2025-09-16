@@ -11,8 +11,8 @@ import { registUserAction } from "./actions";
 import { useAddress } from "@src/shared/hooks/useAddress";
 import { sendAuthMail } from "@src/shared/lib/server/user";
 
-import AddressModal from "@/src/widgets/modal/Address/AddressModal";
-import AgreementModal from "@/src/widgets/modal/Agreement/AgreementModal";
+import AddressModal from "@/src/widgets/modal/AddressModal";
+import AgreementModal from "@/src/widgets/modal/AgreementModal";
 import UserAgreeOne from "@src/components/agreement/UserAgreeOne";
 import UserAgreeTwo from "@src/components/agreement/UserAgreeTwo";
 

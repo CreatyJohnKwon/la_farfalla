@@ -1,6 +1,6 @@
 "use client";
 
-import AddressModal from "@/src/widgets/modal/Address/AddressModal";
+import AddressModal from "@/src/widgets/modal/AddressModal";
 import {
     useUserQuery,
     useUpdateUserMutation,

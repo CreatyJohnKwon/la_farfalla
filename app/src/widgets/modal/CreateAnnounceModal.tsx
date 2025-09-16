@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import ModalWrap from "../ModalWrap";
+import ModalWrap from "./ModalWrap";
 import {
     useCreateAnnounceMutation,
     useAnnouncesQuery,
