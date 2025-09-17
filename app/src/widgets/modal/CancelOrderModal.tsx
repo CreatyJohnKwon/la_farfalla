@@ -1,5 +1,6 @@
 "use client";
 
+import useOrder from '@/src/shared/hooks/useOrder';
 import { refundPayment } from '@/src/shared/lib/server/order';
 import { OrderData } from '@src/components/order/interface';
 import { X } from "lucide-react";
@@ -26,6 +27,7 @@ const CancelOrder = ({
     const [requestType, setRequestType] = useState<"cancel" | "exchange" | "return">(type);
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { useSpendMileage } = useOrder();
 
     useEffect(() => {
         setRequestType(type);
@@ -76,6 +78,7 @@ const CancelOrder = ({
                         reason
                     }
                     await refundPayment(refundData);
+                    await useSpendMileage(order, "상품 구매 취소", Number(order.totalPrice*0.01), order._id)
                 }
                 onClose();
             } finally {

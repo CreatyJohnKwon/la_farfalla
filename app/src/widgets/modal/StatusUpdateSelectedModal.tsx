@@ -43,6 +43,7 @@ const StatusUpdateSelectedModal = ({
                 cancel: 0,
                 return: 0,
                 exchange: 0,
+                prepare: 0
             },
         );
 

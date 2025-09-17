@@ -29,11 +29,6 @@ const usePage = () => {
     const isUserAdmin = adminEmails.includes(session?.user?.email ?? "");
     const menuData = isUserAdmin ? adminMenuItems : aboutMenuItems;
     const menuTitle = isUserAdmin ? "ADMIN" : "ABOUT";
-    const sideBarMenuData = [
-        { label: "INTRODUCE", link: "/introduce" },
-        { label: "PROJECT", link: "/project" },
-        { label: "NOTICE", link: "/notice" }, // 추후에 추가
-    ]
 
     const instagramHandler = () =>
         window.open(
@@ -82,7 +77,6 @@ const usePage = () => {
         openSidebar,
         menuData,
         menuTitle,
-        sideBarMenuData,
         isVisible,
         animationClass,
         isCategoryLoad,

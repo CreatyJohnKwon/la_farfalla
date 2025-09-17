@@ -38,7 +38,7 @@ const orderSchema = new mongoose.Schema(
         // 배송 상태
         shippingStatus: {
             type: String,
-            enum: ["pending", "ready", "shipped", "confirm", "cancel", "return", "exchange"],
+            enum: ["prepare", "pending", "ready", "shipped", "confirm", "cancel", "return", "exchange"],
             default: "pending", // 주문 완료 직후
             require: true,
         },

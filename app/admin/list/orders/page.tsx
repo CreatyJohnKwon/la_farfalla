@@ -498,7 +498,7 @@ const Orders = () => {
                                                     className={`-ms-2 inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(order.shippingStatus)}`}
                                                 >
                                                     {getStatusText(
-                                                        order.shippingStatus,
+                                                        order.shippingStatus
                                                     )}
                                                 </span>
                                             </td>

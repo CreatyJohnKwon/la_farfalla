@@ -48,10 +48,10 @@ const UserInfoModal = ({
                                 error ? "탈퇴한 유저" : userData?.phoneNumber
                             }
                         />
-                        <InfoRow
+                        {/* <InfoRow
                             label="결제방법"
                             value={orderData?.payMethod}
-                        />
+                        /> */}
 
                         <BoxElement
                             label={"배송 주소"}

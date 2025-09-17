@@ -89,7 +89,7 @@ const StatusUpdateModal = ({
                     <div className="rounded-sm bg-gray-50 p-6 shadow-sm transition">
                         {/* 라디오 버튼 그룹 */}
                         {Object.entries(statusResult).map(([key, label]) => {
-                            if (key === "return" || key === "exchange") {
+                            if (key === "return" || key === "exchange" || key === "prepare") {
                                 return null;
                             } else if (key === "cancel") {
                                 return (

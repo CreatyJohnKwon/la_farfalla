@@ -34,7 +34,7 @@ export class EmailService {
     } catch (error) {
       const errorMessage =
           error instanceof Error ? error.message : "Unknown error";
-      console.error("이메일 발송 실패:", errorMessage);
+          console.error("이메일 발송 실패:", errorMessage);
 
       return {
           success: false,
@@ -68,6 +68,7 @@ export class EmailService {
         cancel: "주문 취소",
         return: "반품 요청",
         exchange: "교환 요청",
+        prepare: ""
     };
     const shippingStatusText = shippingStatusMap[orderData.shippingStatus];
     const description = orderData.description;
@@ -323,10 +324,6 @@ export class EmailService {
                     <div class="info-item">
                       <span class="info-label">주문일시:</span>
                       <span class="info-value">${orderDateTime}</span>
-                    </div>
-                    <div class="info-item">
-                      <span class="info-label">결제방법:</span>
-                      <span class="info-value">${payMethodText}</span>
                     </div>
                     <div class="info-item">
                       <span class="info-label">배송상태:</span>

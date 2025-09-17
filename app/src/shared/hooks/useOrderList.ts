@@ -11,6 +11,7 @@ const useOrderList = () => {
         cancel: "text-red-500",
         return: "text-red-500",
         exchange: "text-red-500",
+        prepare: "text-yellow-500",
     } as const;
 
     const statusResult = {
@@ -20,7 +21,8 @@ const useOrderList = () => {
         confirm: "구매 확정",
         cancel: "주문 취소",
         return: "반품",
-        exchange: "교환"
+        exchange: "교환",
+        prepare: "결제 오류"
     } as const;
 
     const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);

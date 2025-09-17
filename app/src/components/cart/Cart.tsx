@@ -2,9 +2,9 @@
 
 import useCart from "@src/shared/hooks/useCart";
 import { useState, useEffect } from "react";
-import CartItem from "./CartItem";
 import { getCart } from "@src/shared/lib/server/cart";
 import { SelectedItem } from "@src/entities/type/interfaces";
+import CartItem from "./CartItem";
 
 const Cart = () => {
     const [totalQuantity, setTotalQuantity] = useState<number>(0);
@@ -18,19 +18,18 @@ const Cart = () => {
     } = useCart();
 
     useEffect(() => {
-        if (cartDatas.length === 0) {
-            const getCartItems = async () => {
-                const datas: any = await getCart();
-                if (datas) {
-                    setCartDatas(datas);
-                } else if (datas === null)
-                    alert(
-                        "장바구니 조회 중 오류가 발생했습니다\n고객센터에 문의해주세요",
-                    );
-            };
-            getCartItems();
-        }
-    }, []);
+        const getCartItems = async () => {
+            const datas = await getCart();
+            if (datas) {
+                setCartDatas(datas);
+            } else {
+                alert(
+                    "장바구니 조회 중 오류가 발생했습니다\n고객센터에 문의해주세요",
+                );
+            }
+        };
+        getCartItems();
+    }, [setCartDatas]);
 
     useEffect(() => {
         if (!cartDatas) return;
@@ -50,27 +49,25 @@ const Cart = () => {
         );
     }, [cartDatas]);
 
-    // 서칭
     useEffect(() => {
-        // 팝업 열릴 때 스크롤 막기
         document.body.style.overflow = "hidden";
-
-        // 컴포넌트 언마운트 시 복원
+        // 컴포넌트가 언마운트될 때 body 스크롤을 복원합니다.
         return () => {
             document.body.style.overflow = "auto";
         };
     }, []);
 
     const cartListView = () => {
-        if (cartDatas.length > 0) {
+        if (cartDatas && cartDatas.length > 0) {
             return cartDatas.map((item: SelectedItem, index: number) => (
                 <li
                     key={`${item.productId}_${index}_list`}
-                    className="flex w-full flex-col items-center justify-center text-[1em] font-semibold sm:text-[2em]"
+                    className="flex w-full flex-col items-center justify-center font-semibold"
                 >
                     <CartItem
                         key={`${item.productId}_${index}_item`}
                         item={item}
+                        onClose={() => setCartView(false)}
                     />
                 </li>
             ));
@@ -78,7 +75,7 @@ const Cart = () => {
             return (
                 <li
                     key={"unknown_datas"}
-                    className="font-pretendard text-[0.8em] font-[300] text-black sm:text-[1em]"
+                    className="flex h-full w-full items-center justify-center font-pretendard text-sm font-[300] text-gray-500 sm:text-base"
                 >
                     장바구니가 비었습니다
                 </li>
@@ -87,56 +84,56 @@ const Cart = () => {
     };
 
     return (
+        // 오버레이: 화면 전체를 덮고 클릭 시 장바구니를 닫습니다.
         <div
-            className="fixed inset-0 flex items-center justify-center bg-black/50"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
             onClick={() => setCartView(false)}
         >
+            {/* 장바구니 컨테이너: 이벤트 버블링을 막습니다. */}
             <div
-                className="relative z-50 h-4/5 w-11/12 bg-white"
+                className="flex h-[90vh] w-full flex-col overflow-hidden bg-white sm:h-4/5 sm:w-11/12 sm:max-w-2xl sm:rounded-sm"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="mt-3 flex w-full items-center justify-between px-5 sm:mt-5 sm:px-8">
-                    <div className="text-sm sm:text-gray-600">
-                        {/* Mobile */}
-                        <span className="block sm:hidden">
-                            총 {totalQuantity}개
-                        </span>
-                        {/* PC */}
-                        <span className="hidden text-base sm:block">
-                            총 주문 상품 {totalQuantity}개
-                        </span>
+                {/* 헤더 */}
+                <div className="relative flex w-full flex-shrink-0 items-center justify-between border-b p-4 sm:p-6">
+                    {/* sm 사이즈부터 글자 크기를 base로 고정합니다. */}
+                    <div className="text-sm text-gray-600 sm:text-base">
+                        총 {totalQuantity}개
                     </div>
-
-                    <p className="font-amstel absolute left-1/2 -translate-x-1/2 text-base text-black sm:text-2xl">
+                    {/* sm 사이즈부터 글자 크기를 2xl로 고정합니다. */}
+                    <p className="font-amstel absolute left-1/2 -translate-x-1/2 text-lg font-semibold text-black sm:text-2xl">
                         Cart
                     </p>
-
                     <button
                         onClick={() => setCartView(false)}
-                        className="text-xl font-thin text-black sm:text-3xl"
+                        className="text-2xl font-thin text-black sm:text-3xl mb-2"
                     >
                         &times;
                     </button>
                 </div>
 
-                <ul className="mt-10 flex max-h-[68%] flex-wrap items-center justify-center gap-10 overflow-x-auto overflow-y-auto text-center text-lg font-semibold sm:max-h-[60%] sm:p-2">
+                {/* 장바구니 목록: 남은 공간을 모두 차지하고 내용이 많으면 스크롤됩니다. */}
+                <ul className="flex-grow overflow-y-auto p-2 sm:p-4">
                     {cartListView()}
                 </ul>
 
-                <div className="absolute bottom-6 w-full">
-                    <span className="font-amstel mb-5 flex w-full items-center justify-center text-base sm:text-3xl">
-                        {`Total' KRW ${totalPrice.toLocaleString()}`}
+                {/* 푸터 */}
+                <div className="w-full flex-shrink-0 border-t bg-white p-4 sm:p-6">
+                    {/* sm 사이즈부터 글자 크기를 2xl로 고정합니다. */}
+                    <span className="font-amstel mb-4 flex w-full items-center justify-center text-lg text-black sm:text-2xl">
+                        {`Total KRW ${totalPrice.toLocaleString()}`}
                     </span>
-                    <div className="font-amstel flex flex-col items-center justify-center space-y-3 text-base sm:flex-row sm:space-x-4 sm:space-y-0 sm:text-xl">
+                    <div className="font-amstel flex flex-col items-center justify-center text-base sm:text-lg">
                         <button
-                            className="w-[80vw] bg-black px-6 py-3 text-white hover:bg-black/70 sm:max-w-[30vw]"
+                            className="w-full bg-black px-6 py-3 text-white transition-colors hover:bg-black/70 disabled:cursor-not-allowed disabled:bg-gray-400 sm:w-auto sm:min-w-[250px]"
                             onClick={() => {
-                                handleBuy(cartDatas); // 구매하기
-                                handleRemoveCartAll(); // 장바구니 아이템 전부 비우기
-                                setCartDatas([]); // 장바구니 비우기
-                                setCartView(false); // 팝업 닫기
+                                if (!cartDatas || cartDatas.length === 0) return;
+                                handleBuy(cartDatas);
+                                handleRemoveCartAll();
+                                setCartDatas([]);
+                                setCartView(false);
                             }}
-                            disabled={cartDatas.length === 0}
+                            disabled={!cartDatas || cartDatas.length === 0}
                         >
                             buy now
                         </button>

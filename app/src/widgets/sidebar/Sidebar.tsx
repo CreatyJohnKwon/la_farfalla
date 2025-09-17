@@ -1,7 +1,7 @@
 "use client";
 
 import useUsers from "@/src/shared/hooks/useUsers";
-import { adminMenuItems } from "@/src/utils/dataUtils";
+import { adminMenuItems, sideBarMenuData } from "@/src/utils/dataUtils";
 import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "@src/widgets/drop/DropdownMenu";
 import Link from "next/link";
@@ -10,7 +10,6 @@ import { useEffect, useRef, useState } from "react";
 
 const Sidebar = () => {
     const {
-        sideBarMenuData,
         animationClass,
         isCategoryLoad,
         category,

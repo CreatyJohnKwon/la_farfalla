@@ -1,85 +1,42 @@
 import { SelectedItem } from "@src/entities/type/interfaces";
-import Image from "next/image";
-import DefaultImg from "../../../../public/images/chill.png";
-import { useEffect, useState } from "react";
-import useCart from "@src/shared/hooks/useCart";
-import QuantityModal from "@src/widgets/modal/QuantityModal";
-import { Product } from "@src/components/product/interface";
+import usePage from "@/src/shared/hooks/usePage";
 
-const CartItem = ({ item }: { item: SelectedItem }) => {
-    const [product, setProduct] = useState<Product | null>(null);
-    const [isLoaded, setIsLoaded] = useState(false);
-    const { handleUpdateProduct, handleDeleteProduct, handleRouteProduct } =
-        useCart();
-
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const res = await fetch(
-                    `/api/product?productId=${item.productId}`,
-                );
-                const data = await res.json();
-                setProduct(data);
-                // 부드러운 전환을 위해 약간의 delay
-                setTimeout(() => setIsLoaded(true), 150); // 150ms 정도
-            } catch (err) {
-                console.error("상품 정보를 불러오는 데 실패했습니다.", err);
-            }
-        };
-        fetchProduct();
-    }, [item.productId]);
-
-    if (!isLoaded || !product) {
-        return (
-            <div className="flex w-[90%] animate-fade-in items-center justify-between">
-                <div className="h-[5em] w-[3em] bg-gray-300 c_md:w-[5em]" />
-                <div className="flex w-32 flex-col items-center c_md:w-auto c_md:gap-2">
-                    <div className="mb-1 h-3 w-24 bg-gray-300" />
-                    <div className="h-3 w-20 bg-gray-300" />
-                </div>
-                <div className="h-4 w-16 bg-gray-300" />
-            </div>
-        );
-    }
+const CartItem = ({ item, onClose }: { item: SelectedItem; onClose: () => void; }) => {
+    const { router } = usePage();
 
     return (
-        <div className="flex h-full w-[90%] animate-fade-in items-center opacity-0 transition-opacity duration-500 ease-in-out">
-            <Image
-                className="h-[20vw] w-auto transition-all duration-300 hover:scale-105 sm:h-[8vw]"
-                alt={`${product.title}_img`}
-                width={500}
-                height={500}
-                src={product.image ? product.image[0] : DefaultImg}
-                objectFit="cover"
-                onClick={() => handleRouteProduct(product._id)}
+        <div className="flex w-full items-center gap-4 border-b p-2 text-black">
+            <img 
+                src={item.image} 
+                alt={item.title} 
+                className="h-20 w-20 flex-shrink-0 rounded-sm object-cover sm:h-24 sm:w-24 cursor-pointer"
+                onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null; 
+                    target.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=Error';
+                }}
+                onClick={() => {
+                    router.push(`/products/${item.productId}`);
+                    onClose();
+                }}
             />
-            <div className="ms-5 flex w-full flex-col items-start justify-center c_md:m-0 c_md:flex-row c_md:items-center">
-                <div
-                    className="flex flex-col items-center text-start c_md:m-0 c_md:w-full c_md:gap-2 c_md:text-center"
-                    onClick={() => handleRouteProduct(product._id)}
-                >
-                    <span className="font-amstel w-full text-sm font-[300] hover:underline c_md:text-base">
-                        {product.title.eg}
-                    </span>
-                    <span className="w-full font-pretendard text-sm font-[300] hover:underline c_md:text-base">
-                        {product.title.kr}
-                    </span>
-                    <span className="mb-1 w-full font-pretendard text-xs font-[300] hover:underline c_md:text-sm">
-                        {`${item.size} - ${item.color}`}
-                    </span>
-                </div>
-                <QuantityModal
-                    id={item._id}
-                    custom="text-[0.5em] w-full font-amstel flex items-center justify-start sm:justify-end gap-4 text-black c_md:gap-6"
-                    item={item}
-                    onDelete={handleDeleteProduct}
-                    updateQuantity={(newQty) =>
-                        handleUpdateProduct(newQty, item)
-                    }
-                />
+            <div className="flex-grow">
+                <p className="font-pretendard font-[500] text-sm sm:text-base">{item.title || "상품 이름"}</p>
+                <p className="text-xs text-gray-600 sm:text-sm font-amstel font-[340]">
+                    {item.size || "size"} - {item.color || "size"}
+                </p>
+                <p className="text-xs text-gray-600 sm:text-sm font-pretendard font-[340]">
+                    {item.quantity} 개
+                </p>
             </div>
+            <span className="text-sm sm:text-base font-pretendard font-[400]">
+                {(item.discountPrice * item.quantity).toLocaleString()+"\t"}
+                <span className="font-amstel text-sm sm:text-base">
+                    KRW
+                </span>
+            </span>
         </div>
     );
-};
+}
 
 export default CartItem;

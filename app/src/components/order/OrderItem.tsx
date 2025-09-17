@@ -40,6 +40,11 @@ const OrderItem = ({ item }: { item: OrderData }) => {
         }
     };
 
+    const totalQuantity = (): string => 
+        item.items.reduce((a, c) => {
+            return a + c.quantity;
+        }, 0).toString()  || ""
+
     return (
         <>
             <li
@@ -76,7 +81,7 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                 {/* 상품 정보 */}
                 <div className="mb-4">
                     <p className="mb-2 text-xs text-gray-700 sm:text-sm font-pretendard">
-                        주문상품 {item.items.length}개
+                        주문상품 {totalQuantity()}개
                     </p>
                     <div className="space-y-2 font-pretendard">
                         {item.items.slice(0, 2).map((product, i) => (

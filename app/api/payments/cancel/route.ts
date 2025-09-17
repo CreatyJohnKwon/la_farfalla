@@ -5,8 +5,6 @@ export async function POST(req: NextRequest) {
     try {
         const { paymentId, reason, amount } = await req.json();
 
-        console.log(paymentId, reason, amount)
-
         if (!paymentId) {
             return NextResponse.json(
                 { message: "paymentId가 필요합니다." },

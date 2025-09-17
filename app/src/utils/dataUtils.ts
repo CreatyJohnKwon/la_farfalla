@@ -1,3 +1,4 @@
+import { sidebarAtom } from '../shared/lib/atom';
 // utils/dateUtils.ts
 const getCurrentDateTime = () => {
     const now = new Date();
@@ -31,8 +32,14 @@ const isImageUrl = (description: string) => {
 const aboutMenuItems = [
     { label: "INTRODUCE", path: "/introduce" },
     { label: "PROJECT", path: "/project" },
-    { label: "NOTICE", path: "/notice" },
+    // { label: "NOTICE", path: "/notice" },
 ];
+
+const sideBarMenuData = [
+    { label: "INTRODUCE", link: "/introduce" },
+    { label: "PROJECT", link: "/project" },
+    // { label: "NOTICE", link: "/notice" }, // 추후에 추가
+]
 
 // Admin 드롭다운 메뉴 아이템
 const adminMenuItems = [
@@ -57,5 +64,6 @@ export {
     isImageUrl,
     aboutMenuItems,
     adminMenuItems,
-    textareaPlaceholder
+    textareaPlaceholder,
+    sideBarMenuData
 }

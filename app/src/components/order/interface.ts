@@ -73,7 +73,7 @@ interface OrderUpdateInput {
     trackingNumber: string | undefined;
 }
 
-type ShippingStatus = "pending" | "ready" | "shipped" | "confirm" | "cancel" | "return" | "exchange";
+type ShippingStatus = "prepare" | "pending" | "ready" | "shipped" | "confirm" | "cancel" | "return" | "exchange";
 
 export type {
     EmailResult,

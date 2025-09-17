@@ -47,19 +47,25 @@ const getOrderList = async () => {
     return await res.json();
 };
 
-const sendMail = async (body: any) =>
-    await fetch("/api/order/notification", {
+const sendMail = async (body: any) => {
+    const res = await fetch("/api/order/notification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body,
     });
+    if (!res.ok) throw new Error("메일 전송 실패");
+    return await res.json();
+}
 
-const refundPayment = async (refundData: any) =>
-    await fetch("/api/payments/cancel", {
+const refundPayment = async (refundData: any) => {
+    const res = await fetch("/api/payments/cancel", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(refundData)
     });
+    if (!res.ok) throw new Error("환불 실패");
+    return await res.json();
+}
 
 const updateStock = async (
     items: ProductOption[],

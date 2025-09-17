@@ -12,20 +12,15 @@ import {
     useGetUserCouponsListQuery,
     useUpdateUserCouponMutation,
 } from "@src/shared/hooks/react-query/useBenefitQuery";
-import { orderAccept } from "@src/features/order/order";
 import { earnMileage, spendMileage } from "@src/features/benefit/mileage";
 import { updateUser } from "../lib/server/user";
 import * as PortOne from "@portone/browser-sdk/v2";
-import * as Currency from "@portone/browser-sdk/v2";
-import { sendMail } from "../lib/server/order";
 import {
     useOrderQuery,
     useUpdateStockMutation,
 } from "./react-query/useOrderQuery";
 import { ProductOption } from "@src/components/product/interface";
-import { v4 as uuidv4 } from "uuid";
-import { adminEmails } from "public/data/common";
-import { MileageItem, OrderData } from "@src/components/order/interface";
+import { MileageItem } from "@src/components/order/interface";
 
 const useOrder = () => {
     const { session } = useUser();
@@ -52,6 +47,7 @@ const useOrder = () => {
     const [deliveryMemo, setDeliveryMemo] = useState("");
     const [customMemo, setCustomMemo] = useState("");
     const [couponMemo, setCouponMemo] = useState("");
+    const [couponId, setCouponId] = useState("");
     const [appliedCouponName, setAppliedCouponName] = useState("");
     const [recipientName, setRecipientName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -61,7 +57,7 @@ const useOrder = () => {
     const [saveAddress, setSaveAddress] = useState(false);
     const [payments, setPayments] = useState<
         "NAVER_PAY" | "KAKAO_PAY" | "CARD"
-    >("NAVER_PAY");
+    >("CARD");
 
     // 주문 완료 상태 관리 (주문 로딩 스피너)
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -120,123 +116,69 @@ const useOrder = () => {
         setMileage(user.mileage - usedMileage);
     }, [usedMileage]);
 
-    const processSuccessfulPayment = async (response: any, orderData: OrderData, stockItems: ProductOption[]) => {
-        try {
-            const updatedOrderData = {
-                ...orderData,
-                paymentId: response.paymentId,
-            };
-
-            const res = await orderAccept(updatedOrderData);
-
-            if (res.success) {
-                await Promise.all([
-                    couponMemo !== "" ? useSpendCoupon() : Promise.resolve(),
-                    useSpendMileage(res),
-                    saveNewAddress(),
-                ]);
-
-                const body = JSON.stringify({
-                    ...updatedOrderData,
-                    _id: res.orderId,
-                    createdAt: new Date().toISOString(),
-                });
-
-                sendMail(body);
-                alert(res.message);
-                orderListRefetch();
-                UserDataRefetch();
-                router.replace("/profile/order");
-            } else {
-                console.error("error", res);
-                alert(res.message);
-                // 주문 처리 실패 시 재고 복구
-                await updateStockMutation.mutateAsync({
-                    items: stockItems,
-                    action: "restore",
-                });
-            }
-        } catch (error) {
-            console.error("결제 후 처리 중 오류:", error);
-            alert("결제는 성공했으나 주문 처리 중 오류가 발생했습니다. 관리자에게 문의해주세요.");
-            // 에러 발생 시 재고 복구
-            await updateStockMutation.mutateAsync({
-                items: stockItems,
-                action: "restore",
-            });
-        }
-    };
-
-    const orderComplete = async () => {
+    // SRP (Single-Responsibility-Principle)
+    // 결제 요청 전까지의 모든 과정을 책임 진다.
+    const handleOrderRequest = async () => {
         // 로딩 시작
         setIsSubmitting(true);
-
-        let stockItems: ProductOption[] = [];
+        saveNewAddress();
 
         // 필수 값 검증
         if (!phoneNumber || !address || !postcode) {
             alert("배송 정보를 모두 입력해주세요.");
+            setIsSubmitting(false);
             return;
         }
 
         if (orderDatas.length === 0 || totalPrice <= 0) {
             alert("주문 정보를 확인해주세요.");
+            setIsSubmitting(false);
             return;
         }
 
-        let orderData: OrderData = {
+        // 1. 가격 계산에 필요한 최소 정보
+        const calculationData = {
+            items: orderDatas.map((item: any) => ({
+                productId: item.productId,
+                productNm: item.title,
+                quantity: parseInt(item.quantity as any, 10) || 1,
+                color: item.color,
+                size: item.size
+            })),
+            usedMileage: usedMileage,
+            couponId: couponId, // 사용할 쿠폰의 이름 또는 ID
+        };
+
+        // 2. DB에 저장될 배송지 등 기본 주문 정보
+        let baseOrderData = {
             userId: user._id,
             userNm: recipientName,
-            phoneNumber: phoneNumber,
+            phoneNumber,
             address,
             detailAddress,
             postcode,
             deliveryMemo: customMemo || deliveryMemo,
-            items: orderDatas.map((item) => ({
-                productId: item.productId,
-                productNm: item.title,
-                quantity: item.quantity,
-                color: item.color,
-                size: item.size,
-                image: [],
-            })),
             payMethod: payments,
-            shippingStatus: "pending",
-            totalPrice,
         };
 
-        const storeId = "store-f8bba69a-c4d7-4754-aeae-c483519aa061";
-        const channelKey = "channel-key-4d42f07d-23eb-4594-96a6-2cd6a583e8b4";
-
-        if (!channelKey) {
-            alert("결제 채널이 설정되지 않았습니다.");
-            return;
-        }
-
         try {
-            stockItems = orderDatas.map((item) => ({
-                productId: item.productId,
-                colorName: item.color,
-                stockQuantity: item.quantity,
-            }));
-
-            await updateStockMutation.mutateAsync({
-                items: stockItems,
-                action: "reduce",
+            const response = await fetch('/api/order/prepare', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ calculationData, baseOrderData }),
             });
 
-            const isMobile = /Mobi/i.test(window.navigator.userAgent);
+            const prepareData = await response.json();
+            if (!response.ok || !prepareData.success) {
+                throw new Error(prepareData.message || '주문을 준비하는 중 오류가 발생했습니다.');
+            }
+
             const paymentParams: any = {
-                storeId,
-                channelKey,
-                paymentId: uuidv4(),
-                orderName:
-                    orderDatas.length === 1
-                        ? orderDatas[0].title
-                        : `${orderDatas[0].title} 외 ${orderDatas.length - 1}건`,
-                totalAmount: adminEmails.includes(session?.user?.email || "")
-                    ? 1000
-                    : totalPrice,
+                storeId: "store-f8bba69a-c4d7-4754-aeae-c483519aa061",
+                channelKey: "channel-key-4d42f07d-23eb-4594-96a6-2cd6a583e8b4",
+                paymentId: prepareData.paymentId,
+                orderName: prepareData.orderName,
+                totalAmount: prepareData.totalAmount,
                 currency: "CURRENCY_KRW",
                 payMethod: "CARD",
                 customer: {
@@ -246,126 +188,84 @@ const useOrder = () => {
                 },
             };
 
-            if (!isMobile) {
-                const response = await PortOne.requestPayment(paymentParams);
-                
-                // 응답이 없거나 에러 코드가 있는 경우 처리
-                if (!response || response.code !== undefined) {
-                    await updateStockMutation.mutateAsync({
-                        items: stockItems,
-                        action: "restore",
-                    });
-
-                    alert(response?.message || response?.pgMessage);
-                    setIsSubmitting(false);
-                    return;
-                }
-
-                // ✅ 분리한 함수를 직접 호출
-                await processSuccessfulPayment(response, orderData, stockItems);
-            } else {
-                // 📱 모바일 환경 로직
+            const isMobile = /Mobi/i.test(window.navigator.userAgent);
+            if (isMobile) {
+                // 모바일 결제
                 await PortOne.requestPayment({
                     ...paymentParams,
-                    redirectUrl: `${window.location.origin}/payment/callback?stockItems=${JSON.stringify(stockItems)}`,
+                    redirectUrl: `${window.location.origin}/payment/callback?orderId=${prepareData.orderId}`,
                 });
-            }
-        } catch (error) {
-            console.error("결제 처리 중 오류:", error);
-            alert(
-                `결제 처리 중 오류가 발생했습니다.\n다시 시도해주세요.\n${error}`,
-            );
+            } else {
+                const portoneResponse = await PortOne.requestPayment(paymentParams);
+                if (!portoneResponse) throw new Error("결제 도중 에러가 발생했습니다");
 
-            // 오류 발생 시 재고 복구 (필요한 경우)
-            if (stockItems.length > 0) {
-                await updateStockMutation.mutateAsync({
-                    items: stockItems,
-                    action: "restore",
-                }).catch(restoreError => console.error("재고 복구 중 오류 발생:", restoreError));
+                switch (portoneResponse.code) {
+                    case null:
+                    case undefined:
+                        if (portoneResponse) await handlePaymentCompletion(portoneResponse, prepareData.orderId);
+                        break;
+
+                    case 'USER_CANCEL':
+                    case 'USER_CLOSE':
+                    case 'PAYMENT_PROCESS_FAILED':
+                    default:
+                        alert(portoneResponse?.message || '결제가 취소되었거나 오류가 발생했습니다.');
+
+                        // 1. restoreItems가 요구하는 ProductOption[] 타입으로 데이터 모양을 변환합니다.
+                        const itemsToRestore: ProductOption[] = calculationData.items.map(item => ({
+                            productId: item.productId,
+                            colorName: item.color,
+                            stockQuantity: item.quantity,
+                        }));
+
+                        // 2. 변환된 데이터로 재고 복구 함수를 호출합니다.
+                        await restoreItems(itemsToRestore);
+                        break;
+                }
             }
+        } catch (error: any) {
+            console.error("결제 요청 처리 중 오류:", error);
+            alert(error.message);
         } finally {
-            setIsSubmitting(false); // 로딩 종료 (성공, 실패, 에러 모두)
+            setIsSubmitting(false);
         }
     };
 
-    // ✅ IUserCoupon 구조에 맞춘 쿠폰 사용 함수
-    const useSpendCoupon = async (): Promise<void> => {
-        const userCoupons = coupons?.data || [];
+    // 결제 성공 후의 책임
+    const handlePaymentCompletion = async (portoneResponse: PortOne.PaymentResponse, orderId: string) => {
+        try {
+            const response = await fetch('/api/order/complete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    orderId: orderId,
+                    paymentId: portoneResponse.paymentId,
+                    couponId: couponId,
+                    isSuccess: true,
+                }),
+            });
 
-        if (userCoupons.length === 0) {
-            alert("사용 가능한 쿠폰이 없습니다.");
-            setCouponMemo("");
-            return;
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "주문 완료 처리 중 서버에서 오류가 발생했습니다.");
+            }
+
+            alert(result.message || "주문이 성공적으로 완료되었습니다.");
+
+            orderListRefetch();
+            UserDataRefetch();
+
+            router.replace("/profile/order");
+        } catch (error: any) {
+            console.error("결제 후처리 중 오류:", error);
+            alert(
+                `결제는 성공했으나 주문을 확정하는 데 실패했습니다. 문제가 지속되면 관리자에게 문의해주세요.\n(오류: ${error.message})`
+            );
+            // 🚨 중요: 이 경우 서버에 '결제 취소' API를 호출하여 PortOne 결제를 취소하고
+            // 재고를 롤백하는 로직을 반드시 실행해야 합니다.
+            // cancelPayment()
         }
-
-        // IUserCouponPopulated 구조에서 쿠폰 찾기
-        const validCoupons = userCoupons.filter(
-            (uc): uc is UserCouponWithPopulate => {
-                return (
-                    uc.couponId &&
-                    typeof uc.couponId !== "string" &&
-                    uc.couponId.name === couponMemo
-                );
-            },
-        );
-
-        const selected = validCoupons[0];
-
-        if (!selected) {
-            alert("선택하신 쿠폰을 찾을 수 없습니다.");
-            setCouponMemo("");
-            return;
-        }
-
-        if (selected.isUsed) {
-            alert("이미 사용된 쿠폰입니다.");
-            setCouponMemo("");
-            return;
-        }
-
-        // ICoupon 구조에 맞춰 검증
-        const coupon = selected.couponId;
-
-        // ✅ 수정: 명시적으로 true인지 확인
-        if (coupon.isActive !== true) {
-            alert("비활성화된 쿠폰입니다.");
-            setCouponMemo("");
-            return;
-        }
-
-        const now = new Date();
-        if (new Date(coupon.startAt) > now) {
-            alert("아직 사용할 수 없는 쿠폰입니다.");
-            setCouponMemo("");
-            return;
-        }
-
-        if (new Date(coupon.endAt) < now) {
-            alert("만료된 쿠폰입니다.");
-            setCouponMemo("");
-            return;
-        }
-
-        if (!selected._id) {
-            alert("쿠폰 ID가 없습니다.");
-            setCouponMemo("");
-            return;
-        }
-
-        // IUserCoupon의 _id로 업데이트
-        updateCoupon.mutate(selected._id, {
-            onSuccess: () => {
-                console.log(`${coupon.name} coupons success`);
-            },
-            onError: (error) => {
-                console.error("쿠폰 사용 오류:", error);
-                alert(
-                    "쿠폰 정보 저장에 오류가 발생했습니다\n채널톡에 문의해주세요",
-                );
-            },
-        });
-
-        setCouponMemo("");
     };
 
     const useSpendMileage = async (res: any, description?: string, mileage?: number, orderId?: string) => {
@@ -405,6 +305,17 @@ const useOrder = () => {
         await updateUser(updateAddress);
     };
 
+    const restoreItems = async (stockItems: ProductOption[]) => {
+        if (!stockItems || stockItems.length === 0) {
+            console.error("복원할 아이템 정보가 없습니다.");
+            return;
+        }
+        await updateStockMutation.mutateAsync({
+            items: stockItems,
+            action: "restore",
+        }).catch(restoreError => console.error("재고 복구 중 오류 발생:", restoreError));
+    }
+
     return {
         user,
         isLoading,
@@ -427,6 +338,10 @@ const useOrder = () => {
         setCustomMemo,
         couponMemo,
         setCouponMemo,
+        couponId,
+        setCouponId,
+        appliedCouponName,
+        setAppliedCouponName,
         useCoupon,
         setUseCoupon,
         applyCoupon,
@@ -435,8 +350,6 @@ const useOrder = () => {
         setTotalPrice,
         totalMileage,
         setTotalMileage,
-        appliedCouponName,
-        setAppliedCouponName,
 
         recipientName,
         setRecipientName,
@@ -452,9 +365,10 @@ const useOrder = () => {
         setSaveAddress,
         setPayments,
 
-        orderComplete,
+        handleOrderRequest,
         isSubmitting,
-        processSuccessfulPayment
+        handlePaymentCompletion,
+        restoreItems
     };
 };
 

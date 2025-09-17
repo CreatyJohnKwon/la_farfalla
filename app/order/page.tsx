@@ -35,10 +35,12 @@ const Order = () => {
         setUseCoupon,
         applyCoupon,
         setApplyCoupon,
-        totalPrice,
-        totalMileage,
         appliedCouponName,
         setAppliedCouponName,
+        couponId,
+        setCouponId,
+        totalPrice,
+        totalMileage,
 
         recipientName,
         setRecipientName,
@@ -52,7 +54,7 @@ const Order = () => {
         setDetailAddress,
         setSaveAddress,
 
-        orderComplete,
+        handleOrderRequest,
         isSubmitting
     } = useOrder();
     const [isOpenAgreementModal, setIsOpenAgreementModal] = useState<boolean>(false);
@@ -85,6 +87,7 @@ const Order = () => {
     const handleCouponSelect = (selectedName: string) => {
         if (!selectedName) {
             setCouponMemo("");
+            setCouponId("")
             setUseCoupon(0);
             return;
         }
@@ -127,11 +130,13 @@ const Order = () => {
             if (coupon.isActive !== true) {
                 alert("비활성화된 쿠폰입니다.");
                 setCouponMemo("");
+                setCouponId("")
                 setUseCoupon(0);
                 return;
             }
 
             setApplyCoupon(useCoupon);
+            setCouponId(selectedUserCoupon._id);
             setAppliedCouponName(couponMemo);
         } else {
             alert("쿠폰 정보를 찾을 수 없습니다.");
@@ -192,6 +197,7 @@ const Order = () => {
     // ✅ 쿠폰 삭제 핸들러 (조건 2에서도 사용)
     const handleRemoveCoupon = () => {
         setCouponMemo("");
+        setCouponId("")
         setUseCoupon(0);
         setApplyCoupon(0);
         setAppliedCouponName("");
@@ -270,7 +276,7 @@ const Order = () => {
     }, [usedMileage]);
 
     // ✅ 수정된 form submit 핸들러
-    const handleFormSubmit = (e: any) => {
+    const handleFormSubmit = async (e: any) => {
         e.preventDefault();
 
         // 기존 검증들
@@ -296,7 +302,7 @@ const Order = () => {
         }
 
         // 모든 검증 통과 시 주문 완료 진행
-        orderComplete();
+        await handleOrderRequest();
     };
 
     if (user && !isLoading && orderDatas.length > 0)
@@ -341,19 +347,19 @@ const Order = () => {
                                             priority
                                         />
                                         <div>
-                                            <span className="font-pretendard font-[300]">
+                                            <p className="font-pretendard text-base font-[300]">
                                                 {product?.title}
-                                            </span>
-                                            <span className="font-amstel">
-                                                - {product?.color}
-                                            </span>
-                                            <p className="font-pretendard text-sm text-gray-600">
-                                                {`${product?.quantity}개`}
                                             </p>
-                                            <p className="font-amstel-bold mt-2">
+                                            <span className="font-amstel text-sm">
+                                                {product?.size} - {product?.color}
+                                            </span>
+                                            <span className="ms-3 font-pretendard text-sm text-gray-600">
+                                                {`${product?.quantity}개`}
+                                            </span>
+                                            <p className="font-amstel text-sm">
                                                 {`KRW ${(product?.discountPrice * product?.quantity).toLocaleString()}`}
                                             </p>
-                                            <p className="font-pretendard text-sm text-gray-400">
+                                            <p className="font-pretendard text-xs mt-2 text-gray-400">
                                                 배송비 무료
                                             </p>
                                         </div>
@@ -601,76 +607,8 @@ const Order = () => {
                                                 현재 주문에 사용 가능한 쿠폰이
                                                 없습니다.
                                             </p>
-                                            {/* <p className="mt-1 text-xs text-gray-400">
-                                                (총 {couponData.length}개 쿠폰
-                                                보유 중)
-                                            </p> */}
                                         </div>
                                     </div>
-
-                                    {/* 사용 불가능한 쿠폰들 표시 */}
-                                    {/* <div className="rounded-sm bg-gray-50 p-3">
-                                        <p className="mb-2 text-xs font-medium text-gray-600">
-                                            💡 보유 중인 쿠폰들:
-                                        </p>
-                                        <div className="space-y-2">
-                                            {couponData
-                                                .slice(0, 3)
-                                                .map((userCoupon, index) => {
-                                                    const coupon =
-                                                        userCoupon.couponId;
-                                                    if (!coupon) return null;
-
-                                                    const now = new Date();
-                                                    const currentOrderAmount =
-                                                        orderDatas.reduce(
-                                                            (acc, p) =>
-                                                                acc +
-                                                                p.discountPrice *
-                                                                    p.quantity,
-                                                            0,
-                                                        );
-
-                                                    let reason = "";
-                                                    if (userCoupon.isUsed)
-                                                        reason = "이미 사용됨";
-                                                    else if (!coupon.isActive)
-                                                        reason = "비활성화됨";
-                                                    else if (
-                                                        new Date(
-                                                            coupon.startAt,
-                                                        ) > now
-                                                    )
-                                                        reason =
-                                                            "아직 시작 안됨";
-                                                    else if (
-                                                        new Date(coupon.endAt) <
-                                                        now
-                                                    )
-                                                        reason = "만료됨";
-
-                                                    return (
-                                                        <div
-                                                            key={`unavailable_${index}`}
-                                                            className="flex items-center justify-between text-xs"
-                                                        >
-                                                            <span className="text-gray-600">
-                                                                {coupon.name}
-                                                            </span>
-                                                            <span className="font-medium text-red-500">
-                                                                {reason}
-                                                            </span>
-                                                        </div>
-                                                    );
-                                                })}
-                                            {couponData.length > 3 && (
-                                                <p className="text-xs text-gray-500">
-                                                    외 {couponData.length - 3}개
-                                                    더...
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div> */}
                                 </div>
                             ) : (
                                 /* 쿠폰 선택 영역 */

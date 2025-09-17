@@ -469,7 +469,7 @@ const OrderDetailModal = ({
                     {/* 주문 상품 섹션 */}
                     <div>
                         <span className="mb-3 flex items-center font-pretendard text-base font-semibold text-gray-900">
-                            주문 상품 ({order.items.length}개)
+                            주문 상품
                         </span>
                         <div className="space-y-2">
                             {order.items.map((item, index) => (
@@ -531,14 +531,14 @@ const OrderDetailModal = ({
                             결제 정보
                         </h3>
                         <div className="space-y-2 rounded-sm bg-gray-50 p-3">
-                            <div className="flex items-center justify-between">
+                            {/* <div className="flex items-center justify-between">
                                 <span className="whitespace-nowrap font-pretendard text-sm font-[500] text-gray-700">
                                     결제방법
                                 </span>
                                 <span className="font-pretendard text-xs text-gray-900">
                                     {getPayMethodText(order.payMethod)}
                                 </span>
-                            </div>
+                            </div> */}
                             <div className="flex items-center justify-between">
                                 <span className="whitespace-nowrap font-pretendard text-sm font-[500] text-gray-700">
                                     결제일시
