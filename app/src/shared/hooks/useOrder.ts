@@ -20,6 +20,7 @@ import {
 } from "./react-query/useOrderQuery";
 import { ProductOption } from "@src/components/product/interface";
 import { MileageItem } from "@src/components/order/interface";
+import { refundPayment } from "../lib/server/order";
 
 const useOrder = () => {
     const { session } = useUser();
@@ -200,7 +201,7 @@ const useOrder = () => {
                 switch (portoneResponse.code) {
                     case null:
                     case undefined:
-                        if (portoneResponse) await handlePaymentCompletion(portoneResponse, prepareData.orderId);
+                        if (portoneResponse) await handlePaymentCompletion(portoneResponse, prepareData.orderId, calculationData.items);
                         break;
 
                     case "FAILURE_TYPE_PG":
@@ -221,7 +222,7 @@ const useOrder = () => {
     };
 
     // 결제 성공 후의 책임
-    const handlePaymentCompletion = async (portoneResponse: PortOne.PaymentResponse, orderId: string) => {
+    const handlePaymentCompletion = async (portoneResponse: PortOne.PaymentResponse, orderId: string, restoreItems: any) => {
         try {
             const response = await fetch('/api/order/complete', {
                 method: 'POST',
@@ -248,12 +249,15 @@ const useOrder = () => {
             router.replace("/profile/order");
         } catch (error: any) {
             console.error("결제 후처리 중 오류:", error);
+            const refundData = {
+                paymentId: portoneResponse.paymentId,
+                reason: error.message || "[어드민] 결제 성공이지만 주문 에러 발생"
+            }
+            await refundPayment(refundData);
+            await restoreItems(restoreItems)
             alert(
-                `결제는 성공했으나 주문을 확정하는 데 실패했습니다. 문제가 지속되면 관리자에게 문의해주세요.\n(오류: ${error.message})`
+                `결제는 성공했으나 주문을 확정하는 데 실패했습니다.\n문제가 지속되면 관리자에게 문의해주세요.\n(오류: ${error.message})`
             );
-            // 🚨 중요: 이 경우 서버에 '결제 취소' API를 호출하여 PortOne 결제를 취소하고
-            // 재고를 롤백하는 로직을 반드시 실행해야 합니다.
-            // cancelPayment()
         }
     };
 
@@ -295,8 +299,6 @@ const useOrder = () => {
     };
 
     const restoreItems = async (stockItems: Array<any>) => {
-        console.log(stockItems)
-
         if (!stockItems || stockItems.length === 0) {
             console.error("복원할 아이템 정보가 없습니다.");
             return;

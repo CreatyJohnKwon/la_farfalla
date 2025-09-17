@@ -3,7 +3,7 @@ import { Order } from "@/src/entities/models/Order";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
-export const findOrderById = async (orderId: string) => {
+const findOrderById = async (orderId: string) => {
   try {
     // 1. 데이터베이스 연결
     await connectDB();
@@ -31,14 +31,12 @@ export const findOrderById = async (orderId: string) => {
   }
 };
 
-// API Route의 GET 핸들러 시그니처
 export async function GET(
-  req: NextRequest, // 👈 request 타입 정의
-  { params }: { params: { orderId: string } } // 👈 params의 타입과 그 안의 orderId 타입을 string으로 정의
+  req: NextRequest, 
+  { params }: { params: Promise<{ orderId: string }>}
 ) {
-  const { orderId } = await params;
-
   try {
+    const { orderId } = await params;
     const order = await findOrderById(orderId);
 
     if (!order) {
@@ -48,9 +46,9 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(order);
-
-  } catch (error: any) { // 👈 error 타입도 any나 unknown으로 명시해주는 것이 좋습니다.
+    return NextResponse.json({ success: true, data: order });
+    
+  } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message },
       { status: 500 }

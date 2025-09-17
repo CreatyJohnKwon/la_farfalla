@@ -215,133 +215,125 @@ const RegisterClient = () => {
                     />
 
                     {/* 이메일 */}
-                    <div className="relative w-full">
-                        <input
-                            type="email"
-                            name="email"
-                            value={email}
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                                // 이메일이 변경되면 인증 상태 초기화
-                                if (isEmailVerified) {
-                                    setIsEmailVerified(false);
-                                    setIsEmailSent(false);
-                                    setShowVerificationInput(false);
-                                    setTimeLeft(0);
-                                }
-                            }}
-                            placeholder="이메일"
-                            className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 pr-28 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                            disabled={isEmailVerified}
-                        />
-                        {!isEmailVerified && (
-                            <button
-                                type="button"
-                                onClick={sendEmailVerification}
-                                disabled={isEmailSent || !email.trim()}
-                                className={`absolute right-1 top-1/2 -translate-y-1/2 px-4 py-[1.3vh] text-sm text-white ${
-                                    isEmailSent || !email.trim()
-                                        ? "cursor-not-allowed bg-gray-400"
-                                        : "bg-black hover:bg-gray-800"
-                                }`}
-                            >
-                                {isEmailSent
-                                    ? `${formatTime(timeLeft)}`
-                                    : "이메일 인증"}
-                            </button>
-                        )}
-                        {isEmailVerified && (
-                            <div className="absolute right-1 top-1/2 flex -translate-y-1/2 items-center gap-2 bg-green-100 px-4 py-[1.3vh] text-sm text-green-800">
-                                <svg
-                                    className="h-4 w-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
+                    <div className="w-full">
+                        {/* REFACTOR: Changed to a flex container for robust layout */}
+                        <div className="flex h-[5vh] w-full items-center rounded-none border border-gray-200 bg-gray-50 pr-1 focus-within:ring-2 focus-within:ring-gray-200">
+                            <input
+                                type="email"
+                                name="email"
+                                value={email}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    if (isEmailVerified) {
+                                        setIsEmailVerified(false);
+                                        setIsEmailSent(false);
+                                        setShowVerificationInput(false);
+                                        setTimeLeft(0);
+                                    }
+                                }}
+                                placeholder="이메일"
+                                // REFACTOR: Simplified styling, border/bg handled by parent
+                                className="h-full flex-1 bg-transparent px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none"
+                                disabled={isEmailVerified}
+                            />
+                            {!isEmailVerified && (
+                                <button
+                                    type="button"
+                                    onClick={sendEmailVerification}
+                                    disabled={isEmailSent || !email.trim()}
+                                    // REFACTOR: Removed absolute positioning. `flex-shrink-0` prevents the button from shrinking.
+                                    className={`flex-shrink-0 whitespace-nowrap px-4 py-[1.3vh] text-sm text-white ${
+                                        isEmailSent || !email.trim()
+                                            ? "cursor-not-allowed bg-gray-400"
+                                            : "bg-black hover:bg-gray-800"
+                                    }`}
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M5 13l4 4L19 7"
-                                    />
-                                </svg>
-                                인증 완료
-                            </div>
-                        )}
-
-                        {/* 이메일 인증번호 입력 필드 */}
-                        <div className="w-full">
-                            {showVerificationInput && (
-                                <div className="relative w-full">
-                                    <input
-                                        type="text"
-                                        value={emailVerificationCode}
-                                        onChange={(e) =>
-                                            setEmailVerificationCode(e.target.value)
-                                        }
-                                        placeholder="인증번호 6자리를 입력하세요"
-                                        maxLength={6}
-                                        className="h-[5vh] w-full rounded-none border border-blue-200 bg-blue-50 px-4 pr-20 text-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={verifyEmailCode}
-                                        disabled={
-                                            emailVerificationCode.length !== 6
-                                        }
-                                        className={`absolute right-1 top-1/2 -translate-y-1/2 px-4 py-[1.3vh] text-sm text-white ${
-                                            emailVerificationCode.length !== 6
-                                                ? "cursor-not-allowed bg-gray-400"
-                                                : "bg-blue-600 hover:bg-blue-700"
-                                        }`}
-                                    >
-                                        확인
-                                    </button>
-                                </div>
+                                    {isEmailSent
+                                        ? `${formatTime(timeLeft)}`
+                                        : "이메일 인증"}
+                                </button>
                             )}
-
-                            {/* 이메일 인증 상태 메시지 */}
-                            {isEmailSent && !isEmailVerified && (
-                                <div className="text-left">
-                                    <p className="text-sm text-blue-600">
-                                        {email}
-                                        <span className="ms-1 pb-3 text-sm text-gray-700">
-                                            로 인증번호를 발송했습니다.
-                                        </span>
-                                    </p>
-                                    <p className="mt-1 text-xs text-gray-500">
-                                        {formatTime(timeLeft)} 후에 만료됩니다.
-                                        인증번호가 오지 않았다면 스팸함을 확인해주세요.
-                                    </p>
-                                </div>
-                            )}
-
                             {isEmailVerified && (
-                                <div className="text-left">
-                                    <p className="text-sm text-green-600">
-                                        이메일 인증 완료
-                                    </p>
+                                // REFACTOR: No longer needs absolute positioning.
+                                <div className="flex flex-shrink-0 items-center gap-2 bg-green-100 px-4 py-2 text-sm text-green-800">
+                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    인증 완료
                                 </div>
                             )}
                         </div>
+
+                        {/* 이메일 인증번호 입력 필드 */}
+                        {showVerificationInput && (
+                            // REFACTOR: Changed to a flex container
+                            <div className="relative mt-2 flex h-[5vh] w-full items-center rounded-none border border-blue-200 bg-blue-50 pr-1 focus-within:ring-2 focus-within:ring-blue-300">
+                                <input
+                                    type="text"
+                                    value={emailVerificationCode}
+                                    onChange={(e) => setEmailVerificationCode(e.target.value)}
+                                    placeholder="인증번호 6자리를 입력하세요"
+                                    maxLength={6}
+                                    // REFACTOR: Simplified styling
+                                    className="h-full flex-1 bg-transparent px-4 text-gray-700 placeholder:text-gray-500 focus:outline-none"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={verifyEmailCode}
+                                    disabled={emailVerificationCode.length !== 6}
+                                    // REFACTOR: Removed absolute positioning
+                                    className={`flex-shrink-0 px-4 py-[1.3vh] text-sm text-white ${
+                                        emailVerificationCode.length !== 6
+                                            ? "cursor-not-allowed bg-gray-400"
+                                            : "bg-blue-600 hover:bg-blue-700"
+                                    }`}
+                                >
+                                    확인
+                                </button>
+                            </div>
+                        )}
+
+                        {/* 이메일 인증 상태 메시지 */}
+                        {isEmailSent && !isEmailVerified && (
+                            <div className="mt-2 text-left">
+                                <p className="text-sm text-blue-600">
+                                    {email}
+                                    <span className="ms-1 pb-3 text-sm text-gray-700">
+                                        로 인증번호를 발송했습니다.
+                                    </span>
+                                </p>
+                                <p className="mt-1 text-xs text-gray-500">
+                                    {formatTime(timeLeft)} 후에 만료됩니다.
+                                    인증번호가 오지 않았다면 스팸함을 확인해주세요.
+                                </p>
+                            </div>
+                        )}
+
+                        {isEmailVerified && (
+                            <div className="mt-2 text-left">
+                                <p className="text-sm text-green-600">
+                                    이메일 인증 완료
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     <div className="w-full">
                         {/* 비밀번호 입력 영역 */}
-                        <div className="relative w-full">
+                        {/* REFACTOR: Using flex for robust icon positioning */}
+                        <div className="flex h-[5vh] w-full items-center rounded-none border border-gray-200 bg-gray-50 focus-within:ring-2 focus-within:ring-gray-200">
                             <input
                                 type={pwdVisible ? "text" : "password"}
                                 name="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="비밀번호 (대소문자 포함, 8자 이상)"
-                                className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 pr-12 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                                className="h-full flex-1 bg-transparent px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none"
                             />
-
                             <button
                                 type="button"
                                 onClick={() => setPwdVisible(!pwdVisible)}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700"
+                                className="p-3 text-gray-500 hover:text-gray-700"
                             >
                                 {!pwdVisible ? (
                                     <FaRegEyeSlash size={20} />
@@ -351,11 +343,8 @@ const RegisterClient = () => {
                             </button>
                         </div>
 
-                        {/* 비밀번호 안전도 메시지 */}
                         {password.length > 0 && (
-                            <p
-                                className={`mt-4 text-left text-sm ${isPasswordSafe ? "text-green-500" : "text-red-500"}`}
-                            >
+                            <p className={`mt-4 text-left text-sm ${isPasswordSafe ? "text-green-500" : "text-red-500"}`} >
                                 {isPasswordSafe
                                     ? "비밀번호가 안전합니다."
                                     : "8자 이상, 대문자와 숫자를 포함해야 합니다."}
@@ -373,11 +362,8 @@ const RegisterClient = () => {
                         className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                     />
 
-                    {/* 비밀번호 일치 여부 */}
                     {confirmPassword.length > 0 && (
-                        <p
-                            className={`text-left text-sm ${isPasswordMatch ? "text-green-500" : "text-red-500"}`}
-                        >
+                        <p className={`text-left text-sm ${isPasswordMatch ? "text-green-500" : "text-red-500"}`} >
                             {isPasswordMatch
                                 ? "비밀번호가 일치합니다."
                                 : "비밀번호가 일치하지 않습니다."}
@@ -390,9 +376,7 @@ const RegisterClient = () => {
                         value={phoneNumber}
                         name="phoneNumber"
                         onChange={(e) => {
-                            const raw = e.target.value
-                                .replace(/\D/g, "")
-                                .slice(0, 11);
+                            const raw = e.target.value.replace(/\D/g, "").slice(0, 11);
                             const formatted = formatPhoneNumber(raw);
                             setPhoneNumber(formatted);
                         }}
@@ -402,7 +386,8 @@ const RegisterClient = () => {
                     />
 
                     {/* 주소 */}
-                    <div className="relative w-full">
+                    {/* REFACTOR: Changed to a flex container for robust layout */}
+                    <div className="flex h-[5vh] w-full items-center rounded-none border border-gray-200 bg-gray-50 pr-1 focus-within:ring-2 focus-within:ring-gray-200">
                         <input
                             type="text"
                             name="address"
@@ -410,24 +395,17 @@ const RegisterClient = () => {
                             onChange={(e) => setAddress(e.target.value)}
                             placeholder="주소"
                             readOnly
-                            className="h-[5vh] w-full rounded-none border border-gray-200 bg-gray-50 px-4 pr-28 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            className="h-full flex-1 cursor-pointer bg-transparent px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none"
                         />
-                        <input
-                            name="postcode"
-                            value={postcode}
-                            onChange={(e) => setPostcode(e.target.value)}
-                            readOnly
-                            className="hidden"
-                        />
+                        <input name="postcode" value={postcode} onChange={(e) => setPostcode(e.target.value)} readOnly className="hidden" />
                         <button
                             type="button"
-                            onClick={() =>
-                                openModal((value) => {
-                                    setAddress(value.address);
-                                    setPostcode(value.zonecode);
-                                })
-                            }
-                            className="absolute right-1 top-1/2 -translate-y-1/2 bg-black px-4 py-2 text-sm text-white hover:bg-gray-800"
+                            onClick={() => openModal((value) => {
+                                setAddress(value.address);
+                                setPostcode(value.zonecode);
+                            })}
+                            // REFACTOR: Removed absolute positioning
+                            className="flex-shrink-0 bg-black px-4 py-2 text-sm text-white hover:bg-gray-800"
                         >
                             주소찾기
                         </button>
@@ -478,7 +456,6 @@ const RegisterClient = () => {
                     </label>
                 </section>
 
-                {/* 가입 조건 안내 */}
                 {!isEmailVerified && email.trim() && (
                     <div className="w-full text-left">
                         <p className="text-sm text-red-600">
@@ -487,7 +464,6 @@ const RegisterClient = () => {
                     </div>
                 )}
 
-                {/* 버튼 */}
                 <div className="mt-6 flex w-full justify-center gap-4 c_xl:text-xl">
                     <button
                         className={`w-full px-6 py-3 text-white c_xl:py-4 ${!isValidForm || mutation.isLoading ? "bg-black/70" : "bg-black hover:bg-black/70"}`}
@@ -517,8 +493,6 @@ const RegisterClient = () => {
                     children={isOpenUserAgreeOne ? <UserAgreeOne /> : <UserAgreeTwo />}
                 /> 
             )}
-            {/* children */}
-            
         </div>
     );
 };

@@ -43,9 +43,6 @@ export async function POST(req: Request) {
 
         await newUser.save();
 
-        // 신규 유저용 쿠폰 발급 프로세스 (프로세스 제거 / 임시 삭제 or 안쓸예정)
-        // await benefitWelcomeCoupon(newUser._id);
-
         return NextResponse.json({ message: "회원가입 완료" }, { status: 201 });
     } catch (err) {
         console.error("Error registering user:", err);
