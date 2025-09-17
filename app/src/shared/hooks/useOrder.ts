@@ -2,7 +2,6 @@ import { useRouter } from "next/navigation";
 import useUser from "@src/shared/hooks/useUsers";
 import {
     SelectedItem,
-    UserCouponWithPopulate,
 } from "@src/entities/type/interfaces";
 import { useAtom } from "jotai";
 import { orderDatasAtom } from "../lib/atom";

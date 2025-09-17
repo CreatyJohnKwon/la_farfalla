@@ -78,7 +78,7 @@ const CancelOrder = ({
                         reason
                     }
                     await refundPayment(refundData);
-                    await useSpendMileage(order, "상품 구매 취소", Number(order.totalPrice*0.01), order._id)
+                    // await useSpendMileage(order, "상품 구매 취소", Number(order.totalPrice*0.01), order._id)
                 }
                 onClose();
             } finally {
