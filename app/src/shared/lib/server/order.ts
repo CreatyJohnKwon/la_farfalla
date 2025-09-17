@@ -35,8 +35,14 @@ const updateAdminOrder = async (
     return result;
 };
 
-const getOrder = async (userId: string) => {
+const getOrders = async (userId: string) => {
     const res = await fetch(`/api/user/order?userId=${userId}`);
+    if (!res.ok) throw new Error("마일리지 불러오기 실패");
+    return await res.json();
+};
+
+const getSingleOrder = async (orderId: string) => {
+    const res = await fetch(`/api/order/${orderId}`);
     if (!res.ok) throw new Error("마일리지 불러오기 실패");
     return await res.json();
 };
@@ -135,7 +141,8 @@ const updateOrderAddress = async (
 
 export {
     updateCoupon,
-    getOrder,
+    getOrders,
+    getSingleOrder,
     getOrderList,
     updateAdminOrder,
     sendMail,

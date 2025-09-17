@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-    getOrder,
+    getOrders,
+    getSingleOrder,
     getOrderList,
     updateAdminOrder,
     updateOrderAddress,
@@ -89,11 +90,20 @@ const useSmartUpdateOrderMutation = () => {
 const useOrderQuery = (userId?: string) => {
     return useQuery<OrderData[], Error>({
         queryKey: ["order-list", userId],
-        queryFn: () => getOrder(userId!),
+        queryFn: () => getOrders(userId!),
         enabled: Boolean(userId), // userId 준비되면 요청
         retry: false, // 실패 시 재시도 OFF
     });
 };
+
+const useSingleOrderQuery = (orderId: string) => {
+    return useQuery<OrderData, Error>({
+        queryKey: ["order-single", orderId],
+        queryFn: () => getSingleOrder(orderId),
+        enabled: Boolean(orderId), // userId 준비되면 요청
+        retry: false, // 실패 시 재시도 OFF
+    });
+}
 
 const useUpdateStockMutation = () => {
     const queryClient = useQueryClient();
@@ -167,6 +177,7 @@ const useUpdateAddressOrder = () => {
 };
 
 export {
+    useSingleOrderQuery,
     useAllOrderQuery,
     useSmartUpdateOrderMutation,
     useOrderQuery,

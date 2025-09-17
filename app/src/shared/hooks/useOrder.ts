@@ -31,7 +31,6 @@ const useOrder = () => {
         useGetUserCouponsListQuery(true);
     const { refetch: orderListRefetch } = useOrderQuery(user?._id);
 
-    const updateCoupon = useUpdateUserCouponMutation();
     const updateStockMutation = useUpdateStockMutation();
 
     const [orderDatas, setOrderDatas] = useAtom<SelectedItem[] | []>(
@@ -204,21 +203,12 @@ const useOrder = () => {
                         if (portoneResponse) await handlePaymentCompletion(portoneResponse, prepareData.orderId);
                         break;
 
-                    case 'USER_CANCEL':
-                    case 'USER_CLOSE':
-                    case 'PAYMENT_PROCESS_FAILED':
+                    case "FAILURE_TYPE_PG":
+                    case "PG_PROVIDER_ERROR":
                     default:
-                        alert(portoneResponse?.message || '결제가 취소되었거나 오류가 발생했습니다.');
-
-                        // 1. restoreItems가 요구하는 ProductOption[] 타입으로 데이터 모양을 변환합니다.
-                        const itemsToRestore: ProductOption[] = calculationData.items.map(item => ({
-                            productId: item.productId,
-                            colorName: item.color,
-                            stockQuantity: item.quantity,
-                        }));
-
-                        // 2. 변환된 데이터로 재고 복구 함수를 호출합니다.
-                        await restoreItems(itemsToRestore);
+                        if (portoneResponse?.pgMessage) alert(`${portoneResponse?.pgMessage}\nQ&A 채널로 문의해주세요.`)
+                        else alert(`결제 요청 처리 중 오류가 발생했습니다.\nQ&A 채널로 문의해주세요.`)
+                        await restoreItems(calculationData.items);
                         break;
                 }
             }
@@ -304,13 +294,22 @@ const useOrder = () => {
         await updateUser(updateAddress);
     };
 
-    const restoreItems = async (stockItems: ProductOption[]) => {
+    const restoreItems = async (stockItems: Array<any>) => {
+        console.log(stockItems)
+
         if (!stockItems || stockItems.length === 0) {
             console.error("복원할 아이템 정보가 없습니다.");
             return;
         }
+
+        const itemsToRestore: ProductOption[] = stockItems.map(item => ({
+                productId: item.productId,
+                colorName: item.color,
+                stockQuantity: item.quantity,
+            }));
+
         await updateStockMutation.mutateAsync({
-            items: stockItems,
+            items: itemsToRestore,
             action: "restore",
         }).catch(restoreError => console.error("재고 복구 중 오류 발생:", restoreError));
     }

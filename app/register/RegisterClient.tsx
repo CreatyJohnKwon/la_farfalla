@@ -427,7 +427,7 @@ const RegisterClient = () => {
                                     setPostcode(value.zonecode);
                                 })
                             }
-                            className="absolute right-1 top-1/2 -translate-y-1/2 bg-black px-4 py-[1.3vh] text-sm text-white hover:bg-gray-800"
+                            className="absolute right-1 top-1/2 -translate-y-1/2 bg-black px-4 py-2 text-sm text-white hover:bg-gray-800"
                         >
                             주소찾기
                         </button>
