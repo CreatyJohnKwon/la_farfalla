@@ -2,7 +2,7 @@ import { Category } from "@/src/entities/type/interfaces";
 import useProduct from "@/src/shared/hooks/useProduct";
 
 const CategoryList = ({ category }: { category?: Category[]}) => {
-    const { setSection } = useProduct();
+    const { setSection, section } = useProduct();
 
     return (
         <div className="flex items-center justify-center pt-6 md:pt-0">
@@ -14,7 +14,7 @@ const CategoryList = ({ category }: { category?: Category[]}) => {
                     <li
                         key={"All_section"}
                         onClick={() => setSection("")}
-                        className={`cursor-pointer transition-colors hover:text-black`}
+                        className={`cursor-pointer transition-colors ${section === "" ? "text-gray-400" : "text-black"}`}
                     >
                         All
                     </li>
@@ -26,7 +26,7 @@ const CategoryList = ({ category }: { category?: Category[]}) => {
                             <li
                                 key={cat._id}
                                 onClick={() => setSection(cat.name)}
-                                className={`cursor-pointer transition-colors hover:text-black`}
+                                className={`cursor-pointer transition-colors ${section === cat.name ? "text-gray-400" : "text-black"}`}
                             >
                                 {cat.name}
                             </li>

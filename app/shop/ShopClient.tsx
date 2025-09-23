@@ -83,7 +83,7 @@ const ShopClient = () => {
         <div className="flex w-full min-h-full flex-col">
             <main className="flex w-full flex-col flex-grow">
                 <div className="flex flex-col items-center">
-                    <div className="relative flex w-[93vw] flex-col items-center justify-center py-12 mt-16 sm:mt-20 md:flex-row">
+                    <div className="relative flex w-[93vw] flex-col items-center justify-center py-12 mt-10 sm:mt-20 md:flex-row">
                         <div className="w-[10vh] md:w-auto md:absolute md:left-0 self-start">
                             <SearchButton
                                 products={searchableProducts}

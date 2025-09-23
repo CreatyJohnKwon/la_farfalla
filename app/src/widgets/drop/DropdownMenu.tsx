@@ -22,7 +22,7 @@ const DropdownMenu = ({
     triggerType = "hover"
 }: DropdownMenuProps) => {
     const { setOpenSidebar } = useProduct();
-    const { router, pathName, menuBg, setMenuBg } = usePage();
+    const { router, pathName, menuBg } = usePage();
 
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);

@@ -38,7 +38,7 @@ const Footer = () => {
                 </div>
 
                 {/* 버튼들은 기존과 동일합니다. */}
-                <div className="flex flex-row h-10 sm:h-20 w-full text-black font-amstel justify-start items-center gap-7 sm:gap-10 text-[9px] sm:text-base">
+                <div className="flex flex-row h-12 sm:h-20 w-full text-black font-amstel justify-start items-center gap-7 sm:gap-10 text-sm sm:text-base">
                     <span className="cursor-pointer" onClick={toggleLicenseVisibility}>
                         LICENSE
                     </span>

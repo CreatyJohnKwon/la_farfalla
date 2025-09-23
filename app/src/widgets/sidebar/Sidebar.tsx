@@ -76,7 +76,7 @@ const Sidebar = () => {
                         </button>
                         
                         <ul className="absolute top-36 gap-4 left-6 flex flex-col items-start text-start text-lg text-black font-amstel">
-                            <li className="relative -mb-1.5 text-gray-500" key={"shop-menu"}>
+                            <li className="relative -mb-2 text-gray-500" key={"shop-menu"}>
                                 {isClient && <DropdownMenu 
                                     title="SHOP"
                                     items={shopMenuItems}
@@ -97,13 +97,23 @@ const Sidebar = () => {
                                     <Link href={data.link} onClick={() => onCloseSidebar()}>{data.label}</Link>
                                 </li>
                             )}
-                            {session?.user?.email &&
+                            {session?.user?.email ?
                                 <li 
                                     className="relative sm:transition-all sm:duration-300 sm:ease-in-out"
                                     key={"logout-button"}
                                     onClick={() => logoutHandler()}
                                 >
                                     LOGOUT
+                                </li> : 
+                                <li 
+                                    className="relative sm:transition-all sm:duration-300 sm:ease-in-out"
+                                    key={"logout-button"}
+                                    onClick={() => !session?.user?.email && 
+                                        confirm("로그인 페이지로 이동하시겠습니까?") && 
+                                            window.location.replace("/login")
+                                    }
+                                >
+                                    LOGIN
                                 </li>
                             }
                         </ul>

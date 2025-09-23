@@ -77,7 +77,7 @@ const NavbarClient = () => {
                 {/* 왼쪽 메뉴 : Mobile */}
                 <button onClick={() => setOpenSidebar(true)}>
                     <RxHamburgerMenu
-                        className={`ms-1 block text-2xl z-40 sm:hidden`}
+                        className={`ms-1 pb-1 block text-[25px] z-40 sm:hidden`}
                     />
                 </button>
 

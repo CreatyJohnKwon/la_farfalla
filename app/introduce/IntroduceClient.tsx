@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import imageUrl from "../../public/images/bg_introduce_250911.jpg"
-import imageUrlMobile from "../../public/images/bg_introduce_250912_mobile.jpeg"
+import imageUrlMobile from "../../public/images/bg_introduce_250923_mobile.jpeg"
 
 const IntroduceClient = () => {
     return (
