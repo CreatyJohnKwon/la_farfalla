@@ -2,8 +2,8 @@ import React from 'react';
 
 const BuyAgreement = () => {
   return (
-    <div className="p-4 font-pretendard">
-      <p className="mb-4 text-xl font-bold text-gray-800 text-center">
+    <div className="pt-10 font-pretendard">
+      <p className="mb-4 text-lg md:text-xl font-bold text-gray-800 text-center">
         전자상거래(인터넷사이버몰) 표준약관
       </p>
       <div className="h-[70vh] p-6 text-sm text-gray-700 bg-white border-gray-200 leading-relaxed text-start">

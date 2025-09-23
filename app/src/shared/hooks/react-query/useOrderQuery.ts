@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     getOrders,
     getSingleOrder,
@@ -11,16 +11,20 @@ import { useSetAtom } from "jotai";
 import { resetProductFormAtom } from "../../lib/atom";
 import { ProductOption } from "@src/components/product/interface";
 import { AddressUpdateInput } from "@src/entities/type/order";
-import { OrderData, OrderUpdateInput } from "@src/components/order/interface";
+import { OrderData, OrderPage, OrderUpdateInput } from "@src/components/order/interface";
 import { adminEmails } from "public/data/common";
 import useUsers from "../useUsers";
 
 const useAllOrderQuery = () => {
-    return useQuery<OrderData[], Error>({
-        queryKey: ["admin-order"],
-        queryFn: () => getOrderList(),
+    return useInfiniteQuery<OrderPage, Error, OrderPage, readonly ["admin-orders-infinite"], number>({
+        queryKey: ["admin-orders-infinite"],
+        queryFn: ({ pageParam }) => getOrderList({ pageParam }),
+        initialPageParam: 1, // 첫 페이지의 파라미터
+        getNextPageParam: (lastPage) => { // 다음 페이지 파라미터를 계산하는 로직
+            return lastPage.nextPage ?? undefined;
+        },
         staleTime: 1000 * 60 * 3, // 3분 캐시
-        retry: false, // 실패 시 재시도 OFF
+        retry: false,
     });
 };
 

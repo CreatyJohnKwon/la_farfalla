@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import StatusUpdateSelectedModal from "@src/widgets/modal/StatusUpdateSelectedModal";
 import StatusUpdateModal from "@src/widgets/modal/StatusUpdateModal";
 import UserInfoModal from "@src/widgets/modal/UserInfoModal";
 import useOrderList from "@src/shared/hooks/useOrderList";
 import ProductInfoModal from "@src/widgets/modal/ProductInfoModal";
-import { OrderData } from "@src/components/order/interface";
+import { OrderData, ShippingStatus } from '@src/components/order/interface';
+import { useInView } from "react-intersection-observer";
 
 type SortOption = "none" | "name_asc" | "name_desc";
 type StatusFilter = "all" | string; // "all" 또는 실제 상태값
@@ -38,6 +39,8 @@ const Orders = () => {
         isAllSelected,
 
         refetch,
+        fetchNextPage,
+        hasNextPage,
     } = useOrderList();
 
     // 필터 상태
@@ -45,18 +48,29 @@ const Orders = () => {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
     // Shift 키 범위 선택을 위한 상태
-    const [lastCheckedIndex, setLastCheckedIndex] = useState<number | null>(
-        null,
-    );
+    const [lastCheckedIndex, setLastCheckedIndex] = useState<number | null>(null);
 
     // 고유한 주문 상태 목록 추출
-    const uniqueStatuses = useMemo(() => {
+    const uniqueStatuses = useMemo((): Array<any> => {
         if (!orders) return [];
         const statuses = [
-            ...new Set(orders.map((order) => order.shippingStatus)),
+            ...new Set(orders.map((order: OrderData) => order.shippingStatus)),
         ];
         return statuses.sort();
     }, [orders]);
+
+    const { ref, inView } = useInView({
+        threshold: 0, // 요소가 1px이라도 보이면 트리거
+        triggerOnce: false, // 계속 감시
+    });
+
+    useEffect(() => {
+        // isLoading(초기 로딩) 중이 아닐 때만 다음 페이지 fetch를 실행해야
+        // 컴포넌트 마운트 시 중복 호출을 방지할 수 있습니다.
+        if (inView && hasNextPage && !orderListLoading) {
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, fetchNextPage, orderListLoading]);
 
     // 필터링된 주문 목록
     const filteredAndSortedOrders = useMemo(() => {
@@ -522,6 +536,8 @@ const Orders = () => {
                             </tbody>
                         )}
                     </table>
+
+                    <div ref={ref} style={{ height: "1px" }} />
                 </div>
 
                 {/* 로딩 상태 */}

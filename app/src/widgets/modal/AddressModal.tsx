@@ -71,7 +71,7 @@ const AddressModal = ({ onComplete, onClose }: AddressModalProps) => {
                 />
                 <button
                     onClick={onClose}
-                    className="absolute bottom-4 left-1/2 w-[90%] -translate-x-1/2 bg-gray-800 py-2 text-xl text-white"
+                    className="absolute bottom-4 left-1/2 w-[90%] -translate-x-1/2 bg-black hover:bg-black/70 py-2 text-base text-white"
                 >
                     닫기
                 </button>

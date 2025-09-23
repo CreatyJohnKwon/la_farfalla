@@ -14,7 +14,7 @@ const Cart = () => {
         setCartDatas,
         setCartView,
         handleBuy,
-        handleRemoveCartAll,
+        handleRemoveCartAll
     } = useCart();
 
     useEffect(() => {
@@ -113,7 +113,7 @@ const Cart = () => {
                 </div>
 
                 {/* 장바구니 목록: 남은 공간을 모두 차지하고 내용이 많으면 스크롤됩니다. */}
-                <ul className="flex-grow overflow-y-auto p-2 sm:p-4">
+                <ul className="flex-grow overflow-y-auto">
                     {cartListView()}
                 </ul>
 

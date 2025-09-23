@@ -21,6 +21,8 @@ const IntroduceClient = () => {
                 className="object-cover transition-transform duration-500 sm:hidden block"
             />
 
+            <div className="absolute inset-0 bg-gradient-to-t from-white from-10% to-transparent to-25%" />
+
             {/* <main className="relative flex h-full w-full flex-col items-center justify-center p-5 text-center bg-white/60">
                 <div className="-mt-16 hidden space-y-3 font-pretendard text-[1.25em] tracking-tightest transition-all duration-300 ease-in-out sm:block">
                     <p>사이의 여유, 선택의 아름다움</p>

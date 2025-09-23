@@ -8,7 +8,6 @@ import {
 import { useDeleteProductMutation, useProductListQuery } from "./react-query/useProductQuery";
 import { useMemo } from "react";
 import { useCategoriesQuery } from "./react-query/useCategoryQuery";
-import { Category } from "@/src/entities/type/interfaces";
 
 const useProduct = () => {
     const [section, setSection] = useAtom(sectionAtom);
@@ -18,7 +17,7 @@ const useProduct = () => {
 
     const { mutateAsync: deleteProduct } = useDeleteProductMutation();
     const {
-        data: products,
+        data: productsData,
         isLoading: productsLoading,
         refetch: useRefetchProducts,
         fetchNextPage,
@@ -26,6 +25,11 @@ const useProduct = () => {
         isFetchingNextPage,
     } = useProductListQuery(9);
     const { data: category, isLoading: categoryLoading, error: categoryError } = useCategoriesQuery();
+
+    // 상품[] 메모이제이션 평탄화
+    const products = useMemo(() => {
+        return productsData?.pages.flatMap(page => page.data || []) ?? [];
+    }, [productsData]);
 
     const returnCategories = (categoryIds?: string[]): string[] => {
         if (!category || !categoryIds) return [];
@@ -45,18 +49,6 @@ const useProduct = () => {
         return foundCategory?.name ?? "";
     };
 
-    // 의존성을 나누어 메모이제이션 다중 콜링 오류를 제거
-    const allProducts = useMemo(() => {
-        return products?.pages?.flatMap(page => page.data) ?? [];
-    }, [products?.pages]);
-
-    // product list data memoization
-    const filteredProducts = useMemo(() => {
-        if (section === "") return allProducts;
-        
-        return allProducts.filter(item => returnCategories(item.categories).includes(section));
-    }, [allProducts, section]);
-
     const handleProductListScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
 
@@ -70,6 +62,16 @@ const useProduct = () => {
             fetchNextPage();
         }
     };
+
+    // 카테고리에 따라 필터링된 상품 목록
+    const filteredProducts = useMemo(() => {
+        if (!products) return [];
+        if (section === "") {
+            return products;
+        }
+        return products.filter(product => 
+            returnCategories(product.categories).includes(section)) || section === "All"
+    }, [products, section]);
 
     return {
         openSidebar,
@@ -89,12 +91,15 @@ const useProduct = () => {
         isFetchingNextPage,
 
         // 상품 리스트 쿼리
-        products,
+        products: productsData, // 원본 InfiniteData 객체도 전달
         productsLoading,
 
         // 페이징 관련
         useRefetchProducts,
-        filteredProducts,
+        flatProducts: products, // 평탄화된 배열
+        filteredProducts,      // 필터링된 배열
+        fetchNextPage,
+        hasNextPage,
 
         // 카테고리
         category,

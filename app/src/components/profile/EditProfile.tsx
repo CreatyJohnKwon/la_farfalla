@@ -14,10 +14,8 @@ const EditProfile = () => {
     const { data: user, isLoading } = useUserQuery();
     const { session } = useUsers();
     const updateUser = useUpdateUserMutation();
-    // 클라이언트 측 비번 확인 검증용
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const { isOpen, onComplete, openModal, closeModal } = useAddress();
-
     const router = useRouter();
 
     // 폼 제출 형식
@@ -30,18 +28,22 @@ const EditProfile = () => {
         password: "",
     });
 
+    const [initialForm, setInitialForm] = useState(form);
+
     useEffect(() => {
         if (user && session) {
-            setForm({
+            const initialData = {
                 email: session?.user?.email ?? "",
                 name: user.name ?? "",
                 address: user.address ?? "",
                 detailAddress: user.detailAddress ?? "",
                 postcode: user.postcode ?? "",
                 password: "",
-            });
+            };
+            setForm(initialData);
+            setInitialForm(initialData);
         }
-    }, [user]);
+    }, [user, session]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -70,6 +72,35 @@ const EditProfile = () => {
         );
     }, [form.password]);
 
+    const isFormChanged = useMemo(() => {
+        // 초기 데이터가 없으면 변경된 것으로 간주하지 않음
+        if (!initialForm.email) return false;
+        
+        // 주소 관련 필드 중 하나라도 변경되었는지 확인
+        const addressChanged = 
+            initialForm.address !== form.address ||
+            initialForm.detailAddress !== form.detailAddress ||
+            initialForm.postcode !== form.postcode;
+
+        // 비밀번호 필드에 입력이 있는지 확인
+        const passwordChanged = form.password !== "";
+
+        return addressChanged || passwordChanged;
+    }, [form, initialForm]);
+
+    const canSave = useMemo(() => {
+        // 변경된 내용이 없으면 비활성화
+        if (!isFormChanged) return false;
+
+        // 만약 비밀번호가 변경되었다면, 안전성과 일치 여부까지 확인해야 함
+        if (form.password) {
+            return isPasswordSafe && isPasswordMatch;
+        }
+
+        // 비밀번호 변경 없이 다른 정보만 변경된 경우
+        return true;
+    }, [isFormChanged, form.password, isPasswordSafe, isPasswordMatch]);
+
     if (isLoading)
         return (
             <p className="font-amstel-thin place-self-center text-center text-lg">
@@ -93,7 +124,7 @@ const EditProfile = () => {
                                 name="password"
                                 value={form.password}
                                 onChange={handleChange}
-                                placeholder="비밀번호 (8자 이상, 대소문자 및 숫자)"
+                                placeholder="변경할 비밀번호 (8자 이상, 대소문자 및 숫자)"
                                 className="min-h-12 w-full border border-gray-200 bg-white px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                             />
                             {form.password.length > 0 && (
@@ -118,7 +149,7 @@ const EditProfile = () => {
                                 onChange={(e) =>
                                     setConfirmPassword(e.target.value)
                                 }
-                                placeholder="비밀번호 확인"
+                                placeholder="변경할 비밀번호 확인"
                                 className="min-h-12 w-full border border-gray-200 bg-white px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                             />
                             {confirmPassword.length > 0 && (
@@ -164,7 +195,7 @@ const EditProfile = () => {
                                 })),
                             )
                         }
-                        className="absolute right-1 top-1/2 -translate-y-1/2 bg-black px-3 py-3 text-xs font-[300] text-white sm:bg-black/70 sm:px-5 sm:py-2 sm:text-base sm:hover:bg-black"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 px-3 py-3 text-xs underline font-[300] text-black transition-all ease-in-out sm:text-gray-500 sm:px-4 sm:py-2 sm:text-sm sm:hover:text-black"
                     >
                         주소 찾기
                     </button>
@@ -181,9 +212,14 @@ const EditProfile = () => {
 
                 <button
                     onClick={handleSubmit}
-                    className="font-amstel w-full bg-black px-5 py-2 text-base text-white sm:w-auto sm:place-self-end sm:text-lg"
+                    disabled={!canSave}
+                    className={`font-pretendard ease-in-out duration-300 w-full px-5 py-2 text-base text-white transition-colors sm:w-auto sm:place-self-end sm:text-lg font-[300] ${
+                        canSave
+                            ? "bg-black hover:bg-black/70"
+                            : "cursor-not-allowed bg-gray-400"
+                    }`}
                 >
-                    Save
+                    저장
                 </button>
 
                 {isOpen && (

@@ -67,6 +67,12 @@ interface OrderData {
     description?: string;
 }
 
+interface OrderPage {
+    pages: any[];
+    nextPage: number | null;
+    currentPage: number;
+}
+
 interface OrderUpdateInput {
     orderId: string | undefined;
     shippingStatus: string;
@@ -79,6 +85,7 @@ export type {
     EmailResult,
     SMTPConfig,
     OrderData,
+    OrderPage,
     OrderItem,
     MileageItem,
     ShippingStatus,

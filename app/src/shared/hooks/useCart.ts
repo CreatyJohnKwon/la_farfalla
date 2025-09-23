@@ -73,6 +73,7 @@ const useCart = () => {
     };
 
     const handleDeleteProduct = (ids: string | string[] | undefined) => {
+        console.log(ids)
         if (!ids) return;
 
         if (!confirm("삭제하시겠습니까?")) return;
@@ -89,6 +90,8 @@ const useCart = () => {
     };
 
     const handleUpdateProduct = (newQty: number, item: SelectedItem) => {
+        if (newQty < 1) return;
+
         setCartDatas((prev) =>
             prev.map((i) =>
                 i._id === item._id ? { ...i, quantity: newQty } : i,

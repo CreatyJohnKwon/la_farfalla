@@ -6,17 +6,12 @@ import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-interface SessionProps {
-    name: string;
-    email: string;
-    _id: string;
-}
-
 const useUsers = () => {
     const [isLoggedIn, setIsLoggedIn] = useAtom<boolean>(isLoggedInAtom);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [isDisabled, setIsDisabled] = useState<boolean>(false);
+    const [rememberMe, setRememberMe] = useState(false);
     const { data: session } = useSession();
     const router = useRouter();
 
@@ -33,6 +28,7 @@ const useUsers = () => {
 
     const loginHandler = async (provider: "kakao" | "naver") => {
         await signIn(provider, {
+            rememberMe,
             redirect: true,
             callbackUrl: "/home",
         });
@@ -64,11 +60,13 @@ const useUsers = () => {
         password,
         isDisabled,
         isLoggedIn,
+        rememberMe,
 
         setEmail,
         setPassword,
         setIsDisabled,
         setIsLoggedIn,
+        setRememberMe,
 
         loginHandler,
         logoutHandler,

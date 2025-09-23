@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
@@ -84,6 +84,8 @@ const RegisterClient = () => {
             return;
         }
 
+        alert("인증번호가 발송되었습니다. 이메일을 확인해주세요.");
+
         try {
             // 이메일 발송 API 호출
             const verificationCode = Math.floor(
@@ -95,26 +97,22 @@ const RegisterClient = () => {
                 email: email,
             };
 
+            sessionStorage.setItem("verificationCode", verificationCode);
+            sessionStorage.setItem("verificationEmail", email);
+            sessionStorage.setItem(
+                "verificationExpires",
+                (Date.now() + 180000).toString(),
+            ); // 3분 후
+
+            setAuthNumber(verificationCode);
+            setIsEmailSent(true);
+            setShowVerificationInput(true);
+            setTimeLeft(180); // 3분 = 180초
+            setError(null);
+
             const response = await sendAuthMail(body);
 
-            if (response.success) {
-                // 임시로 생성된 코드를 세션 스토리지에 저장 (실제로는 서버에서 관리)
-                sessionStorage.setItem("verificationCode", verificationCode);
-                sessionStorage.setItem("verificationEmail", email);
-                sessionStorage.setItem(
-                    "verificationExpires",
-                    (Date.now() + 180000).toString(),
-                ); // 3분 후
-
-                setAuthNumber(verificationCode);
-                setIsEmailSent(true);
-                setShowVerificationInput(true);
-                setTimeLeft(180); // 3분 = 180초
-                setError(null);
-                alert("인증번호가 발송되었습니다. 이메일을 확인해주세요.");
-            } else {
-                alert("인증번호 발송에 실패했습니다. 채널로 문의해주세요.");
-            }
+            if (!response.success) alert("인증번호 발송에 실패했습니다. 채널로 문의해주세요.");
         } catch (error) {
             console.error("이메일 발송 중 오류:", error);
             setError("이메일 발송에 실패했습니다. 다시 시도해주세요.");
@@ -169,12 +167,59 @@ const RegisterClient = () => {
         e.preventDefault();
         if (!isValidForm) return;
 
-        const formData = new FormData(e.currentTarget);
-        
-        // 이메일 인증이 완료되면 요소가 disabled되므로 formData에 포함되지 않음
-        // 따라서, disabled된 이메일 필드의 값을 수동으로 추가 해줘야 함
-        formData.append("email", email);
+        if (!name.trim()) {
+            alert("이름을 입력해주세요.");
+            nameRef.current?.focus();
+            return;
+        }
+        if (!email.trim()) {
+            alert("이메일을 입력해주세요.");
+            emailRef.current?.focus();
+            return;
+        }
+        if (!isEmailVerified) {
+            alert("이메일 인증을 완료해주세요.");
+            emailRef.current?.focus();
+            return;
+        }
+        if (!isPasswordSafe) {
+            alert("비밀번호는 8자 이상, 대문자와 숫자를 포함해야 합니다.");
+            passwordRef.current?.focus();
+            return;
+        }
+        if (!isPasswordMatch) {
+            alert("비밀번호가 일치하지 않습니다.");
+            confirmPasswordRef.current?.focus();
+            return;
+        }
+        if (phoneNumber.replace(/\D/g, "").length < 10) {
+            alert("올바른 휴대폰 번호를 입력해주세요.");
+            phoneNumberRef.current?.focus();
+            return;
+        }
+        if (!address.trim()) {
+            alert("주소를 입력해주세요.");
+            addressRef.current?.focus();
+            return;
+        }
+        if (!detailAddress.trim()) {
+            alert("상세주소를 입력해주세요.");
+            detailAddressRef.current?.focus();
+            return;
+        }
+        if (!userCertifyRef.current?.checked) {
+            alert("이용약관 및 개인정보 수집에 동의해주세요.");
+            userCertifyRef.current?.focus();
+            return;
+        }
+        if (!checkAdultRef.current?.checked) {
+            alert("만 14세 이상임에 동의해주세요.");
+            checkAdultRef.current?.focus();
+            return;
+        }
 
+        const formData = new FormData(e.currentTarget);
+        formData.append("email", email);
         mutation.mutate(formData);
     };
 
@@ -197,13 +242,23 @@ const RegisterClient = () => {
         if (isOpenUserAgreeTwo) setIsOpenUserAgreeTwo(false);
     }
 
+    const nameRef = useRef<HTMLInputElement>(null);
+    const emailRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+    const confirmPasswordRef = useRef<HTMLInputElement>(null);
+    const phoneNumberRef = useRef<HTMLInputElement>(null);
+    const addressRef = useRef<HTMLInputElement>(null);
+    const detailAddressRef = useRef<HTMLInputElement>(null);
+    const userCertifyRef = useRef<HTMLInputElement>(null);
+    const checkAdultRef = useRef<HTMLInputElement>(null);
+
     return (
         <div className="z-30 flex h-screen flex-col items-center justify-start overflow-y-auto py-8 text-center">
             <form
                 className="mt-5 flex w-[90vw] flex-col items-center justify-start gap-4 p-0 py-8 pb-10 sm:w-1/2 sm:gap-6 sm:pt-20"
                 onSubmit={handleSubmit}
             >
-                <div className="flex w-full flex-col gap-4 text-base md:text-lg c_xl:text-xl">
+                <div className="flex w-full flex-col gap-4 text-sm md:text-lg c_xl:text-xl">
                     {/* 이름 */}
                     <input
                         type="text"
@@ -216,7 +271,6 @@ const RegisterClient = () => {
 
                     {/* 이메일 */}
                     <div className="w-full">
-                        {/* REFACTOR: Changed to a flex container for robust layout */}
                         <div className="flex h-[5vh] w-full items-center rounded-none border border-gray-200 bg-gray-50 pr-1 focus-within:ring-2 focus-within:ring-gray-200">
                             <input
                                 type="email"
@@ -232,7 +286,6 @@ const RegisterClient = () => {
                                     }
                                 }}
                                 placeholder="이메일"
-                                // REFACTOR: Simplified styling, border/bg handled by parent
                                 className="h-full flex-1 bg-transparent px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none"
                                 disabled={isEmailVerified}
                             />
@@ -241,21 +294,17 @@ const RegisterClient = () => {
                                     type="button"
                                     onClick={sendEmailVerification}
                                     disabled={isEmailSent || !email.trim()}
-                                    // REFACTOR: Removed absolute positioning. `flex-shrink-0` prevents the button from shrinking.
-                                    className={`flex-shrink-0 whitespace-nowrap px-4 py-[1.3vh] text-sm text-white ${
-                                        isEmailSent || !email.trim()
-                                            ? "cursor-not-allowed bg-gray-400"
-                                            : "bg-black hover:bg-gray-800"
-                                    }`}
+                                    className={`flex-shrink-0 whitespace-nowrap px-3 py-2 text-xs sm:text-sm font-medium bg-transparent
+                                        ${ isEmailSent || !email.trim()
+                                            ? "cursor-not-allowed text-gray-400" 
+                                            : "text-black underline hover:text-gray-600"
+                                        }`}
                                 >
-                                    {isEmailSent
-                                        ? `${formatTime(timeLeft)}`
-                                        : "이메일 인증"}
+                                    {isEmailSent ? `${formatTime(timeLeft)}` : "이메일 인증"}
                                 </button>
                             )}
                             {isEmailVerified && (
-                                // REFACTOR: No longer needs absolute positioning.
-                                <div className="flex flex-shrink-0 items-center gap-2 bg-green-100 px-4 py-2 text-sm text-green-800">
+                                <div className="flex flex-shrink-0 items-center gap-2 px-4 text-xs sm:text-sm text-green-600">
                                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" >
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
@@ -266,26 +315,23 @@ const RegisterClient = () => {
 
                         {/* 이메일 인증번호 입력 필드 */}
                         {showVerificationInput && (
-                            // REFACTOR: Changed to a flex container
-                            <div className="relative mt-2 flex h-[5vh] w-full items-center rounded-none border border-blue-200 bg-blue-50 pr-1 focus-within:ring-2 focus-within:ring-blue-300">
+                            <div className="relative mt-2 flex h-[5vh] w-full items-center rounded-none border border-blue-200 bg-blue-50 pr-1 focus-within:ring-2 focus-within:ring-blue-50">
                                 <input
                                     type="text"
                                     value={emailVerificationCode}
                                     onChange={(e) => setEmailVerificationCode(e.target.value)}
                                     placeholder="인증번호 6자리를 입력하세요"
                                     maxLength={6}
-                                    // REFACTOR: Simplified styling
                                     className="h-full flex-1 bg-transparent px-4 text-gray-700 placeholder:text-gray-500 focus:outline-none"
                                 />
                                 <button
                                     type="button"
                                     onClick={verifyEmailCode}
                                     disabled={emailVerificationCode.length !== 6}
-                                    // REFACTOR: Removed absolute positioning
-                                    className={`flex-shrink-0 px-4 py-[1.3vh] text-sm text-white ${
+                                    className={`flex-shrink-0 px-4 py-[1.3vh] text-xs sm:text-sm font-medium ${
                                         emailVerificationCode.length !== 6
-                                            ? "cursor-not-allowed bg-gray-400"
-                                            : "bg-blue-600 hover:bg-blue-700"
+                                            ? "cursor-not-allowed text-gray-400"
+                                            : "text-blue-600 hover:text-blue-700 underline"
                                     }`}
                                 >
                                     확인
@@ -296,9 +342,9 @@ const RegisterClient = () => {
                         {/* 이메일 인증 상태 메시지 */}
                         {isEmailSent && !isEmailVerified && (
                             <div className="mt-2 text-left">
-                                <p className="text-sm text-blue-600">
+                                <p className="text-xs sm:text-sm text-blue-600">
                                     {email}
-                                    <span className="ms-1 pb-3 text-sm text-gray-700">
+                                    <span className="ms-1 pb-3 text-xs sm:text-sm text-gray-700">
                                         로 인증번호를 발송했습니다.
                                     </span>
                                 </p>
@@ -308,19 +354,10 @@ const RegisterClient = () => {
                                 </p>
                             </div>
                         )}
-
-                        {isEmailVerified && (
-                            <div className="mt-2 text-left">
-                                <p className="text-sm text-green-600">
-                                    이메일 인증 완료
-                                </p>
-                            </div>
-                        )}
                     </div>
 
                     <div className="w-full">
                         {/* 비밀번호 입력 영역 */}
-                        {/* REFACTOR: Using flex for robust icon positioning */}
                         <div className="flex h-[5vh] w-full items-center rounded-none border border-gray-200 bg-gray-50 focus-within:ring-2 focus-within:ring-gray-200">
                             <input
                                 type={pwdVisible ? "text" : "password"}
@@ -344,7 +381,7 @@ const RegisterClient = () => {
                         </div>
 
                         {password.length > 0 && (
-                            <p className={`mt-4 text-left text-sm ${isPasswordSafe ? "text-green-500" : "text-red-500"}`} >
+                            <p className={`mt-4 text-left text-xs sm:text-sm ${isPasswordSafe ? "text-green-500" : "text-red-500"}`} >
                                 {isPasswordSafe
                                     ? "비밀번호가 안전합니다."
                                     : "8자 이상, 대문자와 숫자를 포함해야 합니다."}
@@ -363,7 +400,7 @@ const RegisterClient = () => {
                     />
 
                     {confirmPassword.length > 0 && (
-                        <p className={`text-left text-sm ${isPasswordMatch ? "text-green-500" : "text-red-500"}`} >
+                        <p className={`text-left text-xs sm:text-sm ${isPasswordMatch ? "text-green-500" : "text-red-500"}`} >
                             {isPasswordMatch
                                 ? "비밀번호가 일치합니다."
                                 : "비밀번호가 일치하지 않습니다."}
@@ -386,7 +423,6 @@ const RegisterClient = () => {
                     />
 
                     {/* 주소 */}
-                    {/* REFACTOR: Changed to a flex container for robust layout */}
                     <div className="flex h-[5vh] w-full items-center rounded-none border border-gray-200 bg-gray-50 pr-1 focus-within:ring-2 focus-within:ring-gray-200">
                         <input
                             type="text"
@@ -404,8 +440,7 @@ const RegisterClient = () => {
                                 setAddress(value.address);
                                 setPostcode(value.zonecode);
                             })}
-                            // REFACTOR: Removed absolute positioning
-                            className="flex-shrink-0 bg-black px-4 py-2 text-sm text-white hover:bg-gray-800"
+                            className="flex-shrink-0 whitespace-nowrap px-3 py-2 text-xs sm:text-sm font-medium text-black underline hover:text-gray-600"
                         >
                             주소찾기
                         </button>
@@ -422,7 +457,7 @@ const RegisterClient = () => {
                 </div>
 
                 <section className="place-self-start bg-transparent font-pretendard">
-                    <label className="flex items-start gap-2 text-sm leading-tight">
+                    <label className="flex items-start gap-2 text-xs sm:text-sm leading-tight">
                         <input type="checkbox" name="userCertify" required />
                         <div className="-mt-0.5">
                             <button
@@ -447,7 +482,7 @@ const RegisterClient = () => {
                 </section>
 
                 <section className="place-self-start bg-transparent font-pretendard">
-                    <label className="flex items-start gap-2 text-sm leading-tight">
+                    <label className="flex items-start gap-2 text-xs sm:text-sm leading-tight">
                         <input type="checkbox" name="checkAdult" required />
                         <div className="-mt-0.5">
                             만 14세 이상입니다.
@@ -458,7 +493,7 @@ const RegisterClient = () => {
 
                 {!isEmailVerified && email.trim() && (
                     <div className="w-full text-left">
-                        <p className="text-sm text-red-600">
+                        <p className="text-xs sm:text-sm text-red-600">
                             회원가입을 완료하려면 이메일 인증이 필요합니다.
                         </p>
                     </div>
@@ -466,7 +501,7 @@ const RegisterClient = () => {
 
                 <div className="mt-6 flex w-full justify-center gap-4 c_xl:text-xl">
                     <button
-                        className={`w-full px-6 py-3 text-white c_xl:py-4 ${!isValidForm || mutation.isLoading ? "bg-black/70" : "bg-black hover:bg-black/70"}`}
+                        className={`w-full px-6 py-3 text-white c_xl:py-4 ${!isValidForm || mutation.isLoading ? "bg-black/50" : "bg-black hover:bg-black/70"}`}
                         disabled={!isValidForm || mutation.isLoading}
                         type="submit"
                     >

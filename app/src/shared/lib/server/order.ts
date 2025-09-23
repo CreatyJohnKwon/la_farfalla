@@ -1,3 +1,4 @@
+import { OrderData, OrderPage } from "@/src/components/order/interface";
 import { ProductOption } from "@src/components/product/interface";
 import axios from "axios";
 
@@ -47,8 +48,8 @@ const getSingleOrder = async (orderId: string) => {
     return await res.json();
 };
 
-const getOrderList = async () => {
-    const res = await fetch(`/api/admin/list/order`);
+const getOrderList = async ({ pageParam = 1 }): Promise<OrderPage> => {
+    const res = await fetch(`/api/admin/list/order?page=${pageParam}&limit=10`);
     if (!res.ok) throw new Error("주문 리스트 불러오기 실패");
     return await res.json();
 };

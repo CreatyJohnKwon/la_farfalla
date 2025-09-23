@@ -9,9 +9,13 @@ const License = () => {
             <p className="tracking-wide">
                 사업지주소. 서울특별시 성북구 한천로78길 12-22, 1층
             </p>
-            <span className="tracking-wide">
+            <p className="tracking-wide">
                 사업자등록번호. 177-24-01663, 통신판매번호. 2024-서울성북-1347
-            </span>
+            </p>
+            <span className="tracking-wide font-amstel-thin">{"@\tLa\tfarfalla\t"}</span>
+            <a className="tracking-wide font-amstel-thin" href="https://github.com/CreatyJohnKwon">
+                {"|\tdev\tby.\tCreatyJohnKwon"}
+            </a>
         </div>
     );
 };

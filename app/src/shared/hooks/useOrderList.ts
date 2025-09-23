@@ -1,6 +1,6 @@
 import { OrderData, ShippingStatus } from "@src/components/order/interface";
 import { useAllOrderQuery } from "@src/shared/hooks/react-query/useOrderQuery";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 const useOrderList = () => {
     const statusColor = {
@@ -39,27 +39,34 @@ const useOrderList = () => {
     const [radioValue, setRadioValue] = useState<ShippingStatus>("pending");
 
     const {
-        data: orders,
+        data,
         isLoading: orderListLoading,
         refetch,
+        fetchNextPage,   // 다음 페이지를 불러오는 함수
+        hasNextPage,     // 다음 페이지가 있는지 여부
+        isFetchingNextPage, // 다음 페이지 로딩 상태
     } = useAllOrderQuery();
 
+    const orders = useMemo(() => {
+        if (!data) return [];
+
+        return data.pages.flatMap((page: any) => page.orders) ?? [];
+    }, [data]);
+
     const onClose = () => {
-        // 모달 종료 상태 변경
         setIsUserModalOpen(false);
         setIsProductModalOpen(false);
         setIsStatusModalOpen(false);
         setIsSelectedModalOpen(false);
-
         setSelectedOrder([]);
     };
 
     const toggleAll = () => {
-        if (!orders) return;
+        // 현재 불러온 모든 데이터를 기준으로 선택/해제
         if (selectedOrder.length === orders.length) {
             setSelectedOrder([]);
         } else {
-            setSelectedOrder(orders);
+            setSelectedOrder([...orders]); // 불변성을 위해 새로운 배열 생성
         }
     };
 
@@ -76,7 +83,7 @@ const useOrderList = () => {
     };
 
     const isAllSelected = !!(
-        orders?.length && selectedOrder.length === orders.length
+        orders.length > 0 && selectedOrder.length === orders.length
     );
 
     return {
@@ -102,9 +109,12 @@ const useOrderList = () => {
 
         orderListLoading,
         orders,
+        hasNextPage,
+        isFetchingNextPage,
 
         onClose,
 
+        fetchNextPage,
         toggleAll,
         toggleSingle,
         isAllSelected,

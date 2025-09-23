@@ -20,8 +20,8 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
     } = useOptimizedImage({
         src: product.image?.[0] || DefaultImage.src,
         fallbackSrc: DefaultImage.src,
-        priority: index < 4, // 처음 4개만 우선순위
-        quality: index < 4 ? 85 : 75,
+        priority: index < 9, // 처음 4개만 우선순위
+        quality: index < 9 ? 85 : 75,
         width: 500,
     });
 

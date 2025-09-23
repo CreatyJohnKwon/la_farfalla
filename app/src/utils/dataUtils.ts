@@ -57,6 +57,10 @@ const textareaPlaceholder = `리뷰 작성시 적립금 안내
 (중복된 사진 및 내용이 포함된 경우, 부적절한 내용이 담긴 경우, 브랜드와 무관한 경우)
 `
 
+// 자동 로그인 세션관리
+const THIRTY_DAYS = 30 * 24 * 60 * 60; // 30일 (초 단위)
+const ONE_DAY = 24 * 60 * 60; // 1일 (초 단위)
+
 export {
     getCurrentDateTime,
     getDateTimeAfterHours,
@@ -64,5 +68,7 @@ export {
     aboutMenuItems,
     adminMenuItems,
     textareaPlaceholder,
-    sideBarMenuData
+    sideBarMenuData,
+    THIRTY_DAYS,
+    ONE_DAY
 }

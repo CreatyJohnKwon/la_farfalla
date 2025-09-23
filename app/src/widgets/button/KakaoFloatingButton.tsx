@@ -1,5 +1,6 @@
 "use client"; // 클라이언트 컴포넌트로 설정
 
+import useCart from "@/src/shared/hooks/useCart";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 
@@ -14,6 +15,7 @@ const KakaoFloatingButton = () => {
     const [responsiveValues, setResponsiveValues] = useState({
         BUTTON_SIZE: 70,
     });
+    const { cartView } = useCart();
 
     const pathname = usePathname();
     const shouldHideButton = pathname === "/order";
@@ -53,7 +55,7 @@ const KakaoFloatingButton = () => {
 
     return (
         <button
-            className={`group fixed bottom-5 h-6 right-5 flex cursor-pointer select-none flex-row items-center justify-center rounded-[20px] md:rounded-[25px] bg-white/70 transition-all duration-200 shadow-gray-950 shadow-2xl sm:hover:bg-gray-600/50 ${pathname.includes("/home") ? "z-30" : "z-40"} ${visable ? "block" : "hidden"}`}
+            className={`group fixed bottom-5 h-6 right-5 flex cursor-pointer select-none flex-row items-center justify-center rounded-[20px] md:rounded-[25px] bg-white/70 transition-all duration-200 shadow-gray-950 shadow-2xl sm:hover:bg-gray-600/50 ${pathname.includes("/home") || cartView === true ? "z-30" : "z-40"} ${visable ? "block" : "hidden"}`}
             style={{
                 width: `${responsiveValues.BUTTON_SIZE}px`,
                 height: `${responsiveValues.BUTTON_SIZE}px`,

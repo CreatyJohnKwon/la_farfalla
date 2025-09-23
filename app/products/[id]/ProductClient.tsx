@@ -103,10 +103,9 @@ const ProductClient = ({ id }: { id: string }) => {
         return (
             <div className="flex h-screen w-full items-center justify-center">
                 <div className="text-center">
-                    <h2 className="mb-2 text-xl font-bold text-red-600">
-                        Wrong Access
+                    <h2 className="mb-2 text-xl font-pretendard text-red-600">
+                        접근 권한 실패 | 상품 ID 없음
                     </h2>
-                    <p className="text-gray-600">There's no product ID</p>
                 </div>
             </div>
         );
@@ -115,14 +114,14 @@ const ProductClient = ({ id }: { id: string }) => {
     // 에러 발생
     if (error) {
         return (
-            <div className="flex h-screen w-full items-center justify-center">
+            <div className="flex h-screen w-full font-pretendard items-center justify-center">
                 <div className="text-center">
-                    <h2 className="mb-2 text-xl font-bold text-red-600">
-                        Error issues
+                    <h2 className="mb-2 text-xl text-red-600">
+                        에러 발생 | {String(error)}
                     </h2>
                     <p className="text-gray-600">{String(error)}</p>
                     <p className="mt-2 text-sm text-gray-500">
-                        Product ID: {id}
+                        상품 ID: {id}
                     </p>
                 </div>
             </div>
@@ -137,12 +136,12 @@ const ProductClient = ({ id }: { id: string }) => {
     // 상품 데이터가 없는 경우
     if (!product) {
         return (
-            <div className="flex h-screen w-full items-center justify-center">
+            <div className="flex h-screen w-full font-pretendard items-center justify-center">
                 <div className="text-center">
-                    <h2 className="mb-2 text-xl font-bold text-gray-700">
-                        There are no matching Products
+                    <h2 className="mb-2 text-xl text-gray-700">
+                        상품 데이터가 없습니다
                     </h2>
-                    <p className="text-gray-600">Product ID: {id}</p>
+                    <p className="text-gray-600">상품 ID: {id}</p>
                 </div>
             </div>
         );

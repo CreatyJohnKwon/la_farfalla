@@ -7,6 +7,7 @@ import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
 import bcrypt from "bcryptjs";
 import { registUser } from "@src/shared/lib/server/user";
+import { ONE_DAY, THIRTY_DAYS } from "@/src/utils/dataUtils";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -33,6 +34,7 @@ export const authOptions: NextAuthOptions = {
             credentials: {
                 email: { label: "email", type: "text" },
                 password: { label: "password", type: "password" },
+                rememberMe: { label: "rememberMe", type: "boolean" }, // 자동로그인
             },
             async authorize(credentials) {
                 const { email, password } = credentials as any;
@@ -59,6 +61,37 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
+        async jwt({ token, user, account }) {
+            // 1. 초기 로그인 시
+            if (account && user) {
+                // 일반 로그인: authorize에서 반환된 rememberMe 값 사용
+                if (account.provider === "credentials") {
+                    token.rememberMe = user.rememberMe === "true";
+                } else {
+                    // 소셜 로그인: 항상 '로그인 유지'로 간주
+                    token.rememberMe = true;
+                }
+            }
+
+            // 2. 토큰 만료 시간 동적 설정
+            if (token.rememberMe) {
+                // '로그인 유지'가 true이면, 토큰 만료 시간을 30일로 설정
+                token.exp = Math.floor(Date.now() / 1000) + THIRTY_DAYS;
+            } else {
+                // 그렇지 않으면, 1일로 설정 (혹은 서비스 기본 정책에 맞게)
+                token.exp = Math.floor(Date.now() / 1000) + ONE_DAY;
+            }
+
+            return token;
+        },
+        // session 콜백은 클라이언트로 전송될 세션 정보를 제어합니다.
+        // 여기에 id 같은 정보를 추가하면 클라이언트에서 useSession으로 접근 가능합니다.
+        async session({ session, token }) {
+            if (session.user && token.sub) {
+                (session.user as any).id = token.sub;
+            }
+            return session;
+        },
         async signIn({ user, account, profile }) {
             if (account?.provider === "credentials") return true;
 
@@ -119,7 +152,7 @@ export const authOptions: NextAuthOptions = {
             return url.startsWith("/") ? `${baseUrl}${url}` : url;
         },
     },
-    session: { strategy: "jwt" },
+    session: { strategy: "jwt", maxAge: THIRTY_DAYS },
     secret: process.env.NEXTAUTH_SECRET,
 };
 
