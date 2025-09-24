@@ -1,5 +1,3 @@
-// src/app/(auth)/login/LoginClient.tsx
-
 "use client";
 
 import useUsers from "@src/shared/hooks/useUsers";
@@ -112,8 +110,7 @@ const LoginClient = () => {
                         </button>
                     </div>
 
-                    {/* ✨ 변경점 2: '로그인 상태 유지' 체크박스 UI 추가 */}
-                    <div className="flex w-full items-center justify-between">
+                    <div className="flex w-full items-center justify-between text-xs sm:text-sm text-prtendard">
                         <div className="flex items-center gap-2">
                             <input
                                 type="checkbox"
@@ -124,13 +121,13 @@ const LoginClient = () => {
                             />
                             <label
                                 htmlFor="rememberMe"
-                                className="cursor-pointer text-sm text-gray-600"
+                                className="cursor-pointer text-gray-600"
                             >
                                 로그인 상태 유지
                             </label>
                         </div>
                         <span
-                            className="cursor-pointer text-center text-prtendard text-xs text-gray-400 hover:text-gray-900"
+                            className="cursor-pointer text-center text-black sm:text-black/50 hover:text-black"
                             onClick={() => setIsFindPasswordModalOpen(true)}
                         >
                             비밀번호 찾기

@@ -10,6 +10,8 @@ import AddressModal from "@/src/widgets/modal/AddressModal";
 import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
 import AgreementModal from "@/src/widgets/modal/AgreementModal";
 import BuyAgreement from "@src/components/agreement/BuyAgreement";
+import usePage from "@/src/shared/hooks/usePage";
+import useCart from "@/src/shared/hooks/useCart";
 
 const Order = () => {
     const { orderDatas } = useOrder();
@@ -37,7 +39,6 @@ const Order = () => {
         setApplyCoupon,
         appliedCouponName,
         setAppliedCouponName,
-        couponId,
         setCouponId,
         totalPrice,
         totalMileage,
@@ -58,6 +59,8 @@ const Order = () => {
         isSubmitting
     } = useOrder();
     const [isOpenAgreementModal, setIsOpenAgreementModal] = useState<boolean>(false);
+    const { router } = usePage();
+    const { handleAddToCart } = useCart();
 
     // ✅ 쿠폰 데이터 추출 및 최적화
     const couponData = useMemo(() => coupons?.data || [], [coupons]);
@@ -309,7 +312,7 @@ const Order = () => {
         return (
             <form
                 onSubmit={handleFormSubmit} // ✅ 새로운 핸들러 사용
-                className="h-full min-h-screen w-full bg-gray-50 pt-16 md:pt-24"
+                className="h-full min-h-screen w-full bg-zinc-50 pt-16 md:pt-24"
             >
                 {/* 로딩 중일 때 오버레이 스피너 표시 */}
                 {isSubmitting && (
@@ -323,45 +326,50 @@ const Order = () => {
                     <div className="space-y-6 md:h-[85vh] md:overflow-auto">
                         {/* 주문 상품 정보 */}
                         <section className="border bg-white p-4">
-                            <h2 className="font-pretendard-bold mb-4">
+                            <h3 className="text-base font-pretendard-bold mb-3">
                                 주문 상품 정보
-                            </h2>
-                            <div className="max-h-[21vh] overflow-auto">
+                            </h3>
+                            <div className="max-h-[24vh] overflow-auto">
                                 {orderDatas.map((product, index) => (
-                                    // 주문 상품 정보
+                                    // 각 주문 상품 아이템
                                     <div
-                                        className="flex gap-4 p-2 ps-0"
+                                        className="flex gap-4 py-4 border-b border-gray-100 last:border-b-0"
                                         key={`order_product_${index}`}
                                     >
-                                        <Image
-                                            src={
-                                                product.image
-                                                    ? product.image
-                                                    : DefaultImage
-                                            }
-                                            alt="상품 이미지"
-                                            width={500}
-                                            height={500}
-                                            style={{ objectFit: "contain" }}
-                                            className="h-24 w-24"
-                                            priority
-                                        />
-                                        <div>
-                                            <p className="font-pretendard text-base font-[300]">
-                                                {product?.title}
-                                            </p>
-                                            <span className="font-amstel text-sm">
-                                                {product?.size} - {product?.color}
-                                            </span>
-                                            <span className="ms-3 font-pretendard text-sm text-gray-600">
-                                                {`${product?.quantity}개`}
-                                            </span>
-                                            <p className="font-amstel text-sm">
-                                                {`KRW ${(product?.discountPrice * product?.quantity).toLocaleString()}`}
-                                            </p>
-                                            <p className="font-pretendard text-xs mt-2 text-gray-400">
-                                                배송비 무료
-                                            </p>
+                                        {/* 상품 이미지 */}
+                                        <div className="flex-shrink-0">
+                                            <Image
+                                                src={product.image ? product.image : DefaultImage}
+                                                alt={product.title || '주문 상품 이미지'}
+                                                width={24}
+                                                height={24}
+                                                style={{ objectFit: 'cover' }}
+                                                className="h-20 w-20 bg-gray-50"
+                                            />
+                                        </div>
+                                        {/* 상품 상세 정보 */}
+                                        <div className="flex flex-col justify-between flex-grow">
+                                            <div>
+                                                <p className="font-pretendard text-base font-[400] text-gray-800 leading-tight">
+                                                    {product?.title}
+                                                </p>
+                                                <div className="text-sm text-gray-500 mt-1">
+                                                    <span className="font-amstel">{product?.size}</span>
+                                                    <span className="mx-1.5">|</span>
+                                                    <span className="font-amstel">{product?.color}</span>
+                                                    <span className="mx-1.5">|</span>
+                                                    <span className="font-pretendard">{`${product?.quantity}개`}</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-between mt-2">
+                                                <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                                                    배송비 무료
+                                                </span>
+
+                                                <span className="font-amstel text-base font-bold text-gray-900">
+                                                    {`KRW ${(product?.discountPrice * product?.quantity).toLocaleString()}`}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -471,7 +479,7 @@ const Order = () => {
                                                 setPostcode(value.zonecode);
                                             })
                                         }
-                                        className="font-pretendard-bold absolute right-1 top-1/3 bg-black px-5 py-2 text-sm text-white hover:bg-gray-800"
+                                        className="font-pretendard-bold absolute right-1 top-1/3 px-3 py-2 text-xs sm:text-sm text-black sm:text-black/50 underline hover:text-black"
                                     >
                                         주소찾기
                                     </button>
@@ -1017,7 +1025,8 @@ const Order = () => {
                                         {"약관\t동의\t"}
                                     </span>
                                     <span className="font-pretendard">
-                                        {"구매조건\t확인\t및\t결제진행에 동의\t(필수)"}
+                                        {"구매조건\t확인\t및\t결제진행에 동의\t"}
+                                        <span className="text-red-500">*</span>
                                     </span>
                                 </div>
                             </label>
@@ -1026,10 +1035,23 @@ const Order = () => {
                         {/* 결제 버튼 */}
                         <button
                             type="submit"
-                            className="font-pretendard-bold w-full bg-black py-3 pb-4 text-white"
+                            className="font-pretendard-bold w-full bg-black/50 hover:bg-black py-3 pb-4 text-white ease-in-out transition-colors"
                         >
                             결제하기
                         </button>
+
+                        <div className="flex justify-center items-center w-full">
+                            <span
+                                className="font-pretendard-bold cursor-pointer underline text-sm text-black sm:text-black/50 hover:text-black ease-in-out transition-colors"
+                                onClick={() => {
+                                    // 주문 상품들 다시 카트에 추가하는 로직 추가
+                                    handleAddToCart(orderDatas)
+                                    router.push("/shop");
+                                }}
+                            >
+                                계속 쇼핑하기
+                            </span>
+                        </div>
                     </div>
                 </div>
                 {isOpen && (

@@ -23,12 +23,12 @@ const useCart = () => {
     const router = useRouter();
     const { setOrderDatas } = useOrder();
 
-    const handleAddToCart = async () => {
+    const handleAddToCart = async (selectedItem? : SelectedItem[]) => {
         const userEmail = session?.user?.email;
         if (!userEmail) return router.push("/login");
 
         try {
-            await postCart(selectedItems);
+            await postCart(selectedItem || selectedItems);
             alert("장바구니에 담겼습니다.");
 
             setSelectedItems([]);
