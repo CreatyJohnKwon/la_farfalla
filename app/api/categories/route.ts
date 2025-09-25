@@ -1,6 +1,7 @@
 import { connectDB } from "@src/entities/models/db/mongoose";
 import Category from "@src/entities/models/Category";
 import { NextRequest, NextResponse } from "next/server";
+import Product from "@/src/entities/models/Product";
 
 // slug 생성을 위한 헬퍼 함수
 const createSlug = (name: string) => {
@@ -148,6 +149,11 @@ export async function DELETE(req: NextRequest) {
         if (!deletedCategory) {
             return NextResponse.json({ error: "해당 카테고리를 찾을 수 없습니다." }, { status: 404 });
         }
+
+        await Product.updateMany(
+            { categories: id },
+            { $pull: { categories: id } }
+        );
 
         return NextResponse.json({ message: "카테고리가 성공적으로 삭제되었습니다." });
     } catch (error) {

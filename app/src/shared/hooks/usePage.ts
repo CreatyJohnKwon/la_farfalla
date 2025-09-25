@@ -4,9 +4,9 @@ import useCart from "./useCart";
 import useProduct from "./useProduct";
 import useUsers from "./useUsers";
 import { adminEmails } from "public/data/common";
-import { aboutMenuItems, adminMenuItems } from "@src/utils/dataUtils";
+import { serviceMenuItems, adminMenuItems } from "@src/utils/dataUtils";
 import { useCategoriesQuery } from "./react-query/useCategoryQuery";
- 
+
 const usePage = () => {
     const router = useRouter(); // useRouter 초기화
     const pathName = usePathname();
@@ -27,7 +27,7 @@ const usePage = () => {
     const onCloseSidebar = () => setOpenSidebar(false);
     const onOpenSidebar = () => setOpenSidebar(true);
     const isUserAdmin = adminEmails.includes(session?.user?.email ?? "");
-    const menuData = isUserAdmin ? adminMenuItems : aboutMenuItems;
+    const menuData = isUserAdmin ? adminMenuItems : serviceMenuItems;
     const menuTitle = isUserAdmin ? "ADMIN" : "ABOUT";
 
     const instagramHandler = () =>
@@ -61,7 +61,7 @@ const usePage = () => {
         session,
         pages,
         adminMenuItems,
-        aboutMenuItems,
+        serviceMenuItems,
         
         setPages,
         setCartView,

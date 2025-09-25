@@ -1,5 +1,6 @@
 "use client";
 
+import usePage from "@/src/shared/hooks/usePage";
 import AddressModal from "@/src/widgets/modal/AddressModal";
 import {
     useUserQuery,
@@ -16,7 +17,7 @@ const EditProfile = () => {
     const updateUser = useUpdateUserMutation();
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const { isOpen, onComplete, openModal, closeModal } = useAddress();
-    const router = useRouter();
+    const { router } = usePage();
 
     // 폼 제출 형식
     const [form, setForm] = useState({
@@ -51,10 +52,41 @@ const EditProfile = () => {
     };
 
     const handleSubmit = () => {
-        updateUser.mutate(form, {
-            onSuccess: () => {
-                alert("프로필이 수정되었습니다.");
-                router.refresh();
+        // 1. 전송할 데이터 객체(payload) 생성, 식별자인 email은 항상 포함
+        const payload: { [key: string]: any } = {
+            email: form.email,
+        };
+
+        // 2. initialForm과 form을 비교하여 변경된 값만 payload에 추가
+        // 'name', 'address', 'detailAddress', 'postcode' 필드를 확인
+        (Object.keys(initialForm) as Array<keyof typeof initialForm>).forEach((key) => {
+            // password는 별도로 처리하고, email은 이미 추가했으므로 건너뜀
+            if (key === "password" || key === "email") return;
+
+            if (initialForm[key] !== form[key]) {
+                payload[key] = form[key];
+            }
+        });
+
+        // 3. 비밀번호는 빈 값이 아니면 항상 payload에 추가
+        if (form.password) {
+            payload.password = form.password;
+        }
+
+        // 4. 만약 변경된 내용이 없다면(payload에 email만 있다면) 함수 종료
+        if (Object.keys(payload).length <= 1) {
+            alert("변경된 내용이 없습니다.");
+            return;
+        }
+
+        // 5. 변경된 데이터만 담긴 payload를 서버로 전송
+        updateUser.mutate(payload, {
+            onSuccess: (res) => {
+                // ✨ 중요: 성공 시 initialForm을 현재 form 상태로 업데이트
+                setInitialForm(form);
+                setForm((prev) => ({ ...prev, password: "" }));
+                setConfirmPassword("");
+                alert(res.message);
             },
             onError: () => alert("수정 실패"),
         });
@@ -75,9 +107,10 @@ const EditProfile = () => {
     const isFormChanged = useMemo(() => {
         // 초기 데이터가 없으면 변경된 것으로 간주하지 않음
         if (!initialForm.email) return false;
-        
-        // 주소 관련 필드 중 하나라도 변경되었는지 확인
-        const addressChanged = 
+
+        // 비밀번호를 제외한 다른 필드 중 하나라도 값이 다른지 확인
+        const otherFieldsChanged =
+            initialForm.name !== form.name ||
             initialForm.address !== form.address ||
             initialForm.detailAddress !== form.detailAddress ||
             initialForm.postcode !== form.postcode;
@@ -85,7 +118,7 @@ const EditProfile = () => {
         // 비밀번호 필드에 입력이 있는지 확인
         const passwordChanged = form.password !== "";
 
-        return addressChanged || passwordChanged;
+        return otherFieldsChanged || passwordChanged;
     }, [form, initialForm]);
 
     const canSave = useMemo(() => {

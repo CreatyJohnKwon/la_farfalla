@@ -28,17 +28,11 @@ const isImageUrl = (description: string) => {
 };
 
 // About 드롭다운 메뉴 아이템
-const aboutMenuItems = [
+const serviceMenuItems = [
     { label: "INTRODUCE", path: "/introduce" },
     { label: "PROJECT", path: "/project" },
-    { label: "NOTICE", path: "/notice" },
+    // { label: "NOTICE", path: "/notice" },
 ];
-
-const sideBarMenuData = [
-    { label: "INTRODUCE", link: "/introduce" },
-    { label: "PROJECT", link: "/project" },
-    { label: "NOTICE", link: "/notice" }, // 추후에 추가
-]
 
 // Admin 드롭다운 메뉴 아이템
 const adminMenuItems = [
@@ -65,10 +59,9 @@ export {
     getCurrentDateTime,
     getDateTimeAfterHours,
     isImageUrl,
-    aboutMenuItems,
+    serviceMenuItems,
     adminMenuItems,
     textareaPlaceholder,
-    sideBarMenuData,
     THIRTY_DAYS,
     ONE_DAY
 }

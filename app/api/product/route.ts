@@ -184,8 +184,6 @@ const PUT = async (req: NextRequest) => {
             }
         }
 
-        console.log(otherProductData.categories)
-
         await connectDB();
 
         // 업데이트할 데이터를 준비합니다.

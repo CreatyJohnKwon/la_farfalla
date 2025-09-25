@@ -22,10 +22,10 @@ const menuData = [
         text: "Introduce",
         link: "/introduce",
     },
-    {
-        text: "Notice",
-        link: "/notice",
-    },
+    // {
+    //     text: "Notice",
+    //     link: "/notice",
+    // },
 ];
 
 export { navData, menuData, profileNavData };

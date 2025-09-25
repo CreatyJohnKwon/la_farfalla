@@ -82,6 +82,8 @@ export const authOptions: NextAuthOptions = {
                 token.exp = Math.floor(Date.now() / 1000) + ONE_DAY;
             }
 
+            if (account) token.provider = account.provider;
+
             return token;
         },
         // session 콜백은 클라이언트로 전송될 세션 정보를 제어합니다.
@@ -89,6 +91,9 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             if (session.user && token.sub) {
                 (session.user as any).id = token.sub;
+            }
+            if (session.user && token.provider) {
+                session.user.provider = token.provider as string;
             }
             return session;
         },

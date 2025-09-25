@@ -11,7 +11,7 @@ declare global {
 
 const SkeletonLoader = () => {
     return (
-        <div className="absolute inset-0 z-10 animate-pulse bg-white p-5">
+        <div className="absolute inset-0 z-10 animate-pulse bg-white p-5 pb-20">
             <div className="mb-6 h-10 rounded bg-gray-200"></div>
             <div className="space-y-3">
                 <div className="h-8 rounded bg-gray-200"></div>
@@ -99,9 +99,10 @@ const AddressModal = ({ onComplete, onClose }: AddressModalProps) => {
                     className="h-full w-full overflow-auto"
                     style={{ visibility: isLoading ? "hidden" : "visible" }}
                 />
+                {/* ✨ 변경: z-20을 추가하여 스켈레톤 UI보다 위에 오도록 설정 */}
                 <button
                     onClick={onClose}
-                    className="absolute bottom-4 left-1/2 w-[90%] -translate-x-1/2 bg-black py-2 text-base text-white hover:bg-black/70"
+                    className="absolute bottom-4 left-1/2 z-20 w-[92%] -translate-x-1/2 bg-black py-2 text-base text-white hover:bg-black/70"
                 >
                     닫기
                 </button>

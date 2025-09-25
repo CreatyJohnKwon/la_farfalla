@@ -1,7 +1,7 @@
 "use client";
 
 import useUsers from "@/src/shared/hooks/useUsers";
-import { adminMenuItems, sideBarMenuData } from "@/src/utils/dataUtils";
+import { adminMenuItems, serviceMenuItems } from "@/src/utils/dataUtils";
 import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "@src/widgets/drop/DropdownMenu";
 import Link from "next/link";
@@ -92,7 +92,7 @@ const Sidebar = () => {
                                     />}
                                 </li>
                             }
-                            {sideBarMenuData.map((data: any, index: number) =>
+                            {serviceMenuItems.map((data: any, index: number) =>
                                 <li className="relative sm:transition-all sm:duration-300 sm:ease-in-out" key={index}>
                                     <Link href={data.link} onClick={() => onCloseSidebar()}>{data.label}</Link>
                                 </li>

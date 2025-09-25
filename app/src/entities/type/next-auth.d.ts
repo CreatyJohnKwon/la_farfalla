@@ -9,6 +9,12 @@ declare module 'next-auth' {
   interface User {
     rememberMe?: boolean | string;
   }
+
+  interface Session {
+    user?: {
+      provider?: string;
+    } & DefaultSession["user"];
+  }
 }
 
 // 2. Extend the JWT type

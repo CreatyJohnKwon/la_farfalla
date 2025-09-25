@@ -9,6 +9,17 @@ import { UserCoupon } from "@src/entities/models/UserCoupon";
 import { Review } from "@src/entities/models/Review";
 import { Order } from "@src/entities/models/Order";
 import { Cart } from "@src/entities/models/Cart";
+import { getPostposition } from "@/src/utils/commonAction";
+
+const fieldDisplayNames: { [key: string]: string } = {
+    name: "이름",
+    address: "주소",
+    detailAddress: "상세 주소",
+    phoneNumber: "연락처",
+    postcode: "우편번호",
+    password: "비밀번호",
+    mileage: "마일리지",
+};
 
 export async function GET() {
     const session = await getAuthSession();
@@ -65,35 +76,63 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
-    const body = await req.json();
-    const {
-        email,
-        name,
-        address,
-        detailAddress,
-        phoneNumber,
-        postcode,
-        password,
-        mileage,
-    } = body;
+    try {
+        const body = await req.json();
+        const { email, password, ...updateData } = body;
 
-    await connectDB();
-    const user = await User.findOne({ email: email });
+        if (!email) {
+            return NextResponse.json({
+                success: false,
+                message: "사용자 식별을 위한 이메일이 필요합니다.",
+            }, { status: 400 });
+        }
 
-    if (!user)
-        return NextResponse.json({ error: "User not found" }, { status: 404 });
+        await connectDB();
+        const user = await User.findOne({ email: email });
 
-    if (name) user.name = name;
-    if (address) user.address = address;
-    if (detailAddress) user.detailAddress = detailAddress;
-    if (phoneNumber) user.phoneNumber = phoneNumber;
-    if (postcode) user.postcode = postcode;
-    if (password) user.password = await bcrypt.hash(password, 10);
-    if (mileage) user.mileage = mileage;
+        if (!user) {
+            return NextResponse.json({
+                message: "사용자를 찾을 수 없습니다.",
+                success: false
+            }, { status: 404 });
+        }
 
-    await user.save();
+        Object.assign(user, updateData);
 
-    return NextResponse.json({ success: true });
+        if (password) {
+            user.password = await bcrypt.hash(password, 10);
+        }
+
+        await user.save();
+
+        // ✨ 1. 변경된 필드의 총개수 계산
+        const updatedFieldCount = Object.keys(updateData).length + (password ? 1 : 0);
+
+        let message = "프로필이 성공적으로 수정되었습니다."; // 기본 메시지
+
+        // ✨ 2. 변경된 필드가 하나일 경우, 특정 메시지 생성
+        if (updatedFieldCount === 1) {
+            // 변경된 필드의 키(key)를 찾습니다.
+            const changedFieldKey = password ? 'password' : Object.keys(updateData)[0];
+            // 한글 필드 이름을 가져옵니다.
+            const displayName = fieldDisplayNames[changedFieldKey] || changedFieldKey;
+            // 올바른 조사(이/가)를 붙여 메시지를 완성합니다.
+            const postposition = getPostposition(displayName);
+            message = `${displayName}${postposition} 변경되었습니다.`;
+        }
+
+        return NextResponse.json({
+            success: true,
+            message: message // 동적으로 생성된 메시지 반환
+        });
+
+    } catch (error) {
+        console.error("PATCH /api/user/me error:", error);
+        return NextResponse.json({
+            success: false,
+            message: "프로필 수정 중 오류가 발생했습니다."
+        }, { status: 500 });
+    }
 }
 
 export async function DELETE(req: NextRequest) {
