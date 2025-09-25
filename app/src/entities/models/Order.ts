@@ -15,9 +15,11 @@ const orderSchema = new mongoose.Schema(
             {
                 productId: { type: String, required: true }, // 상품 ID
                 productNm: { type: String, required: true }, // 상품 명
-                size: { type: String, required: true }, // 상품 사이즈
-                color: { type: String, required: true }, // 상품 색상
+                size: { type: String, required: false, default: "" }, // 상품 사이즈
+                color: { type: String, required: false, default: "" }, // 상품 색상
+                additional: { type: String, required: false, default: "" }, // 상품 추가옵션
                 quantity: { type: Number, required: true }, // 상품 수량
+                price: { type: Number, required: true }
             },
         ],
         totalPrice: { type: Number, required: true }, // 총 금액
@@ -33,6 +35,7 @@ const orderSchema = new mongoose.Schema(
             type: String,
             required: false,
             default: "",
+            unique: true
         },
 
         // 배송 상태

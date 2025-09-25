@@ -9,12 +9,12 @@ const ProfileInfo = () => {
                 <section className="flex w-full items-center justify-center">
                     <div className="flex h-full w-full flex-col items-start justify-center gap-8 sm:pb-28">
                         {isLoading ? (
-                            <div className="flex flex-col items-start justify-center gap-2 text-center text-lg sm:text-2xl md:text-3xl font-[300] text-black animate-fade-in">
+                            <div className="flex flex-col items-start justify-center gap-2 text-center text-lg sm:text-2xl md:text-3xl font-[300] text-black animate-pulse inset-0">
                                 {/* 프로필 세부정보 스켈레톤 */}
                                 <div className="flex flex-col items-start gap-1 text-center sm:items-start">
-                                    <div className="h-4 w-16 sm:h-8 sm:w-32 bg-slate-200" />
-                                    <div className="mt-4 sm:mt-2 h-4 w-48 sm:h-8 sm:w-72 bg-slate-200" />
-                                    <div className="mt-4 sm:mt-1.5 h-4 w-48 sm:h-8 sm:w-60 bg-slate-200" />
+                                    <div className="h-4 w-16 sm:h-8 sm:w-32 bg-slate-200 rounded-sm" />
+                                    <div className="mt-4 sm:mt-2 h-4 w-48 sm:h-8 sm:w-72 bg-slate-200 rounded-sm" />
+                                    <div className="mt-4 sm:mt-1.5 h-4 w-48 sm:h-8 sm:w-60 bg-slate-200 rounded-sm" />
                                 </div>
                             </div>
                         ) : (
@@ -50,8 +50,8 @@ const ProfileInfo = () => {
                     {/* 섹션 1 : 마일리지 */}
                     <div className="flex h-full w-full items-start justify-end">
                         {isLoading ? (
-                            <div className="flex animate-fade-in flex-row items-center gap-4">
-                                MILEAGE : <div className="h-6 w-16 bg-slate-200" />
+                            <div className="flex animate-pulse inset-0 flex-row items-center gap-4">
+                                MILEAGE : <div className="h-6 w-16 bg-slate-200 rounded-sm" />
                             </div>
                         ) : (
                             <span>{`MILEAGE : ${(user?.mileage ?? 0).toLocaleString()}`}</span>
@@ -61,8 +61,8 @@ const ProfileInfo = () => {
                     {/* 섹션 2 : 쿠폰 */}
                     <div className="flex h-full w-full items-start justify-end pb-24">
                         {isLoading ? (
-                            <div className="flex animate-fade-in flex-row items-center gap-4">
-                                COUPON : <div className="h-6 w-16 bg-slate-200" />
+                            <div className="flex animate-pulse inset-0 flex-row items-center gap-4">
+                                COUPON : <div className="h-6 w-16 bg-slate-200 rounded-sm" />
                             </div>
                         ) : (
                             <span>{`COUPON : ${user?.coupon ?? 0}`}</span>

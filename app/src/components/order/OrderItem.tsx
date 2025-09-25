@@ -93,8 +93,8 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                                     <p className="truncate text-xs text-gray-900 sm:text-sm">
                                         {product.productNm}
                                     </p>
-                                    <p className="text-xs text-gray-500 font-amstel">
-                                        {product.color} · {product.size}
+                                    <p className="text-xs text-gray-500 font-pretendard font-[300]">
+                                        {product.additional ? `${product.additional}` : `${product.color} · ${product.size}`}
                                     </p>
                                 </div>
                                 <p className="ml-3 text-xs text-gray-500">

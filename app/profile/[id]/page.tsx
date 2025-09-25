@@ -1,6 +1,9 @@
 import { redirectIfNeeded } from "@src/shared/lib/auth";
-import { IDProps } from "@src/entities/type/interfaces";
 import ProfileClient from "@/profile/[id]/ProfileClient";
+
+interface IDProps {
+    params: Promise<{ id: string }>;
+}
 
 const Profile = async ({ params }: IDProps) => {
     await redirectIfNeeded("profile");

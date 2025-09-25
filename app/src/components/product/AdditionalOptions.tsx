@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 interface AdditionalOptionsProps {
     additionalOptions: AdditionalOption[];
     setAdditionalOptions: React.Dispatch<React.SetStateAction<AdditionalOption[]>>;
-    newAdditionalOption: { name: string; additionalPrice: number };
-    setNewAdditionalOption: React.Dispatch<React.SetStateAction<{ name: string; additionalPrice: number }>>;
+    newAdditionalOption: { name: string; additionalPrice: number; stockQuantity: number; };
+    setNewAdditionalOption: React.Dispatch<React.SetStateAction<{ name: string; additionalPrice: number; stockQuantity: number; }>>;
 }
 
 const AdditionalOptions = ({
@@ -23,23 +23,15 @@ const AdditionalOptions = ({
             return;
         }
 
-        const isDuplicate = additionalOptions.some(
-            (opt) => opt.name.toLowerCase() === newAdditionalOption.name.toLowerCase()
-        );
-
-        if (isDuplicate) {
-            alert("같은 이름의 추가 옵션이 이미 존재합니다.");
-            return;
-        }
-
         const newOption: AdditionalOption = {
             id: Date.now().toString(),
             name: newAdditionalOption.name.trim(),
             additionalPrice: newAdditionalOption.additionalPrice || 0,
+            stockQuantity: newAdditionalOption.stockQuantity || 0,
         };
 
         setAdditionalOptions((prev) => [...prev, newOption]);
-        setNewAdditionalOption({ name: "", additionalPrice: 0 });
+        setNewAdditionalOption({ name: "", additionalPrice: 0, stockQuantity: 0 });
     };
 
     // 옵션 제거
@@ -55,6 +47,7 @@ const AdditionalOptions = ({
         setEditingOption({
             name: option.name,
             additionalPrice: option.additionalPrice,
+            stockQuantity: option.stockQuantity,
         });
     };
 
@@ -76,11 +69,12 @@ const AdditionalOptions = ({
 
         setAdditionalOptions((prev) =>
             prev.map((opt) =>
-                opt.id === optionId
+                opt.id === optionId && editingOption
                     ? {
                           ...opt,
                           name: editingOption.name.trim(),
                           additionalPrice: editingOption.additionalPrice || 0,
+                          stockQuantity: editingOption.stockQuantity || 0,
                       }
                     : opt
             )
@@ -129,14 +123,25 @@ const AdditionalOptions = ({
                             placeholder="0"
                         />
                     </div>
-                    <button
-                        type="button"
-                        onClick={addOption}
-                        className="h-12 bg-gray-900 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-gray-700"
-                    >
-                        추가
-                    </button>
+                    <div className="space-y-2">
+                        <label className="text-sm font-semibold text-gray-700">재고</label>
+                        <input
+                            type="number"
+                            value={newAdditionalOption.stockQuantity}
+                            onChange={(e) => setNewAdditionalOption({ ...newAdditionalOption, stockQuantity: parseInt(e.target.value) || 0 })}
+                            className="w-full border border-gray-300 px-4 py-3 text-sm transition-colors hover:border-gray-400 focus:border-gray-500 focus:outline-none"
+                            min="0"
+                            placeholder="0"
+                        />
+                    </div>
                 </div>
+                <button
+                    type="button"
+                    onClick={addOption}
+                    className="h-12 bg-gray-900 px-6 py-3 mt-4 text-sm font-bold text-white transition-colors hover:bg-gray-700 w-full"
+                >
+                    추가
+                </button>
             </div>
 
             {/* 옵션 목록 테이블 */}
@@ -154,6 +159,7 @@ const AdditionalOptions = ({
                                 <tr className="border-b border-gray-200">
                                     <th className="px-4 py-4 text-left text-sm font-bold text-gray-700">옵션명</th>
                                     <th className="px-4 py-4 text-center text-sm font-bold text-gray-700">추가 금액</th>
+                                    <th className="px-4 py-4 text-center text-sm font-bold text-gray-700">재고</th>
                                     <th className="px-4 py-4 text-center text-sm font-bold text-gray-700">관리</th>
                                 </tr>
                             </thead>
@@ -186,6 +192,21 @@ const AdditionalOptions = ({
                                             ) : (
                                                 <span className="text-sm text-gray-600">
                                                     {option.additionalPrice ? `+${option.additionalPrice.toLocaleString()}원` : "-"}
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-4 text-center">
+                                            {editingOptionId === option.id ? (
+                                                <input
+                                                    type="number"
+                                                    value={editingOption?.stockQuantity || 0}
+                                                    onChange={(e) => setEditingOption({ ...editingOption!, stockQuantity: parseInt(e.target.value) || 0 })}
+                                                    className="w-24 border border-gray-300 px-2 py-1 text-center text-sm focus:border-blue-500 focus:outline-none"
+                                                    min="0"
+                                                />
+                                            ) : (
+                                                <span className={`text-sm font-bold ${option.stockQuantity === 0 ? "text-red-500" : "text-gray-600"}`}>
+                                                    {option.stockQuantity}개
                                                 </span>
                                             )}
                                         </td>

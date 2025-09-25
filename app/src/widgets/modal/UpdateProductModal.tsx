@@ -1,7 +1,6 @@
 "use client";
 
 import {
-    UpdateProductModalProps,
     ImageData,
     ProductVariant,
     NewVariantType,
@@ -26,6 +25,12 @@ import Options from "../../components/product/Options";
 import Size from "./Size";
 import { AdditionalOption } from "./interface";
 import AdditionalOptions from "@/src/components/product/AdditionalOptions";
+
+interface UpdateProductModalProps {
+    onClose: () => void;
+    product?: Product;
+    mode?: "create" | "update";
+}
 
 const UpdateProductModal = ({
     onClose,
@@ -65,6 +70,7 @@ const UpdateProductModal = ({
     const [newAdditionalOption, setNewAdditionalOption] = useState({
         name: "",
         additionalPrice: 0,
+        stockQuantity: 0
     });
 
     // Hooks
@@ -165,7 +171,7 @@ const UpdateProductModal = ({
 
         // 추가옵션 초기화
         setAdditionalOptions([]);
-        setNewAdditionalOption({ name: "", additionalPrice: 0 });
+        setNewAdditionalOption({ name: "", additionalPrice: 0, stockQuantity: 0 });
     };
 
     // 기존 상품 데이터로 초기화
@@ -220,7 +226,12 @@ const UpdateProductModal = ({
             }
 
             if (product.additionalOptions && Array.isArray(product.additionalOptions)) {
-                setAdditionalOptions(product.additionalOptions);
+                const existingAddOpts = product.additionalOptions.map((opt, index) => ({
+                    ...opt,
+                    id: `${opt.name}-${index}`, // id가 없다면 생성
+                    stockQuantity: opt.stockQuantity || 0, // DB에 stock이 없을 경우 대비
+                }));
+                setAdditionalOptions(existingAddOpts);
             }
         } else {
             resetAll();

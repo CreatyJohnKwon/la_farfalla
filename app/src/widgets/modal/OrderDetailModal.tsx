@@ -12,7 +12,7 @@ import CancelOrderModal from "./CancelOrderModal";
 import DeliveryChangeModal from "./DeliveryChangeModal";
 import SpecialReviewModal from "./SpecialReviewModal";
 import { specialReviewItem } from "@src/components/product/interface";
-import { OrderData, ShippingStatus } from "@src/components/order/interface";
+import { OrderData, OrderItem, ShippingStatus } from "@src/components/order/interface";
 import useOrder from "@src/shared/hooks/useOrder";
 import { sendMail } from "@src/shared/lib/server/order";
 
@@ -67,9 +67,8 @@ const OrderDetailModal = ({
                 description: data.reason
             });
 
-            sendMail(body);
-
             alert(`${actionName} 성공적으로 요청되었습니다.`);
+            sendMail(body);
         } catch (error) {
             // 클립보드 실패 시 prompt 사용
             const actionName = data.type === "cancel" ? "주문 취소" : data.type === "return" ? "반품" : data.type === "exchange" ? "교환" : "상담";
@@ -387,7 +386,6 @@ const OrderDetailModal = ({
                             </div>
                         </div>
 
-
                         {/* 배송 진행 상태 바 또는 취소 아이콘 */}
                         {order.shippingStatus === "cancel" ||
                             order.shippingStatus === "return" || 
@@ -472,7 +470,7 @@ const OrderDetailModal = ({
                             주문 상품
                         </span>
                         <div className="space-y-2">
-                            {order.items.map((item, index) => (
+                            {order.items.map((item: OrderItem, index: number) => (
                                 <div
                                     key={index}
                                     className="flex items-center rounded-sm border border-gray-200 hover:border-gray-300 p-3"
@@ -491,17 +489,26 @@ const OrderDetailModal = ({
                                             }
                                         />
                                     </div>
-                                    <div className="min-w-0 flex-1">
-                                        <h4 className="truncate text-sm font-pretendard text-gray-900">
+                                    <div className="min-w-0 flex-1 font-pretendard">
+                                        <h4 className="truncate text-sm text-gray-900">
                                             {item.productNm}
                                         </h4>
-                                        <div className="mt-1 text-xs text-gray-600">
-                                            <span>사이즈: {item.size}</span>
-                                            <span className="mx-2">•</span>
-                                            <span>색상: {item.color}</span>
-                                            <span className="mx-2">•</span>
-                                            <span>수량: {item.quantity}개</span>
-                                        </div>
+                                        {item.additional ?
+                                            <div className="mt-1 text-xs text-gray-600">
+                                                <span>{item.additional}</span>
+                                                <span className="mx-2">•</span>
+                                                <span>{item.quantity}개</span>
+                                            </div>
+                                            :
+                                            <div className="mt-1 text-xs text-gray-600">
+                                                <span>{item.size}</span>
+                                                <span className="mx-2">•</span>
+                                                <span>{item.color}</span>
+                                                <span className="mx-2">•</span>
+                                                <span>{item.quantity}개</span>
+                                            </div>
+                                        }
+
                                     </div>
 
                                     {order.shippingStatus === "confirm" ? (

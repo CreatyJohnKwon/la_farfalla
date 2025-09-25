@@ -1,4 +1,4 @@
-import { OrderData, OrderPage } from "@/src/components/order/interface";
+import { OrderData, OrderPage, StockUpdateItem } from "@/src/components/order/interface";
 import { ProductOption } from "@src/components/product/interface";
 import axios from "axios";
 
@@ -70,12 +70,16 @@ const refundPayment = async (refundData: any) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(refundData)
     });
-    if (!res.ok) throw new Error("환불 실패");
+    if (!res.ok) {
+        const errorData = await res.json(); 
+        throw new Error(errorData.message || "환불 처리 중 알 수 없는 오류가 발생했습니다.");
+    }
+    
     return await res.json();
 }
 
 const updateStock = async (
-    items: ProductOption[],
+    items: StockUpdateItem[],
     action: "reduce" | "restore",
     productId?: string,
 ) => {
@@ -87,7 +91,7 @@ const updateStock = async (
             },
             body: JSON.stringify({
                 items,
-                action, // "reduce" 또는 "restore"
+                action,
                 productId,
             }),
         });

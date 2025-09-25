@@ -8,7 +8,7 @@ import { useSingleOrderQuery } from '@/src/shared/hooks/react-query/useOrderQuer
 const PaymentCallback = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const { restoreItems } = useOrder();
+    const { restoreItems, orderDatas } = useOrder();
     const orderId = searchParams.get("orderId") || "";
     const { data: orderData, isLoading } = useSingleOrderQuery(orderId);
 
@@ -22,7 +22,7 @@ const PaymentCallback = () => {
 
             if (!paymentId) {
                 alert('주문 정보를 찾을 수 없습니다.\nQ&A 채널로 문의해주세요.');
-                orderData.items && await restoreItems(orderData.items);
+                orderData.items && await restoreItems(orderDatas);
                 router.replace("/order");
                 return;
             }
@@ -33,12 +33,12 @@ const PaymentCallback = () => {
                     case "FAILURE_TYPE_PG":
                     case "PG_PROVIDER_ERROR":
                         alert(errMessage);
-                        await restoreItems(orderData.items);
+                        await restoreItems(orderDatas);
                         router.replace("/order");
                         return;
                     default:
                         alert(`${errMessage}\nQ&A 채널로 문의해주세요.`)
-                        await restoreItems(orderData.items);
+                        await restoreItems(orderDatas);
                         router.replace("/order");
                         return;
                 }
@@ -64,7 +64,7 @@ const PaymentCallback = () => {
             } catch (error: any) {
                 // ✅ 에러 상태로 변경
                 alert(`ERROR | 오류가 발생했습니다: ${error.message}`);
-                await restoreItems(orderData.items);
+                await restoreItems(orderDatas);
                 router.replace("/order");
             }
         };

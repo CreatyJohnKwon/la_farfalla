@@ -84,11 +84,10 @@ const ProductInfo = ({ product }: { product: Product }) => {
             title: product.title.kr,
             size: size,
             color: color,
+            additional: "",
             originalPrice: Number(product.price),
             discountPrice: justDiscount(product),
         };
-
-        console.log(session?.user)
 
         setSelectedItems(prev => [...prev, newItem]);
         setSelectedSize(null);
@@ -112,14 +111,13 @@ const ProductInfo = ({ product }: { product: Product }) => {
             image: product.image[0],
             quantity: 1,
             userId: authCheck() ? session?.user.id : null,
-            title: optionData.name,
+            title: product.title.kr,
             size: "",
             color: "",
+            additional: optionData.name,
             originalPrice: optionData.additionalPrice || 0,
             discountPrice: optionData.additionalPrice || 0,
         };
-
-        console.log(session?.user)
         
         setSelectedItems(prev => [...prev, newItem]);
         setSelectedAdditional(null);
@@ -260,7 +258,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
 
     return (
         <div className="w-full md:w-1/2">
-            <div className="mt-3 flex h-full flex-col items-center justify-center gap-3 md:mt-0 md:gap-3 lg:gap-3 xl:gap-4">
+            <div className="mt-3 flex h-full flex-col items-center justify-center gap-3 md:mt-0 md:gap-4 xl:gap-5">
                 {/* title with share button */}
                 <div className="flex flex-col items-center gap-2 text-center md:gap-3 lg:gap-4 xl:gap-5">
                     <div className="relative w-full max-w-[90vw] md:max-w-none">
@@ -318,7 +316,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 )}
 
                 {/* options drop */}
-                <div className="flex w-full flex-col gap-2 px-2 md:w-4/5 md:gap-3 md:px-0 lg:w-4/5">
+                <div className="flex w-full flex-col gap-2 px-2 md:w-4/5 md:gap-3 md:px-0 lg:w-9/12">
                     <ProductDrop
                         title={"size"}
                         items={product.size}
@@ -345,7 +343,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 </div>
 
                 {/* 상품 추가 */}
-                {selectedItems.map((item) => (
+                {selectedItems.map((item: SelectedItem) => (
                     <QuantityModal
                         id={item.cartItemId}
                         custom="w-full text-sm md:text-base font-amstel flex items-center justify-end gap-2 md:gap-4 text-black c_md:gap-6 px-2 md:px-0"

@@ -36,23 +36,41 @@ const ProductInfoModal = ({
                 <div className="space-y-4 text-base text-gray-700">
                     <div className="rounded-sm bg-gray-50 p-6">
                         <p className="mb-5 border-b pb-2 text-base font-semibold text-gray-700">
-                            주문 상품 목록 (총 {totalQuantity}개)
+                            주문 상품 목록 (총 {totalQuantity}개 / {orderData?.totalPrice.toLocaleString()}원)
                         </p>
                         <div className="space-y-4">
                             {orderData?.items.map((item: OrderItem, i) => (
                                 <div
                                     key={i}
-                                    className="flex flex-col gap-1 rounded-sm border border-gray-200 bg-white px-4 py-3"
+                                    className="relative flex flex-row gap-1 rounded-sm border border-gray-200 bg-white px-4 py-3"
                                 >
-                                    <div className="text-sm font-medium text-gray-800">
-                                        {item.productNm}
+                                    <div className="flex flex-col gap-1">
+                                        <span className="text-base font-pretendard font-[600] text-gray-800">
+                                            {item.productNm}
+                                        </span>
+                                        {item.additional ? 
+                                            <>
+                                                <span className="text-sm text-gray-500">
+                                                    추가 상품: {item.additional}
+                                                </span>
+                                            </>
+                                            :
+                                            <>
+                                                <span className="text-sm text-gray-500">
+                                                    색상: {item.color}
+                                                </span>
+                                                <span className="text-sm text-gray-500">
+                                                    사이즈: {item.size}
+                                                </span>
+                                            </>
+                                        }
+                                        <span className="text-sm text-gray-500">
+                                            수량: {item.quantity}개
+                                        </span>
                                     </div>
-                                    <div className="text-sm text-gray-500">
-                                        색상: {item.color}
-                                    </div>
-                                    <div className="text-sm text-gray-500">
-                                        수량: {item.quantity}개
-                                    </div>
+                                    <span className="text-sm text-gray-500 absolute right-4">
+                                        {item.price ? item.price : "-"} 원
+                                    </span>
                                 </div>
                             ))}
                         </div>

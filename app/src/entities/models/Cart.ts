@@ -6,8 +6,9 @@ const cartSchema = new mongoose.Schema(
         image: { type: String, required: false }, // 필수아님
         title: { type: String, required: false }, // 필수아님
         productId: { type: String, required: true },
-        size: { type: String, required: true },
-        color: { type: String, required: true },
+        size: { type: String, required: false, default: "" },
+        color: { type: String, required: false, default: "" },
+        additional: { type: String, required: false, default: "" },
         quantity: { type: Number, required: true },
         discountPrice: { type: Number, required: true },
         originalPrice: { type: Number, required: true },

@@ -31,7 +31,7 @@ const QuantityModal = ({
     return (
         <div className={`flex items-center gap-3 ${custom}`}>
             <div className="truncate text-base text-gray-700">
-                {item.size} - {item.color}
+                {` ${item.additional ? `${item.additional}` : item.color+"\t-\t"+item.size}`}
             </div>
 
             {/* 수량 조절 버튼들 */}

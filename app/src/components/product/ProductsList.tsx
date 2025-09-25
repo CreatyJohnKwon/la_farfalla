@@ -7,7 +7,12 @@ import DefaultImage from "../../../../public/images/chill.png";
 import { priceResult, priceDiscount } from "@src/features/calculate";
 import { useOptimizedImage } from "@src/shared/hooks/useOptimizedImage";
 import LoadingSpinner from "../../widgets/spinner/LoadingSpinner";
-import { ProductsListProps } from "./interface";
+import { Product } from "./interface";
+
+interface ProductsListProps {
+    product: Product;
+    index?: number;
+}
 
 const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
     // 최적화된 이미지 훅 사용

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { Order } from "@/src/entities/models/Order";
 import { connectDB } from "@/src/entities/models/db/mongoose";
 import { EmailService } from "@/src/shared/lib/emailService";
-import { OrderData } from "@/src/components/order/interface";
+import { OrderData, OrderItem } from "@/src/components/order/interface";
 
 // PortOne 결제 검증 함수 (실제 구현 필요)
 async function verifyPortOnePayment(paymentId: string, expectedAmount: number): Promise<boolean> {
@@ -68,15 +68,15 @@ export async function POST(req: NextRequest) {
                 detailAddress: order.detailAddress || "",
                 deliveryMemo: order.deliveryMemo || "",
                 postcode: order.postcode || "",
-                items: order.items.map((item: any) => ({
-                    id: item.productId || item.id,
-                    name: item.productNm || item.name || item.title || "상품명",
-                    quantity: item.quantity || 1,
-                    price: item.price || 0,
-                    description:
-                        `${item.color || ""} ${item.size || ""}`.trim() ||
-                        item.description,
-                    sku: item.sku || item.productId || "",
+                items: order.items.map((item: OrderItem) => ({
+                    productId: item.productId,
+                    productNm: item.productNm,
+                    size: item.size,
+                    color: item.color,
+                    additional: item.additional,
+                    quantity: item.quantity,
+                    price: item.price,
+                    image: item.image
                 })),
                 totalPrice: order.totalPrice || 0,
                 createdAt: order.createdAt || new Date().toISOString(),

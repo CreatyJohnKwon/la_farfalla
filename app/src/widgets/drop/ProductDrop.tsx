@@ -1,14 +1,17 @@
 "use client";
 
-import {
-    DropdownItem,
-    ProductDropProps,
-} from "@src/components/product/interface";
+import { ProductDropdownItem } from "@src/components/product/interface";
 import { useState, useEffect, useRef } from "react";
 import { IoChevronDown } from "react-icons/io5";
 import { AdditionalOption } from "../modal/interface";
 
-type ProductDropdownItem = DropdownItem | AdditionalOption;
+interface ProductDropProps {
+    title: string;
+    items: ProductDropdownItem[];
+    selected: ProductDropdownItem | null; 
+    setSelected: React.Dispatch<React.SetStateAction<any>>;
+    type?: "size" | "color" | "additional";
+}
 
 const ProductDrop = ({
     title,
@@ -31,11 +34,7 @@ const ProductDrop = ({
 
     const getDisplayText = (item: ProductDropdownItem): string => {
         if (isAdditionalOption(item)) {
-            let text = item.name;
-            if (item.additionalPrice && item.additionalPrice > 0) {
-                text += ` (+${item.additionalPrice.toLocaleString()}원)`;
-            }
-            return text;
+            return item.name;
         }
         if (typeof item === "string") {
             return item;

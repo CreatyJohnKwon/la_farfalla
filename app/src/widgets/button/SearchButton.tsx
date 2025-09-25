@@ -1,7 +1,12 @@
 "use client";
 
-import { SearchFloatingButtonProps } from "@src/components/product/interface";
+import { Product } from "@/src/components/product/interface";
 import { useState, useCallback, useRef } from "react";
+
+interface SearchFloatingButtonProps {
+    products: Product[];
+    onSearch: (query: string, filteredProducts: Product[]) => void;
+}
 
 const SearchButton = ({
     products,

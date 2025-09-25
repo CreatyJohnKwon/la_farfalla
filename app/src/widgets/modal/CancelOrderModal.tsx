@@ -1,13 +1,12 @@
 "use client";
 
-import useOrder from '@/src/shared/hooks/useOrder';
 import { refundPayment } from '@/src/shared/lib/server/order';
 import { OrderData } from '@src/components/order/interface';
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 // 🆕 취소/교환및반품 요청 모달 컴포넌트 (기존 디자인 스타일 유지)
-const CancelOrder = ({
+const CancelOrderModal = ({
     isOpen,
     onClose,
     onSubmit,
@@ -27,7 +26,6 @@ const CancelOrder = ({
     const [requestType, setRequestType] = useState<"cancel" | "exchange" | "return">(type);
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { useSpendMileage } = useOrder();
 
     useEffect(() => {
         setRequestType(type);
@@ -67,7 +65,7 @@ const CancelOrder = ({
         ) {
             setIsSubmitting(true);
             try {
-                await onSubmit({
+                onSubmit({
                     type: requestType,
                     reason: reason.trim(),
                     orderInfo,
@@ -77,10 +75,17 @@ const CancelOrder = ({
                         paymentId: order.paymentId,
                         reason
                     }
-                    await refundPayment(refundData);
+
+                    const result = await refundPayment(refundData)
+                    console.warn("refund success");
+                    result.message ? alert(result.message) : null;
                 }
-                onClose();
+            } catch (error: any) {
+                console.error(error.message)
+                if (error.message === "payment already cancelled") alert("이미 환불이 완료되었습니다.\n타 문의는 Q&A 채널로 문의해주세요.")
+                else alert("환불이 실패되었습니다.\nQ&A 채널로 문의해주세요.\n" + error.message)
             } finally {
+                onClose();
                 setReason("");
                 setIsSubmitting(false);
             }
@@ -233,4 +238,4 @@ const CancelOrder = ({
     );
 };
 
-export default CancelOrder;
+export default CancelOrderModal;

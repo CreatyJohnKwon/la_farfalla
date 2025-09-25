@@ -1,37 +1,30 @@
+import { ProductVariant } from "@/src/components/product/interface";
+import { AdditionalOption } from "@/src/widgets/modal/interface";
 import mongoose from "mongoose";
+
+// ... productOptionSchema와 additionalOptionSchema 정의는 동일 ...
 
 const productOptionSchema = new mongoose.Schema(
     {
-        colorName: {
-            type: String,
-            required: true,
-        },
-        stockQuantity: {
-            type: Number,
-            required: true,
-            min: 0,
-            default: 0,
-        },
+        colorName: { type: String, required: true },
+        stockQuantity: { type: Number, required: true, min: 0, default: 0 },
     },
     { _id: false },
 );
 
 const additionalOptionSchema = new mongoose.Schema(
     {
-        name: {
-            type: String,
-            required: true,
-        },
-        additionalPrice: {
-            type: Number,
-            required: true, // unrequired
-        },
+        name: { type: String, required: true },
+        additionalPrice: { type: Number, required: true },
+        stockQuantity: { type: Number, required: true, min: 0, default: 0 },
     },
     { _id: false },
 );
 
+
 const productSchema = new mongoose.Schema(
     {
+        // ... title, description 등 다른 필드들은 동일 ...
         title: {
             type: new mongoose.Schema(
                 {
@@ -72,7 +65,7 @@ const productSchema = new mongoose.Schema(
             type: String,
             default: "0",
         },
-        quantity: {
+        quantity: { // 이 필드가 자동으로 계산됩니다.
             type: String,
             required: true,
             default: "0",
@@ -91,23 +84,22 @@ const productSchema = new mongoose.Schema(
             required: true,
             default: [],
         },
-        // 🆕 여기에 options 필드 추가
         options: {
             type: [productOptionSchema],
             required: false,
             default: [],
-            validate: {
-                validator: function (v: any[]) {
-                    return !v || v.length === 0 || v.length > 0;
-                },
-                message: "옵션이 있다면 최소 1개 이상이어야 합니다.",
-            },
         },
         additionalOptions: {
             type: [additionalOptionSchema],
             required: false,
             default: [],
         },
+        // 'colors' 필드를 추가하는 것이 좋습니다. pre 훅에서 사용하기 때문입니다.
+        colors: {
+            type: [String],
+            required: false,
+            default: [],
+        }
     },
     {
         timestamps: true,
@@ -115,27 +107,43 @@ const productSchema = new mongoose.Schema(
     },
 );
 
+// 헬퍼 함수: 총수량 및 색상 목록을 계산하여 문서(또는 업데이트 객체)에 설정
+function updateTotalQuantity(doc: any) {
+    const options = doc.options || [];
+    const additionalOptions = doc.additionalOptions || [];
+
+    const optionsTotal = options.reduce(
+        (sum: number, option: ProductVariant) => sum + (Number(option.stockQuantity) || 0),
+        0
+    );
+
+    const additionalOptionsTotal = additionalOptions.reduce(
+        (sum: number, option: AdditionalOption) => sum + (Number(option.stockQuantity) || 0),
+        0
+    );
+
+    doc.quantity = (optionsTotal + additionalOptionsTotal).toString();
+
+    if (options.length > 0) {
+        doc.colors = [...new Set(options.map((option: ProductVariant) => option.colorName))];
+    }
+}
+
+// 훅 1: 새 문서 생성 시 실행
+productSchema.pre("save", function (next) {
+    updateTotalQuantity(this);
+    next();
+});
+
+// 훅 2: 문서 업데이트 시 실행
 productSchema.pre(["findOneAndUpdate", "updateOne"], function (next) {
     const update = this.getUpdate() as any;
+    const updateData = update.$set || update;
 
-    if (
-        update &&
-        update.options &&
-        Array.isArray(update.options) &&
-        update.options.length > 0
-    ) {
-        update.colors = [
-            ...new Set(update.options.map((option: any) => option.colorName)),
-        ];
-
-        const totalQuantity = update.options.reduce(
-            (sum: number, option: any) => {
-                return sum + (Number(option.stockQuantity) || 0);
-            },
-            0,
-        );
-        update.quantity = totalQuantity.toString();
+    if (updateData.options || updateData.additionalOptions) {
+        updateTotalQuantity(updateData);
     }
+    
     next();
 });
 

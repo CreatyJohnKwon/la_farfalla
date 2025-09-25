@@ -354,11 +354,21 @@ const Order = () => {
                                                     {product?.title}
                                                 </p>
                                                 <div className="text-sm text-gray-500 mt-1">
-                                                    <span className="font-amstel">{product?.size}</span>
-                                                    <span className="mx-1.5">|</span>
-                                                    <span className="font-amstel">{product?.color}</span>
-                                                    <span className="mx-1.5">|</span>
-                                                    <span className="font-pretendard">{`${product?.quantity}개`}</span>
+                                                    {product?.additional ? (
+                                                        <>
+                                                            <span className="font-pretendard">{product?.additional}</span>
+                                                            <span className="mx-1.5">|</span>
+                                                            <span className="font-pretendard">{`${product?.quantity}개`}</span>
+                                                        </>
+                                                    ):(
+                                                        <>
+                                                            <span className="font-amstel">{product?.size}</span>
+                                                            <span className="mx-1.5">|</span>
+                                                            <span className="font-amstel">{product?.color}</span>
+                                                            <span className="mx-1.5">|</span>
+                                                            <span className="font-pretendard">{`${product?.quantity}개`}</span>
+                                                        </>
+                                                    )}
                                                 </div>
                                             </div>
                                             <div className="flex items-center justify-between mt-2">
@@ -1045,7 +1055,7 @@ const Order = () => {
                                 className="font-pretendard-bold cursor-pointer underline text-sm text-black sm:text-black/50 hover:text-black ease-in-out transition-colors"
                                 onClick={() => {
                                     // 주문 상품들 다시 카트에 추가하는 로직 추가
-                                    handleAddToCart(orderDatas)
+                                    confirm("장바구니에 다시 담을까요?") && handleAddToCart(orderDatas);
                                     router.push("/shop");
                                 }}
                             >

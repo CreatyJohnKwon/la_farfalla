@@ -9,9 +9,8 @@ import {
 } from "../../lib/server/order";
 import { useSetAtom } from "jotai";
 import { resetProductFormAtom } from "../../lib/atom";
-import { ProductOption } from "@src/components/product/interface";
 import { AddressUpdateInput } from "@src/entities/type/order";
-import { OrderData, OrderPage, OrderUpdateInput } from "@src/components/order/interface";
+import { OrderData, OrderPage, OrderUpdateInput, StockUpdateItem } from "@src/components/order/interface";
 import { adminEmails } from "public/data/common";
 import useUsers from "../useUsers";
 
@@ -64,17 +63,9 @@ const useSmartUpdateOrderMutation = () => {
             );
         },
 
-        onSuccess: (variables) => {
+        onSuccess: () => {
             // 더 구체적인 캐시 업데이트
             queryClient.invalidateQueries({ queryKey: ["orders"] });
-
-            // 배열인지 단일인지에 따른 메시지 구분
-            const count = Array.isArray(variables) ? variables.length : 1;
-            if (count === 1 && adminEmails.includes(session?.user?.email || "")) {
-                alert(`주문의 상태가 업데이트 되었습니다`);
-            } else {
-                alert(`총 ${count}개의 주문 상태가 업데이트 되었습니다`);
-            }
             resetProductForm();
         },
 
@@ -116,33 +107,34 @@ const useUpdateStockMutation = () => {
         mutationFn: async ({
             items,
             action,
-            productId,
         }: {
-            items: ProductOption[];
+            items: StockUpdateItem[];
             action: "reduce" | "restore";
-            productId?: string;
         }) => {
+            const productId = items[0]?.productId;
             return updateStock(items, action, productId);
         },
 
-        onSuccess: (data) => {
+        onSuccess: (res) => {
             // 관련 상품 데이터 무효화
-            data.updates.forEach((update: any) => {
-                queryClient.invalidateQueries({
-                    queryKey: ["product", update.productId],
+            if (res.success) {
+                res.items.forEach((update: StockUpdateItem) => {
+                    queryClient.invalidateQueries({
+                        queryKey: ["product", update.productId],
+                    });
+                    queryClient.invalidateQueries({
+                        queryKey: [
+                            "product-stock",
+                            update.productId,
+                            update.color,
+                        ],
+                    });
                 });
-                queryClient.invalidateQueries({
-                    queryKey: [
-                        "product-stock",
-                        update.productId,
-                        update.colorName,
-                    ],
-                });
-            });
-
-            queryClient.invalidateQueries({ queryKey: ["products"] });
+    
+                queryClient.invalidateQueries({ queryKey: ["products"] });
+            }
+            console.warn(res.message);
         },
-
         onError: (error) => {
             console.error("❌ 재고 업데이트 실패:", error.message);
         },

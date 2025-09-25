@@ -60,6 +60,8 @@ const POST = async (req: NextRequest) => {
     try {
         const productData = await req.json();
 
+        console.log(productData)
+
         // 기본 필수 필드 검증
         if (
             !productData.title ||
@@ -128,6 +130,13 @@ const POST = async (req: NextRequest) => {
 
         // 추가 옵션 내용 검증
         if (productData.additionalOptions) {
+            if (!Array.isArray(productData.additionalOptions)) {
+                return NextResponse.json(
+                    { error: "additionalOptions는 배열이어야 합니다." },
+                    { status: 400 },
+                );
+            }
+
             for (const addOption of productData.additionalOptions) {
                 if (!addOption.name || typeof addOption.name !== 'string') {
                     return NextResponse.json(
@@ -135,12 +144,19 @@ const POST = async (req: NextRequest) => {
                         { status: 400 },
                     );
                 }
-                if (addOption.additionalPrice && typeof addOption.additionalPrice !== 'number') {
+                if (addOption.additionalPrice === undefined || typeof addOption.additionalPrice !== 'number') {
                      return NextResponse.json(
-                        { error: "추가 옵션의 추가금액(additionalPrice)은 숫자여야 합니다." },
+                        { error: "추가 옵션의 추가금액(additionalPrice)은 필수 숫자입니다." },
                         { status: 400 },
                     );
                 }
+                // 👇 stockQuantity 유효성 검사 추가
+                if (addOption.stockQuantity === undefined || typeof addOption.stockQuantity !== 'number') {
+                    return NextResponse.json(
+                       { error: "추가 옵션의 재고(stockQuantity)는 필수 숫자입니다." },
+                       { status: 400 },
+                   );
+               }
             }
         }
 
@@ -189,6 +205,8 @@ const PUT = async (req: NextRequest) => {
 
         const productData = await req.json();
 
+        console.log(productData)
+
         // options 배열이 있는 경우 검증
         if (productData.options && Array.isArray(productData.options)) {
             if (productData.options.length === 0) {
@@ -224,6 +242,13 @@ const PUT = async (req: NextRequest) => {
 
         // 추가 옵션 내용 검증
         if (productData.additionalOptions) {
+            if (!Array.isArray(productData.additionalOptions)) {
+                return NextResponse.json(
+                    { error: "additionalOptions는 배열이어야 합니다." },
+                    { status: 400 },
+                );
+            }
+            
             for (const addOption of productData.additionalOptions) {
                 if (!addOption.name || typeof addOption.name !== 'string') {
                     return NextResponse.json(
@@ -231,12 +256,19 @@ const PUT = async (req: NextRequest) => {
                         { status: 400 },
                     );
                 }
-                 if (addOption.additionalPrice && typeof addOption.additionalPrice !== 'number') {
+                 if (addOption.additionalPrice === undefined || typeof addOption.additionalPrice !== 'number') {
                      return NextResponse.json(
-                        { error: "추가 옵션의 추가금액(additionalPrice)은 숫자여야 합니다." },
+                        { error: "추가 옵션의 추가금액(additionalPrice)은 필수 숫자입니다." },
                         { status: 400 },
                     );
                 }
+                // 👇 stockQuantity 유효성 검사 추가
+                if (addOption.stockQuantity === undefined || typeof addOption.stockQuantity !== 'number') {
+                    return NextResponse.json(
+                       { error: "추가 옵션의 재고(stockQuantity)는 필수 숫자입니다." },
+                       { status: 400 },
+                   );
+               }
             }
         }
 

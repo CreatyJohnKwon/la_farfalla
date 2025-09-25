@@ -64,11 +64,6 @@ interface SearchResult extends Product {
     matchType: "title" | "description" | "season" | "color";
 }
 
-interface SearchFloatingButtonProps {
-    products: Product[];
-    onSearch: (query: string, filteredProducts: Product[]) => void;
-}
-
 // 검색 결과 타입
 interface SearchResult {
     _id?: string;
@@ -107,32 +102,11 @@ interface ImageData {
     existingUrls: string[];
 }
 
-interface UpdateProductModalProps {
-    onClose: () => void;
-    product?: Product;
-    mode?: "create" | "update";
-}
-
-interface ProductsListProps {
-    product: Product;
-    index?: number;
-}
-
 type ColorOptionsGenerator = (product: Product) => ProductOption[];
 type StockChecker = (
     colorOptions: ProductOption[],
     selectedColor: string,
 ) => number;
-
-interface ProductDropProps {
-    title: string;
-    items: ProductDropdownItem[];
-    // selected는 string(size), ProductVariant(color), AdditionalOption(additional) 또는 null이 될 수 있음
-    selected: ProductDropdownItem | null; 
-    // setSelected는 위 타입들을 모두 받을 수 있어야 함
-    setSelected: React.Dispatch<React.SetStateAction<any>>;
-    type?: "size" | "color" | "additional";
-}
 
 type DropdownItem = ProductVariant | string;
 type ProductDropdownItem = DropdownItem | AdditionalOption;
@@ -148,21 +122,15 @@ export type {
     Product,
     ProductPayload,
     ProductOption,
-    ProductsListProps,
     ProductVariant,
     ProductPage,
     ProductDropdownItem,
     NewVariantType,
     ImageData,
-    UpdateProductModalProps,
     ColorOptionsGenerator,
     StockChecker,
-    ProductDropProps,
     DropdownItem,
-    SearchFloatingButtonProps,
     SearchResult,
     specialReviewItem,
-
-
     InfiniteQueryResult
 };

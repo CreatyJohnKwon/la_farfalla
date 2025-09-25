@@ -75,11 +75,6 @@ interface MutationContext {
     previousAnnounces: IAnnounceDTO[] | undefined;
 }
 
-interface AnnouncesProps {
-  bannerAnnounce: IAnnounceDTO | null;
-  popupAnnounces: IAnnounceDTO[];
-}
-
 const ACCEPTED_IMAGE_TYPES = [
     "image/jpeg",
     "image/jpg",
@@ -98,7 +93,6 @@ export type {
     AnnounceForm,
     FormContentProps,
     MutationContext,
-    AnnouncesProps
 };
 
 export { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE, MAX_DESCRIPTION_LENGTH };

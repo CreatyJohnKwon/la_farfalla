@@ -41,8 +41,9 @@ interface OrderItem {
     productNm: string;
     size: string;
     color: string;
+    additional: string;
     quantity: number;
-    price?: number;
+    price: number;
     image?: string[];
 }
 
@@ -79,6 +80,14 @@ interface OrderUpdateInput {
     trackingNumber: string | undefined;
 }
 
+type StockUpdateItem = {
+    productId: string;
+    quantity: number;
+    size: string;
+    color: string;
+    additional: string; // 추가 옵션의 이름
+};
+
 type ShippingStatus = "prepare" | "pending" | "ready" | "shipped" | "confirm" | "cancel" | "return" | "exchange";
 
 export type {
@@ -90,6 +99,7 @@ export type {
     MileageItem,
     ShippingStatus,
     OrderUpdateInput,
+    StockUpdateItem,
     SMSOrderData,
     SMSResult,
 }

@@ -1,16 +1,11 @@
 import { useRouter } from "next/navigation";
 import useUser from "@src/shared/hooks/useUsers";
-import {
-    SelectedItem,
-} from "@src/entities/type/interfaces";
+import { SelectedItem } from "@src/entities/type/interfaces";
 import { useAtom } from "jotai";
 import { orderDatasAtom } from "../lib/atom";
 import { useState, useEffect } from "react";
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
-import {
-    useGetUserCouponsListQuery,
-    useUpdateUserCouponMutation,
-} from "@src/shared/hooks/react-query/useBenefitQuery";
+import { useGetUserCouponsListQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import { earnMileage, spendMileage } from "@src/features/benefit/mileage";
 import { updateUser } from "../lib/server/user";
 import * as PortOne from "@portone/browser-sdk/v2";
@@ -18,9 +13,9 @@ import {
     useOrderQuery,
     useUpdateStockMutation,
 } from "./react-query/useOrderQuery";
-import { ProductOption } from "@src/components/product/interface";
-import { MileageItem } from "@src/components/order/interface";
+import { MileageItem, OrderItem, StockUpdateItem } from "@src/components/order/interface";
 import { refundPayment } from "../lib/server/order";
+import { v4 as uuidv4 } from 'uuid';
 
 const useOrder = () => {
     const { session } = useUser();
@@ -57,6 +52,7 @@ const useOrder = () => {
     const [payments, setPayments] = useState<
         "NAVER_PAY" | "KAKAO_PAY" | "CARD"
     >("CARD");
+    const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null);
 
     // 주문 완료 상태 관리 (주문 로딩 스피너)
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -98,7 +94,6 @@ const useOrder = () => {
         setTotalMileage(Math.floor(discountedPrice * 0.01));
     }, [usedMileage, applyCoupon, orderDatas, couponMemo, coupons]);
 
-    // ✅ 다른 useEffect들...
     useEffect(() => {
         if (!user) return;
 
@@ -137,12 +132,14 @@ const useOrder = () => {
 
         // 1. 가격 계산에 필요한 최소 정보
         const calculationData = {
-            items: orderDatas.map((item: any) => ({
+            items: orderDatas.map((item: SelectedItem) => ({
                 productId: item.productId,
                 productNm: item.title,
                 quantity: parseInt(item.quantity as any, 10) || 1,
                 color: item.color,
-                size: item.size
+                size: item.size,
+                additional: item.additional,
+                price: item.originalPrice
             })),
             usedMileage: usedMileage,
             couponId: couponId, // 사용할 쿠폰의 이름 또는 ID
@@ -160,17 +157,24 @@ const useOrder = () => {
             payMethod: payments,
         };
 
+        // 2-1. 멱등성 키 생성하여 중복 오더 생성 방지
+        let key = idempotencyKey;
+        if (!key) {
+            key = uuidv4();
+            setIdempotencyKey(key);
+        }
+
         try {
             const response = await fetch('/api/order/prepare', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ calculationData, baseOrderData }),
+                body: JSON.stringify({ calculationData, baseOrderData, idempotencyKey: key }),
             });
-
             const prepareData = await response.json();
+
             if (!response.ok || !prepareData.success) {
                 throw new Error(prepareData.message || '주문을 준비하는 중 오류가 발생했습니다.');
-            }
+            } else console.warn(prepareData.message);
 
             const paymentParams: any = {
                 storeId: "store-f8bba69a-c4d7-4754-aeae-c483519aa061",
@@ -207,9 +211,9 @@ const useOrder = () => {
                     case "FAILURE_TYPE_PG":
                     case "PG_PROVIDER_ERROR":
                     default:
-                        if (portoneResponse?.pgMessage) alert(`${portoneResponse?.pgMessage}\nQ&A 채널로 문의해주세요.`)
+                        if (portoneResponse?.pgMessage || portoneResponse?.message) alert(`${portoneResponse?.pgMessage || portoneResponse?.message}`);
                         else alert(`결제 요청 처리 중 오류가 발생했습니다.\nQ&A 채널로 문의해주세요.`)
-                        await restoreItems(calculationData.items);
+                        await restoreItems(orderDatas);
                         break;
                 }
             }
@@ -245,6 +249,7 @@ const useOrder = () => {
 
             orderListRefetch();
             UserDataRefetch();
+            setIdempotencyKey(null);
 
             router.replace("/profile/order");
         } catch (error: any) {
@@ -255,9 +260,7 @@ const useOrder = () => {
             }
             await refundPayment(refundData);
             await restoreItems(restoreItems)
-            alert(
-                `결제는 성공했으나 주문을 확정하는 데 실패했습니다.\n문제가 지속되면 관리자에게 문의해주세요.\n(오류: ${error.message})`
-            );
+            alert(`결제는 성공했으나 주문을 확정하는 데 실패하여 환불처리되었습니다.\n문제가 지속되면 관리자에게 문의해주세요.\n(오류: ${error.message})`);
         }
     };
 
@@ -298,22 +301,31 @@ const useOrder = () => {
         await updateUser(updateAddress);
     };
 
-    const restoreItems = async (stockItems: Array<any>) => {
+    const restoreItems = async (stockItems: SelectedItem[]) => {
         if (!stockItems || stockItems.length === 0) {
             console.error("복원할 아이템 정보가 없습니다.");
             return;
         }
 
-        const itemsToRestore: ProductOption[] = stockItems.map(item => ({
+        // ✅ 각 아이템의 종류를 판별하여 서버가 이해할 수 있는 형태로 변환합니다.
+        const itemsToRestore: StockUpdateItem[] = stockItems.map(item => {
+            return {
                 productId: item.productId,
-                colorName: item.color,
-                stockQuantity: item.quantity,
-            }));
+                quantity: item.quantity,
+                size: item.size,
+                color: item.color,
+                additional: item.additional
+            };
+        });
 
-        await updateStockMutation.mutateAsync({
-            items: itemsToRestore,
-            action: "restore",
-        }).catch(restoreError => console.error("재고 복구 중 오류 발생:", restoreError));
+        try {
+            await updateStockMutation.mutateAsync({
+                items: itemsToRestore,
+                action: "restore",
+            });
+        } catch (restoreError) {
+            console.error("재고 복구 중 오류 발생:", restoreError);
+        }
     }
 
     return {

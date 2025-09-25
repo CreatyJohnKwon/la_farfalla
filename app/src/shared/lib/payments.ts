@@ -45,46 +45,64 @@ const cancelPayment = async (
     session.startTransaction();
 
     try {
-        // 1. 포트원에 결제 취소 요청 (전체 또는 부분)
-        const cancelPayload: any = { paymentId, reason };
-        if (amountToCancel) {
-            cancelPayload.amount = amountToCancel;
+        // 1. 포트원에 결제 취소 요청
+        try {
+            const cancelPayload: any = { paymentId, reason };
+            if (amountToCancel) {
+                cancelPayload.amount = amountToCancel;
+            }
+            await paymentClient.cancelPayment(cancelPayload);
+        } catch (portoneError: any) {
+            // 🚨 위험 지점 1: 포트원 결제 취소 실패
+            // 이 경우 DB 작업은 시작도 안 했으므로, 알림만 보내고 즉시 중단합니다.
+            console.error(
+                `[결제 취소 실패] 포트원 API 호출에 실패했습니다. (Payment ID: ${paymentId}) 원인: ${portoneError.message}`
+            );
+            throw portoneError; // 에러를 다시 던져서 함수 실행을 완전히 중단
         }
-        await paymentClient.cancelPayment(cancelPayload);
 
-        // 2. ✅ paymentId를 사용하여 우리 DB에서 해당 주문 조회
+        // 2. DB에서 주문 조회
         const order = await Order.findOne({ paymentId: paymentId }).session(session);
 
-        // 3. ✅ 조회된 주문이 없으면 오류 처리
+        // 3. 주문 데이터 부재 시 처리
         if (!order) {
-            // 포트원 결제는 취소되었지만, 우리 DB에 해당하는 주문이 없는 심각한 상황.
-            // 이 경우, 수동 개입이 필요하므로 에러를 발생시키고 트랜잭션을 중단합니다.
+            // 🚨🚨 가장 심각한 위험 지점 🚨🚨
+            // 포트원 결제는 취소되었으나, 우리 DB에 주문이 없는 상황입니다.
+            // 데이터 불일치가 이미 발생했으므로, 즉시 관리자에게 알려 수동 조치를 취하게 해야 합니다.
+            console.error(
+                `[긴급 데이터 불일치] 포트원 결제는 취소되었으나 DB에서 주문을 찾을 수 없습니다. 즉시 확인이 필요합니다. (Payment ID: ${paymentId})`
+            );
+            // 이 상황에서는 트랜잭션을 커밋할 내용이 없으므로 바로 중단합니다.
             throw new Error(`주문 정보를 찾을 수 없습니다. (Payment ID: ${paymentId})`);
         }
 
-        // 4. ✅ 조회된 주문의 items를 사용하여 재고 복구
-        // restoreStock 함수는 이전에 만든 그대로 사용합니다.
+        // 4. 재고 복구
         await restoreStock(order.items, session);
         
-        // 5. ✅ 주문 상태를 'cancel'로 변경
+        // 5. 주문 상태 변경
         order.shippingStatus = 'cancel';
-        order.failReason = reason; // 취소 사유 기록
+        order.failReason = reason;
         await order.save({ session });
 
-        // 6. 트랜잭션 커밋: 모든 DB 변경사항을 한 번에 영구 저장
+        // 6. 트랜잭션 커밋
         await session.commitTransaction();
         
-        // 7. 취소 후, 최신 결제 정보를 다시 조회하여 반환 (선택사항이지만 좋은 패턴)
         const updatedPayment = await paymentClient.getPayment({ paymentId });
         return updatedPayment;
 
-    } catch (error) {
-        // 오류 발생 시 모든 DB 변경사항 롤백
+    } catch (error: any) {
+        // 🚨 위험 지점 2: DB 작업 중 오류 발생
+        // 포트원 결제는 성공했으나, 재고 복구 또는 주문 상태 변경 등 DB 작업에서 오류가 발생한 경우입니다.
+        // 트랜잭션을 롤백하여 DB를 원상 복구하고, 관리자에게 알려 수동 조치를 요청합니다.
         await session.abortTransaction();
+        
+        console.error(
+            `[결제 취소 DB 오류] 포트원 결제는 취소되었으나 DB 처리 중 오류가 발생하여 롤백되었습니다. 데이터 확인이 필요합니다. (Payment ID: ${paymentId}) 오류: ${error.message}`
+        );
+
         console.error("결제 취소 처리 중 오류:", error);
-        throw error; // 오류를 다시 던져서 호출한 쪽에서 처리할 수 있도록 함
+        throw error; 
     } finally {
-        // 세션 종료
         session.endSession();
     }
 };

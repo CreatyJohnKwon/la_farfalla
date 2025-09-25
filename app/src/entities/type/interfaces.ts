@@ -66,6 +66,7 @@ type SelectedItem = {
     productId: string;
     size: string;
     color: string;
+    additional: string;
     quantity: number;
     discountPrice: number;
     originalPrice: number;
@@ -95,10 +96,6 @@ interface AddressModalProps {
 interface AddressData {
     address: string;
     zonecode: string;
-}
-
-interface IDProps {
-    params: Promise<{ id: string }>;
 }
 
 interface ModalProps {
@@ -205,7 +202,6 @@ export type {
     MenuItem,
     AddressModalProps,
     AddressData,
-    IDProps,
     CreateCategoryData,
     UpdateCategoryData
 };

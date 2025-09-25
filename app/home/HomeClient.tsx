@@ -4,7 +4,12 @@ import { useEffect } from "react";
 import Image from "next/image";
 import BackgroundImg from "../../public/images/bg_new_250911.jpeg";
 import AnnounceLayer from "@src/components/announce/AnnounceLayer";
-import { AnnouncesProps } from "@src/entities/type/announce";
+import { IAnnounceDTO } from "@/src/entities/type/announce";
+
+interface AnnouncesProps {
+  bannerAnnounce: IAnnounceDTO | null;
+  popupAnnounces: IAnnounceDTO[];
+}
 
 const HomeClient = ({ bannerAnnounce, popupAnnounces }: AnnouncesProps) => {
   useEffect(() => {

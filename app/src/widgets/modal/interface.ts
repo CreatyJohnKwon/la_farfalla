@@ -58,6 +58,7 @@ interface AdditionalOption {
     id: string;
     name: string;
     additionalPrice: number;
+    stockQuantity: number;
 }
 
 export type {

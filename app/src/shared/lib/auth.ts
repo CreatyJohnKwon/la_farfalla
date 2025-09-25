@@ -62,32 +62,41 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async jwt({ token, user, account }) {
-            // 1. 초기 로그인 시
+            // 1. 초기 로그인 시에만 실행 (user 객체가 있을 때)
             if (account && user) {
-                // 일반 로그인: authorize에서 반환된 rememberMe 값 사용
+                token.provider = account.provider; // 프로바이더 정보 저장
+
+                // ✅ [핵심 수정] 로그인 방식에 따라 토큰에 ID를 저장하는 로직
                 if (account.provider === "credentials") {
-                    token.rememberMe = user.rememberMe === "true";
+                    // Credentials 로그인: authorize에서 반환된 id를 token.sub에 할당
+                    token.sub = user.id;
+                    token.rememberMe = (user as any).rememberMe === "true";
                 } else {
-                    // 소셜 로그인: 항상 '로그인 유지'로 간주
+                    // Social 로그인: DB에서 사용자를 찾아 _id를 token.sub에 할당
+                    await connectDB();
+                    const dbUser = await User.findOne({ email: user.email });
+                    if (dbUser) {
+                        token.sub = dbUser._id.toString();
+                        // DB의 최신 정보로 토큰을 갱신할 수도 있습니다.
+                        token.name = dbUser.name; 
+                        token.email = dbUser.email;
+                    }
+                    // 소셜 로그인은 항상 '로그인 유지'로 간주
                     token.rememberMe = true;
                 }
             }
 
-            // 2. 토큰 만료 시간 동적 설정
+            // 2. 토큰 만료 시간 동적 설정 (기존 로직 유지)
             if (token.rememberMe) {
                 // '로그인 유지'가 true이면, 토큰 만료 시간을 30일로 설정
                 token.exp = Math.floor(Date.now() / 1000) + THIRTY_DAYS;
             } else {
-                // 그렇지 않으면, 1일로 설정 (혹은 서비스 기본 정책에 맞게)
+                // 그렇지 않으면, 1일로 설정
                 token.exp = Math.floor(Date.now() / 1000) + ONE_DAY;
             }
 
-            if (account) token.provider = account.provider;
-
             return token;
         },
-        // session 콜백은 클라이언트로 전송될 세션 정보를 제어합니다.
-        // 여기에 id 같은 정보를 추가하면 클라이언트에서 useSession으로 접근 가능합니다.
         async session({ session, token }) {
             if (session.user && token.sub) {
                 (session.user as any).id = token.sub;

@@ -40,7 +40,7 @@ const useCart = () => {
     };
 
     // 옵션 첫 선택
-    const handleSelect = (size: string, color: string, product: Product) => {
+    const handleSelect = (size: string, color: string, additional: string, product: Product) => {
         const alreadyExists = selectedItems.find(
             (item) => item.size === size && item.color === color,
         );
@@ -55,6 +55,7 @@ const useCart = () => {
             productId: product._id || "",
             size,
             color,
+            additional,
             quantity: 1,
             discountPrice: justDiscount(product),
             originalPrice: parseInt(product.price),

@@ -1,4 +1,4 @@
-import { EmailResult, OrderData, ShippingStatus } from "@src/components/order/interface";
+import { EmailResult, OrderData, OrderItem, ShippingStatus } from "@src/components/order/interface";
 import nodemailer, { Transporter } from "nodemailer";
 
 export class EmailService {
@@ -51,13 +51,13 @@ export class EmailService {
         ? new Date(orderData.createdAt).toLocaleString("ko-KR")
         : new Date().toLocaleString("ko-KR");
 
-    // 결제방법 한글 변환
-    const payMethodMap: Record<OrderData["payMethod"], string> = {
-        NAVER_PAY: "네이버페이",
-        KAKAO_PAY: "카카오페이",
-        CARD: "신용카드",
-    };
-    const payMethodText = payMethodMap[orderData.payMethod];
+    // // 결제방법 한글 변환
+    // const payMethodMap: Record<OrderData["payMethod"], string> = {
+    //     NAVER_PAY: "네이버페이",
+    //     KAKAO_PAY: "카카오페이",
+    //     CARD: "신용카드",
+    // };
+    // const payMethodText = payMethodMap[orderData.payMethod];
 
     // 배송상태 한글 변환
     const shippingStatusMap: Record<ShippingStatus, string> = {
@@ -76,22 +76,19 @@ export class EmailService {
     // 상품 목록 HTML 생성 (price가 없는 경우 처리)
     const itemsHtml = orderData.items
         .map(
-            (item: any) => 
+            (item: OrderItem) => 
               `
                 <tr style="border-bottom: 1px solid #e5e7eb;">
-                  <td style="padding: 12px 16px; color: #374151;">
-                    <div style="font-weight: 600; margin-bottom: 4px;">${item.name}</div>
-                    ${item.sku ? `<div style="font-size: 12px; color: #6b7280;">UUID: ${item.sku}</div>` : ""}
-                    ${item.description ? `<div style="font-size: 13px; color: #6b7280; margin-top: 2px;">${item.description}</div>` : ""}
+                  <td style="padding: 12px 16px; color: #ffffff;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">${item.productNm}</div>
+                    ${item.additional ? `<div style="font-size: 13px; color: #ffffff; margin-top: 2px;"><span>추가: ${item.additional}</span></div>`
+                                        :`<div style="font-size: 13px; color: #ffffff; margin-top: 2px;"><p>색상: ${item.color}</p><p>사이즈: ${item.size}</p></div>`}
                   </td>
-                  <td style="padding: 12px 16px; text-align: center; color: #374151; font-weight: 500;">
+                  <td style="padding: 12px 16px; text-align: center; color: #ffffff; font-weight: 500;">
                     ${item.quantity}개
                   </td>
                   <td style="padding: 12px 16px; text-align: right; color: #374151;">
                     ${item.price ? item.price.toLocaleString() + "원" : "-"}
-                  </td>
-                  <td style="padding: 12px 16px; text-align: right; font-weight: 600; color: #dc2626;">
-                    ${item.price ? (item.quantity * item.price).toLocaleString() + "원" : "-"}
                   </td>
                 </tr>
               `,
@@ -409,7 +406,6 @@ export class EmailService {
                           <th>상품 정보</th>
                           <th>수량</th>
                           <th>단가</th>
-                          <th>소계</th>
                         </tr>
                       </thead>
                       <tbody>
