@@ -1,8 +1,7 @@
 import { connectDB } from "@src/entities/models/db/mongoose";
 import Product from "@src/entities/models/Product";
 import { NextRequest, NextResponse } from "next/server";
-import { isValidObjectId, Types } from "mongoose";
-import Category from "@/src/entities/models/Category";
+import { isValidObjectId } from "mongoose";
 
 const GET = async (req: NextRequest) => {
     try {
@@ -59,22 +58,20 @@ const GET = async (req: NextRequest) => {
 
 const POST = async (req: NextRequest) => {
     try {
-        const body = await req.json();
-
-        const { otherProductData } = body;
+        const productData = await req.json();
 
         // 기본 필수 필드 검증
         if (
-            !otherProductData.title ||
-            !otherProductData.description ||
-            !otherProductData.price ||
-            !otherProductData.image ||
-            !otherProductData.options ||
-            !otherProductData.categories ||
-            otherProductData.size === undefined ||
-            otherProductData.title.kr === undefined ||
-            otherProductData.description.images === undefined ||
-            otherProductData.description.text === undefined
+            !productData.title ||
+            !productData.description ||
+            !productData.price ||
+            !productData.image ||
+            !productData.options ||
+            !productData.categories ||
+            productData.size === undefined ||
+            productData.title.kr === undefined ||
+            productData.description.images === undefined ||
+            productData.description.text === undefined
         ) {
             return NextResponse.json(
                 { error: "모든 필수 필드를 정확히 입력해야 합니다." },
@@ -84,11 +81,11 @@ const POST = async (req: NextRequest) => {
 
         // 배열 데이터 유효성 검사
         if (
-            !Array.isArray(otherProductData.image) ||
-            !Array.isArray(otherProductData.size) ||
-            !Array.isArray(otherProductData.description.images) ||
-            !Array.isArray(otherProductData.categories) ||
-            !Array.isArray(otherProductData.options)
+            !Array.isArray(productData.image) ||
+            !Array.isArray(productData.size) ||
+            !Array.isArray(productData.description.images) ||
+            !Array.isArray(productData.categories) ||
+            !Array.isArray(productData.options)
         ) {
             return NextResponse.json(
                 {
@@ -99,7 +96,7 @@ const POST = async (req: NextRequest) => {
         }
 
         // options 배열 검증
-        if (otherProductData.options.length === 0) {
+        if (productData.options.length === 0) {
             return NextResponse.json(
                 { error: "최소 1개 이상의 옵션이 필요합니다." },
                 { status: 400 },
@@ -107,7 +104,7 @@ const POST = async (req: NextRequest) => {
         }
 
         // ✅ options 배열 내용 검증 (optionNumber 제거)
-        for (const option of otherProductData.options) {
+        for (const option of productData.options) {
             if (!option.colorName || option.stockQuantity === undefined) {
                 return NextResponse.json(
                     {
@@ -118,22 +115,54 @@ const POST = async (req: NextRequest) => {
             }
         }
 
+        // 추가 옵션 배열 검증
+        if (
+            productData.additionalOptions &&
+            !Array.isArray(productData.additionalOptions)
+        ) {
+            return NextResponse.json(
+                { error: "additionalOptions는 배열이어야 합니다." },
+                { status: 400 },
+            );
+        }
+
+        // 추가 옵션 내용 검증
+        if (productData.additionalOptions) {
+            for (const addOption of productData.additionalOptions) {
+                if (!addOption.name || typeof addOption.name !== 'string') {
+                    return NextResponse.json(
+                        { error: "추가 옵션의 이름(name)은 필수 문자열입니다." },
+                        { status: 400 },
+                    );
+                }
+                if (addOption.additionalPrice && typeof addOption.additionalPrice !== 'number') {
+                     return NextResponse.json(
+                        { error: "추가 옵션의 추가금액(additionalPrice)은 숫자여야 합니다." },
+                        { status: 400 },
+                    );
+                }
+            }
+        }
+
         await connectDB();
 
         // options에서 총 수량과 색상 배열 계산
-        const totalQuantity = otherProductData.options.reduce((sum: number, option: any) => {
+        const totalQuantity = productData.options.reduce((sum: number, option: any) => {
             return sum + (Number(option.stockQuantity) || 0);
         }, 0).toString();
 
-        const colors = [...new Set(otherProductData.options.map((option: { colorName: string }) => option.colorName))];
+        const colors = [...new Set(productData.options.map((option: { colorName: string }) => option.colorName))];
 
         const newProduct = new Product({
-            ...otherProductData,
+            ...productData,
             colors,
             quantity: totalQuantity,
+            additionalOptions: productData.additionalOptions || [], // 추가 옵션 필드 할당
         });
 
         const savedProduct = await newProduct.save();
+
+        savedProduct.message = "상품 생성 성공";
 
         return NextResponse.json(savedProduct, { status: 201 });
 
@@ -158,13 +187,11 @@ const PUT = async (req: NextRequest) => {
             );
         }
 
-        const body = await req.json();
-
-        const { ...otherProductData } = body;
+        const productData = await req.json();
 
         // options 배열이 있는 경우 검증
-        if (otherProductData.options && Array.isArray(otherProductData.options)) {
-            if (otherProductData.options.length === 0) {
+        if (productData.options && Array.isArray(productData.options)) {
+            if (productData.options.length === 0) {
                 return NextResponse.json(
                     { error: "최소 1개 이상의 옵션이 필요합니다." },
                     { status: 400 },
@@ -172,7 +199,7 @@ const PUT = async (req: NextRequest) => {
             }
 
             // ✅ options 배열 내용 검증 (optionNumber 제거)
-            for (const option of otherProductData.options) {
+            for (const option of productData.options) {
                 if (!option.colorName || option.stockQuantity === undefined) {
                     return NextResponse.json(
                         {
@@ -184,10 +211,39 @@ const PUT = async (req: NextRequest) => {
             }
         }
 
+        // 추가 옵션 배열 검증
+        if (
+            productData.additionalOptions &&
+            !Array.isArray(productData.additionalOptions)
+        ) {
+            return NextResponse.json(
+                { error: "additionalOptions는 배열이어야 합니다." },
+                { status: 400 },
+            );
+        }
+
+        // 추가 옵션 내용 검증
+        if (productData.additionalOptions) {
+            for (const addOption of productData.additionalOptions) {
+                if (!addOption.name || typeof addOption.name !== 'string') {
+                    return NextResponse.json(
+                        { error: "추가 옵션의 이름(name)은 필수 문자열입니다." },
+                        { status: 400 },
+                    );
+                }
+                 if (addOption.additionalPrice && typeof addOption.additionalPrice !== 'number') {
+                     return NextResponse.json(
+                        { error: "추가 옵션의 추가금액(additionalPrice)은 숫자여야 합니다." },
+                        { status: 400 },
+                    );
+                }
+            }
+        }
+
         await connectDB();
 
         // 업데이트할 데이터를 준비합니다.
-        const updateData: any = { ...otherProductData };
+        const updateData: any = { ...productData };
 
         if (updateData.options && Array.isArray(updateData.options)) {
             const totalQuantity = updateData.options.reduce((sum: number, option: any) => sum + (Number(option.stockQuantity) || 0), 0);
@@ -196,23 +252,29 @@ const PUT = async (req: NextRequest) => {
             updateData.quantity = totalQuantity.toString();
         }
 
-        // ✅ `$set` 연산자를 사용하여 필드를 명시적으로 덮어쓰도록 지시합니다.
-        // 이렇게 하면 배열이 실수로 병합되는 현상을 완벽하게 방지할 수 있습니다.
+        // additionalOptions 필드도 업데이트에 포함
+        if (updateData.additionalOptions) {
+            updateData.additionalOptions = productData.additionalOptions;
+        } else {
+            // 만약 요청에 additionalOptions가 없다면 빈 배열로 설정
+            updateData.additionalOptions = [];
+        }
+
         const updatedProduct = await Product.findByIdAndUpdate(
             productId,
-            { $set: updateData }, // updateData 객체를 $set으로 감쌉니다.
-            {
-                new: true, // 업데이트된 후의 문서를 반환
-                runValidators: true, // 스키마 유효성 검사 실행
-            },
+            { $set: updateData },
+            { new: true, runValidators: true },
         ).lean();
 
         if (!updatedProduct) {
             return NextResponse.json(
-                { error: "Product not found" },
+                { success: false, message: "상품을 찾을 수 없습니다." },
                 { status: 404 },
             );
         }
+
+        updateData.memsage = "상품 수정 성공";
+        updateData.success = true;
 
         return NextResponse.json(updatedProduct, { status: 200 });
 

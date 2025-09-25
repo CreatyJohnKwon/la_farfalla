@@ -194,7 +194,7 @@ const UpdateCategoryModal = ({ onClose }: { onClose: () => void }) => {
                 initial={{ opacity: 0, y: 0 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 30 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.0 }}
                 className="relative flex h-full max-h-[90vh] w-full max-w-2xl flex-col rounded-sm bg-white"
                 onClick={(e) => e.stopPropagation()}
             >

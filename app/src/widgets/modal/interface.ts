@@ -4,7 +4,6 @@ import {
     ProductVariant,
     ImageData,
 } from "@src/components/product/interface";
-import { Category } from "@src/entities/type/interfaces";
 import { SetStateAction } from "jotai";
 import { Dispatch } from "react";
 
@@ -55,10 +54,17 @@ interface UploadImageProps {
     setHasImageChanges: Dispatch<SetStateAction<boolean>>;
 }
 
+interface AdditionalOption {
+    id: string;
+    name: string;
+    additionalPrice: number;
+}
+
 export type {
     SizeProps,
     OptionsProps,
     SectionProps,
     DescriptionInfoProps,
     UploadImageProps,
+    AdditionalOption
 };

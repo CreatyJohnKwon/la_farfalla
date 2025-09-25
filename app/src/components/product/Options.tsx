@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ProductVariant } from "@src/components/product/interface";
-import { OptionsProps } from "./interface";
+import { OptionsProps } from "../../widgets/modal/interface";
 
 const Options = ({
     variants,

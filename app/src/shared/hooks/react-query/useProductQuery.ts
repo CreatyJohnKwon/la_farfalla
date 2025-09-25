@@ -8,18 +8,7 @@ import {
 } from "../../lib/server/product";
 import { useSetAtom } from "jotai";
 import { loadingAtom, resetProductFormAtom } from "../../lib/atom";
-import { Product } from "@src/components/product/interface";
-
-type ProductPage = {
-  data: Product[];    // 실제 상품 리스트
-  hasMore: boolean;  // 다음 페이지 존재 여부
-};
-
-// useInfiniteQuery 반환값 타입
-type InfiniteQueryResult = {
-  pages: ProductPage[];  // pages 배열이 ProductPage 객체 배열임
-  pageParams: number[];  // 페이지 번호 배열
-};
+import { InfiniteQueryResult, Product, ProductPage } from "@src/components/product/interface";
 
 // 무한 스크롤 사용
 const useProductListQuery = (limit = 9, initialData?: Product[]) => {
@@ -60,15 +49,21 @@ const usePostProductMutation = () => {
     const resetProductForm = useSetAtom(resetProductFormAtom);
 
     return useMutation<Product, Error, Product>({
-        mutationFn: async (productData: Product) => postProduct(productData),
+        mutationFn: async (productData: Product) => {
+            const payload = {
+                ...productData,
+                additionalOptions: productData.additionalOptions?.map(({ id, ...rest }) => rest),
+            };
+            return postProduct(payload);
+        },
         onSuccess: () => {
             // 상품 리스트 캐시 업데이트
             queryClient.invalidateQueries({ queryKey: ["get-product-list"] });
-            alert(`상품이 업데이트 되었습니다`);
+            alert(`상품이 등록되었습니다`);
             resetProductForm();
         },
         onError: (error) => {
-            alert(`상품 업데이트 중 오류가 발생했습니다: ${error.message}`);
+            alert(`상품 등록 중 오류가 발생했습니다: ${error.message}`);
         },
         onSettled: () => {
             setLoading(false);
@@ -82,12 +77,18 @@ const useUpdateProductMutation = () => {
     const resetProductForm = useSetAtom(resetProductFormAtom);
 
     return useMutation({
-        mutationFn: async (productData: Product) => updateProduct(productData), // PUT /products/:id
+        mutationFn: async (productData: Product) => {
+            const payload = {
+                ...productData,
+                additionalOptions: productData.additionalOptions?.map(({ id, ...rest }) => rest),
+            };
+            return updateProduct(payload);
+        },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["get-product-list"] });
             // 특정 상품 캐시도 업데이트
             queryClient.invalidateQueries({
-                queryKey: ["get-product", data.id],
+                queryKey: ["get-product", data._id],
             });
             alert(`상품 정보가 수정되었습니다!`);
             resetProductForm();

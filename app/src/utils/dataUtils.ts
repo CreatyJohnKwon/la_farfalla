@@ -42,6 +42,12 @@ const adminMenuItems = [
     { label: "COUPON", path: "/admin/list/coupons" },
 ];
 
+// 상품 상세페이지 탭
+const productTabs = [
+    { id: "description", label: "상세정보" },
+    { id: "reviews", label: "구매평" },
+];
+
 const textareaPlaceholder = `리뷰 작성시 적립금 안내
 텍스트후기 : 마일리지 500원 지급
 포토후기 : 기본 마일리지 1,000원 지급
@@ -62,6 +68,7 @@ export {
     serviceMenuItems,
     adminMenuItems,
     textareaPlaceholder,
+    productTabs,
     THIRTY_DAYS,
     ONE_DAY
 }

@@ -1,9 +1,7 @@
 import { Category, CreateCategoryData, UpdateCategoryData } from "@src/entities/type/interfaces";
 import { baseUrl } from "public/data/common";
 
-/**
- * 모든 카테고리 목록을 가져옵니다. (클라이언트 사이드용)
- */
+/** 모든 카테고리 목록을 가져옵니다. (클라이언트 사이드용) */
 const getCategories = async (): Promise<Category[]> => {
     try {
         const res = await fetch(`/api/categories`);

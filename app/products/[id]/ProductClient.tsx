@@ -9,6 +9,7 @@ import DescriptionImage from "@src/components/product/DescriptionImage";
 import ReviewSystem from "@src/components/review/ReviewSystem";
 import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
 import { useGetReviewsListQuery } from "@src/shared/hooks/react-query/useReviewQuery";
+import { productTabs } from "@/src/utils/dataUtils";
 
 const ProductClient = ({ id }: { id: string }) => {
     const {
@@ -31,12 +32,6 @@ const ProductClient = ({ id }: { id: string }) => {
 
     const reviews = reviewsData?.data || [];
     const imgsOnly: string[] = reviewsData?.imagesOnly || [];
-
-    // 탭 데이터
-    const tabs = [
-        { id: "description", label: "상세정보" },
-        { id: "reviews", label: "구매평" },
-    ];
 
     // 콘텐츠 높이 체크 함수
     const checkContentHeight = () => {
@@ -158,7 +153,7 @@ const ProductClient = ({ id }: { id: string }) => {
                 {/* 탭 헤더 */}
                 <div className="relative border-b">
                     <nav className="relative flex space-x-8 px-6 font-pretendard font-[500]">
-                        {tabs.map((tab) => (
+                        {productTabs.map((tab) => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}

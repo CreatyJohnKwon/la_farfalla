@@ -22,8 +22,10 @@ import ProductTitle from "./ProductTitle";
 import DescriptionInfo from "./DescriptionInfo";
 import CategorySelector from "./CategorySelector";
 import Section from "./Section";
-import Options from "./Options";
+import Options from "../../components/product/Options";
 import Size from "./Size";
+import { AdditionalOption } from "./interface";
+import AdditionalOptions from "@/src/components/product/AdditionalOptions";
 
 const UpdateProductModal = ({
     onClose,
@@ -56,6 +58,13 @@ const UpdateProductModal = ({
     const [newVariant, setNewVariant] = useState<NewVariantType>({
         colorName: "",
         stockQuantity: 0,
+    });
+
+    // 추가 옵션 상태
+    const [additionalOptions, setAdditionalOptions] = useState<AdditionalOption[]>([]);
+    const [newAdditionalOption, setNewAdditionalOption] = useState({
+        name: "",
+        additionalPrice: 0,
     });
 
     // Hooks
@@ -153,6 +162,10 @@ const UpdateProductModal = ({
         setSizeInput("");
         setHasImageChanges(false);
         setHasDescriptionImageChanges(false);
+
+        // 추가옵션 초기화
+        setAdditionalOptions([]);
+        setNewAdditionalOption({ name: "", additionalPrice: 0 });
     };
 
     // 기존 상품 데이터로 초기화
@@ -204,6 +217,10 @@ const UpdateProductModal = ({
                     }),
                 );
                 setVariants(existingVariants);
+            }
+
+            if (product.additionalOptions && Array.isArray(product.additionalOptions)) {
+                setAdditionalOptions(product.additionalOptions);
             }
         } else {
             resetAll();
@@ -350,18 +367,12 @@ const UpdateProductModal = ({
                     }
                 }
 
-                // variants에서 options 배열 생성 (새로운 방식)
-                const options = variants.map((variant: ProductVariant) => ({
-                    colorName: variant.colorName,
-                    stockQuantity: variant.stockQuantity,
-                }));
-
                 const totalStock = variants.reduce(
                     (sum: number, v: ProductVariant) => sum + v.stockQuantity,
                     0,
                 );
 
-                const finalData: Product & { options: typeof options } = {
+                const finalData: Product = {
                     ...formData,
                     image: uploadedImageUrls,
                     description: {
@@ -369,12 +380,9 @@ const UpdateProductModal = ({
                         text: formData.description.text,
                         detail: formData.description.detail,
                     },
-                    // 새로운 options 기반 데이터
-                    options: options,
-
-                    // 호환성을 위한 기존 필드들 (필요시 제거 가능)
-                    size: formData.size,
+                    options: variants,
                     quantity: totalStock.toString(),
+                    additionalOptions: additionalOptions, 
                 };
 
                 if (mode === "update" && product?._id) {
@@ -487,6 +495,14 @@ const UpdateProductModal = ({
                     setVariants={setVariants}
                     newVariant={newVariant}
                     setNewVariant={setNewVariant}
+                />
+
+                {/* 추가 옵션 관리 */}
+                <AdditionalOptions 
+                    additionalOptions={additionalOptions}
+                    setAdditionalOptions={setAdditionalOptions}
+                    newAdditionalOption={newAdditionalOption}
+                    setNewAdditionalOption={setNewAdditionalOption}
                 />
 
                 {/* 사이즈 입력 */}

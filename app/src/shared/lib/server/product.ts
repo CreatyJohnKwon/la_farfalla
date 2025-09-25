@@ -1,4 +1,4 @@
-import { Product } from "@src/components/product/interface";
+import { Product, ProductPayload } from "@src/components/product/interface";
 
 const getProductList = async (page = 1, limit = 9) => {
     const res = await fetch(`/api/product?page=${page}&limit=${limit}`);
@@ -12,7 +12,7 @@ const getProduct = async (id: string) => {
     return await res.json();
 };
 
-const postProduct = async (productData: Product) => {
+const postProduct = async (productData: ProductPayload) => {
     const res = await fetch("/api/product", {
         method: "POST",
         headers: {
@@ -29,7 +29,7 @@ const postProduct = async (productData: Product) => {
     return await res.json();
 };
 
-const updateProduct = async (productData: Product) => {
+const updateProduct = async (productData: ProductPayload) => {
     const res = await fetch(`/api/product?productId=${productData._id}`, {
         method: "PUT",
         headers: {

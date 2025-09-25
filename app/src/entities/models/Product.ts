@@ -16,6 +16,20 @@ const productOptionSchema = new mongoose.Schema(
     { _id: false },
 );
 
+const additionalOptionSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+        },
+        additionalPrice: {
+            type: Number,
+            required: true, // unrequired
+        },
+    },
+    { _id: false },
+);
+
 const productSchema = new mongoose.Schema(
     {
         title: {
@@ -88,6 +102,11 @@ const productSchema = new mongoose.Schema(
                 },
                 message: "옵션이 있다면 최소 1개 이상이어야 합니다.",
             },
+        },
+        additionalOptions: {
+            type: [additionalOptionSchema],
+            required: false,
+            default: [],
         },
     },
     {
