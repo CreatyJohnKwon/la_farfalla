@@ -6,7 +6,7 @@ import useUsers from "./useUsers";
 import { adminEmails } from "public/data/common";
 import { aboutMenuItems, adminMenuItems } from "@src/utils/dataUtils";
 import { useCategoriesQuery } from "./react-query/useCategoryQuery";
-
+ 
 const usePage = () => {
     const router = useRouter(); // useRouter 초기화
     const pathName = usePathname();
