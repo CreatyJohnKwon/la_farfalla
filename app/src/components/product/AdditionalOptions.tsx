@@ -90,6 +90,12 @@ const AdditionalOptions = ({
         setEditingOption(null);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        addOption();
+    };
+
     return (
         <div className="space-y-6">
             <label className="text-lg font-bold text-gray-900">
@@ -97,9 +103,9 @@ const AdditionalOptions = ({
             </label>
 
             {/* 옵션 추가 폼 */}
-            <div className="border border-gray-300 bg-gray-50 p-6">
+            <div className="border border-gray-300 bg-gray-50 p-6" onKeyDown={handleKeyDown}>
                 <h4 className="mb-4 text-base font-bold text-gray-900">
-                    새 추가 옵션 추가
+                    새 추가 옵션 생성
                 </h4>
                 <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-3">
                     <div className="space-y-2">
@@ -115,23 +121,21 @@ const AdditionalOptions = ({
                     <div className="space-y-2">
                         <label className="text-sm font-semibold text-gray-700">추가 금액 (선택)</label>
                         <input
-                            type="number"
+                            type="text"
                             value={newAdditionalOption.additionalPrice}
                             onChange={(e) => setNewAdditionalOption({ ...newAdditionalOption, additionalPrice: parseInt(e.target.value) || 0 })}
                             className="w-full border border-gray-300 px-4 py-3 text-sm transition-colors hover:border-gray-400 focus:border-gray-500 focus:outline-none"
-                            min="0"
-                            placeholder="0"
+                            placeholder="금액"
                         />
                     </div>
                     <div className="space-y-2">
                         <label className="text-sm font-semibold text-gray-700">재고</label>
                         <input
-                            type="number"
+                            type="text"
                             value={newAdditionalOption.stockQuantity}
                             onChange={(e) => setNewAdditionalOption({ ...newAdditionalOption, stockQuantity: parseInt(e.target.value) || 0 })}
                             className="w-full border border-gray-300 px-4 py-3 text-sm transition-colors hover:border-gray-400 focus:border-gray-500 focus:outline-none"
-                            min="0"
-                            placeholder="0"
+                            placeholder="재고"
                         />
                     </div>
                 </div>
@@ -165,7 +169,15 @@ const AdditionalOptions = ({
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {additionalOptions.map((option, index) => (
-                                    <tr key={option.id} className={`transition-colors hover:bg-gray-50 ${index % 2 === 0 ? "bg-white" : "bg-gray-50/50"} ${editingOptionId === option.id ? "bg-blue-50" : ""}`}>
+                                    <tr 
+                                        key={option.id} 
+                                        className={`transition-colors hover:bg-gray-50 ${index % 2 === 0 ? "bg-white" : "bg-gray-50/50"} ${editingOptionId === option.id ? "bg-blue-50" : ""}`}
+                                        onKeyDown={(e) => {
+                                            if (e.key !== 'Enter') return;
+                                            e.preventDefault();
+                                            saveEditOption(option?.id)
+                                        }}
+                                    >
                                         <td className="px-4 py-4">
                                             {editingOptionId === option.id ? (
                                                 <input
@@ -183,11 +195,11 @@ const AdditionalOptions = ({
                                         <td className="px-4 py-4 text-center">
                                             {editingOptionId === option.id ? (
                                                 <input
-                                                    type="number"
+                                                    type="text"
                                                     value={editingOption?.additionalPrice || 0}
                                                     onChange={(e) => setEditingOption({ ...editingOption!, additionalPrice: parseInt(e.target.value) || 0 })}
                                                     className="w-24 border border-gray-300 px-2 py-1 text-center text-sm focus:border-blue-500 focus:outline-none"
-                                                    min="0"
+                                                    placeholder='금액'
                                                 />
                                             ) : (
                                                 <span className="text-sm text-gray-600">
@@ -198,11 +210,11 @@ const AdditionalOptions = ({
                                         <td className="px-4 py-4 text-center">
                                             {editingOptionId === option.id ? (
                                                 <input
-                                                    type="number"
+                                                    type="text"
                                                     value={editingOption?.stockQuantity || 0}
                                                     onChange={(e) => setEditingOption({ ...editingOption!, stockQuantity: parseInt(e.target.value) || 0 })}
                                                     className="w-24 border border-gray-300 px-2 py-1 text-center text-sm focus:border-blue-500 focus:outline-none"
-                                                    min="0"
+                                                    placeholder='재고'
                                                 />
                                             ) : (
                                                 <span className={`text-sm font-bold ${option.stockQuantity === 0 ? "text-red-500" : "text-gray-600"}`}>

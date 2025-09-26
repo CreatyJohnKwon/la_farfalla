@@ -419,6 +419,22 @@ const UpdateProductModal = ({
         }
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+        // 엔터 키가 눌렸을 때만 로직 실행
+        if (e.key === 'Enter') {
+            const target = e.target as HTMLElement;
+
+            // 포커스된 요소가 'submit' 타입의 버튼인지 확인
+            const isSubmitButton = target.tagName === 'BUTTON' && (target as HTMLButtonElement).type === 'submit';
+
+            // 만약 submit 버튼이 아니라면, 기본 동작(폼 제출)을 막습니다.
+            if (!isSubmitButton) {
+                e.preventDefault();
+            }
+            // submit 버튼이라면, 이 조건문을 건너뛰므로 기본 동작(폼 제출)이 정상적으로 실행됩니다.
+        }
+    };
+
     // 로딩 상태
     if (categoryLoading) {
         return (
@@ -457,7 +473,7 @@ const UpdateProductModal = ({
                 {mode === "update" ? "상품 수정" : "상품 등록"}
             </h1>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-8">
                 {/* 이미지 업로드 섹션 */}
                 <UploadImage
                     mode={mode}

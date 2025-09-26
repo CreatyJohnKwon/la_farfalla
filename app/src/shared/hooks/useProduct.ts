@@ -38,7 +38,7 @@ const useProduct = () => {
             .filter(cat => categoryIds.includes(cat._id))
             .map(cat => cat.name);
 
-        return result
+        return result.length > 0  ? result : ["All"];
     };
 
     const returnCategory = (categoryId?: string): string => {

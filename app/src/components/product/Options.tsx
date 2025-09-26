@@ -112,6 +112,12 @@ const Options = ({
         setEditingVariant(null);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        addVariant();
+    };
+
     return (
         <div className="space-y-6">
             <label className="text-lg font-bold text-gray-900">
@@ -119,7 +125,7 @@ const Options = ({
             </label>
 
             {/* 옵션 추가 폼 */}
-            <div className="border border-gray-300 bg-gray-50 p-6">
+            <div className="border border-gray-300 bg-gray-50 p-6" onKeyDown={handleKeyDown}>
                 <h4 className="mb-4 text-base font-bold text-gray-900">
                     새 색상 옵션 추가
                 </h4>
@@ -148,20 +154,18 @@ const Options = ({
                             재고수량
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             value={newVariant.stockQuantity}
                             onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>,
                             ) =>
                                 setNewVariant({
                                     ...newVariant,
-                                    stockQuantity:
-                                        parseInt(e.target.value) || 0,
+                                    stockQuantity: parseInt(e.target.value) || 0,
                                 })
                             }
                             className="w-full border border-gray-300 px-4 py-3 text-sm transition-colors hover:border-gray-400 focus:border-gray-500 focus:outline-none"
-                            min="0"
-                            placeholder="0"
+                            placeholder=""
                         />
                     </div>
                     <button
@@ -209,6 +213,12 @@ const Options = ({
                                     ) => (
                                         <tr
                                             key={variant.id}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && editingVariantId === variant.id) {
+                                                    e.preventDefault();
+                                                    saveEditVariant(variant.id);
+                                                }
+                                            }}
                                             className={`transition-colors hover:bg-gray-50 ${
                                                 index % 2 === 0
                                                     ? "bg-white"
@@ -255,7 +265,7 @@ const Options = ({
                                                 {editingVariantId ===
                                                 variant.id ? (
                                                     <input
-                                                        type="number"
+                                                        type="text"
                                                         value={
                                                             editingVariant?.stockQuantity ||
                                                             0
@@ -273,7 +283,7 @@ const Options = ({
                                                             })
                                                         }
                                                         className="w-20 border border-gray-300 px-2 py-1 text-center text-sm focus:border-blue-500 focus:outline-none"
-                                                        min="0"
+                                                        placeholder="재고"
                                                     />
                                                 ) : (
                                                     <span

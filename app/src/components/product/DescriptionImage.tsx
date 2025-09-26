@@ -40,11 +40,7 @@ const DescriptionImage = ({
         <div className="relative w-full">
             <div
                 ref={descriptionRef}
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                    showFullDescription || !needsToggle
-                        ? "max-h-none"
-                        : "max-h-[700px]"
-                }`}
+                className={`overflow-hidden transition-all duration-500 ease-in-out`}
             >
                 {optimizedDescriptionImages.length > 0 ? (
                     optimizedDescriptionImages.map(
@@ -81,11 +77,11 @@ const DescriptionImage = ({
             </div>
 
             {/* 그라데이션 오버레이 */}
-            {!showFullDescription && needsToggle && (
+            {/* {!showFullDescription && needsToggle && (
                 <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent"></div>
-            )}
+            )} */}
 
-            {/* 더보기/접기 버튼 */}
+            {/* 더보기/접기 버튼
             {needsToggle && (
                 <div className="flex justify-center p-4">
                     <button
@@ -114,7 +110,7 @@ const DescriptionImage = ({
                         </svg>
                     </button>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

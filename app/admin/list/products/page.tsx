@@ -189,17 +189,18 @@ const Products = () => {
                                     </span>
                                     <div className="flex flex-wrap gap-2">
                                         {uniqueCategory.map((categoryId) => (
-                                            <button
-                                                key={categoryId}
-                                                onClick={() => handleCategoryToggle(categoryId)}
-                                                className={`min-h-[35px] rounded-sm border p-3 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2
-                                                    ${categoryFilter.includes(categoryId)
-                                                        ? "border-blue-600 bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
-                                                        : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-blue-500"
-                                                    }`}
-                                            >
-                                                {returnCategory(categoryId)}
-                                            </button>
+                                            returnCategory(categoryId) ?
+                                                <button
+                                                    key={categoryId}
+                                                    onClick={() => handleCategoryToggle(categoryId)}
+                                                    className={`min-h-[35px] rounded-sm border p-3 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2
+                                                        ${categoryFilter.includes(categoryId)
+                                                            ? "border-blue-600 bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
+                                                            : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-blue-500"
+                                                        }`}
+                                                >
+                                                    {returnCategory(categoryId)}
+                                                </button> : null
                                         ))}
                                     </div>
                                 </div>

@@ -258,11 +258,11 @@ const ProductInfo = ({ product }: { product: Product }) => {
 
     return (
         <div className="w-full md:w-1/2">
-            <div className="mt-3 flex h-full flex-col items-center justify-center gap-3 md:mt-0 md:gap-4 xl:gap-5">
+            <div className="mt-3 flex h-full flex-col items-center justify-center md:mt-0 gap-5 xl:gap-5">
                 {/* title with share button */}
                 <div className="flex flex-col items-center gap-2 text-center md:gap-3 lg:gap-4 xl:gap-5">
                     <div className="relative w-full max-w-[90vw] md:max-w-none">
-                        <h1 className="font-amstel pr-10 text-3xl md:pr-16 md:text-4xl xl:text-5xl">
+                        <h1 className="font-amstel pr-10 text-2xl md:pr-16 md:text-3xl xl:text-4xl">
                             {product.title.eg}
                         </h1>
 
@@ -298,7 +298,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 </div>
 
                 {/* Description text */}
-                <span className="w-full px-2 text-center font-pretendard text-sm font-[200] xl:text-base">
+                <span className="w-full px-2 text-center font-pretendard text-sm font-[200] xl:text-base whitespace-pre-line">
                     {product.description.text}
                 </span>
 
@@ -417,7 +417,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                             DETAILS
                         </button>
                         <div
-                            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                            className={`overflow-hidden whitespace-pre-line transition-all duration-300 ease-in-out ${
                                 activeTab === "details"
                                     ? "max-h-96 opacity-100"
                                     : "max-h-0 opacity-0"
