@@ -40,9 +40,6 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                     ref={ref as any}
                     className="relative overflow-hidden transition-all duration-300 md:group-hover:scale-[1.01]"
                 >
-                    {/* 3:4 비율 (4/3 * 100% = 133.33%) */}
-                    <div className="pb-[133.33%]"></div>
-
                     {/* 향상된 스켈레톤 로딩 */}
                     {(!isLoaded || isLoading) && shouldLoad && (
                         <div className="absolute left-0 top-0 h-full w-full bg-gray-100">
@@ -56,21 +53,23 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
 
                     {/* 최적화된 이미지 렌더링 */}
                     {shouldLoad && (
-                        <Image
-                            src={optimizedSrc}
-                            alt={product.title.eg || ""}
-                            width={500}
-                            height={667}
-                            className={`absolute left-0 top-0 h-full w-full object-cover transition-all duration-500 ${
-                                isLoaded ? "opacity-100" : "opacity-0"
-                            }`}
-                            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                            priority={index < 2} // 처음 2개만 priority
-                            quality={index < 4 ? 85 : 75}
-                            loading={index < 4 ? "eager" : "lazy"}
-                            placeholder="blur"
-                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                        />
+                        <div className="group relative aspect-[3/4]">
+                            <Image
+                                src={optimizedSrc}
+                                alt={product.title.eg || ""}
+                                width={500}
+                                height={500}
+                                className={`absolute left-0 top-0 h-full w-full object-cover transition-all duration-500 ${
+                                    isLoaded ? "opacity-100" : "opacity-0"
+                                }`}
+                                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                                priority={index < 2} // 처음 2개만 priority
+                                quality={index < 4 ? 85 : 75}
+                                loading={index < 4 ? "eager" : "lazy"}
+                                placeholder="blur"
+                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                            />
+                        </div>
                     )}
 
                     {/* 호버 오버레이 */}

@@ -28,6 +28,14 @@ const ShopClient = () => {
         return [];
     }, [products, filteredProducts]);
 
+    const handleRealTimeSearch = useCallback( 
+        (query: string, searchResults: Product[]) => { 
+            setSearchQuery(query); 
+            setSearchFilteredProducts(searchResults); 
+            setIsSearchMode(query.length > 0); 
+        }, []
+    ); 
+
     const [searchQuery, setSearchQuery] = useState<string>(""); 
     const [searchFilteredProducts, setSearchFilteredProducts] = useState<Product[]>([]); 
     const [isSearchMode, setIsSearchMode] = useState<boolean>(false); 
@@ -65,18 +73,10 @@ const ShopClient = () => {
         } 
     }, [isSearchMode, searchFilteredProducts, filteredProducts]); 
 
-    const handleRealTimeSearch = useCallback( 
-        (query: string, searchResults: Product[]) => { 
-            setSearchQuery(query); 
-            setSearchFilteredProducts(searchResults); 
-            setIsSearchMode(query.length > 0); 
-        }, []
-    ); 
-
     useEffect(() => { 
         if (!productsLoading && (filteredProducts.length > 0 || searchFilteredProducts.length > 0)) { 
             requestAnimationFrame(() => { 
-                setTimeout(preloadImages, 100); 
+                setTimeout(preloadImages, 100);
             }); 
         } 
     }, [productsLoading, filteredProducts, searchFilteredProducts, preloadImages]); 
@@ -89,8 +89,8 @@ const ShopClient = () => {
         <div className="flex w-full min-h-full flex-col">
             <main className="flex w-full flex-col flex-grow">
                 <div className="flex flex-col items-center">
-                    <div className="relative flex w-[93vw] flex-col items-center justify-center py-12 mt-10 sm:mt-20 md:flex-row">
-                        <div className="w-[10vh] md:w-auto md:absolute md:left-0 self-start">
+                    <div className="fixed top-0 flex w-full flex-col items-center justify-center pt-16 pb-5 sm:mt-12 md:flex-row bg-white z-10">
+                        <div className="w-[10vh] md:w-auto md:absolute md:left-0 self-start ms-[3.5vw]">
                             <SearchButton
                                 products={searchableProducts}
                                 onSearch={handleRealTimeSearch}
@@ -144,7 +144,7 @@ const ShopClient = () => {
                                 </div>
                             ) : (
                                 <div>
-                                    <ul className="mt-4 grid w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3">
+                                    <ul className="mt-40 md:mt-10 grid w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3">
                                         {displayProducts.map((item, index) => (
                                             <ProductsList
                                                 key={`${item._id}-${isSearchMode ? "search" : section}-${index}`}

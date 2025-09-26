@@ -30,7 +30,7 @@ const QuantityModal = ({
 
     return (
         <div className={`flex items-center gap-3 ${custom}`}>
-            <div className="truncate text-base text-gray-700">
+            <div className="truncate font-pretendard font-[300] text-base text-black">
                 {` ${item.additional ? `${item.additional}` : item.color+"\t-\t"+item.size}`}
             </div>
 

@@ -274,11 +274,11 @@ const ProductInfo = ({ product }: { product: Product }) => {
                             aria-label="상품 공유하기"
                         >
                             {shareStatus === "copied" ||
-                            shareStatus === "shared" ? (
-                                <CheckIcon className="h-4 w-4 text-gray-900 md:h-5 md:w-5 lg:h-6 lg:w-6" />
-                            ) : (
-                                <ShareIcon className="h-4 w-4 text-gray-600 transition-colors group-hover:text-black md:h-5 md:w-5 lg:h-6 lg:w-6" />
-                            )}
+                                shareStatus === "shared" ? (
+                                    <CheckIcon className="h-4 w-4 text-gray-900 md:h-5 md:w-5 lg:h-6 lg:w-6" />
+                                ) : (
+                                    <ShareIcon className="h-4 w-4 text-gray-600 transition-colors group-hover:text-black md:h-5 md:w-5 lg:h-6 lg:w-6" />
+                                )}
                         </button>
 
                         {/* 공유 상태 메시지 - 반응형 위치 */}
@@ -346,7 +346,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 {selectedItems.map((item: SelectedItem) => (
                     <QuantityModal
                         id={item.cartItemId}
-                        custom="w-full text-sm md:text-base font-amstel flex items-center justify-end gap-2 md:gap-4 text-black c_md:gap-6 px-2 md:px-0"
+                        custom="w-full text-sm md:text-base flex items-center justify-end gap-2 md:gap-4 text-black c_md:gap-6 px-2 md:px-0"
                         key={item.cartItemId}
                         item={item}
                         onDelete={(id) => {

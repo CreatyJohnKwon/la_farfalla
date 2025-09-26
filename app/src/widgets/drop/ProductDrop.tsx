@@ -94,15 +94,15 @@ const ProductDrop = ({
     }, []);
 
     const placeholder =
-        type === "additional" ? `${title} (선택)` : `${title} (필수)`;
+        type === "additional" ? `추가 상품` : type === "size" ? "사이즈" : "색상";
 
     return (
-        <div ref={dropRef} className="font-amstel relative w-full">
-            <label className="mb-1 block text-xs font-semibold text-black md:text-sm">
+        <div ref={dropRef} className="relative w-full">
+            <label className="mb-1 block text-xs font-amstel font-[300] text-black md:text-sm">
                 {title} <span className="text-gray-800">{type === "additional" ? "" : "*"}</span>
             </label>
             <div
-                className="relative w-full cursor-pointer border border-gray-300 bg-white px-3 py-2 pr-8 text-xs text-gray-800 md:px-4 md:pr-10 md:text-sm"
+                className="relative w-full cursor-pointer border font-pretendard font-[200] border-gray-300 bg-white px-2 py-2 pr-8 text-xs text-gray-800 md:px-3 md:text-sm"
                 onClick={() => setOpen(!open)}
             >
                 {/* ✅ [수정] selected가 객체일 때 getDisplayText를 통해 문자열로 변환하여 표시 */}

@@ -45,13 +45,13 @@ const NavbarClient = () => {
 
     return (
         <nav
-            className={`fixed top-0 z-40 h-auto w-full pt-5 pb-3 sm:pb-4 text-base shadow-none ${pathName === "/home" || pathName === "/introduce" ? "bg-transparent" : "bg-white"} ${textColor}`}
+            className={`fixed top-0 z-40 h-auto w-full pt-5 pb-3 md:pb-4 text-base shadow-none ${pathName === "/home" || pathName === "/introduce" ? "bg-transparent" : "bg-white"} ${textColor}`}
         >
             <div
-                className={`max-w-screen-w_max w-[93vw] relative mx-auto flex items-center justify-between sm:pt-4 text-xl sm:text-base`}
+                className={`max-w-screen-w_max w-[93vw] relative mx-auto flex items-center justify-between md:pt-4 text-xl md:text-base`}
             >
                 {/* 왼쪽 메뉴 : PC */}
-                <ul className="hidden border-gray-100 sm:flex sm:space-x-4">
+                <ul className="hidden border-gray-100 md:flex md:space-x-4">
                     <li
                         className="font-amstel block"
                         key={"shop-menu"}
@@ -77,20 +77,20 @@ const NavbarClient = () => {
                 {/* 왼쪽 메뉴 : Mobile */}
                 <button onClick={() => setOpenSidebar(true)}>
                     <RxHamburgerMenu
-                        className={`ms-1 block text-[25px] z-40 sm:hidden`}
+                        className={`ms-1 block text-[25px] z-40 md:hidden`}
                     />
                 </button>
 
                 {/* 가운데 중앙 로고 (절대 위치) */}
-                <div className="font-amstel absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:-translate-y-1 text-base sm:text-2xl">
+                <div className="font-amstel absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:-translate-y-1 text-base md:text-2xl">
                     <Link href="/home">LA FARFALLA</Link>
                 </div>
 
                 <div
-                    className={`font-amstel ml-auto justify-center bg-transparent sm:order-1`}
+                    className={`font-amstel ml-auto justify-center bg-transparent md:order-1`}
                 >
                     {/* 오른쪽 메뉴 : Mobile */}
-                    <ul className="flex space-x-2 sm:hidden">
+                    <ul className="flex space-x-2 md:hidden">
                         <button onClick={() => setCartView(true)}>
                             <HiOutlineShoppingBag
                                 className={`me-3 text-[25px] ${session ? "block" : "hidden"}`}
@@ -105,13 +105,13 @@ const NavbarClient = () => {
                     </ul>
 
                     {/* 오른쪽 메뉴 : PC */}
-                    <ul className="hidden sm:flex sm:space-x-4">
+                    <ul className="hidden md:flex md:space-x-4">
                         {navStartData.map((navList, index) =>
                             navList.text === "CART" ? (
                                 session && (
                                     <li key={`nav_list_${index}`}>
                                         <button
-                                            className="block pe-4 sm:pe-6"
+                                            className="block pe-4 md:pe-6"
                                             onClick={() =>
                                                 setCartView(true)
                                             }
@@ -124,7 +124,7 @@ const NavbarClient = () => {
                                 <li key={`nav_list_${index}`}>
                                     <button
                                         onClick={logoutHandler}
-                                        className="block pe-4 sm:pe-0"
+                                        className="block pe-4 md:pe-0"
                                     >
                                         {navList.text}
                                     </button>
