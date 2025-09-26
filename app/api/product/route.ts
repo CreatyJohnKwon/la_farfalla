@@ -60,8 +60,6 @@ const POST = async (req: NextRequest) => {
     try {
         const productData = await req.json();
 
-        console.log(productData)
-
         // 기본 필수 필드 검증
         if (
             !productData.title ||
@@ -72,7 +70,7 @@ const POST = async (req: NextRequest) => {
             !productData.categories ||
             productData.size === undefined ||
             productData.title.kr === undefined ||
-            productData.description.images === undefined ||
+            productData.description.items === undefined || 
             productData.description.text === undefined
         ) {
             return NextResponse.json(
@@ -85,13 +83,13 @@ const POST = async (req: NextRequest) => {
         if (
             !Array.isArray(productData.image) ||
             !Array.isArray(productData.size) ||
-            !Array.isArray(productData.description.images) ||
+            !Array.isArray(productData.description.items) ||
             !Array.isArray(productData.categories) ||
             !Array.isArray(productData.options)
         ) {
             return NextResponse.json(
                 {
-                    error: "image, size, description.images, options는 배열이어야 합니다.",
+                    error: "image, size, description.items, options는 배열이어야 합니다.",
                 },
                 { status: 400 },
             );
@@ -103,6 +101,16 @@ const POST = async (req: NextRequest) => {
                 { error: "최소 1개 이상의 옵션이 필요합니다." },
                 { status: 400 },
             );
+        }
+
+        // description 배열 검증
+        for (const item of productData.description.items) {
+            if (!item.itemType || !['image', 'break'].includes(item.itemType)) {
+                return NextResponse.json({ error: "description.items의 itemType이 올바르지 않습니다." }, { status: 400 });
+            }
+            if (item.itemType === 'image' && (!item.src || typeof item.src !== 'string')) {
+                return NextResponse.json({ error: "itemType이 'image'인 경우 src는 필수 문자열입니다." }, { status: 400 });
+            }
         }
 
         // ✅ options 배열 내용 검증 (optionNumber 제거)
@@ -162,20 +170,7 @@ const POST = async (req: NextRequest) => {
 
         await connectDB();
 
-        // options에서 총 수량과 색상 배열 계산
-        const totalQuantity = productData.options.reduce((sum: number, option: any) => {
-            return sum + (Number(option.stockQuantity) || 0);
-        }, 0).toString();
-
-        const colors = [...new Set(productData.options.map((option: { colorName: string }) => option.colorName))];
-
-        const newProduct = new Product({
-            ...productData,
-            colors,
-            quantity: totalQuantity,
-            additionalOptions: productData.additionalOptions || [], // 추가 옵션 필드 할당
-        });
-
+        const newProduct = new Product(productData);
         const savedProduct = await newProduct.save();
 
         savedProduct.message = "상품 생성 성공";
@@ -197,15 +192,26 @@ const PUT = async (req: NextRequest) => {
         const productId = req.nextUrl.searchParams.get("productId");
 
         if (!productId || !isValidObjectId(productId)) {
-            return NextResponse.json(
-                { error: "올바른 productId가 필요합니다." },
-                { status: 400 },
-            );
+            return NextResponse.json({ error: "올바른 productId가 필요합니다." }, { status: 400 });
         }
 
         const productData = await req.json();
 
-        console.log(productData)
+        // description 배열 검증
+        if (productData.description && productData.description.items) {
+            if (!Array.isArray(productData.description.items)) {
+                return NextResponse.json({ error: "description.items는 배열이어야 합니다." }, { status: 400 });
+            }
+
+            for (const item of productData.description.items) {
+                if (!item.itemType || !['image', 'break'].includes(item.itemType)) {
+                    return NextResponse.json({ error: "description.items의 itemType이 올바르지 않습니다." }, { status: 400 });
+                }
+                if (item.itemType === 'image' && (!item.src || typeof item.src !== 'string')) {
+                    return NextResponse.json({ error: "itemType이 'image'인 경우 src는 필수 문자열입니다." }, { status: 400 });
+                }
+            }
+        }
 
         // options 배열이 있는 경우 검증
         if (productData.options && Array.isArray(productData.options)) {
@@ -294,15 +300,12 @@ const PUT = async (req: NextRequest) => {
 
         const updatedProduct = await Product.findByIdAndUpdate(
             productId,
-            { $set: updateData },
-            { new: true, runValidators: true },
+            { $set: productData }, // $set을 사용하여 받은 데이터 전체를 업데이트
+            { new: true, runValidators: true }, // new: true로 업데이트된 문서를 반환, runValidators: true로 스키마 유효성 검사 실행
         ).lean();
 
         if (!updatedProduct) {
-            return NextResponse.json(
-                { success: false, message: "상품을 찾을 수 없습니다." },
-                { status: 404 },
-            );
+            return NextResponse.json({ success: false, message: "상품을 찾을 수 없습니다." }, { status: 404 });
         }
 
         updateData.memsage = "상품 수정 성공";

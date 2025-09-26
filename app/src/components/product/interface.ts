@@ -18,6 +18,11 @@ interface Product {
     ratingCount?: number;
 }
 
+interface DescriptionItem {
+    itemType: 'image' | 'break';
+    src?: string; // 'break' 타입일 때는 src가 없으므로 optional (?) 처리
+}
+
 type ProductPage = {
   data: Product[];    // 실제 상품 리스트
   hasMore: boolean;  // 다음 페이지 존재 여부
@@ -41,7 +46,7 @@ interface ProductOption {
 }
 
 interface ProductDescription {
-    images: string[];
+    items: DescriptionItem[];
     text: string;
     detail: string;
 }
@@ -60,34 +65,6 @@ interface ProductVariant {
 
 // 검색 결과 타입
 interface SearchResult extends Product {
-    score: number;
-    matchType: "title" | "description" | "season" | "color";
-}
-
-// 검색 결과 타입
-interface SearchResult {
-    _id?: string;
-    title: {
-        kr: string;
-        eg: string;
-    };
-    description: {
-        images: string[];
-        text: string;
-        detail: string;
-    };
-    price: string;
-    discount: string;
-    image: string[];
-    seasonName: string;
-    size: Array<string>;
-    quantity: string;
-    options?: Array<{
-        productId?: string;
-        colorName: string;
-        stockQuantity: number;
-    }>;
-    createdAt?: Date;
     score: number;
     matchType: "title" | "description" | "season" | "color";
 }
@@ -118,6 +95,11 @@ interface specialReviewItem {
     productImage?: string[];
 }
 
+interface IDescriptionItem {
+    itemType: 'image' | 'break';
+    src?: string;
+}
+
 export type {
     Product,
     ProductPayload,
@@ -132,5 +114,7 @@ export type {
     DropdownItem,
     SearchResult,
     specialReviewItem,
-    InfiniteQueryResult
+    InfiniteQueryResult,
+    IDescriptionItem,
+    DescriptionItem
 };

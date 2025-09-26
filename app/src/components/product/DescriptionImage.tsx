@@ -1,12 +1,11 @@
 "use client";
 
 import DefaultImage from "../../../../public/images/chill.png";
-import { RefObject, useMemo, useState } from "react";
+import { RefObject, useMemo } from "react";
 import Image from "next/image";
 import OptimizedDescriptionImage from "./OptimizedDescriptionImage";
-import { Product } from "./interface";
+import { DescriptionItem, Product } from "./interface";
 
-// 개별 Description 이미지 컴포넌트
 const DescriptionImage = ({
     product,
     visibleImages,
@@ -22,19 +21,32 @@ const DescriptionImage = ({
     descriptionRef: RefObject<HTMLDivElement | null>;
     needsToggle: boolean;
 }) => {
-    const [showFullDescription, setShowFullDescription] = useState(false);
+    // ✨ 1. 데이터 처리 로직 변경: useMemo 훅을 새로운 items 구조에 맞게 수정
+    const processedDescriptionItems = useMemo(() => {
+        // product.description.images 대신 product.description.items를 사용
+        if (!product?.description?.items) return [];
 
-    // 메모이제이션된 이미지 리스트
-    const optimizedDescriptionImages = useMemo(() => {
-        if (!product?.description?.images) return [];
-
-        return product.description.images.map((src, index) => ({
-            src,
-            index,
-            shouldLoad: visibleImages.has(index) || index < 2,
-            priority: index === 0,
-        }));
-    }, [product?.description?.images, visibleImages]);
+        return product.description.items.map((item: DescriptionItem, index: number) => {
+            if (item.itemType === 'image') {
+                return {
+                    type: 'image',
+                    src: item.src || '', // src가 없을 경우를 대비한 fallback
+                    index,
+                    shouldLoad: visibleImages.has(index) || index < 2, // Lazy loading 로직 유지
+                    priority: index === 0, // 첫 번째 이미지만 priority 적용
+                };
+            } else if (item.itemType === 'break') {
+                return {
+                    type: 'break',
+                    index,
+                };
+            }
+            return null; // 예외 처리
+        }).filter(Boolean); // null 값 제거
+    }, [product?.description?.items, visibleImages]);
+    
+    // 이미지가 하나라도 있는지 확인하는 변수
+    const hasImages = processedDescriptionItems.some(item => item?.type === 'image');
 
     return (
         <div className="relative w-full">
@@ -42,29 +54,47 @@ const DescriptionImage = ({
                 ref={descriptionRef}
                 className={`overflow-hidden transition-all duration-500 ease-in-out`}
             >
-                {optimizedDescriptionImages.length > 0 ? (
-                    optimizedDescriptionImages.map(
-                        ({ src, index, shouldLoad, priority }) => (
-                            <OptimizedDescriptionImage
-                                key={index}
-                                src={src}
-                                alt={`product_image_${product._id}_${index}`}
-                                shouldLoad={shouldLoad}
-                                priority={priority}
-                                onLoad={() => {
-                                    if (index < 3) {
-                                        setTimeout(checkContentHeight, 100);
-                                    }
-                                }}
-                                onVisible={() => {
-                                    setVisibleImages(
-                                        (prev) => new Set([...prev, index]),
-                                    );
-                                }}
-                            />
-                        ),
-                    )
+                {/* ✨ 2. 조건부 렌더링: item.type에 따라 이미지 또는 줄바꿈 렌더링 */}
+                {hasImages ? (
+                    processedDescriptionItems.map((item) => {
+                        if (!item) return null;
+
+                        // Case 1: 아이템 타입이 'image'일 경우
+                        if (item.type === 'image') {
+                            return (
+                                <OptimizedDescriptionImage
+                                    key={`desc-${item.src}-${item.index}`}
+                                    src={item.src}
+                                    alt={`product_image_${product._id}_${item.index}`}
+                                    shouldLoad={item.shouldLoad}
+                                    priority={item.priority}
+                                    onLoad={() => {
+                                        if (item.index < 3) {
+                                            setTimeout(checkContentHeight, 100);
+                                        }
+                                    }}
+                                    onVisible={() => {
+                                        setVisibleImages(
+                                            (prev) => new Set([...prev, item.index]),
+                                        );
+                                    }}
+                                />
+                            );
+                        }
+                        
+                        // Case 2: 아이템 타입이 'break'일 경우 (줄바꿈)
+                        if (item.type === 'break') {
+                            return (
+                                <div>
+                                    <br/>
+                                </div>
+                            );
+                        }
+
+                        return null;
+                    })
                 ) : (
+                    // 이미지가 아예 없을 경우 기본 이미지 표시
                     <Image
                         src={DefaultImage}
                         alt={`product_image_${product._id}_default`}
@@ -75,42 +105,6 @@ const DescriptionImage = ({
                     />
                 )}
             </div>
-
-            {/* 그라데이션 오버레이 */}
-            {/* {!showFullDescription && needsToggle && (
-                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent"></div>
-            )} */}
-
-            {/* 더보기/접기 버튼
-            {needsToggle && (
-                <div className="flex justify-center p-4">
-                    <button
-                        onClick={() =>
-                            setShowFullDescription(!showFullDescription)
-                        }
-                        className="z-40 flex items-center gap-2 rounded-full bg-transparent px-6 py-3 text-gray-700 transition-all duration-300 hover:bg-gray-200"
-                    >
-                        <span className="font-medium">
-                            {showFullDescription ? "더보기 접기" : "더보기"}
-                        </span>
-                        <svg
-                            className={`h-4 w-4 transition-transform duration-300 ${
-                                showFullDescription ? "rotate-180" : ""
-                            }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </button>
-                </div>
-            )} */}
         </div>
     );
 };

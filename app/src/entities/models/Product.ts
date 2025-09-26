@@ -1,8 +1,6 @@
-import { ProductVariant } from "@/src/components/product/interface";
+import { IDescriptionItem, ProductVariant } from "@/src/components/product/interface";
 import { AdditionalOption } from "@/src/widgets/modal/interface";
-import mongoose from "mongoose";
-
-// ... productOptionSchema와 additionalOptionSchema 정의는 동일 ...
+import mongoose, { Schema } from "mongoose";
 
 const productOptionSchema = new mongoose.Schema(
     {
@@ -21,10 +19,26 @@ const additionalOptionSchema = new mongoose.Schema(
     { _id: false },
 );
 
+const descriptionItemSchema = new Schema<IDescriptionItem>(
+    {
+        itemType: {
+            type: String,
+            required: true,
+            enum: ['image', 'break']
+        },
+        src: {
+            type: String,
+            // ✨ 3. 'this'의 타입을 명시적으로 지정하여 오류 해결
+            required: function(this: IDescriptionItem) {
+                return this.itemType === 'image';
+            }
+        },
+    },
+    { _id: false }
+);
 
 const productSchema = new mongoose.Schema(
     {
-        // ... title, description 등 다른 필드들은 동일 ...
         title: {
             type: new mongoose.Schema(
                 {
@@ -38,7 +52,11 @@ const productSchema = new mongoose.Schema(
         description: {
             type: new mongoose.Schema(
                 {
-                    images: { type: [String], required: true, default: [] },
+                    items: {
+                        type: [descriptionItemSchema],
+                        required: true,
+                        default: []
+                    },
                     text: { type: String, required: true, default: "" },
                     detail: { type: String, required: true, default: "" },
                 },
@@ -46,60 +64,17 @@ const productSchema = new mongoose.Schema(
             ),
             required: true,
         },
-        averageRating: {
-            type: Number,
-            required: false,
-            default: 0
-        },
-        ratingCount: {
-            type: Number,
-            required: false,
-            default: 0
-        },
-        price: {
-            type: String,
-            required: true,
-            default: "0"
-        },
-        discount: {
-            type: String,
-            default: "0",
-        },
-        quantity: { // 이 필드가 자동으로 계산됩니다.
-            type: String,
-            required: true,
-            default: "0",
-        },
-        image: {
-            type: [String],
-            required: true,
-        },
-        categories: {
-            type: [String],
-            required: true,
-            default: [],
-        },
-        size: {
-            type: [String],
-            required: true,
-            default: [],
-        },
-        options: {
-            type: [productOptionSchema],
-            required: false,
-            default: [],
-        },
-        additionalOptions: {
-            type: [additionalOptionSchema],
-            required: false,
-            default: [],
-        },
-        // 'colors' 필드를 추가하는 것이 좋습니다. pre 훅에서 사용하기 때문입니다.
-        colors: {
-            type: [String],
-            required: false,
-            default: [],
-        }
+        averageRating: { type: Number, default: 0 },
+        ratingCount: { type: Number, default: 0 },
+        price: { type: String, required: true, default: "0" },
+        discount: { type: String, default: "0" },
+        quantity: { type: String, required: true, default: "0" },
+        image: { type: [String], required: true },
+        categories: { type: [String], required: true, default: [] },
+        size: { type: [String], required: true, default: [] },
+        options: { type: [productOptionSchema], default: [] },
+        additionalOptions: { type: [additionalOptionSchema], default: [] },
+        colors: { type: [String], default: [] }
     },
     {
         timestamps: true,
@@ -147,5 +122,4 @@ productSchema.pre(["findOneAndUpdate", "updateOne"], function (next) {
     next();
 });
 
-export default mongoose.models?.Product ||
-    mongoose.model("Product", productSchema);
+export default mongoose.models?.Product || mongoose.model("Product", productSchema);

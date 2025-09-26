@@ -61,6 +61,9 @@ const textareaPlaceholder = `리뷰 작성시 적립금 안내
 const THIRTY_DAYS = 30 * 24 * 60 * 60; // 30일 (초 단위)
 const ONE_DAY = 24 * 60 * 60; // 1일 (초 단위)
 
+// 줄바꿈 식별자 / DescriptionItem 으로 사용
+const BREAK_IDENTIFIER = "---BREAK---";
+
 export {
     getCurrentDateTime,
     getDateTimeAfterHours,
@@ -70,5 +73,6 @@ export {
     textareaPlaceholder,
     productTabs,
     THIRTY_DAYS,
-    ONE_DAY
+    ONE_DAY,
+    BREAK_IDENTIFIER
 }

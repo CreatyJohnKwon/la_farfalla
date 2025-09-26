@@ -20,7 +20,7 @@ const HomeClient = ({ bannerAnnounce, popupAnnounces }: AnnouncesProps) => {
   }, []);
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col text-white">
+    <div className="relative flex min-h-screen w-full flex-col text-white overflow-auto scrollbar-hide">
       {/* ✅ 배경 이미지 */}
       <div className="absolute inset-0 -z-10">
         <Image

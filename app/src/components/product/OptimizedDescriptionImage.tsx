@@ -16,10 +16,10 @@ const OptimizedDescriptionImage = ({
     onLoad,
     onVisible,
 }: {
-    src: string;
+    src?: string;
     alt: string;
-    shouldLoad: boolean;
-    priority: boolean;
+    shouldLoad?: boolean;
+    priority?: boolean;
     onLoad: () => void;
     onVisible: () => void;
 }) => {

@@ -5,6 +5,7 @@ import {
     ProductVariant,
     NewVariantType,
     Product,
+    DescriptionItem,
 } from "@src/components/product/interface";
 import { useState, useEffect } from "react";
 import { useSetAtom } from "jotai";
@@ -25,6 +26,7 @@ import Options from "../../components/product/Options";
 import Size from "./Size";
 import { AdditionalOption } from "./interface";
 import AdditionalOptions from "@/src/components/product/AdditionalOptions";
+import { BREAK_IDENTIFIER } from "@/src/utils/dataUtils";
 
 interface UpdateProductModalProps {
     onClose: () => void;
@@ -39,8 +41,7 @@ const UpdateProductModal = ({
 }: UpdateProductModalProps) => {
     // 이미지 상태
     const [hasImageChanges, setHasImageChanges] = useState<boolean>(false);
-    const [hasDescriptionImageChanges, setHasDescriptionImageChanges] =
-        useState<boolean>(false);
+    const [hasDescriptionImageChanges, setHasDescriptionImageChanges] = useState<boolean>(false);
     const [imageData, setImageData] = useState<ImageData>({
         previews: [],
         files: [],
@@ -105,18 +106,6 @@ const UpdateProductModal = ({
                 existingUrls: product.image || [],
             });
 
-            const descriptionImages = Array.isArray(product.description.images)
-                ? product.description.images
-                : product.description.images
-                  ? [product.description.images]
-                  : [];
-
-            setDescriptionImageData({
-                previews: descriptionImages,
-                files: [],
-                existingUrls: descriptionImages,
-            });
-
             // ✨ 새로운 방식: options에서 variants 재생성
             if (
                 product.options &&
@@ -136,7 +125,7 @@ const UpdateProductModal = ({
             // 생성 모드: 빈 값으로 리셋
             setFormData({
                 title: { kr: "", eg: "" },
-                description: { images: [], text: "", detail: "" },
+                description: { items: [], text: "", detail: "" },
                 price: "",
                 discount: "",
                 image: [],
@@ -195,23 +184,30 @@ const UpdateProductModal = ({
                 existingUrls: product.image || [],
             });
 
-            // 기존 설명 이미지 데이터 설정
-            const descriptionImages = Array.isArray(product.description.images)
-                ? product.description.images
-                : product.description.images
-                  ? [product.description.images]
-                  : [];
+            // new description 로직
+            if (product.description && Array.isArray(product.description.items)) {
+                const initialPreviews: string[] = [];
+                const initialExistingUrls: string[] = [];
 
-            setDescriptionImageData({
-                previews: descriptionImages,
-                files: [],
-                existingUrls: descriptionImages,
-            });
+                product.description.items.forEach(item => {
+                    if (item.itemType === 'image' && item.src) {
+                        initialPreviews.push(item.src);
+                        initialExistingUrls.push(item.src);
+                    } else if (item.itemType === 'break') {
+                        initialPreviews.push(BREAK_IDENTIFIER);
+                        initialExistingUrls.push(BREAK_IDENTIFIER);
+                    }
+                });
+
+                setDescriptionImageData({
+                    previews: initialPreviews,
+                    files: [],
+                    existingUrls: initialExistingUrls,
+                });
+            }
 
             // ✨ 새로운 방식: options에서 variants 생성
-            if (
-                product.options &&
-                Array.isArray(product.options) &&
+            if (product.options && Array.isArray(product.options) &&
                 product.options.length > 0
             ) {
                 // options 배열이 있으면 그것을 사용 (새로운 방식)
@@ -335,59 +331,81 @@ const UpdateProductModal = ({
         e.preventDefault();
 
         try {
-            const confirmMessage =
-                mode === "update"
-                    ? "상품을 업데이트 하시겠습니까?"
-                    : "상품을 등록하시겠습니까?";
+            const confirmMessage = mode === "update"
+                ? "상품을 업데이트 하시겠습니까?"
+                : "상품을 등록하시겠습니까?";
 
             if (validateForm() && confirm(confirmMessage)) {
                 setLoading(true);
 
+                // --- 1. 대표 이미지 처리 (기존과 동일) ---
                 let uploadedImageUrls: string[] = imageData.existingUrls;
-                let uploadedDescriptionImageUrls: string[] =
-                    descriptionImageData.existingUrls;
-
-                // 이미지 업로드 처리
                 if (hasImageChanges && imageData.files.length > 0) {
-                    const newImageUrls = await uploadImagesToServer(
-                        imageData.files,
-                    );
+                    const newImageUrls = await uploadImagesToServer(imageData.files);
                     if (newImageUrls) {
-                        uploadedImageUrls = [
-                            ...imageData.existingUrls,
-                            ...newImageUrls,
-                        ];
+                        uploadedImageUrls = [...imageData.existingUrls, ...newImageUrls];
                     }
-                } else if (!hasImageChanges) {
-                    uploadedImageUrls = formData.image;
+                } else if (mode === "update" && !hasImageChanges) {
+                    // 수정 모드에서 변경이 없을 경우, 원본 데이터를 유지합니다.
+                    uploadedImageUrls = product?.image || [];
                 }
 
-                // 설명 이미지 업로드 처리
-                if (
-                    hasDescriptionImageChanges &&
-                    descriptionImageData.files.length > 0
-                ) {
-                    const newDescriptionImageUrls = await uploadImagesToServer(
-                        descriptionImageData.files,
-                    );
-                    if (newDescriptionImageUrls) {
-                        uploadedDescriptionImageUrls = [
-                            ...descriptionImageData.existingUrls,
-                            ...newDescriptionImageUrls,
-                        ];
+                // --- ✨ 2. 설명 이미지(items) 처리 로직 수정 ---
+                let finalDescriptionItems: DescriptionItem[] = [];
+
+                if (hasDescriptionImageChanges) {
+                    // ✅ Case 1: 설명 부분에 변경사항이 있는 경우
+                    // 현재 상태(descriptionImageData)를 기준으로 최종 데이터를 재구성합니다.
+
+                    let newImageUrls: string[] = [];
+                    // 새로 추가된 파일이 있다면 먼저 업로드합니다.
+                    if (descriptionImageData.files.length > 0) {
+                        const uploadedUrls = await uploadImagesToServer(descriptionImageData.files);
+                                            
+                        if (uploadedUrls) {
+                            newImageUrls = uploadedUrls;
+                        }
                     }
+
+                    let newUrlIndex = 0;
+                    // 현재 UI의 순서와 내용을 그대로 반영하는 previews 배열을 기준으로 최종 데이터를 만듭니다.
+                    finalDescriptionItems = descriptionImageData.previews.map(preview => {
+                        if (preview === BREAK_IDENTIFIER) {
+                            return { itemType: 'break' };
+                        }
+
+                        // 기존에 있던 이미지인지 확인 (blob: URL이 아닌 실제 http URL)
+                        const isExisting = descriptionImageData.existingUrls.includes(preview);
+                        if (isExisting) {
+                            return { itemType: 'image', src: preview };
+                        }
+                        
+                        // 기존 이미지가 아니라면, 새로 업로드된 이미지입니다.
+                        // 순서에 맞게 업로드된 실제 URL로 교체합니다.
+                        const finalUrl = newImageUrls[newUrlIndex++] || '';
+                        if (!finalUrl) {
+                            // 업로드된 URL이 없는 경우(오류), 해당 아이템을 누락시킬 수 있습니다.
+                            // 혹은 에러 처리를 할 수 있습니다. 여기서는 null을 반환하여 필터링합니다.
+                            console.warn("Uploaded URL is missing for a new image:", preview);
+                            return null;
+                        }
+                        return { itemType: 'image', src: finalUrl };
+                    }).filter((item): item is DescriptionItem => item !== null); // null 값을 제거하여 안전성 확보
+
+                } else if (mode === "update" && !hasDescriptionImageChanges) {
+                    // ✅ Case 2: 수정 모드이고 설명 부분에 변경사항이 없는 경우
+                    // 원본 product 데이터의 items를 그대로 사용합니다.
+                    finalDescriptionItems = product?.description.items || [];
                 }
 
-                const totalStock = variants.reduce(
-                    (sum: number, v: ProductVariant) => sum + v.stockQuantity,
-                    0,
-                );
+                // --- 3. 최종 데이터 조합 (기존과 유사) ---
+                const totalStock = variants.reduce((sum: number, v: ProductVariant) => sum + v.stockQuantity, 0);
 
                 const finalData: Product = {
                     ...formData,
                     image: uploadedImageUrls,
                     description: {
-                        images: uploadedDescriptionImageUrls,
+                        items: finalDescriptionItems,
                         text: formData.description.text,
                         detail: formData.description.detail,
                     },
@@ -494,9 +512,7 @@ const UpdateProductModal = ({
                     formData={formData}
                     handleInputChange={handleInputChange}
                     hasDescriptionImageChanges={hasDescriptionImageChanges}
-                    setHasDescriptionImageChanges={
-                        setHasDescriptionImageChanges
-                    }
+                    setHasDescriptionImageChanges={setHasDescriptionImageChanges}
                     descriptionImageData={descriptionImageData}
                     setDescriptionImageData={setDescriptionImageData}
                 />
