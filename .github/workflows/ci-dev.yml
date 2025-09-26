@@ -78,6 +78,7 @@ jobs:
                 
                 # 생성된 임시 파일에 보안을 위한 실행 권한을 설정합니다.
                 ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} "chmod 600 /tmp/env_setup.sh"
+
             - name: Remote Deploy to Development
               run: |
                   ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.DEV_EC2_PUBLIC_IP }} << 'EOF'
@@ -157,8 +158,8 @@ jobs:
               if: always()
               run: |
                   if [ ${{ job.status }} == 'success' ]; then
-                      echo "✅ Deployment completed successfully!"
+                      echo "✅ dev-nextjs Deployment completed successfully!"
                   else
-                      echo "❌ Deployment failed. Check logs above."
+                      echo "❌ dev-nextjs Deployment failed. Check logs above."
                       exit 1
                   fi
