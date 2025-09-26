@@ -10,6 +10,7 @@ import ReviewSystem from "@src/components/review/ReviewSystem";
 import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
 import { useGetReviewsListQuery } from "@src/shared/hooks/react-query/useReviewQuery";
 import { productTabs } from "@/src/utils/dataUtils";
+import { DescriptionItem } from "@/src/components/product/interface";
 
 const ProductClient = ({ id }: { id: string }) => {
     const {
@@ -50,9 +51,9 @@ const ProductClient = ({ id }: { id: string }) => {
 
     // 이미지 프리로드 (상품 로딩 완료 후)
     useEffect(() => {
-        if (product && !productLoading && product.description?.images) {
+        if (product && !productLoading && product.description?.items) {
             // 첫 번째 이미지 즉시 프리로드
-            const firstImage = product.description.images[0];
+            const firstImage = product.description.items[0].src;
             if (firstImage) {
                 const img = new window.Image();
                 img.src = firstImage;
@@ -65,13 +66,14 @@ const ProductClient = ({ id }: { id: string }) => {
 
     // Description이 보일 때 추가 이미지들 프리로드
     useEffect(() => {
-        if (isDescriptionVisible && product?.description?.images) {
-            const imagesToPreload = product.description.images.slice(0, 3); // 처음 3개
-            imagesToPreload.forEach((src, index) => {
-                if (src) {
+        if (isDescriptionVisible && product?.description?.items) {
+            const imagesToPreload: DescriptionItem[] = product.description.items.slice(0, 3); // 처음 3개
+            imagesToPreload.forEach((data: DescriptionItem, index: number) => {
+                if (data.src) {
+                    const src = data.src;
                     const img = new window.Image();
                     // R2 최적화 적용
-                    if (src.includes("r2.dev")) {
+                    if (data.src.includes("r2.dev")) {
                         try {
                             const url = new URL(src);
                             url.searchParams.set("width", "800");
@@ -91,7 +93,7 @@ const ProductClient = ({ id }: { id: string }) => {
                 }
             });
         }
-    }, [isDescriptionVisible, product?.description?.images]);
+    }, [isDescriptionVisible, product?.description?.items]);
 
     // ID가 없는 경우
     if (!id) {
