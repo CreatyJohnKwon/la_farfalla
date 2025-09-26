@@ -110,61 +110,63 @@ const ShopClient = () => {
                         </div>
                     </div>
 
-                    {productsLoading && !isFetchingNextPage ? (
-                        <SkeletonGrid count={6} />
-                    ) : (
-                        <>
-                            {isProductListEmpty ? (
-                                <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[20vh] sm:py-[30vh]">
-                                    <div className="mb-4">
-                                        <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={0.7} stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                                        </svg>
-                                    </div>
-                                    <h3 className="mb-2 text-lg font-medium text-gray-700">
-                                        상품이 없습니다
-                                    </h3>
-                                    <p className="text-gray-500">
-                                        선택하신 카테고리에 해당하는 상품이 없습니다.
-                                    </p>
-                                </div>
-                            ) : isEmptyResults ? (
-                                <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[20vh] sm:py-[30vh]">
-                                    <div className="mb-4">
-                                        <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.7} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                        </svg>
-                                    </div>
-                                    <h3 className="mb-2 text-lg font-medium text-gray-700">
-                                        검색 결과가 없습니다
-                                    </h3>
-                                    <p className="mb-4 text-gray-500">
-                                        '{searchQuery}'에 대한 상품을 찾을 수 없습니다.
-                                    </p>
-                                </div>
-                            ) : (
-                                <div>
-                                    <ul className="pt-[20vh] md:pt-[10vh] grid w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3">
-                                        {displayProducts.map((item, index) => (
-                                            <ProductsList
-                                                key={`${item._id}-${isSearchMode ? "search" : section}-${index}`}
-                                                product={item}
-                                                index={index}
-                                            />
-                                        ))}
-                                    </ul>
-        
-                                    <div ref={ref} className="h-10" />
-        
-                                    {isFetchingNextPage && (
-                                        <div className="py-8 text-center">
-                                            <div className="inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+                    <div className="pt-[20vh] xl:pt-[10vh]">
+                        {productsLoading && !isFetchingNextPage ? (
+                            <SkeletonGrid count={6} />
+                        ) : (
+                            <>
+                                {isProductListEmpty ? (
+                                    <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[20vh] sm:py-[30vh]">
+                                        <div className="mb-4">
+                                            <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={0.7} stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                                            </svg>
                                         </div>
-                                    )}
-                                </div>
-                            )}
-                        </>
-                    )}
+                                        <h3 className="mb-2 text-lg font-medium text-gray-700">
+                                            상품이 없습니다
+                                        </h3>
+                                        <p className="text-gray-500">
+                                            선택하신 카테고리에 해당하는 상품이 없습니다.
+                                        </p>
+                                    </div>
+                                ) : isEmptyResults ? (
+                                    <div className="flex flex-col text-center w-full text-gray-900 font-pretendard text-base items-center justify-center py-[20vh] sm:py-[30vh]">
+                                        <div className="mb-4">
+                                            <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.7} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            </svg>
+                                        </div>
+                                        <h3 className="mb-2 text-lg font-medium text-gray-700">
+                                            검색 결과가 없습니다
+                                        </h3>
+                                        <p className="mb-4 text-gray-500">
+                                            '{searchQuery}'에 대한 상품을 찾을 수 없습니다.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <ul className="grid w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3">
+                                            {displayProducts.map((item, index) => (
+                                                <ProductsList
+                                                    key={`${item._id}-${isSearchMode ? "search" : section}-${index}`}
+                                                    product={item}
+                                                    index={index}
+                                                />
+                                            ))}
+                                        </ul>
+            
+                                        <div ref={ref} className="h-10" />
+            
+                                        {isFetchingNextPage && (
+                                            <div className="py-8 text-center">
+                                                <div className="inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
                 </div>
             </main>
         </div>
