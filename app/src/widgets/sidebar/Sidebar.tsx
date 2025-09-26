@@ -92,9 +92,9 @@ const Sidebar = () => {
                                     />}
                                 </li>
                             }
-                            {serviceMenuItems.map((data: any, index: number) =>
+                            {serviceMenuItems.map((data: { label: string; path: string; }, index: number) =>
                                 <li className="relative sm:transition-all sm:duration-300 sm:ease-in-out" key={index}>
-                                    <Link href={data.link} onClick={() => onCloseSidebar()}>{data.label}</Link>
+                                    <Link href={data.path} onClick={() => onCloseSidebar()}>{data.label}</Link>
                                 </li>
                             )}
                             {session?.user?.email ?
