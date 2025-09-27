@@ -97,15 +97,15 @@ const AdditionalOptions = ({
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 border-t border-dashed border-black/50 pt-5">
             <label className="text-lg font-bold text-gray-900">
                 추가 옵션 관리
             </label>
 
             {/* 옵션 추가 폼 */}
-            <div className="border border-gray-300 bg-gray-50 p-6" onKeyDown={handleKeyDown}>
+            <div onKeyDown={handleKeyDown}>
                 <h4 className="mb-4 text-base font-bold text-gray-900">
-                    새 추가 옵션 생성
+                    새 추가 옵션 생성 (선택)
                 </h4>
                 <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-3">
                     <div className="space-y-2">

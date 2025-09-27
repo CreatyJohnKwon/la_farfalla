@@ -33,7 +33,7 @@ const Size = ({
     };
 
     return (
-        <div>
+        <div className="space-y-3 border-t border-dashed border-black/50 pt-5">
             <label className="mb-2 block text-sm font-medium text-gray-700">
                 사이즈 *
             </label>

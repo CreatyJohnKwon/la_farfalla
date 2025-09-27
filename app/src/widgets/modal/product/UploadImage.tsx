@@ -171,7 +171,7 @@ const UploadImage = ({
     };
 
     return (
-        <div className="border border-gray-200 bg-gray-50 p-6">
+        <div className="pb-2">
             <label className="mb-4 block text-sm font-semibold text-gray-900">
                 상품 이미지 *
                 <span className="ml-2 text-xs font-normal text-gray-500">
@@ -183,7 +183,7 @@ const UploadImage = ({
                 onDragOver={handleDragOverUpload}
                 onDragLeave={handleDragLeaveUpload}
                 onDrop={handleDropUpload}
-                className={`mb-6 grid grid-cols-3 gap-4 rounded-lg border-2 border-dashed p-2 transition-colors
+                className={`mb-6 grid grid-cols-3 gap-4 rounded-lg border-2 border-dashed transition-colors
                     ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-transparent'}
                 `}
             >
@@ -195,6 +195,11 @@ const UploadImage = ({
                         onDragEnter={(e) => handleDragEnter(e, index)}
                         onDragEnd={handleDragEnd}
                         onDragOver={(e) => e.preventDefault()} // onDragEnter를 활성화하기 위해 필요
+                        onClick={() => {
+                            if (!imageData.previews[index]) {
+                                fileInputRef.current?.click();
+                            }
+                        }}
                         className={`group relative flex aspect-square items-center justify-center border-2 border-dashed border-gray-300 bg-white transition-all
                             ${imageData.previews[index] ? 'cursor-grab' : 'cursor-pointer'}
                             ${draggedIndex === index ? 'opacity-30' : 'opacity-100'}

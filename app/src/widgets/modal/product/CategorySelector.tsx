@@ -48,7 +48,7 @@ const CategorySelector = ({
                 ))}
             </select>
 
-            <div className="flex min-h-[40px] flex-wrap items-center gap-2">
+            <div className="flex max-h-[40px] h-auto flex-wrap items-center gap-2">
                 {selectedCategories.length === 0 && (
                     <span className="px-2 text-sm text-gray-400">선택된 카테고리가 없습니다.</span>
                 )}

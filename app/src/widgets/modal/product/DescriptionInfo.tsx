@@ -207,7 +207,7 @@ const DescriptionInfo = ({
                 value={formData.description.text}
                 onChange={handleInputChange}
                 // ✨ className 복구
-                className="mb-4 w-full resize-none rounded-md border border-gray-300 px-4 py-3 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                className="mb-4 w-full resize-none border border-gray-300 px-4 py-3 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-500 focus:outline-none focus:ring-0 focus:ring-gray-500"
                 placeholder="상품 설명을 입력하세요 (최대 500자)"
                 rows={3}
                 maxLength={500}
@@ -220,7 +220,7 @@ const DescriptionInfo = ({
                 name="descriptionDetailText"
                 value={formData.description.detail}
                 onChange={handleInputChange}
-                className="mb-6 w-full resize-none rounded-md border border-gray-300 px-4 py-3 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                className="mb-6 w-full resize-none border border-gray-300 px-4 py-3 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-500 focus:outline-none focus:ring-0 focus:ring-gray-500"
                 placeholder="추가 상세 설명을 입력하세요 (최대 150자)"
                 rows={2}
                 maxLength={150}
@@ -231,7 +231,7 @@ const DescriptionInfo = ({
                 onDragOver={handleFileDragOver}
                 onDragLeave={handleFileDragLeave}
                 onDrop={handleFileDrop}
-                className="relative rounded-md border-2 border-dashed border-gray-300 bg-white p-6 transition-colors"
+                className="relative rounded-md bg-white transition-colors"
             >
                 {/* ✨ 파일 드래그 시 나타나는 오버레이 UI */}
                 {isFileDragging && (
@@ -241,10 +241,63 @@ const DescriptionInfo = ({
                 )}
 
                 <label className="mb-4 block text-sm font-semibold text-gray-900">
-                    상품 설명 이미지 (드래그하여 순서 변경 및 파일 추가)
+                    상품 설명 이미지 *
+                </label>
+                <label className="mb-4 block text-xs font-semibold text-gray-900">
+                    드래그하여 파일 추가 및 순서 변경
+                </label>
+
+                {descriptionItems.length > 0 && (
+                    <div
+                        onDragOver={handleFileDragOver}
+                        onDragLeave={handleFileDragLeave}
+                        onDrop={handleFileDrop}
+                        // 👇 grid-row 형태로 변경 (예: 3열 그리드)
+                        className="relative grid grid-cols-3 gap-4 bg-white border-t border-b border-black/50 border-dashed pt-5 pb-5 mb-10"
+                    >
+                        {/* 파일 드래그 시 나타나는 오버레이 UI */}
+                        {isFileDragging && (
+                            <div className="pointer-events-none absolute inset-0 z-20 col-span-3 flex items-center justify-center rounded-md bg-blue-500 bg-opacity-20 ring-4 ring-blue-400">
+                                <span className="font-bold text-blue-600">여기에 이미지를 드롭하여 추가하세요</span>
+                            </div>
+                        )}
+
+                        {/* 기존 map 로직은 그대로 사용 */}
+                        {descriptionItems.map((item) => {
+                            // 이미지가 아닌 아이템(줄바꿈 등)은 렌더링하지 않음
+                            if (item.type !== 'image') return null;
+
+                            return (
+                                <div
+                                    key={item.id}
+                                    draggable
+                                    onDragStart={() => handleDragStart(item.id)}
+                                    onDragOver={(e) => handleDragOverItem(e, item.id)}
+                                    onDrop={() => handleDropOnItem(item.id)}
+                                    onDragEnd={handleDragEnd}
+                                    // 👇 그리드 아이템 스타일 조정
+                                    className={`group relative aspect-square w-full cursor-grab transition-opacity ${draggedId === item.id ? 'opacity-30' : ''}`}
+                                >
+                                    <Image src={item.preview} alt={`설명 이미지`} fill className="pointer-events-none object-cover" />
+                                    <button
+                                        type="button"
+                                        onClick={() => removeItem(item.id)}
+                                        // 👇 삭제 버튼 스타일 조정
+                                        className="absolute -right-2 -top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-gray-700 text-sm font-bold text-white opacity-100 sm:opacity-0 transition-all hover:bg-red-600 group-hover:opacity-100"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+
+                <label className="mb-4 block text-xs font-semibold text-gray-900">
+                    드래그하여 파일 추가 및 순서 변경 / 줄바꿈 추가
                 </label>
                 
-                <div className="space-y-4">
+                <div className="space-y-4 border-t border-black/50 border-dashed pt-5 pb-5 mb-10">
                     {descriptionItems.map((item, index) => (
                          <div key={item.id} className="relative">
                             <div
@@ -258,7 +311,7 @@ const DescriptionInfo = ({
                                 {item.type === 'image' ? (
                                     <div className="group relative aspect-video w-full cursor-grab border-gray-200 bg-gray-100">
                                         <Image src={item.preview} alt={`설명 이미지`} fill className="pointer-events-none object-contain" />
-                                        <button type="button" onClick={() => removeItem(item.id)} className="absolute -right-2 -top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-gray-800 text-sm font-bold text-white opacity-0 transition-all hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 group-hover:opacity-100">×</button>
+                                        <button type="button" onClick={() => removeItem(item.id)} className="absolute -right-2 -top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-gray-800 text-sm font-bold text-white sm:opacity-0 opacity-100 transition-all hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 group-hover:opacity-100">×</button>
                                     </div>
                                 ) : (
                                     <div className="relative group flex items-center justify-center py-2">
@@ -277,8 +330,8 @@ const DescriptionInfo = ({
                     ))}
                 </div>
 
-                <div className="mt-6 space-y-4 text-center">
-                    <button type="button" onClick={() => fileInputRef.current?.click()} className="w-full cursor-pointer rounded-md bg-gray-800 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">이미지 추가하기</button>
+                <div className="text-center border-b border-black/50 border-dashed pb-5">
+                    <button type="button" onClick={() => fileInputRef.current?.click()} className="w-full cursor-pointer bg-gray-800 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">이미지 추가하기</button>
                     <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleImageUpload} className="hidden" />
                 </div>
             </div>
