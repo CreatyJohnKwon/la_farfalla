@@ -24,6 +24,12 @@ const orderSchema = new mongoose.Schema(
         ],
         totalPrice: { type: Number, required: true }, // 총 금액
 
+        // ✅ 할인 상세 정보 추가
+        discountDetails: {
+            couponId: { type: String, required: false }, // 사용한 쿠폰의 ObjectId
+            mileage: { type: Number, required: false },    // 사용한 마일리지
+        },
+
         // 결제 수단
         payMethod: {
             type: String,

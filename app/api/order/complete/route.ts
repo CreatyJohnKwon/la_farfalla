@@ -4,6 +4,11 @@ import { Order } from "@src/entities/models/Order";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import { EmailService } from "@src/shared/lib/emailService";
 import { OrderData, OrderItem } from "@src/components/order/interface";
+import { cancelPayment } from "@/src/shared/lib/payments";
+import { reduceStock } from "@/src/utils/commonAction";
+import { UserCoupon } from "@/src/entities/models/UserCoupon";
+import { Mileage } from "@/src/entities/models/Mileage";
+import User from "@/src/entities/models/User";
 
 // PortOne 결제 검증 함수 (실제 구현 필요)
 async function verifyPortOnePayment(paymentId: string, expectedAmount: number): Promise<boolean> {
@@ -32,7 +37,7 @@ export async function POST(req: NextRequest) {
         const { orderId, paymentId, isSuccess } = await req.json();
 
         if (!isSuccess) {
-            // TODO: 결제 실패 시 주문을 'failed' 상태로 변경하고 재고를 복구하는 로직 추가
+            // 재고 복구 로직 추가 
             return NextResponse.json({ success: false, message: '결제가 실패했습니다.' });
         }
         
@@ -41,22 +46,54 @@ export async function POST(req: NextRequest) {
         await session.withTransaction(async () => {
             const order = await Order.findOne({ _id: orderId, shippingStatus: "prepare" }).session(session);
 
-            if (!order) throw new Error("주문 정보를 찾을 수 없습니다.");
-            if (order.shippingStatus !== 'prepare') throw new Error("이미 처리된 주문입니다.");
+            if (!order) throw new Error("주문 정보를 찾을 수 없거나 이미 처리된 주문입니다.");
 
-            // 1. PortOne 결제 검증 (보안 핵심)
+            // PortOne 결제 검증 (보안 핵심)
             const isVerified = await verifyPortOnePayment(paymentId, order.totalPrice);
             if (!isVerified) {
-                // 🚨 결제 금액 위변조 의심!
-                // TODO: PortOne 결제 취소 API 호출
-                throw new Error("결제 검증에 실패했습니다.");
+                await cancelPayment(paymentId, "결제 검증 오류", order.totalPrice);
+                throw new Error("결제 검증에 실패하여 주문을 취소했습니다.");
             }
 
-            // 2. 주문 상태 'paid'로 변경
+            // 재고 차감
+            await reduceStock(order.items, session);
+
+            // 쿠폰 사용 처리 (주문 생성 시 사용된 쿠폰이 있다면)
+            if (order.discountDetails?.couponId) {
+                await UserCoupon.updateOne(
+                    { _id: order.discountDetails.couponId },
+                    { isUsed: true, usedAt: new Date() },
+                    { session }
+                );
+            }
+
+            // 마일리지 차감 및 사용 내역 기록 (사용한 마일리지가 있다면)
+            const usedMileage = order.discountDetails?.mileage || 0;
+            if (usedMileage > 0) {
+                // 마일리지 사용 내역(log) 생성
+                const mileageLog = {
+                    userId: order.userId,
+                    type: "spend" as "spend",
+                    amount: usedMileage,
+                    description: `상품 구매`,
+                    relatedOrderId: order._id.toString(),
+                    createdAt: new Date().toISOString(),
+                };
+                await Mileage.create([mileageLog], { session });
+
+                // 사용자 DB에서 마일리지 총액 차감
+                await User.updateOne(
+                    { _id: order.userId },
+                    { $inc: { mileage: -usedMileage } },
+                    { session }
+                );
+            }
+
+            // 결제 성공 시, 주문 상태 'pending'(주문완료) 로 변경
             order.shippingStatus = "pending";
             order.paymentId = paymentId;
-            
             await order.save({ session });
+
             finalMessage = "주문이 성공적으로 완료되었습니다.";
 
             const safeOrderData: OrderData = {

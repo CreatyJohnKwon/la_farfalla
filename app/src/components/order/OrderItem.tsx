@@ -121,9 +121,11 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                                       ? "bg-blue-400"
                                       : item.shippingStatus === "shipped"
                                         ? "bg-green-400"
-                                        : item.shippingStatus === "confirm"
-                                          ? "bg-gray-400"
-                                          : "bg-red-400"
+                                        : item.shippingStatus === "cancel" ||
+                                            item.shippingStatus === "return" ||
+                                            item.shippingStatus === "exchange"
+                                                ? "bg-red-400"
+                                                : "bg-gray-400"
                             }`}
                         />
                         <p className="text-xs text-gray-600 font-pretendard font-[400]">
@@ -133,9 +135,11 @@ const OrderItem = ({ item }: { item: OrderData }) => {
                                   ? "상품준비중"
                                   : item.shippingStatus === "shipped"
                                     ? "출고"
-                                    : item.shippingStatus === "confirm"
-                                      ? "구매확정"
-                                      : "주문취소"}
+                                        : item.shippingStatus === "cancel" ||
+                                            item.shippingStatus === "return" ||
+                                            item.shippingStatus === "exchange"
+                                                ? "주문취소"
+                                                : "구매확정"}
                         </p>
                     </div>
 

@@ -66,6 +66,10 @@ interface OrderData {
     confirmAt?: Date;
     trackingNumber?: string;
     description?: string;
+    discountDetails?: {
+        couponId?: string;
+        mileage?: number;
+    }
 }
 
 interface OrderPage {

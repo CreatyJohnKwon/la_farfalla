@@ -22,7 +22,6 @@ const PaymentCallback = () => {
 
             if (!paymentId) {
                 alert('주문 정보를 찾을 수 없습니다.\nQ&A 채널로 문의해주세요.');
-                orderData.items && await restoreItems(orderDatas);
                 router.replace("/order");
                 return;
             }
@@ -33,12 +32,10 @@ const PaymentCallback = () => {
                     case "FAILURE_TYPE_PG":
                     case "PG_PROVIDER_ERROR":
                         alert(errMessage);
-                        await restoreItems(orderDatas);
                         router.replace("/order");
                         return;
                     default:
                         alert(`${errMessage}\nQ&A 채널로 문의해주세요.`)
-                        await restoreItems(orderDatas);
                         router.replace("/order");
                         return;
                 }
@@ -59,7 +56,7 @@ const PaymentCallback = () => {
                 }
                 
                 // ✅ 성공 상태로 변경
-                alert("SUCCESS | " + result.message || '결제가 성공적으로 완료되었습니다.');
+                alert(result.message || '주문이 성공적으로 완료되었습니다.');
                 router.replace('/profile/order')
             } catch (error: any) {
                 // ✅ 에러 상태로 변경

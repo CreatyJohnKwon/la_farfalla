@@ -13,7 +13,7 @@ import {
     useOrderQuery,
     useUpdateStockMutation,
 } from "./react-query/useOrderQuery";
-import { MileageItem, OrderItem, StockUpdateItem } from "@src/components/order/interface";
+import { MileageItem, StockUpdateItem } from "@src/components/order/interface";
 import { refundPayment } from "../lib/server/order";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -141,8 +141,10 @@ const useOrder = () => {
                 additional: item.additional,
                 price: item.originalPrice
             })),
-            usedMileage: usedMileage,
-            couponId: couponId, // 사용할 쿠폰의 이름 또는 ID
+            discountDetails: {
+                couponId,
+                mileage: usedMileage > 0 ? usedMileage : 0,
+            }
         };
 
         // 2. DB에 저장될 배송지 등 기본 주문 정보
@@ -211,10 +213,11 @@ const useOrder = () => {
                     case "FAILURE_TYPE_PG":
                     case "PG_PROVIDER_ERROR":
                     default:
-                        if (portoneResponse?.pgMessage || portoneResponse?.message) alert(`${portoneResponse?.pgMessage || portoneResponse?.message}`);
-                        else alert(`결제 요청 처리 중 오류가 발생했습니다.\nQ&A 채널로 문의해주세요.`)
-                        await restoreItems(orderDatas);
-                        break;
+                        if (portoneResponse?.pgMessage || portoneResponse?.message) {
+                            throw new Error(`${portoneResponse?.pgMessage || portoneResponse?.message}`);
+                        } else {
+                            throw new Error(`결제 요청 처리 중 오류가 발생했습니다.\nQ&A 채널로 문의해주세요.`);
+                        }
                 }
             }
         } catch (error: any) {
@@ -264,13 +267,13 @@ const useOrder = () => {
         }
     };
 
-    const useSpendMileage = async (res: any, description?: string, mileage?: number, orderId?: string) => {
+    const useSpendMileage = async (orderId?: string, description?: string, mileage?: number) => {
         const useSpendMileage: MileageItem = {
             userId: user?._id,
             type: "spend",
             amount: mileage || usedMileage,
             description: description || "마일리지 사용",
-            relatedOrderId: orderId || res.orderId,
+            relatedOrderId: orderId,
             createdAt: new Date().toISOString(),
         };
         spendMileage(useSpendMileage);

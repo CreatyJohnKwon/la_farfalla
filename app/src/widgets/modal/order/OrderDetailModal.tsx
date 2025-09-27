@@ -337,12 +337,12 @@ const OrderDetailModal = ({
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
             onClick={onClose}
             style={{ touchAction: "manipulation" }}
         >
             <div
-                className="max-h-[90vh] w-[90vw] overflow-y-auto rounded-lg bg-white sm:w-[40vw]"
+                className="max-h-[85vh] w-[95vw] h-auto overflow-y-auto rounded-md bg-white sm:w-[60vw] xl:w-[40vw]"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                     WebkitOverflowScrolling: "touch",

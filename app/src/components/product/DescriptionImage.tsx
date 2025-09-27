@@ -56,14 +56,14 @@ const DescriptionImage = ({
             >
                 {/* ✨ 2. 조건부 렌더링: item.type에 따라 이미지 또는 줄바꿈 렌더링 */}
                 {hasImages ? (
-                    processedDescriptionItems.map((item) => {
+                    processedDescriptionItems.map((item, index: number) => {
                         if (!item) return null;
 
                         // Case 1: 아이템 타입이 'image'일 경우
                         if (item.type === 'image') {
                             return (
                                 <OptimizedDescriptionImage
-                                    key={`desc-${item.src}-${item.index}`}
+                                    key={`${item.type}_${index}`}
                                     src={item.src}
                                     alt={`product_image_${product._id}_${item.index}`}
                                     shouldLoad={item.shouldLoad}
@@ -85,7 +85,7 @@ const DescriptionImage = ({
                         // Case 2: 아이템 타입이 'break'일 경우 (줄바꿈)
                         if (item.type === 'break') {
                             return (
-                                <div>
+                                <div key={`${item.type}_${index}`}>
                                     <br/>
                                 </div>
                             );
