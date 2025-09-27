@@ -1,6 +1,6 @@
 "use client";
 
-import { refundPayment } from '@/src/shared/lib/server/order';
+import { refundPayment } from '@src/shared/lib/server/order';
 import { OrderData } from '@src/components/order/interface';
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";

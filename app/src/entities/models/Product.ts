@@ -1,5 +1,4 @@
-import { IDescriptionItem, ProductVariant } from "@/src/components/product/interface";
-import { AdditionalOption } from "@/src/widgets/modal/interface";
+import { IDescriptionItem, ProductVariant, AdditionalOption } from "@src/entities/type/products";
 import mongoose, { Schema } from "mongoose";
 
 const productOptionSchema = new mongoose.Schema(

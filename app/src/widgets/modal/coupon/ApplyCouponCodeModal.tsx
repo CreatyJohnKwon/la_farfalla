@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react";
-import ModalWrap from "./ModalWrap";
-import { useGetUserCouponsListQuery, usePostByCouponCodeMutation } from "@/src/shared/hooks/react-query/useBenefitQuery";
+import ModalWrap from "../etc/ModalWrap";
+import { useGetUserCouponsListQuery, usePostByCouponCodeMutation } from "@src/shared/hooks/react-query/useBenefitQuery";
 
 const ApplyCouponCodeModal = ({ onClose }: { onClose: () => void }) => {
     const [couponCode, setCouponCode] = useState<string>("")

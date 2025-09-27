@@ -2,7 +2,7 @@ import { SelectedItem } from "@src/entities/type/interfaces";
 import { Session } from "next-auth";
 import { atomWithStorage } from "jotai/utils";
 import { atom } from "jotai";
-import { Product } from "@src/components/product/interface";
+import { Product } from "@src/entities/type/products";
 
 export const isLoggedInAtom = atomWithStorage<boolean>("login", false);
 export const sessionAtom = atomWithStorage<Session | null>("session", null);

@@ -1,5 +1,5 @@
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import { Order } from "@/src/entities/models/Order";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import { Order } from "@src/entities/models/Order";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 

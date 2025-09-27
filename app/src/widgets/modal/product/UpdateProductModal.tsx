@@ -6,7 +6,8 @@ import {
     NewVariantType,
     Product,
     DescriptionItem,
-} from "@src/components/product/interface";
+    AdditionalOption
+} from "@src/entities/type/products";
 import { useState, useEffect } from "react";
 import { useSetAtom } from "jotai";
 import { loadingAtom } from "@src/shared/lib/atom";
@@ -16,17 +17,16 @@ import {
     usePostProductMutation,
     useUpdateProductMutation,
 } from "@src/shared/hooks/react-query/useProductQuery";
-import ModalWrap from "./ModalWrap";
+import ModalWrap from "../etc/ModalWrap";
 import UploadImage from "./UploadImage";
 import ProductTitle from "./ProductTitle";
 import DescriptionInfo from "./DescriptionInfo";
 import CategorySelector from "./CategorySelector";
 import Section from "./Section";
-import Options from "../../components/product/Options";
 import Size from "./Size";
-import { AdditionalOption } from "./interface";
-import AdditionalOptions from "@/src/components/product/AdditionalOptions";
-import { BREAK_IDENTIFIER } from "@/src/utils/dataUtils";
+import Options from "./Options";
+import AdditionalOptions from "@src/components/product/AdditionalOptions";
+import { BREAK_IDENTIFIER } from "@src/utils/dataUtils";
 
 interface UpdateProductModalProps {
     onClose: () => void;

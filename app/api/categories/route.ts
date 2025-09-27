@@ -1,7 +1,7 @@
 import { connectDB } from "@src/entities/models/db/mongoose";
 import Category from "@src/entities/models/Category";
 import { NextRequest, NextResponse } from "next/server";
-import Product from "@/src/entities/models/Product";
+import Product from "@src/entities/models/Product";
 
 // slug 생성을 위한 헬퍼 함수
 const createSlug = (name: string) => {

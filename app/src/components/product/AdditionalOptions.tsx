@@ -1,4 +1,4 @@
-import { AdditionalOption } from '@/src/widgets/modal/interface';
+import { AdditionalOption } from '@src/entities/type/products';
 import React, { useState } from 'react';
 
 interface AdditionalOptionsProps {

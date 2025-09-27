@@ -1,9 +1,8 @@
 "use client";
 
-import { ProductDropdownItem } from "@src/components/product/interface";
+import { ProductDropdownItem, AdditionalOption } from "@src/entities/type/products";
 import { useState, useEffect, useRef } from "react";
 import { IoChevronDown } from "react-icons/io5";
-import { AdditionalOption } from "../modal/interface";
 
 interface ProductDropProps {
     title: string;

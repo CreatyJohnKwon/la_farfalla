@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import useOrder from '@/src/shared/hooks/useOrder';
-import { useSingleOrderQuery } from '@/src/shared/hooks/react-query/useOrderQuery';
+import useOrder from '@src/shared/hooks/useOrder';
+import { useSingleOrderQuery } from '@src/shared/hooks/react-query/useOrderQuery';
 
 const PaymentCallback = () => {
     const searchParams = useSearchParams();

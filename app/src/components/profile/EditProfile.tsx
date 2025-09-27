@@ -1,7 +1,7 @@
 "use client";
 
-import usePage from "@/src/shared/hooks/usePage";
-import AddressModal from "@/src/widgets/modal/AddressModal";
+import usePage from "@src/shared/hooks/usePage";
+import AddressModal from "@src/widgets/modal/address/AddressModal";
 import {
     useUserQuery,
     useUpdateUserMutation,

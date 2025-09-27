@@ -16,7 +16,7 @@ import {
 } from "@src/shared/hooks/react-query/useReviewQuery";
 import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
 import useUsers from "@src/shared/hooks/useUsers";
-import ImageViewerModal from "@src/widgets/modal/ImageViewerModal";
+import ImageViewerModal from "@/src/widgets/modal/image/ImageViewerModal";
 
 // 정렬 옵션 타입 정의
 type SortOption = "newest" | "oldest" | "most-liked" | "least-liked";

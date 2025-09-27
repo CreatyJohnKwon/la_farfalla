@@ -7,7 +7,7 @@ import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
 import bcrypt from "bcryptjs";
 import { registUser } from "@src/shared/lib/server/user";
-import { ONE_DAY, THIRTY_DAYS } from "@/src/utils/dataUtils";
+import { ONE_DAY, THIRTY_DAYS } from "@src/utils/dataUtils";
 
 export const authOptions: NextAuthOptions = {
     providers: [

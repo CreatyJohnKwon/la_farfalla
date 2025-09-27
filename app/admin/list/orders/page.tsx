@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect } from "react";
-import StatusUpdateSelectedModal from "@src/widgets/modal/StatusUpdateSelectedModal";
-import StatusUpdateModal from "@src/widgets/modal/StatusUpdateModal";
-import UserInfoModal from "@src/widgets/modal/UserInfoModal";
+import StatusUpdateSelectedModal from "@/src/widgets/modal/order/StatusUpdateSelectedModal";
+import StatusUpdateModal from "@/src/widgets/modal/order/StatusUpdateModal";
+import UserInfoModal from "@/src/widgets/modal/user/UserInfoModal";
 import useOrderList from "@src/shared/hooks/useOrderList";
-import ProductInfoModal from "@src/widgets/modal/ProductInfoModal";
+import ProductInfoModal from "@/src/widgets/modal/product/ProductInfoModal";
 import { OrderData, ShippingStatus } from '@src/components/order/interface';
 import { useInView } from "react-intersection-observer";
 

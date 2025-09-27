@@ -1,8 +1,8 @@
 "use client"; 
 
-import CategoryList from "@/src/components/product/CategoryList";
-import SkeletonGrid from "@/src/components/product/SkeletonGrid";
-import { Product } from "@src/components/product/interface"; 
+import CategoryList from "@src/components/product/CategoryList";
+import SkeletonGrid from "@src/components/product/SkeletonGrid";
+import { Product } from "@src/entities/type/products"; 
 import ProductsList from "@src/components/product/ProductsList"; 
 import useProduct from "@src/shared/hooks/useProduct"; 
 import SearchButton from "@src/widgets/button/SearchButton"; 

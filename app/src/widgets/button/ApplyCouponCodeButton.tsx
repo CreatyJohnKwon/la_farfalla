@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ApplyCouponCodeModal from "../modal/ApplyCouponCodeModal";
+import ApplyCouponCodeModal from "../modal/coupon/ApplyCouponCodeModal";
 
 const ApplyCouponCodeButton = ({ title }: { title: string }) => {
     const [openModal, setOpenModal] = useState<boolean>(false);

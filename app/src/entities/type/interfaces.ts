@@ -178,7 +178,6 @@ interface UserCouponWithPopulate {
     updatedAt: Date;
 }
 
-
 export type {
     ICoupon,
     IUserCoupon,
@@ -203,5 +202,5 @@ export type {
     AddressModalProps,
     AddressData,
     CreateCategoryData,
-    UpdateCategoryData
+    UpdateCategoryData,
 };

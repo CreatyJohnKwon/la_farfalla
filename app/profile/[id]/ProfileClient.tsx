@@ -8,7 +8,7 @@ import MileageList from "@src/components/mileage/MileageList";
 import OrderList from "@src/components/order/OrderList";
 import { redirect } from "next/navigation";
 import { useMemo } from "react";
-import ApplyCouponCodeButton from "@/src/widgets/button/ApplyCouponCodeButton";
+import ApplyCouponCodeButton from "@src/widgets/button/ApplyCouponCodeButton";
 
 const ProfileClient = ({ id }: { id: string }) => {
     const { title, children } = useMemo(() => {

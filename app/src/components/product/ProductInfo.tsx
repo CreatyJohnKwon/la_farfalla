@@ -6,13 +6,12 @@ import {
     justDiscount,
 } from "@src/features/calculate";
 import ProductDrop from "@src/widgets/drop/ProductDrop";
-import QuantityModal from "@src/widgets/modal/QuantityModal";
+import QuantityModal from "@/src/widgets/modal/product/QuantityModal";
 import { useEffect, useMemo, useState } from "react";
 import useCart from "@src/shared/hooks/useCart";
 import useUser from "@src/shared/hooks/useUsers";
-import { Product, ProductVariant } from "./interface";
-import { SelectedItem } from "@/src/entities/type/interfaces";
-import { AdditionalOption } from "@/src/widgets/modal/interface";
+import { Product, ProductVariant, AdditionalOption } from "@src/entities/type/products";
+import { SelectedItem } from "@src/entities/type/interfaces";
 
 // SVG 아이콘 컴포넌트들
 const ShareIcon = ({ className = "" }: { className?: string }) => (

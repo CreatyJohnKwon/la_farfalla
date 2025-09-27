@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { postCart, deleteCart, updateQuantity } from "../lib/server/cart";
 import useUser from "@src/shared/hooks/useUsers";
 import useOrder from "./useOrder";
-import { Product } from "@src/components/product/interface";
+import { Product } from "@src/entities/type/products";
 import { v4 as uuidv4 } from "uuid";
 
 const useCart = () => {

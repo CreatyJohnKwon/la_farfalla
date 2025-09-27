@@ -9,7 +9,7 @@ import { UserCoupon } from "@src/entities/models/UserCoupon";
 import { Review } from "@src/entities/models/Review";
 import { Order } from "@src/entities/models/Order";
 import { Cart } from "@src/entities/models/Cart";
-import { getPostposition } from "@/src/utils/commonAction";
+import { getPostposition } from "@src/utils/commonAction";
 
 const fieldDisplayNames: { [key: string]: string } = {
     name: "이름",

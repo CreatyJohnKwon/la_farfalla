@@ -7,7 +7,7 @@ import DefaultImage from "../../../../public/images/chill.png";
 import { priceResult, priceDiscount } from "@src/features/calculate";
 import { useOptimizedImage } from "@src/shared/hooks/useOptimizedImage";
 import LoadingSpinner from "../../widgets/spinner/LoadingSpinner";
-import { Product } from "./interface";
+import { Product } from "../../entities/type/products";
 
 interface ProductsListProps {
     product: Product;

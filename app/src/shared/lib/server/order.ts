@@ -1,5 +1,5 @@
-import { OrderData, OrderPage, StockUpdateItem } from "@/src/components/order/interface";
-import { ProductOption } from "@src/components/product/interface";
+import { OrderData, OrderPage, StockUpdateItem } from "@src/components/order/interface";
+import { ProductOption } from "@src/entities/type/products";
 import axios from "axios";
 
 const updateCoupon = async (couponId: string) => {

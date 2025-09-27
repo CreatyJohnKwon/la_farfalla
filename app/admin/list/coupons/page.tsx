@@ -10,7 +10,7 @@ import {
     useDeleteUserCouponMutation,
     usePostSpecialUserCouponMutation,
 } from "@src/shared/hooks/react-query/useBenefitQuery";
-import CouponCreateModal from "@src/widgets/modal/CouponCreateModal";
+import CouponCreateModal from "@/src/widgets/modal/coupon/CouponCreateModal";
 import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
 import PersonalCouponDistribution from "@src/components/coupon/PersonalCouponDistribution";
 

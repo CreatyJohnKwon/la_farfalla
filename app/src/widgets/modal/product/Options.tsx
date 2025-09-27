@@ -1,6 +1,12 @@
-import React, { useState } from "react";
-import { ProductVariant } from "@src/components/product/interface";
-import { OptionsProps } from "@/src/widgets/modal/interface";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import { NewVariantType, ProductVariant } from "@src/entities/type/products";
+
+interface OptionsProps {
+    variants: ProductVariant[];
+    setVariants: Dispatch<SetStateAction<ProductVariant[]>>;
+    newVariant: NewVariantType;
+    setNewVariant: Dispatch<SetStateAction<NewVariantType>>;
+}
 
 const Options = ({
     variants,

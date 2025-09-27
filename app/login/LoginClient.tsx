@@ -12,7 +12,7 @@ import useUsers from "@src/shared/hooks/useUsers";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
-import FindPasswordModal from "@src/widgets/modal/FindPasswordModal";
+import FindPasswordModal from "@/src/widgets/modal/user/FindPasswordModal";
 import loginAction from "./actions";
 
 const LoginClient = () => {

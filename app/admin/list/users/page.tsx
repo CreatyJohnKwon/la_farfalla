@@ -1,13 +1,13 @@
 "use client";
 
-import { searchUsers } from "@/src/features/search";
-import CreateAnnounceModal from "@/src/widgets/modal/CreateAnnounceModal";
+import { searchUsers } from "@src/features/search";
+import CreateAnnounceModal from "@/src/widgets/modal/announce/CreateAnnounceModal";
 import { UserProfileData } from "@src/entities/type/interfaces";
 import {
     useRestoreUserMutation,
     useUserListQuery,
 } from "@src/shared/hooks/react-query/useUserQuery";
-import UpdateUser from "@src/widgets/modal/UpdateUser";
+import UpdateUser from "@/src/widgets/modal/user/UpdateUser";
 import { useState, useMemo } from "react";
 
 type SortOption = "latest" | "oldest" | "name_asc" | "name_desc" | "none";

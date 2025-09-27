@@ -1,9 +1,8 @@
 import Image from "next/image";
-import { useRef, useState, useMemo, DragEvent, useEffect } from "react";
-import { DescriptionInfoProps } from "./interface"; // 기존 interface 사용
+import { useRef, useState, useMemo, DragEvent, useEffect, Dispatch, SetStateAction } from "react";
 import { v4 as uuidv4 } from 'uuid'; // uuid 설치 필요: npm install uuid @types/uuid
-import { ImageData } from "@/src/components/product/interface";
-import { BREAK_IDENTIFIER } from "@/src/utils/dataUtils";
+import { ImageData, Product } from "@src/entities/type/products";
+import { BREAK_IDENTIFIER } from "@src/utils/dataUtils";
 
 // 렌더링 및 조작을 위한 내부 아이템 타입
 type DescriptionItem = {
@@ -12,6 +11,20 @@ type DescriptionItem = {
     preview: string; // 이미지 URL 또는 BREAK_IDENTIFIER
     source: { type: 'existing' } | { type: 'file', file: File };
 };
+
+interface DescriptionInfoProps {
+    formData: Product;
+    handleInputChange: (
+        e: React.ChangeEvent<
+            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+        >,
+    ) => void;
+    // ✅ description 관련 상태만 사용
+    hasDescriptionImageChanges: boolean;
+    setHasDescriptionImageChanges: Dispatch<SetStateAction<boolean>>;
+    descriptionImageData: ImageData;
+    setDescriptionImageData: Dispatch<SetStateAction<ImageData>>;
+}
 
 const DescriptionInfo = ({
     formData,

@@ -4,7 +4,7 @@ import DefaultImage from "../../../../public/images/chill.png";
 import { RefObject, useMemo } from "react";
 import Image from "next/image";
 import OptimizedDescriptionImage from "./OptimizedDescriptionImage";
-import { DescriptionItem, Product } from "./interface";
+import { DescriptionItem, Product } from "../../entities/type/products";
 
 const DescriptionImage = ({
     product,

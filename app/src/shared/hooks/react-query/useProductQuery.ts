@@ -1,14 +1,14 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient, QueryFunctionContext } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     deleteProduct,
     getProduct,
     getProductList,
     postProduct,
     updateProduct,
-} from "../../lib/server/product";
+} from "@src/shared/lib/server/product";
 import { useSetAtom } from "jotai";
-import { loadingAtom, resetProductFormAtom } from "../../lib/atom";
-import { InfiniteQueryResult, Product, ProductPage } from "@src/components/product/interface";
+import { loadingAtom, resetProductFormAtom } from "@src/shared/lib/atom";
+import { InfiniteQueryResult, Product, ProductPage } from "@src/entities/type/products";
 
 // 무한 스크롤 사용
 const useProductListQuery = (limit = 9, initialData?: Product[]) => {

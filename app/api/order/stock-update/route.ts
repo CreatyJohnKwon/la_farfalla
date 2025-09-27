@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Product from "@/src/entities/models/Product";
+import Product from "@src/entities/models/Product";
 import mongoose from "mongoose";
 
 export async function PUT(request: NextRequest) {

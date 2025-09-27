@@ -3,11 +3,11 @@
 import Image from "next/image";
 import DefaultImage from "../../../../public/images/chill.png";
 import { useState, useMemo } from "react";
-import UpdateCategoryModal from "@src/widgets/modal/UpdateCategoryModal";
+import UpdateCategoryModal from "@/src/widgets/modal/category/UpdateCategoryModal";
 import Link from "next/link";
-import { Product } from "@src/components/product/interface";
+import { Product } from "@src/entities/type/products";
 import useProduct from "@src/shared/hooks/useProduct";
-import UpdateProductModal from "@/src/widgets/modal/UpdateProductModal";
+import UpdateProductModal from "@/src/widgets/modal/product/UpdateProductModal";
 
 type SortOption =
     | "none"

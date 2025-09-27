@@ -1,4 +1,4 @@
-import { cancelPayment } from "@/src/shared/lib/payments";
+import { cancelPayment } from "@src/shared/lib/payments";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {

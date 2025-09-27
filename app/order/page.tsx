@@ -6,12 +6,12 @@ import useOrder from "@src/shared/hooks/useOrder";
 
 import DefaultImage from "../../public/images/chill.png";
 import { useAddress } from "@src/shared/hooks/useAddress";
-import AddressModal from "@/src/widgets/modal/AddressModal";
+import AddressModal from "@src/widgets/modal/address/AddressModal";
 import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
-import AgreementModal from "@/src/widgets/modal/AgreementModal";
+import AgreementModal from "@/src/widgets/modal/agreement/AgreementModal";
 import BuyAgreement from "@src/components/agreement/BuyAgreement";
-import usePage from "@/src/shared/hooks/usePage";
-import useCart from "@/src/shared/hooks/useCart";
+import usePage from "@src/shared/hooks/usePage";
+import useCart from "@src/shared/hooks/useCart";
 
 const Order = () => {
     const { orderDatas } = useOrder();

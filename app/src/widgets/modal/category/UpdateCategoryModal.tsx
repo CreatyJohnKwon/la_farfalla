@@ -11,7 +11,7 @@ import type {
     Category,
     CreateCategoryData
 } from "@src/entities/type/interfaces";
-import useProduct from "@/src/shared/hooks/useProduct";
+import useProduct from "@src/shared/hooks/useProduct";
 
 const UpdateCategoryModal = ({ onClose }: { onClose: () => void }) => {
     const initialState: CreateCategoryData = { name: "", description: "", displayOrder: 0 };

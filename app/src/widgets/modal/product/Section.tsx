@@ -1,10 +1,18 @@
-import { Category } from "@src/entities/type/interfaces";
-import { SectionProps } from "./interface";
+import { Product, ProductVariant } from "@src/entities/type/products";
+
+interface SectionProps {
+    formData: Product;
+    handleInputChange: (
+        e: React.ChangeEvent<
+            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+        >,
+    ) => void;
+    variants: ProductVariant[];
+}
 
 const Section = ({
     formData,
     handleInputChange,
-    // category,
     variants,
 }: SectionProps) => {
     return (

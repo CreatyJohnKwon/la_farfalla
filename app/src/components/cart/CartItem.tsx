@@ -1,6 +1,6 @@
 import { SelectedItem } from "@src/entities/type/interfaces";
-import usePage from "@/src/shared/hooks/usePage";
-import useCart from "@/src/shared/hooks/useCart";
+import usePage from "@src/shared/hooks/usePage";
+import useCart from "@src/shared/hooks/useCart";
 import Image from "next/image";
 
 interface CartItemProps {

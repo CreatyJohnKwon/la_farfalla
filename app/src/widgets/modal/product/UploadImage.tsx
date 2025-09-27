@@ -1,6 +1,18 @@
 import Image from "next/image";
 import { useRef, useState, DragEvent } from "react";
-import { UploadImageProps } from "./interface";
+import {
+    ImageData,
+} from "@src/entities/type/products";
+import { SetStateAction } from "jotai";
+import { Dispatch } from "react";
+
+interface UploadImageProps {
+    mode: string;
+    imageData: ImageData;
+    setImageData: Dispatch<SetStateAction<ImageData>>;
+    hasImageChanges: boolean;
+    setHasImageChanges: Dispatch<SetStateAction<boolean>>;
+}
 
 const UploadImage = ({
     mode,
@@ -127,7 +139,6 @@ const UploadImage = ({
     const handleDragEnd = () => {
         setDraggedIndex(null); // 드래그 종료 시 인덱스 초기화
     };
-
 
     const removeImage = (index: number): void => {
         const newPreviews = [...imageData.previews];

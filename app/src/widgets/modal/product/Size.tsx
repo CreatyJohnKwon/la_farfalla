@@ -1,4 +1,12 @@
-import { SizeProps } from "./interface";
+import { Product } from "@src/entities/type/products";
+import { Dispatch, SetStateAction } from "react";
+
+interface SizeProps {
+    sizeInput: string;
+    setSizeInput: Dispatch<SetStateAction<string>>;
+    formData: Product;
+    setFormData: Dispatch<SetStateAction<Product>>;
+}
 
 const Size = ({
     sizeInput,

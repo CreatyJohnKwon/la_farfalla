@@ -9,8 +9,8 @@ import DescriptionImage from "@src/components/product/DescriptionImage";
 import ReviewSystem from "@src/components/review/ReviewSystem";
 import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
 import { useGetReviewsListQuery } from "@src/shared/hooks/react-query/useReviewQuery";
-import { productTabs } from "@/src/utils/dataUtils";
-import { DescriptionItem } from "@/src/components/product/interface";
+import { productTabs } from "@src/utils/dataUtils";
+import { DescriptionItem } from "@src/entities/type/products";
 
 const ProductClient = ({ id }: { id: string }) => {
     const {

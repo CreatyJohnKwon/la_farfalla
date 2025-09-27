@@ -1,6 +1,6 @@
 "use client"; // 클라이언트 컴포넌트로 설정
 
-import useCart from "@/src/shared/hooks/useCart";
+import useCart from "@src/shared/hooks/useCart";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 

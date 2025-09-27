@@ -2,8 +2,8 @@ import { Payment } from "@src/entities/models/Payment";
 import { Order } from "@src/entities/models/Order";
 import { paymentClient } from "./portone";
 import mongoose from "mongoose";
-import { OrderItem } from "@/src/components/order/interface";
-import Product from "@/src/entities/models/Product";
+import { OrderItem } from "@src/components/order/interface";
+import Product from "@src/entities/models/Product";
 
 const syncPayment = async (paymentId: string) => {
     const existing = await Payment.findOne({ paymentId });

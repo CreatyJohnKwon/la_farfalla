@@ -4,8 +4,8 @@ import {
     useDeleteAnnounceMutation,
     useUpdateAnnounceMutation,
 } from "@src/shared/hooks/react-query/useAnnounce";
-import LoadingSpinner from "../spinner/LoadingSpinner";
-import ImageViewerModal from "./ImageViewerModal";
+import LoadingSpinner from "../../spinner/LoadingSpinner";
+import ImageViewerModal from "../image/ImageViewerModal";
 import Image from "next/image";
 
 interface AnnounceListProps {

@@ -1,5 +1,5 @@
 import { IAnnounceDTO } from "@src/entities/type/announce";
-import LoadingSpinner from "../spinner/LoadingSpinner";
+import LoadingSpinner from "../../spinner/LoadingSpinner";
 import AnnounceList from "./AnnounceList";
 
 const ListContent = ({

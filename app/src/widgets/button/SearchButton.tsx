@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/src/components/product/interface";
+import { Product } from "@src/entities/type/products";
 import { useState, useCallback, useRef } from "react";
 
 interface SearchFloatingButtonProps {

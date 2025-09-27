@@ -1,8 +1,8 @@
 import { useState } from "react"
-import ModalWrap from "./ModalWrap"
-import DefaultImage from "../../../../public/images/chill.png"
+import ModalWrap from "../etc/ModalWrap"
+import DefaultImage from "../../../../../public/images/chill.png"
 import { textareaPlaceholder } from "@src/utils/dataUtils"
-import { specialReviewItem } from "@src/components/product/interface"
+import { specialReviewItem } from "@src/entities/type/products"
 import { usePostReviewMutation } from "@src/shared/hooks/react-query/useReviewQuery"
 import useOrder from "@src/shared/hooks/useOrder"
 
@@ -12,7 +12,7 @@ const PHOTO_REVIEW_BONUS_MILEAGE = 1500; // 3장 이상 포토 후기 마일리�
 const PHOTO_BONUS_THRESHOLD = 3;       // 보너스 마일리지 기준 사진 수
 
 const SpecialReviewModal = ({ 
-    onClose, 
+    onClose,
     productItem
 }: { 
     onClose: () => void; 

@@ -9,7 +9,7 @@ import Link from "next/link";
 import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "../drop/DropdownMenu";
 import useUsers from "@src/shared/hooks/useUsers";
-import Cart from "@/src/components/cart/Cart";
+import Cart from "@src/components/cart/Cart";
 
 const NavbarClient = () => {
     const {

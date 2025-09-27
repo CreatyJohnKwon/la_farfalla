@@ -1,4 +1,9 @@
-import { AdditionalOption } from "@/src/widgets/modal/interface";
+interface AdditionalOption {
+    id: string;
+    name: string;
+    additionalPrice: number;
+    stockQuantity: number;
+}
 
 // for server and datas
 interface Product {
@@ -116,5 +121,6 @@ export type {
     specialReviewItem,
     InfiniteQueryResult,
     IDescriptionItem,
-    DescriptionItem
+    DescriptionItem,
+    AdditionalOption
 };

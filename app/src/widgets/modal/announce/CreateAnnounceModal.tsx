@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import ModalWrap from "./ModalWrap";
+import ModalWrap from "../etc/ModalWrap";
 import {
     useCreateAnnounceMutation,
     useAnnouncesQuery,
@@ -24,11 +24,11 @@ import {
 } from "@src/utils/dataUtils";
 
 // 합성 컴포넌트들
-import { ModalHeader } from "./ModalHeader";
-import { FormHeader } from "./FormHeader";
-import { MobileTabNavigation } from "./MobileTabNavigation";
-import FormContent from "./FormContent";
-import FormFooter from "./FormFooter";
+import { ModalHeader } from "../etc/ModalHeader";
+import { FormHeader } from "../form/FormHeader";
+import { MobileTabNavigation } from "../etc/MobileTabNavigation";
+import FormContent from "../form/FormContent";
+import FormFooter from "../form/FormFooter";
 import ListContent from "./ListContent";
 
 interface Props {

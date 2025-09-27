@@ -1,4 +1,4 @@
-import { Product } from "@src/components/product/interface";
+import { Product } from "@src/entities/type/products";
 
 const ProductTitle = ({
     formData,

@@ -6,12 +6,12 @@ import {
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 import { CheckCircle, XCircle } from "lucide-react";
 import Image from "next/image";
-import DefaultImage from "../../../../public/images/chill.png";
+import DefaultImage from "../../../../../public/images/chill.png";
 import { useState } from "react";
 import CancelOrderModal from "./CancelOrderModal";
 import DeliveryChangeModal from "./DeliveryChangeModal";
-import SpecialReviewModal from "./SpecialReviewModal";
-import { specialReviewItem } from "@src/components/product/interface";
+import SpecialReviewModal from "../review/SpecialReviewModal";
+import { specialReviewItem } from "@src/entities/type/products";
 import { OrderData, OrderItem, ShippingStatus } from "@src/components/order/interface";
 import useOrder from "@src/shared/hooks/useOrder";
 import { sendMail } from "@src/shared/lib/server/order";

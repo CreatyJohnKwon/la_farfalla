@@ -1,7 +1,7 @@
 "use client";
 
-import useUsers from "@/src/shared/hooks/useUsers";
-import { adminMenuItems, serviceMenuItems } from "@/src/utils/dataUtils";
+import useUsers from "@src/shared/hooks/useUsers";
+import { adminMenuItems, serviceMenuItems } from "@src/utils/dataUtils";
 import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "@src/widgets/drop/DropdownMenu";
 import Link from "next/link";

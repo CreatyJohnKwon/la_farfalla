@@ -1,5 +1,5 @@
-import { Category } from "@/src/entities/type/interfaces";
-import useProduct from "@/src/shared/hooks/useProduct";
+import { Category } from "@src/entities/type/interfaces";
+import useProduct from "@src/shared/hooks/useProduct";
 
 const CategoryList = ({ category }: { category: Category[]}) => {
     const { setSection, section } = useProduct();

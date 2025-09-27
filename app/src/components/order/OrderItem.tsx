@@ -1,10 +1,10 @@
 "use client";
 
-import OrderDetailModal from "@src/widgets/modal/OrderDetailModal";
+import OrderDetailModal from "@/src/widgets/modal/order/OrderDetailModal";
 import { format } from "date-fns";
 import { useState } from "react";
-import { specialReviewItem } from "../product/interface";
-import SpecialReviewModal from "@src/widgets/modal/SpecialReviewModal";
+import { specialReviewItem } from "../../entities/type/products";
+import SpecialReviewModal from "@/src/widgets/modal/review/SpecialReviewModal";
 import { OrderData, OrderItem as OrderItemInterface } from "./interface";
 
 const OrderItem = ({ item }: { item: OrderData }) => {

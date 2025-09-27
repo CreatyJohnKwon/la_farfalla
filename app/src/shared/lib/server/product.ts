@@ -1,4 +1,4 @@
-import { Product, ProductPayload } from "@src/components/product/interface";
+import { Product, ProductPayload } from "@src/entities/type/products";
 
 const getProductList = async (page = 1, limit = 9) => {
     const res = await fetch(`/api/product?page=${page}&limit=${limit}`);

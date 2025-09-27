@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
-import { Order } from "@/src/entities/models/Order";
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import { EmailService } from "@/src/shared/lib/emailService";
-import { OrderData, OrderItem } from "@/src/components/order/interface";
+import { Order } from "@src/entities/models/Order";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import { EmailService } from "@src/shared/lib/emailService";
+import { OrderData, OrderItem } from "@src/components/order/interface";
 
 // PortOne 결제 검증 함수 (실제 구현 필요)
 async function verifyPortOnePayment(paymentId: string, expectedAmount: number): Promise<boolean> {

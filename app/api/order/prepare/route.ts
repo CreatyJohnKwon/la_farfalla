@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
-import { Order } from "@/src/entities/models/Order";
-import { OrderItem } from "@/src/components/order/interface";
-import Product from "@/src/entities/models/Product";
-import { connectDB } from "@/src/entities/models/db/mongoose";
-import { UserCoupon } from "@/src/entities/models/UserCoupon";
-import User from "@/src/entities/models/User";
+import { Order } from "@src/entities/models/Order";
+import { OrderItem } from "@src/components/order/interface";
+import Product from "@src/entities/models/Product";
+import { connectDB } from "@src/entities/models/db/mongoose";
+import { UserCoupon } from "@src/entities/models/UserCoupon";
+import User from "@src/entities/models/User";
 
 // 재고 감소 함수 (수정됨)
 const reduceStock = async (items: OrderItem[], session: mongoose.ClientSession) => {
