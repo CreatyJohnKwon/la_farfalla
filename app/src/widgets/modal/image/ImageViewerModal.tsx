@@ -29,6 +29,7 @@ const ImageViewerModal = ({
                     alt="팝업 이미지 미리보기"
                     className="w-[90vw] sm:w-[70vw] h-auto object-contain max-h-[90vh] sm:max-h-[70vh] aspect-square"
                     onClick={(e) => e.stopPropagation()}
+                    priority
                 />
             </div>
         </div>

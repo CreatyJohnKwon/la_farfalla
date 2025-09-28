@@ -278,7 +278,13 @@ const DescriptionInfo = ({
                                     // 👇 그리드 아이템 스타일 조정
                                     className={`group relative aspect-square w-full cursor-grab transition-opacity ${draggedId === item.id ? 'opacity-30' : ''}`}
                                 >
-                                    <Image src={item.preview} alt={`설명 이미지`} fill className="pointer-events-none object-cover" />
+                                    <Image 
+                                        src={item.preview}
+                                        alt={`설명 이미지`}
+                                        fill
+                                        className="pointer-events-none object-cover" 
+                                        priority
+                                    />
                                     <button
                                         type="button"
                                         onClick={() => removeItem(item.id)}
@@ -310,7 +316,13 @@ const DescriptionInfo = ({
                             >
                                 {item.type === 'image' ? (
                                     <div className="group relative aspect-video w-full cursor-grab border-gray-200 bg-gray-100">
-                                        <Image src={item.preview} alt={`설명 이미지`} fill className="pointer-events-none object-contain" />
+                                        <Image 
+                                            src={item.preview} 
+                                            alt={`설명 이미지`} 
+                                            fill 
+                                            className="pointer-events-none object-contain" 
+                                            priority
+                                        />
                                         <button type="button" onClick={() => removeItem(item.id)} className="absolute -right-2 -top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-gray-800 text-sm font-bold text-white sm:opacity-0 opacity-100 transition-all hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 group-hover:opacity-100">×</button>
                                     </div>
                                 ) : (

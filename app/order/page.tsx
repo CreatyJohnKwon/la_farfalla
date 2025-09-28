@@ -345,6 +345,7 @@ const Order = () => {
                                                 height={24}
                                                 style={{ objectFit: 'cover' }}
                                                 className="h-20 w-20 bg-gray-50"
+                                                priority
                                             />
                                         </div>
                                         {/* 상품 상세 정보 */}

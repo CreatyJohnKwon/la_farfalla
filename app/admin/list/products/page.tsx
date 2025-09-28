@@ -459,6 +459,7 @@ const Products = () => {
                                                         }
                                                         alt="대표 이미지"
                                                         className="h-20 w-20 rounded-sm object-cover"
+                                                        priority
                                                     />
                                                 </Link>
                                             </td>
@@ -721,6 +722,7 @@ const Products = () => {
                                                     }
                                                     alt="상품 이미지"
                                                     className="h-20 w-20 flex-shrink-0 rounded-sm object-cover"
+                                                    priority
                                                 />
                                             </Link>
 

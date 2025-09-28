@@ -213,6 +213,7 @@ const UploadImage = ({
                                     width={500}
                                     height={500}
                                     className="object-cover pointer-events-none"
+                                    priority
                                 />
                                 <button
                                     type="button"

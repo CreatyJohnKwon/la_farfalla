@@ -487,6 +487,7 @@ const OrderDetailModal = ({
                                                     ? item.image[0]
                                                     : DefaultImage
                                             }
+                                            priority
                                         />
                                     </div>
                                     <div className="min-w-0 flex-1 font-pretendard">

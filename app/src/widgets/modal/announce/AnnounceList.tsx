@@ -363,7 +363,7 @@ const AnnounceList = ({ announces, onEdit }: AnnounceListProps) => {
                                                         e.target as HTMLImageElement
                                                     ).style.display = "none";
                                                 }}
-                                                priority={false}
+                                                priority
                                                 unoptimized // 외부 이미지인 경우 최적화 비활성화
                                             />
                                             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 opacity-0 transition-all group-hover:bg-opacity-20 group-hover:opacity-100">

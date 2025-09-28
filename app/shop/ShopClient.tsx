@@ -86,7 +86,7 @@ const ShopClient = () => {
     const isProductListEmpty = !isSearchMode && !productsLoading && filteredProducts.length === 0;
 
     return (
-        <div className="flex w-full min-h-full flex-col">
+        <div className="flex w-full min-h-full h-auto flex-col">
             <main className="flex w-full flex-col flex-grow">
                 <div className="flex flex-col items-center">
                     <div className="fixed top-0 flex w-full flex-col items-center justify-center pt-16 pb-5 mt-5 md:mt-12 md:flex-row bg-white z-10">

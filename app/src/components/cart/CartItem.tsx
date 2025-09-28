@@ -52,6 +52,7 @@ const CartItem = ({ item, onClose }: CartItemProps) => {
                     router.push(`/products/${item.productId}`);
                     onClose();
                 }}
+                priority
             />
             <div className="flex-grow">
                 <p className="font-pretendard font-[500] text-sm sm:text-base ps-1.5">{item.title || "상품 이름"}</p>
