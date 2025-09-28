@@ -79,7 +79,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
             productId: product._id || "",
             image: product.image[0],
             quantity: 1,
-            userId: authCheck() ? session?.user.id : null,
+            userId:session?.user.id,
             title: product.title.kr,
             size: size,
             color: color,
@@ -95,6 +95,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
 
     const handleAddAdditionalItem = (optionData: AdditionalOption) => {
         if (!optionData) return;
+
         const cartItemId = `${product._id}-additional-${optionData.name}`;
 
         const existingItem = selectedItems.find(item => item.cartItemId === cartItemId);
@@ -109,7 +110,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
             productId: product._id || "",
             image: product.image[0],
             quantity: 1,
-            userId: authCheck() ? session?.user.id : null,
+            userId: session?.user.id,
             title: product.title.kr,
             size: "",
             color: "",
@@ -173,13 +174,13 @@ const ProductInfo = ({ product }: { product: Product }) => {
     };
 
     useEffect(() => {
-        if (selectedSize && selectedColor) {
+        if (selectedSize && selectedColor && authCheck()) {
             handleAddProductItem(selectedSize, selectedColor);
         }
     }, [selectedSize, selectedColor]);
 
     useEffect(() => {
-        if (selectedAdditional) {
+        if (selectedAdditional && authCheck()) {
             handleAddAdditionalItem(selectedAdditional);
         }
     }, [selectedAdditional]);
@@ -261,7 +262,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 {/* title with share button */}
                 <div className="flex flex-col items-center gap-2 text-center md:gap-3 lg:gap-4 xl:gap-5">
                     <div className="relative w-full max-w-[90vw] md:max-w-none">
-                        <span className="font-amstel pr-10 text-2xl md:pr-16 md:text-3xl xl:text-4xl">
+                        <span className="font-amstel text-2xl pr-8 md:pr-12 md:text-3xl xl:text-4xl">
                             {product.title.eg}
                         </span>
 
@@ -345,7 +346,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 {selectedItems.map((item: SelectedItem) => (
                     <QuantityModal
                         id={item.cartItemId}
-                        custom="w-full text-sm md:text-base flex items-center justify-end gap-2 md:gap-4 text-black c_md:gap-6 px-2 md:px-0"
+                        custom="w-full text-xs md:text-sm flex items-center justify-end gap-2 md:gap-4 text-black c_md:gap-6 px-2 md:px-0"
                         key={item.cartItemId}
                         item={item}
                         onDelete={(id) => {
@@ -386,17 +387,17 @@ const ProductInfo = ({ product }: { product: Product }) => {
                         className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50 sm:text-base md:py-3 md:text-lg lg:text-lg"
                         disabled={selectedItems.length === 0}
                         onClick={() => {
-                            if (authCheck()) {
-                                handleBuy(selectedItems);
-                            }
+                            if (authCheck()) handleBuy(selectedItems);
                         }}
-                    >
+                        >
                         buy now
                     </button>
                     <button
                         className="w-1/2 bg-gray-200 py-2 text-center text-sm text-black transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50 sm:text-base md:py-3 md:text-lg lg:text-lg"
                         disabled={selectedItems.length === 0}
-                        onClick={() => handleAddToCart()}
+                        onClick={() => {
+                            if (authCheck()) handleAddToCart();
+                        }}
                     >
                         cart
                     </button>

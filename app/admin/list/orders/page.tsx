@@ -183,7 +183,7 @@ const Orders = () => {
     };
 
     return (
-        <div className="w-full max-w-full p-4 font-pretendard sm:p-6 lg:p-16">
+        <div className="w-full max-w-full p-4 font-pretendard sm:p-6 lg:p-10">
             {/* 헤더 */}
             <div className="mb-6 mt-[7vh]">
                 <div className="flex flex-col gap-4">

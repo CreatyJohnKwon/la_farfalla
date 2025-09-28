@@ -30,7 +30,7 @@ const QuantityModal = ({
 
     return (
         <div className={`flex items-center gap-3 ${custom}`}>
-            <div className="truncate font-pretendard font-[300] text-base text-black">
+            <div className="truncate font-pretendard font-[300] text-black">
                 {` ${item.additional ? `${item.additional}` : item.color+"\t-\t"+item.size}`}
             </div>
 
@@ -57,14 +57,14 @@ const QuantityModal = ({
             </div>
 
             {/* 총 가격 */}
-            <div className="font-amstel min-w-0 font-light text-gray-900">
+            <div className="font-amstel text-gray-900 whitespace-nowrap">
                 KRW {formatPrice(totalPrice)}
             </div>
 
             {/* 삭제 버튼 */}
             <button
                 onClick={() => onDelete(id)}
-                className="ml-1 flex h-6 w-6 items-center justify-center text-gray-400 transition-colors duration-200 hover:text-red-500"
+                className="flex h-8 w-auto mr-2 items-center justify-center text-gray-400 transition-colors duration-200 hover:text-red-500"
                 aria-label="상품 삭제"
             >
                 ×

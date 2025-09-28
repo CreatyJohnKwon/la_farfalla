@@ -86,7 +86,7 @@ const Users = () => {
     if (!users) return <div>유저 목록이 없습니다.</div>;
 
     return (
-        <div className="w-full max-w-full p-4 font-pretendard sm:p-6 lg:p-16">
+        <div className="w-full max-w-full p-4 font-pretendard sm:p-6 lg:p-10">
             {/* 헤더 */}
             <div className="mb-6 mt-[7vh]">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
