@@ -261,14 +261,14 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 {/* title with share button */}
                 <div className="flex flex-col items-center gap-2 text-center md:gap-3 lg:gap-4 xl:gap-5">
                     <div className="relative w-full max-w-[90vw] md:max-w-none">
-                        <h1 className="font-amstel pr-10 text-2xl md:pr-16 md:text-3xl xl:text-4xl">
+                        <span className="font-amstel pr-10 text-2xl md:pr-16 md:text-3xl xl:text-4xl">
                             {product.title.eg}
-                        </h1>
+                        </span>
 
                         {/* 공유하기 버튼 - 안정화된 위치 */}
                         <button
                             onClick={handleShare}
-                            className="group absolute right-0 top-1 rounded-full p-2 transition-all duration-200 hover:bg-gray-100 md:p-3"
+                            className="group absolute right-0 top-1 rounded-full transition-all duration-200 hover:bg-gray-100 p-1.5"
                             title="공유하기"
                             aria-label="상품 공유하기"
                         >
