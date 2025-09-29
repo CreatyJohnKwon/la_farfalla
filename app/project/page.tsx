@@ -4,8 +4,6 @@ import ProjectLink from '@/src/components/project/ProjectLink';
 import { IProject } from '@/src/entities/type/project';
 import { useProjectListQuery } from '@/src/shared/hooks/react-query/useProjectQuery';
 
-export const revalidate = 3600;
-
 const ProjectsPage = () => {
     const { data: projects, isPending: isListSetting, error } = useProjectListQuery();
     

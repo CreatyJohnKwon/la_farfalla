@@ -5,8 +5,6 @@ import { useOneProjectQuery } from '@/src/shared/hooks/react-query/useProjectQue
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 
-export const revalidate = 3600;
-
 const ProjectDetailPage = () => {
     const params = useParams();
     const id = params.id as string;
