@@ -4,6 +4,8 @@ import Image from "next/image";
 import imageUrl from "../../public/images/bg_introduce_250911.jpg"
 import imageUrlMobile from "../../public/images/bg_introduce_250923_mobile.jpeg"
 
+export const revalidate = 3600;
+
 const IntroduceClient = () => {
     return (
         <div className="flex min-h-screen w-full flex-col overflow-hidden group relative">

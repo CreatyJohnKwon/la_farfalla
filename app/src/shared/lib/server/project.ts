@@ -1,5 +1,6 @@
 import { IProject } from "@/src/entities/type/project";
 import { ApiResponse } from "@/src/entities/type/common";
+import { baseUrl } from "public/data/common";
 
 // GET: 모든 프로젝트 조회
 const getProjectList = async (): Promise<IProject[]> => {
@@ -14,7 +15,7 @@ const getProjectList = async (): Promise<IProject[]> => {
 
 // GET: ID로 특정 프로젝트 조회
 const getProjectById = async (id: string): Promise<IProject> => {
-    const res = await fetch(`/api/project/${id}`);
+    const res = await fetch(`${baseUrl}/api/project/${id}`);
     const result: ApiResponse<IProject> = await res.json();
 
     if (!result.success) {
