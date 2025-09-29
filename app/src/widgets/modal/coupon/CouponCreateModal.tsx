@@ -296,13 +296,13 @@ const CouponCreateModal = ({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="rounded-sm bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                            className="rounded-sm bg-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
                             취소
                         </button>
                         <button
                             type="submit"
-                            className="rounded-sm bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                            className="rounded-sm bg-black px-4 py-2 text-sm text-white hover:bg-black/50"
                         >
                             생성
                         </button>

@@ -9,6 +9,7 @@ import {
 } from "@src/shared/hooks/react-query/useUserQuery";
 import UpdateUser from "@/src/widgets/modal/user/UpdateUser";
 import { useState, useMemo } from "react";
+import UserMileageListModal from "@/src/widgets/modal/user/UserMileageListModal";
 
 type SortOption = "latest" | "oldest" | "name_asc" | "name_desc" | "none";
 
@@ -22,9 +23,11 @@ const Users = () => {
 
     const [openModal, setOpenModal] = useState(false);
     const [openAnnounceModal, setOpenAnnounceModal] = useState(false);
+    const [openMilegeModal, setOpenMileageModal] = useState(false);
     const [userData, setUserData] = useState<UserProfileData>();
     const [sortOption, setSortOption] = useState<SortOption>("none");
     const [searchQuery, setSearchQuery] = useState("");
+    const [userId, setUserId] = useState("");
 
     const handleRestoreUser = (userId: string) => {
         restoreUser.mutate(userId, {
@@ -256,7 +259,7 @@ const Users = () => {
             </div>
 
             {/* 테이블 컨테이너 */}
-            <div className="overflow-hidden rounded-lg bg-white">
+            <div className="overflow-hidden rounded-lg bg-white font-pretendard">
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-[800px] text-sm">
                         <thead>
@@ -361,8 +364,14 @@ const Users = () => {
                                                 ? `${user.address} ${user.detailAddress}${user.postcode ? `, (${user.postcode})` : ""}`
                                                 : "-"}
                                         </td>
-                                        <td className="px-4 py-3 text-xs sm:text-sm">
-                                            <span className="font-medium text-green-600">
+                                        <td 
+                                            className="px-4 py-3 text-xs sm:text-sm cursor-pointer hover:underline text-green-600"
+                                            onClick={() => {
+                                                setUserId(user._id);
+                                                setOpenMileageModal(true)
+                                            }}
+                                        >
+                                            <span>
                                                 {user.mileage?.toLocaleString() ||
                                                     0}
                                                 P
@@ -500,6 +509,12 @@ const Users = () => {
             {openAnnounceModal && (
                 <CreateAnnounceModal
                     onClose={() => setOpenAnnounceModal(false)}
+                />
+            )}
+            {openMilegeModal && (
+                <UserMileageListModal
+                    userId={userId}
+                    onClose={() => setOpenMileageModal(false)}
                 />
             )}
         </div>

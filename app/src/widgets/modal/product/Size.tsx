@@ -44,7 +44,7 @@ const Size = ({
                     onChange={(e) => setSizeInput(e.target.value)}
                     className="flex-1 rounded-sm border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none"
                     placeholder="사이즈를 입력하세요"
-                    onKeyPress={(e) =>
+                    onKeyDown={(e) =>
                         e.key === "Enter" && (e.preventDefault(), addSize())
                     }
                 />
