@@ -2,7 +2,7 @@
 
 import { searchUsers } from "@src/features/search";
 import CreateAnnounceModal from "@/src/widgets/modal/announce/CreateAnnounceModal";
-import { UserProfileData } from "@src/entities/type/interfaces";
+import { UserProfileData } from "@/src/entities/type/common";
 import {
     useRestoreUserMutation,
     useUserListQuery,
@@ -96,7 +96,7 @@ const Users = () => {
                         </h1>
                         <button
                             onClick={() => refetch()}
-                            className="flex h-full w-9 items-center justify-center rounded border border-gray-300 bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800 sm:w-10"
+                            className="whitespace-nowrap bg-gray-800 text-white px-2 py-2 rounded-md hover:bg-gray-700 text-sm"
                             title="새로고침"
                         >
                             <svg
@@ -113,15 +113,7 @@ const Users = () => {
                                 />
                             </svg>
                         </button>
-                        <button
-                            onClick={() => setOpenAnnounceModal(true)}
-                            className="rounded-xs flex h-full items-center justify-center whitespace-nowrap border bg-gray-100 px-4 font-pretendard text-sm font-[500] text-black transition-colors hover:bg-gray-200 sm:px-6 sm:text-base"
-                        >
-                            공지 관리
-                        </button>
-                    </div>
-
-                    {/* 검색 및 필터 옵션 */}
+                        {/* 검색 및 필터 옵션 */}
                     <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
                         {/* 검색 입력 */}
                         <div className="relative flex items-center">
@@ -196,6 +188,14 @@ const Users = () => {
                             </select>
                         </div>
                     </div>
+                    </div>
+
+                    <button
+                        onClick={() => setOpenAnnounceModal(true)}
+                        className="whitespace-nowrap bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm"
+                    >
+                        공지 관리
+                    </button>
                 </div>
 
                 {/* 총 유저 수 및 검색 결과 표시 */}

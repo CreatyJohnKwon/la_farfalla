@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 import useCart from "@src/shared/hooks/useCart";
 import useUser from "@src/shared/hooks/useUsers";
 import { Product, ProductVariant, AdditionalOption } from "@src/entities/type/products";
-import { SelectedItem } from "@src/entities/type/interfaces";
+import { SelectedItem } from "@/src/entities/type/common";
 
 // SVG 아이콘 컴포넌트들
 const ShareIcon = ({ className = "" }: { className?: string }) => (

@@ -1,4 +1,4 @@
-import { Category } from "@src/entities/type/interfaces";
+import { Category } from "@/src/entities/type/common";
 import useProduct from "@src/shared/hooks/useProduct";
 
 const CategoryList = ({ category }: { category: Category[]}) => {

@@ -1,4 +1,4 @@
-import { Category } from "@src/entities/type/interfaces";
+import { Category } from "@/src/entities/type/common";
 
 interface CategorySelectorProps {
     selectedCategories: string[]; 

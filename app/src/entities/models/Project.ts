@@ -1,5 +1,5 @@
-import { IDescriptionItem } from "@src/entities/type/products";
 import mongoose, { Schema } from "mongoose";
+import { IDescriptionItem } from "../type/products";
 
 const descriptionItemSchema = new Schema<IDescriptionItem>(
     {
@@ -10,7 +10,7 @@ const descriptionItemSchema = new Schema<IDescriptionItem>(
         },
         src: {
             type: String,
-            // ✨ 3. 'this'의 타입을 명시적으로 지정하여 오류 해결
+            // 'this' 타입을 명시적으로 지정한 것은 좋은 방법입니다.
             required: function(this: IDescriptionItem) {
                 return this.itemType === 'image';
             }
@@ -22,16 +22,14 @@ const descriptionItemSchema = new Schema<IDescriptionItem>(
 const projectSchema = new mongoose.Schema(
     {
         // 프로젝트 제목
-        title: { 
+        title: {
             type: String,
             required: true,
-            default: ""
         },
         // 프로젝트 대표 이미지
         image: {
             type: String,
-            require: true,
-            default: ""
+            required: true,
         },
         // 프로젝트 내부 이미지 및 줄바꿈 배열
         description: {
@@ -45,4 +43,5 @@ const projectSchema = new mongoose.Schema(
     },
 );
 
-export default mongoose.models?.Product || mongoose.model("Project", projectSchema);
+// 모델 이름을 'Project'로 통일하여 수정
+export default mongoose.models?.Project || mongoose.model("Project", projectSchema);

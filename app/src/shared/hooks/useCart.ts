@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { useState } from "react";
 import { cartDatasAtom, cartViewAtom } from "@src/shared/lib/atom";
-import { SelectedItem } from "@src/entities/type/interfaces";
+import { SelectedItem } from "@/src/entities/type/common";
 import { justDiscount } from "@src/features/calculate";
 import { useRouter } from "next/navigation";
 import { postCart, deleteCart, updateQuantity } from "../lib/server/cart";

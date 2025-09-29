@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState, useMemo } from "react";
-import { ICoupon } from "@src/entities/type/interfaces";
+import { ICoupon } from "@/src/entities/type/common";
 import {
     useGetUserCouponsListQuery,
     useDeleteManageCouponMutation,
@@ -310,7 +310,7 @@ const CouponAdmin = () => {
                                 userCouponRefetch();
                                 manageCouponRefetch();
                             }}
-                            className="flex h-9 w-9 items-center justify-center rounded border border-gray-300 bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800 sm:h-10 sm:w-10"
+                            className="whitespace-nowrap bg-gray-800 text-white px-2 py-2 rounded-md hover:bg-gray-700 text-sm"
                             title="새로고침"
                             disabled={isLoading}
                         >
@@ -331,7 +331,7 @@ const CouponAdmin = () => {
                     </div>
                     <button
                         onClick={() => setShowCreateModal(true)}
-                        className="flex h-10 items-center justify-center whitespace-nowrap rounded border bg-gray-100 px-4 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-200 sm:h-12 sm:px-6 sm:text-base"
+                        className="whitespace-nowrap bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 text-sm"
                     >
                         새 쿠폰 템플릿 생성
                     </button>

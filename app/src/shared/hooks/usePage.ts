@@ -26,9 +26,6 @@ const usePage = () => {
 
     const onCloseSidebar = () => setOpenSidebar(false);
     const onOpenSidebar = () => setOpenSidebar(true);
-    const isUserAdmin = adminEmails.includes(session?.user?.email ?? "");
-    const menuData = isUserAdmin ? adminMenuItems : serviceMenuItems;
-    const menuTitle = isUserAdmin ? "ADMIN" : "ABOUT";
 
     const instagramHandler = () =>
         window.open(
@@ -75,8 +72,6 @@ const usePage = () => {
         
         menuBg,
         openSidebar,
-        menuData,
-        menuTitle,
         isVisible,
         animationClass,
         isCategoryLoad,

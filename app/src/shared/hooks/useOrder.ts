@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import useUser from "@src/shared/hooks/useUsers";
-import { SelectedItem } from "@src/entities/type/interfaces";
+import { SelectedItem } from "@/src/entities/type/common";
 import { useAtom } from "jotai";
 import { orderDatasAtom } from "../lib/atom";
 import { useState, useEffect } from "react";

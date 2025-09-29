@@ -1,6 +1,6 @@
 // models/UserCoupon.ts
 import { model, models, Schema } from "mongoose";
-import { IUserCouponDocument } from "../type/interfaces";
+import { IUserCouponDocument } from "../type/common";
 
 const userCouponSchema = new Schema(
     {

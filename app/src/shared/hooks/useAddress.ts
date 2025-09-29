@@ -1,4 +1,4 @@
-import { AddressData } from "@src/entities/type/interfaces";
+import { AddressData } from "@/src/entities/type/common";
 import { useState } from "react";
 
 export const useAddress = () => {

@@ -20,8 +20,7 @@ type SortOption =
 
 const Products = () => {
     const [isOpenUpdateModal, setIsOpenUpdateModal] = useState<boolean>(false);
-    const [isOpenUpdateCategoryModal, setIsOpenUpdateCategoryModal] =
-        useState<boolean>(false);
+    const [isOpenUpdateCategoryModal, setIsOpenUpdateCategoryModal] = useState<boolean>(false);
     const [onStatus, setOnStatus] = useState<"create" | "update">();
     const [editProduct, setEditProduct] = useState<Product>();
 
@@ -128,20 +127,20 @@ const Products = () => {
         <div className="w-full max-w-full p-3 font-pretendard sm:p-6 lg:p-10">
             {/* 헤더 */}
             <div className="mb-6 mt-[7vh]">
-                <div className="flex flex-col gap-3 sm:gap-4">
-                    {/* 타이틀과 버튼들 */}
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                        <div className="flex items-center gap-2 sm:gap-3">
-                            <h1 className="text-lg font-semibold text-gray-800 sm:text-xl lg:text-2xl">
+                <div className="flex flex-col gap-4">
+                    {/* 타이틀과 컨트롤 버튼들 */}
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-xl font-semibold text-gray-800 sm:text-2xl">
                                 상품 관리
                             </h1>
                             <button
                                 onClick={() => useRefetchProducts()}
-                                className="flex h-8 w-8 items-center justify-center rounded border border-gray-300 bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800 sm:h-9 sm:w-9 lg:h-10 lg:w-10"
+                                className="whitespace-nowrap rounded-md bg-gray-800 px-2 py-2 text-sm text-white hover:bg-gray-700"
                                 title="새로고침"
                             >
                                 <svg
-                                    className="h-4 w-4 sm:h-4 sm:w-4 lg:h-5 lg:w-5"
+                                    className="h-4 w-4 sm:h-5 sm:w-5"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -154,57 +153,54 @@ const Products = () => {
                                     />
                                 </svg>
                             </button>
-                        </div>
-
-                        <div className="flex gap-2 sm:h-10 sm:gap-3">
-                            <button
-                                onClick={() => {
-                                    setIsOpenUpdateCategoryModal(true);
-                                }}
-                                className="flex h-9 min-h-[44px] items-center justify-center whitespace-nowrap rounded border border-gray-300 bg-gray-100 px-3 text-sm text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800 sm:h-auto sm:px-4"
-                            >
-                                카테고리 관리
-                            </button>
-
                             <button
                                 onClick={() => {
                                     setIsOpenUpdateModal(true);
                                     setOnStatus("create");
                                 }}
-                                className="flex h-9 min-h-[44px] items-center justify-center whitespace-nowrap rounded border border-gray-300 bg-gray-100 px-3 text-sm text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800 sm:h-auto sm:px-4"
+                                className="whitespace-nowrap rounded-md bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-700"
                             >
-                                상품 등록하기
+                                상품 등록
+                            </button>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3">
+                            <button
+                                onClick={() => setIsOpenUpdateCategoryModal(true)}
+                                className="whitespace-nowrap rounded-md bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-700"
+                            >
+                                카테고리 관리
                             </button>
                         </div>
                     </div>
 
-                    {/* 필터 옵션 */}
-                    <div className="rounded-lg bg-gray-50 p-3 sm:p-4">
-                        <div className="flex flex-col gap-3 sm:gap-4">
-                            {/* 필터 그리드 */}
-                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:flex lg:items-center lg:gap-4">
-                                <div className="flex items-center gap-2">
-                                    <span className="whitespace-nowrap text-sm text-gray-600">
-                                        카테고리:
-                                    </span>
-                                    <div className="flex flex-wrap gap-2">
-                                        {uniqueCategory.map((categoryId) => (
-                                            returnCategory(categoryId) ?
-                                                <button
-                                                    key={categoryId}
-                                                    onClick={() => handleCategoryToggle(categoryId)}
-                                                    className={`min-h-[35px] rounded-sm border p-3 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2
-                                                        ${categoryFilter.includes(categoryId)
-                                                            ? "border-blue-600 bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
-                                                            : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-blue-500"
-                                                        }`}
-                                                >
-                                                    {returnCategory(categoryId)}
-                                                </button> : null
-                                        ))}
-                                    </div>
+                    {/* 필터 정보 바 */}
+                    <div className="flex flex-col gap-4 rounded-lg bg-gray-50 p-4">
+                        {/* 1행: 필터 컨트롤 */}
+                        <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+                            {/* 카테고리 필터 */}
+                            <div className="flex items-center gap-2">
+                                <span className="flex-shrink-0 text-sm text-gray-600">
+                                    카테고리:
+                                </span>
+                                <div className="flex flex-wrap gap-2">
+                                    {uniqueCategory.map((categoryId) => (
+                                        returnCategory(categoryId) ?
+                                            <button
+                                                key={categoryId}
+                                                onClick={() => handleCategoryToggle(categoryId)}
+                                                className={`min-h-[35px] rounded-sm border px-3 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                                                    ${categoryFilter.includes(categoryId)
+                                                        ? "border-blue-600 bg-blue-600 text-white hover:bg-blue-700"
+                                                        : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
+                                                    }`}
+                                            >
+                                                {returnCategory(categoryId)}
+                                            </button> : null
+                                    ))}
                                 </div>
-
+                            </div>
+                            {/* 재고 및 정렬 필터 */}
+                            <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
                                 <div className="flex items-center gap-2">
                                     <span className="whitespace-nowrap text-sm text-gray-600">
                                         재고:
@@ -216,18 +212,13 @@ const Products = () => {
                                                 e.target.value as any,
                                             )
                                         }
-                                        className="min-h-[35px] w-full rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[120px]"
+                                        className="max-h-[44px] w-full rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[120px]"
                                     >
                                         <option value="all">전체</option>
-                                        <option value="in_stock">
-                                            재고 있음
-                                        </option>
-                                        <option value="out_of_stock">
-                                            품절
-                                        </option>
+                                        <option value="in_stock">재고 있음</option>
+                                        <option value="out_of_stock">품절</option>
                                     </select>
                                 </div>
-
                                 <div className="flex items-center gap-2">
                                     <span className="whitespace-nowrap text-sm text-gray-600">
                                         정렬:
@@ -239,119 +230,85 @@ const Products = () => {
                                                 e.target.value as SortOption,
                                             )
                                         }
-                                        className="min-h-[35px] w-full rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[140px]"
+                                        className="max-h-[44px] w-full rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 sm:w-auto sm:min-w-[140px]"
                                     >
                                         <option value="none">기본 순서</option>
-                                        <option value="latest">
-                                            최근 등록순
-                                        </option>
-                                        <option value="oldest">
-                                            오래된 등록순
-                                        </option>
-                                        <option value="name_asc">
-                                            상품명 ㄱ-ㅎ 순
-                                        </option>
-                                        <option value="name_desc">
-                                            상품명 ㅎ-ㄱ 순
-                                        </option>
-                                        <option value="price_asc">
-                                            가격 낮은 순
-                                        </option>
-                                        <option value="price_desc">
-                                            가격 높은 순
-                                        </option>
+                                        <option value="latest">최근 등록순</option>
+                                        <option value="oldest">오래된 등록순</option>
+                                        <option value="name_asc">상품명 ㄱ-ㅎ 순</option>
+                                        <option value="name_desc">상품명 ㅎ-ㄱ 순</option>
+                                        <option value="price_asc">가격 낮은 순</option>
+                                        <option value="price_desc">가격 높은 순</option>
                                     </select>
                                 </div>
-
-                                {(categoryFilter.length > 0 ||
-                                    sortOption !== "none" ||
-                                    stockFilter !== "all") && (
+                            </div>
+                        </div>
+                        {/* 2행: 활성 필터 정보 */}
+                        {(categoryFilter.length > 0 || sortOption !== "none" || stockFilter !== "all") && (
+                            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-gray-200 pt-4">
+                                <div className="flex flex-wrap items-center gap-4">
+                                    {/* 활성 필터 태그 */}
+                                    <div className="flex flex-wrap gap-2">
+                                        {categoryFilter.map((catId) => (
+                                            <span key={catId} className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
+                                                카테고리: {returnCategory(catId)}
+                                                <button
+                                                    onClick={() => handleCategoryToggle(catId)}
+                                                    className="ml-1 hover:text-blue-600"
+                                                >
+                                                    ×
+                                                </button>
+                                            </span>
+                                        ))}
+                                        {stockFilter !== "all" && (
+                                            <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+                                                재고: {stockFilter === "in_stock" ? "재고 있음" : "품절"}
+                                                <button
+                                                    onClick={() => setStockFilter("all")}
+                                                    className="ml-1 hover:text-green-600"
+                                                >
+                                                    ×
+                                                </button>
+                                            </span>
+                                        )}
+                                        {sortOption !== "none" && (
+                                            <span className="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-800">
+                                                정렬: {
+                                                    {
+                                                        "latest": "최근 등록순",
+                                                        "oldest": "오래된 등록순",
+                                                        "name_asc": "상품명 ㄱ-ㅎ 순",
+                                                        "name_desc": "상품명 ㅎ-ㄱ 순",
+                                                        "price_asc": "가격 낮은 순",
+                                                        "price_desc": "가격 높은 순"
+                                                    }[sortOption]
+                                                }
+                                                <button
+                                                    onClick={() => setSortOption("none")}
+                                                    className="ml-1 hover:text-purple-600"
+                                                >
+                                                    ×
+                                                </button>
+                                            </span>
+                                        )}
+                                    </div>
                                     <button
                                         onClick={resetFilters}
-                                        className="min-h-[44px] whitespace-nowrap rounded-sm border border-gray-300 px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800 sm:px-4"
+                                        className="rounded-sm border border-gray-300 px-3 py-1 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800"
                                     >
                                         필터 초기화
                                     </button>
-                                )}
-
+                                </div>
                                 <div className="text-sm text-gray-600">
-                                    총{" "}
-                                    <span className="font-medium text-blue-600">
-                                        {filteredAndSortedProducts.length}
-                                    </span>
-                                    개 상품
-                                    {filteredProducts &&
-                                        filteredAndSortedProducts.length !==
-                                            filteredProducts.length && (
-                                            <span className="ml-1 text-gray-500">
-                                                (전체{" "}
-                                                {filteredProducts.length}개
-                                                중)
-                                            </span>
-                                        )}
+                                    총 <span className="font-medium text-blue-600">{filteredAndSortedProducts.length}</span> 개 상품
+                                    {filteredProducts && filteredAndSortedProducts.length !== filteredProducts.length && (
+                                        <span className="ml-1 text-gray-500">
+                                            (전체 {filteredProducts.length}개 중)
+                                        </span>
+                                    )}
                                 </div>
                             </div>
-                            
-                            {/* 활성 필터 태그 */}
-                            {(categoryFilter.length > 0 ||
-                                sortOption !== "none" ||
-                                stockFilter !== "all") && (
-                                <div className="flex flex-wrap gap-2">
-                                    {categoryFilter.map((catId) => (
-                                        <span key={catId} className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
-                                            카테고리: {returnCategory(catId)}
-                                            <button
-                                                onClick={() => handleCategoryToggle(catId)}
-                                                className="ml-1 hover:text-blue-600"
-                                            >
-                                                ×
-                                            </button>
-                                        </span>
-                                    ))}
-                                    {stockFilter !== "all" && (
-                                        <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
-                                            재고:{" "}
-                                            {stockFilter === "in_stock"
-                                                ? "재고 있음"
-                                                : "품절"}
-                                            <button
-                                                onClick={() =>
-                                                    setStockFilter("all")
-                                                }
-                                                className="ml-1 hover:text-green-600"
-                                            >
-                                                ×
-                                            </button>
-                                        </span>
-                                    )}
-                                    {sortOption !== "none" && (
-                                        <span className="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-800">
-                                            정렬:{" "}
-                                            {sortOption === "latest"
-                                                ? "최근 등록순"
-                                                : sortOption === "oldest"
-                                                  ? "오래된 등록순"
-                                                  : sortOption === "name_asc"
-                                                    ? "상품명 ㄱ-ㅎ 순"
-                                                    : sortOption === "name_desc"
-                                                      ? "상품명 ㅎ-ㄱ 순"
-                                                      : sortOption ===
-                                                          "price_asc"
-                                                        ? "가격 낮은 순"
-                                                        : "가격 높은 순"}
-                                            <button
-                                                onClick={() =>
-                                                    setSortOption("none")
-                                                }
-                                                className="ml-1 hover:text-purple-600"
-                                            >
-                                                ×
-                                            </button>
-                                        </span>
-                                    )}
-                                </div>
-                            )}
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -1030,17 +987,16 @@ const Products = () => {
                 )}
             </div>
 
-            {/* 모달들 */}
+            {isOpenUpdateCategoryModal && (
+                <UpdateCategoryModal
+                    onClose={() => setIsOpenUpdateCategoryModal(false)}
+                />
+            )}
             {isOpenUpdateModal && (
                 <UpdateProductModal
                     onClose={() => setIsOpenUpdateModal(false)}
                     product={editProduct}
                     mode={onStatus}
-                />
-            )}
-            {isOpenUpdateCategoryModal && (
-                <UpdateCategoryModal
-                    onClose={() => setIsOpenUpdateCategoryModal(false)}
                 />
             )}
         </div>

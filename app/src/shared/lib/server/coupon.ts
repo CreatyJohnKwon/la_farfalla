@@ -1,4 +1,4 @@
-import { CouponResponse, ICoupon } from "@src/entities/type/interfaces";
+import { CouponResponse, ICoupon } from "@/src/entities/type/common";
 
 const getMyCoupon = async (): Promise<CouponResponse> => {
     const res = await fetch(`/api/user/coupon`);

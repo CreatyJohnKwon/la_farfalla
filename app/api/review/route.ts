@@ -4,7 +4,7 @@ import { connectDB } from "@src/entities/models/db/mongoose";
 import { getAuthSession } from "@src/shared/lib/session";
 import User from "@src/entities/models/User";
 import { Review } from "@src/entities/models/Review";
-import { UserProfileData } from "@src/entities/type/interfaces";
+import { UserProfileData } from "@/src/entities/type/common";
 import { adminEmails } from "public/data/common";
 import Product from "@src/entities/models/Product";
 

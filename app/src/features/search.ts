@@ -1,4 +1,4 @@
-import { UserProfileData } from "../entities/type/interfaces";
+import { UserProfileData } from "../entities/type/common";
 
 // 검색 함수
 const searchUsers = (users: UserProfileData[], query: string) => {

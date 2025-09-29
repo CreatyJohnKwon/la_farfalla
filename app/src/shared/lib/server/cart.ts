@@ -1,4 +1,4 @@
-import { SelectedItem } from "@src/entities/type/interfaces";
+import { SelectedItem } from "@/src/entities/type/common";
 import debounce from "lodash.debounce";
 
 const postCart = async (items: SelectedItem[]) => {

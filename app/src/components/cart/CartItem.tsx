@@ -1,4 +1,4 @@
-import { SelectedItem } from "@src/entities/type/interfaces";
+import { SelectedItem } from "@/src/entities/type/common";
 import usePage from "@src/shared/hooks/usePage";
 import useCart from "@src/shared/hooks/useCart";
 import Image from "next/image";

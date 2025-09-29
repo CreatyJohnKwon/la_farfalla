@@ -1,4 +1,4 @@
-import { Category, CreateCategoryData, UpdateCategoryData } from "@src/entities/type/interfaces";
+import { Category, CreateCategoryData, UpdateCategoryData } from "@/src/entities/type/common";
 import { baseUrl } from "public/data/common";
 
 /** 모든 카테고리 목록을 가져옵니다. (클라이언트 사이드용) */

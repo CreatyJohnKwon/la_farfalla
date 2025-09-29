@@ -3,7 +3,7 @@ import { connectDB } from "@src/entities/models/db/mongoose";
 import { UserCoupon } from "@src/entities/models/UserCoupon";
 import { getAuthSession } from "@src/shared/lib/session";
 import User from "@src/entities/models/User";
-import { UserProfileData } from "@src/entities/type/interfaces";
+import { UserProfileData } from "@/src/entities/type/common";
 import { Coupon } from "@src/entities/models/Coupon";
 
 export async function GET(req: NextRequest) {

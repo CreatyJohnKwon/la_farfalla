@@ -1,4 +1,4 @@
-import { profNavDataProps, navDataProps } from "@src/entities/type/interfaces";
+import { profNavDataProps, navDataProps } from "@/src/entities/type/common";
 
 const navData: navDataProps = [{ text: "home" }, { text: "" }];
 

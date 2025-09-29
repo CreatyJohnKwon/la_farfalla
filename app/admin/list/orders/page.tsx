@@ -185,9 +185,9 @@ const Orders = () => {
     return (
         <div className="w-full max-w-full p-4 font-pretendard sm:p-6 lg:p-10">
             {/* 헤더 */}
-            <div className="mb-6 mt-[7vh]">
+                       <div className="mb-6 mt-[7vh]">
                 <div className="flex flex-col gap-4">
-                    {/* 타이틀과 버튼들 */}
+                    {/* 타이틀과 컨트롤 버튼들 */}
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center gap-3">
                             <h1 className="text-xl font-semibold text-gray-800 sm:text-2xl">
@@ -195,7 +195,7 @@ const Orders = () => {
                             </h1>
                             <button
                                 onClick={() => refetch()}
-                                className="flex h-9 w-9 items-center justify-center rounded border border-gray-300 bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800 sm:h-10 sm:w-10"
+                                className="whitespace-nowrap rounded-md bg-gray-800 px-2 py-2 text-sm text-white hover:bg-gray-700"
                                 title="새로고침"
                             >
                                 <svg
@@ -212,70 +212,106 @@ const Orders = () => {
                                     />
                                 </svg>
                             </button>
+
+                            {/* 상태 변경 버튼 */}
+                            <button
+                                onClick={() => {
+                                    setIsSelectedModalOpen(true);
+                                }}
+                                className={`whitespace-nowrap rounded-md bg-gray-800 px-4 py-2 text-sm text-white ${
+                                    selectedOrder.length > 0
+                                        ? "hover:bg-gray-700"
+                                        : "opacity-50"
+                                }`}
+                                title="일괄 변경"
+                                disabled={selectedOrder.length === 0}
+                            >
+                                일괄 변경 ({selectedOrder.length})
+                            </button>
                         </div>
 
-                        <button
-                            onClick={() => {
-                                setIsSelectedModalOpen(true);
-                            }}
-                            className={`flex h-10 items-center justify-center whitespace-nowrap rounded border border-gray-300 bg-gray-100 px-4 text-gray-600 transition-colors sm:h-12 ${
-                                selectedOrder.length > 0
-                                    ? "hover:bg-gray-200 hover:text-gray-800"
-                                    : "opacity-50"
-                            }`}
-                            title="일괄 변경"
-                            disabled={selectedOrder.length === 0}
-                        >
-                            일괄 변경 ({selectedOrder.length})
-                        </button>
-                    </div>
-
-                    {/* 필터 옵션 */}
-                    <div className="flex flex-col items-start gap-4 rounded-lg bg-gray-50 p-4 lg:flex-row lg:items-center">
-                        <div className="flex flex-1 flex-col items-start gap-3 sm:flex-row sm:items-center">
-                            {/* 정렬 옵션 */}
-                            <div className="flex items-center gap-2">
-                                <span className="whitespace-nowrap text-sm text-gray-600">
-                                    정렬:
-                                </span>
-                                <select
-                                    value={sortOption}
-                                    onChange={(e) =>
-                                        setSortOption(
-                                            e.target.value as SortOption,
-                                        )
-                                    }
-                                    className="min-h-[44px] rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
-                                >
-                                    <option value="none">기본 순서</option>
-                                    <option value="name_asc">
-                                        주문자명 ㄱ-Z 순
-                                    </option>
-                                    <option value="name_desc">
-                                        주문자명 Z-ㄱ 순
-                                    </option>
-                                </select>
-                            </div>
-
-                            {/* 상태 필터 */}
-                            <div className="flex items-center gap-2">
-                                <span className="whitespace-nowrap text-sm text-gray-600">
-                                    상태:
-                                </span>
-                                <select
-                                    value={statusFilter}
-                                    onChange={(e) =>
-                                        setStatusFilter(e.target.value)
-                                    }
-                                    className="focus:border-gray-5000 min-h-[44px] rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
-                                >
-                                    <option value="all">전체 상태</option>
-                                    {uniqueStatuses.map((status) => (
-                                        <option key={status} value={status}>
-                                            {getStatusText(status)}
+                        {/* 오른쪽 컨트롤 그룹 */}
+                        <div className="flex flex-wrap items-center gap-4">
+                            {/* 필터 파트 */}
+                            <div className="flex flex-wrap items-center gap-2">
+                                {/* 정렬 옵션 */}
+                                <div className="flex items-center gap-2">
+                                    <span className="whitespace-nowrap text-sm text-gray-600">
+                                        정렬:
+                                    </span>
+                                    <select
+                                        value={sortOption}
+                                        onChange={(e) =>
+                                            setSortOption(
+                                                e.target.value as SortOption,
+                                            )
+                                        }
+                                        className="max-h-[44px] rounded-sm border border-gray-300 bg-white px-2 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                    >
+                                        <option value="none">기본 순서</option>
+                                        <option value="name_asc">
+                                            주문자명 ㄱ-Z 순
                                         </option>
-                                    ))}
-                                </select>
+                                        <option value="name_desc">
+                                            주문자명 Z-ㄱ 순
+                                        </option>
+                                    </select>
+                                </div>
+
+                                {/* 상태 필터 */}
+                                <div className="flex items-center gap-2">
+                                    <span className="whitespace-nowrap text-sm text-gray-600">
+                                        상태:
+                                    </span>
+                                    <select
+                                        value={statusFilter}
+                                        onChange={(e) =>
+                                            setStatusFilter(e.target.value)
+                                        }
+                                        className="focus:border-gray-5000 max-h-[44px] rounded-sm border border-gray-300 bg-white px-2 py-2 text-sm hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                    >
+                                        <option value="all">전체 상태</option>
+                                        {uniqueStatuses.map((status) => (
+                                            <option key={status} value={status}>
+                                                {getStatusText(status)}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* 필터 정보 바 */}
+                    <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-gray-50 p-4">
+                        <div className="flex flex-wrap items-center gap-4">
+                            {/* 활성 필터 표시 */}
+                            <div className="flex flex-wrap gap-2">
+                                {sortOption !== "none" && (
+                                    <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
+                                        정렬:{" "}
+                                        {sortOption === "name_asc"
+                                            ? "주문자명 ㄱ-Z 순"
+                                            : "주문자명 Z-ㄱ 순"}
+                                        <button
+                                            onClick={() => setSortOption("none")}
+                                            className="ml-1 hover:text-blue-600"
+                                        >
+                                            ×
+                                        </button>
+                                    </span>
+                                )}
+                                {statusFilter !== "all" && (
+                                    <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+                                        상태: {getStatusText(statusFilter)}
+                                        <button
+                                            onClick={() => setStatusFilter("all")}
+                                            className="ml-1 hover:text-green-600"
+                                        >
+                                            ×
+                                        </button>
+                                    </span>
+                                )}
                             </div>
 
                             {/* 필터 초기화 버튼 */}
@@ -283,7 +319,7 @@ const Orders = () => {
                                 statusFilter !== "all") && (
                                 <button
                                     onClick={resetFilters}
-                                    className="min-h-[44px] rounded-sm border border-gray-300 px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800"
+                                    className="rounded-sm border border-gray-300 px-3 py-1 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800"
                                 >
                                     필터 초기화
                                 </button>
@@ -306,37 +342,6 @@ const Orders = () => {
                                 )}
                         </div>
                     </div>
-
-                    {/* 활성 필터 표시 */}
-                    {(sortOption !== "none" || statusFilter !== "all") && (
-                        <div className="flex flex-wrap gap-2">
-                            {sortOption !== "none" && (
-                                <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
-                                    정렬:{" "}
-                                    {sortOption === "name_asc"
-                                        ? "주문자명 ㄱ-Z 순"
-                                        : "주문자명 Z-ㄱ 순"}
-                                    <button
-                                        onClick={() => setSortOption("none")}
-                                        className="ml-1 hover:text-blue-600"
-                                    >
-                                        ×
-                                    </button>
-                                </span>
-                            )}
-                            {statusFilter !== "all" && (
-                                <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
-                                    상태: {getStatusText(statusFilter)}
-                                    <button
-                                        onClick={() => setStatusFilter("all")}
-                                        className="ml-1 hover:text-green-600"
-                                    >
-                                        ×
-                                    </button>
-                                </span>
-                            )}
-                        </div>
-                    )}
                 </div>
             </div>
 
@@ -435,7 +440,7 @@ const Orders = () => {
                                             {/* 주문번호 */}
                                             <td className="whitespace-nowrap px-4 py-3">
                                                 <div 
-                                                    className="font-mono text-xs text-gray-600 sm:text-sm cursor-pointer truncate w-[10vw] hover:underline"
+                                                    className="w-[10vw] cursor-pointer truncate font-mono text-xs text-gray-600 hover:underline sm:text-sm"
                                                     onClick={() => {
                                                         navigator.clipboard.writeText(`${order._id}`);
                                                         alert("주문번호가 클립보드에 복사되었습니다.");
@@ -447,7 +452,7 @@ const Orders = () => {
                                             {/* 결제번호 */}
                                             <td className="whitespace-nowrap px-4 py-3">
                                                 <div 
-                                                    className="font-mono text-xs text-gray-600 sm:text-sm cursor-pointer truncate w-[10vw] hover:underline"
+                                                    className="w-[10vw] cursor-pointer truncate font-mono text-xs text-gray-600 hover:underline sm:text-sm"
                                                     onClick={() => {
                                                         navigator.clipboard.writeText(`${order.paymentId}`);
                                                         alert("결제번호가 클립보드에 복사되었습니다.");

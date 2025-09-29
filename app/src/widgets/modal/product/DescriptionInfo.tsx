@@ -252,7 +252,6 @@ const DescriptionInfo = ({
                         onDragOver={handleFileDragOver}
                         onDragLeave={handleFileDragLeave}
                         onDrop={handleFileDrop}
-                        // 👇 grid-row 형태로 변경 (예: 3열 그리드)
                         className="relative grid grid-cols-3 gap-4 bg-white border-t border-b border-black/50 border-dashed pt-5 pb-5 mb-10"
                     >
                         {/* 파일 드래그 시 나타나는 오버레이 UI */}

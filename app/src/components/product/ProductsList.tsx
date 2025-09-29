@@ -32,7 +32,7 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
 
     return (
         <li
-            className="group animate-fade-in pb-8 text-center opacity-0 md:pb-10"
+            className="group animate-fade-in pb-10 text-center opacity-0 md:pb-16"
             style={{ animationDelay: `${index * 50}ms` }}
         >
             <Link href={`/products/${product._id}`} className="block h-full">
@@ -58,7 +58,7 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                                 src={optimizedSrc}
                                 alt={product.title.eg || ""}
                                 width={500}
-                                height={500}
+                                height={667}
                                 className={`absolute left-0 top-0 h-full w-full object-cover transition-all duration-500 ${
                                     isLoaded ? "opacity-100" : "opacity-0"
                                 }`}

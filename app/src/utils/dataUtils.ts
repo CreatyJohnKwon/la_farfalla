@@ -40,6 +40,7 @@ const adminMenuItems = [
     { label: "PRODUCT", path: "/admin/list/products" },
     { label: "USER", path: "/admin/list/users" },
     { label: "COUPON", path: "/admin/list/coupons" },
+    { label: "PROJECT", path: "/admin/list/projects" },
 ];
 
 // 상품 상세페이지 탭

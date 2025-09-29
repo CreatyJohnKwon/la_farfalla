@@ -3,7 +3,7 @@ import { getMileage } from "@src/shared/lib/server/user";
 import {
     CouponResponse,
     ICoupon,
-} from "@src/entities/type/interfaces";
+} from "@/src/entities/type/common";
 import { updateCoupon } from "@src/shared/lib/server/order";
 import {
     deleteCoupon,

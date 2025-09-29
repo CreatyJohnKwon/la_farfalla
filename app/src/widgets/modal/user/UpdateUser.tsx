@@ -1,4 +1,4 @@
-import { UserProfileData } from "@src/entities/type/interfaces";
+import { UserProfileData } from "@/src/entities/type/common";
 import {
     useDeleteUserMutation,
     useUpdateUserMutation,

@@ -9,7 +9,7 @@ import {
 } from "@src/shared/lib/server/user";
 import { signOut } from "next-auth/react";
 import { useEffect } from "react";
-import { UserProfileData } from "@src/entities/type/interfaces";
+import { UserProfileData } from "@/src/entities/type/common";
 
 const useUserQuery = (enabled = true) => {
     const queryClient = useQueryClient();

@@ -2,7 +2,7 @@ import { Coupon } from "@src/entities/models/Coupon";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
 import { UserCoupon } from "@src/entities/models/UserCoupon";
-import { ICouponDocument, UserProfileData } from "@src/entities/type/interfaces";
+import { ICouponDocument, UserProfileData } from "@/src/entities/type/common";
 import { getAuthSession } from "@src/shared/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -1,4 +1,4 @@
-import { SelectedItem } from "@src/entities/type/interfaces";
+import { SelectedItem } from "@/src/entities/type/common";
 import { Session } from "next-auth";
 import { atomWithStorage } from "jotai/utils";
 import { atom } from "jotai";

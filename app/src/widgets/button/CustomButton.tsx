@@ -1,6 +1,6 @@
 "use client";
 
-import { CustomButtonProps } from "@src/entities/type/interfaces";
+import { CustomButtonProps } from "@/src/entities/type/common";
 
 const CustomButton = ({
     btnTitle,

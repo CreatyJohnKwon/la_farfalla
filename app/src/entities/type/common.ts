@@ -178,6 +178,14 @@ interface UserCouponWithPopulate {
     updatedAt: Date;
 }
 
+// 요청 타입
+interface ApiResponse<T> {
+    success: boolean;
+    message: string;
+    data?: T;
+    error?: string;
+}
+
 export type {
     ICoupon,
     IUserCoupon,
@@ -203,4 +211,5 @@ export type {
     AddressData,
     CreateCategoryData,
     UpdateCategoryData,
+    ApiResponse
 };

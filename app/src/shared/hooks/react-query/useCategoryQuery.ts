@@ -9,7 +9,7 @@ import {
     Category,
     CreateCategoryData, 
     UpdateCategoryData  
-} from "@src/entities/type/interfaces";
+} from "@/src/entities/type/common";
 
 const categoriesQueryKey = ["categories"];
 

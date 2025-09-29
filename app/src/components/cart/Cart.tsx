@@ -3,7 +3,7 @@
 import useCart from "@src/shared/hooks/useCart";
 import { useState, useEffect } from "react";
 import { getCart } from "@src/shared/lib/server/cart";
-import { SelectedItem } from "@src/entities/type/interfaces";
+import { SelectedItem } from "@/src/entities/type/common";
 import CartItem from "./CartItem";
 
 const Cart = () => {

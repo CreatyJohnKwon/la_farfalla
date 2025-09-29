@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion, Reorder } from "framer-motion";;
+import { motion, Reorder } from "framer-motion";
 import {
     useCreateCategoryMutation,
     useUpdateCategoryMutation,
@@ -10,7 +10,7 @@ import {
 import type { 
     Category,
     CreateCategoryData
-} from "@src/entities/type/interfaces";
+} from "@/src/entities/type/common";
 import useProduct from "@src/shared/hooks/useProduct";
 
 const UpdateCategoryModal = ({ onClose }: { onClose: () => void }) => {

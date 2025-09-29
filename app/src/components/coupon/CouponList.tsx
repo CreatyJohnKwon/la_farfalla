@@ -7,7 +7,7 @@ import SkeletonList from "./SkeletonList";
 import {
     CouponResponse,
     UserCouponWithPopulate,
-} from "@src/entities/type/interfaces";
+} from "@/src/entities/type/common";
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 
 const CouponList = () => {

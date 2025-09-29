@@ -10,6 +10,8 @@ import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "../drop/DropdownMenu";
 import useUsers from "@src/shared/hooks/useUsers";
 import Cart from "@src/components/cart/Cart";
+import { adminEmails } from "public/data/common";
+import { adminMenuItems, serviceMenuItems } from "@/src/utils/dataUtils";
 
 const NavbarClient = () => {
     const {
@@ -18,8 +20,6 @@ const NavbarClient = () => {
         setCartView,
         session,
         cartView,
-        menuData,
-        menuTitle,
         textColor,
         pathName,
         navStartData,
@@ -64,13 +64,25 @@ const NavbarClient = () => {
                     </li>
                     <li
                         className="block ps-6"
-                        key={"about-admin-menu"}
+                        key={"about-menu"}
                     >
                         {isClient && <DropdownMenu
-                            title={menuTitle}
-                            items={menuData}
+                            title={"ABOUT"}
+                            items={serviceMenuItems}
                             triggerType="hover"
                         />}
+                    </li>
+                    <li
+                        className="block ps-6"
+                        key={"admin-menu"}
+                    >
+                        {adminEmails.includes(session?.user.email) && 
+                            <DropdownMenu
+                                title={"ADMIN"}
+                                items={adminMenuItems}
+                                triggerType="hover"
+                            />
+                        }
                     </li>
                 </ul>
 

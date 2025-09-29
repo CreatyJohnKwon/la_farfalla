@@ -2,7 +2,7 @@ import { getAuthSession } from "@src/shared/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
-import { UserProfileData } from "@src/entities/type/interfaces";
+import { UserProfileData } from "@/src/entities/type/common";
 import bcrypt from "bcryptjs";
 import mongoose, { isValidObjectId } from "mongoose";
 import { UserCoupon } from "@src/entities/models/UserCoupon";
