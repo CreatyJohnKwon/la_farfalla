@@ -5,8 +5,8 @@ import StatusUpdateSelectedModal from "@/src/widgets/modal/order/StatusUpdateSel
 import StatusUpdateModal from "@/src/widgets/modal/order/StatusUpdateModal";
 import UserInfoModal from "@/src/widgets/modal/user/UserInfoModal";
 import useOrderList from "@src/shared/hooks/useOrderList";
-import ProductInfoModal from "@/src/widgets/modal/product/ProductInfoModal";
-import { OrderData, ShippingStatus } from '@src/components/order/interface';
+import OrderedProductModal from "@/src/widgets/modal/product/OrderedProductModal";
+import { OrderData } from '@src/components/order/interface';
 import { useInView } from "react-intersection-observer";
 
 type SortOption = "none" | "name_asc" | "name_desc";
@@ -577,7 +577,7 @@ const Orders = () => {
                 <UserInfoModal orderData={orderData} onClose={onClose} />
             )}
             {isProductModalOpen && orderData && (
-                <ProductInfoModal orderData={orderData} onClose={onClose} />
+                <OrderedProductModal orderData={orderData} onClose={onClose} />
             )}
             {isStatusModalOpen && orderData && (
                 <StatusUpdateModal orderData={orderData} onClose={onClose} />

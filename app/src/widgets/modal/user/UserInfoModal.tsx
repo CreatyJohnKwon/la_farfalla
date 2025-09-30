@@ -1,6 +1,6 @@
 import { OrderData } from "@src/components/order/interface";
 import { useOneUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
-import { motion } from "framer-motion";
+import ModalWrap from "../etc/ModalWrap";
 
 const UserInfoModal = ({
     orderData,
@@ -16,79 +16,66 @@ const UserInfoModal = ({
     } = useOneUserQuery(orderData?.userId);
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            onClick={onClose}
+        <ModalWrap
+            onClose={onClose}
+            className="relative w-[90vw] max-w-md bg-white p-6 shadow-2xl sm:w-full"
         >
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="relative w-[90vw] max-w-md bg-white p-6 shadow-2xl sm:w-full"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <h1 className="mb-6 text-center font-pretendard text-2xl font-semibold text-gray-800">
-                    유저 주문 정보
-                </h1>
+            <h1 className="mb-6 text-center font-pretendard text-2xl font-semibold text-gray-800">
+                유저 주문 정보
+            </h1>
 
-                {!isLoading ? (
-                    <div className="space-y-4 text-base text-gray-700">
-                        <InfoRow
-                            label="이름"
-                            value={error ? "탈퇴한 유저" : userData?.name}
-                        />
-                        <InfoRow
-                            label="이메일"
-                            value={error ? "탈퇴한 유저" : userData?.email}
-                        />
-                        <InfoRow
-                            label="전화번호"
-                            value={
-                                error ? "탈퇴한 유저" : userData?.phoneNumber
-                            }
-                        />
-                        {/* <InfoRow
-                            label="결제방법"
-                            value={orderData?.payMethod}
-                        /> */}
-
+            {isLoading ? (
+                <div className="flex h-40 items-center justify-center text-gray-500">
+                    불러오는 중...
+                </div>
+            ) : (
+                <div className="space-y-4 text-base text-gray-700">
+                    <InfoRow
+                        label="이름"
+                        value={error ? "탈퇴한 유저" : userData?.name}
+                    />
+                    <InfoRow
+                        label="이메일"
+                        value={error ? "탈퇴한 유저" : userData?.email}
+                    />
+                    <InfoRow
+                        label="전화번호"
+                        value={
+                            error ? "탈퇴한 유저" : userData?.phoneNumber
+                        }
+                    />
+                    
+                    <BoxElement
+                        label={"배송 주소"}
+                        value={`${orderData?.address}
+        ${orderData?.postcode && `${orderData?.postcode}`}
+        ${orderData?.detailAddress && `, ${orderData?.detailAddress}`}`}
+                    />
+                    {orderData?.deliveryMemo && (
                         <BoxElement
-                            label={"배송 주소"}
-                            value={`${orderData?.address}
-            ${orderData?.postcode && `${orderData?.postcode}`}
-            ${orderData?.detailAddress && `, ${orderData?.detailAddress}`}`}
+                            label={"배송 메모"}
+                            value={`${orderData?.deliveryMemo}`}
                         />
-                        {orderData?.deliveryMemo && (
-                            <BoxElement
-                                label={"배송 메모"}
-                                value={`${orderData?.deliveryMemo}`}
-                            />
-                        )}
+                    )}
 
-                        <div className="me-1 mt-2 place-self-end text-end text-xs">
-                            <p className="mb-1 font-medium text-gray-500">
-                                유저 UUID (DB 확인용)
-                            </p>
-                            <p className="font-mono text-gray-600">
-                                {userData?._id}
-                            </p>
-                        </div>
+                    <div className="me-1 mt-2 place-self-end text-end text-xs">
+                        <p className="mb-1 font-medium text-gray-500">
+                            유저 UUID (DB 확인용)
+                        </p>
+                        <p className="font-mono text-gray-600">
+                            {userData?._id}
+                        </p>
                     </div>
-                ) : (
-                    <div className="flex h-40 items-center justify-center text-gray-500">
-                        불러오는 중...
-                    </div>
-                )}
+                </div>
+            )}
 
-                <button
-                    onClick={onClose}
-                    className="mt-6 w-full rounded-sm bg-gray-800 py-2 text-lg text-white hover:bg-gray-700"
-                >
-                    닫기
-                </button>
-            </motion.div>
-        </div>
+            <button
+                onClick={onClose}
+                className="mt-6 w-full rounded-sm bg-gray-800 py-2 text-lg text-white hover:bg-gray-700"
+            >
+                닫기
+            </button>
+        </ModalWrap>
     );
 };
 

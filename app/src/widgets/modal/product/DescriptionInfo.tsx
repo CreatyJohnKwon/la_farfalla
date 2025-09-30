@@ -222,7 +222,7 @@ const DescriptionInfo = ({
                 onChange={handleInputChange}
                 className="mb-4 w-full resize-none border border-gray-300 px-4 py-3 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-500 focus:outline-none focus:ring-0 focus:ring-gray-500"
                 placeholder="상품 설명을 입력하세요 (최대 500자)"
-                rows={3}
+                rows={5}
                 maxLength={500}
                 onKeyDown={handleOnkeyDown}
             />
@@ -236,8 +236,8 @@ const DescriptionInfo = ({
                 onChange={handleInputChange}
                 className="mb-6 w-full resize-none border border-gray-300 px-4 py-3 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-500 focus:outline-none focus:ring-0 focus:ring-gray-500"
                 placeholder="추가 상세 설명을 입력하세요 (최대 150자)"
-                rows={2}
-                maxLength={150}
+                rows={5}
+                maxLength={500}
                 onKeyDown={handleOnkeyDown}
             />
 

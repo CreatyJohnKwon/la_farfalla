@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useMileageQuery } from '@/src/shared/hooks/react-query/useBenefitQuery';
 import LoadingSpinner from '../../spinner/LoadingSpinner';
 import { MileageItem } from '@/src/components/order/interface';
+import ModalWrap from '../etc/ModalWrap';
 
 interface MileageModalProps {
     userId: string;
@@ -89,39 +89,31 @@ const UserMileageListModal = ({ userId, onClose }: MileageModalProps) => {
     };
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            onClick={onClose}
+        <ModalWrap
+            onClose={onClose}
+            className="relative w-[90vw] max-w-md bg-white p-6 pb-0 shadow-2xl sm:w-full rounded-md"
         >
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="relative w-[90vw] max-w-md bg-white p-6 pb-0 shadow-2xl sm:w-full rounded-md"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className='flex flex-row w-full items-start justify-between mb-12'>
-                    <h2 className="text-xl font-pretendard font-[600]">
-                        마일리지 리스트
-                    </h2>
-                    <button className="text-xl font-amstel font-[300]" onClick={onClose}>
-                        &times;
-                    </button>
-                </div>
-                {/* Scrollable content area */}
-                <div className="max-h-[60vh] h-auto overflow-y-auto pr-2 space-y-4">
-                    {renderContent()}
-                    {/* Intersection Observer target */}
-                    <div ref={ref} className="h-1" />
-                    {isFetchingNextPage && (
-                        <div className="flex justify-center py-4">
-                            <LoadingSpinner />
-                        </div>
-                    )}
-                </div>
-            </motion.div>
-        </div>
+            <div className='flex flex-row w-full items-start justify-between mb-12'>
+                <h2 className="text-xl font-pretendard font-[600]">
+                    마일리지 리스트
+                </h2>
+                <button className="text-2xl font-light leading-none" onClick={onClose}>
+                    &times;
+                </button>
+            </div>
+            
+            {/* Scrollable content area */}
+            <div className="max-h-[60vh] h-auto overflow-y-auto pr-2 space-y-4">
+                {renderContent()}
+                {/* Intersection Observer target */}
+                <div ref={ref} className="h-1" />
+                {isFetchingNextPage && (
+                    <div className="flex justify-center py-4">
+                        <LoadingSpinner />
+                    </div>
+                )}
+            </div>
+        </ModalWrap>
     );
 };
 
