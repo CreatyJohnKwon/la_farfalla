@@ -110,7 +110,7 @@ const ShopClient = () => {
                         </div>
                     </div>
 
-                    <div className="pt-[20vh] xl:pt-[5vh] c_xl:pt-[1vh] ease-in-out transition-all">
+                    <div className="ease-in-out transition-all">
                         {productsLoading && !isFetchingNextPage ? (
                             <SkeletonGrid count={6} />
                         ) : (
@@ -146,7 +146,7 @@ const ShopClient = () => {
                                 ) : (
                                     <div>
                                         <ul className="grid w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 ease-in-out transition-all">
-                                            {displayProducts.map((item, index) => (
+                                            {displayProducts.map((item: Product, index: number) => (
                                                 <ProductsList
                                                     key={`${item._id}-${isSearchMode ? "search" : section}-${index}`}
                                                     product={item}

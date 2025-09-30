@@ -199,6 +199,20 @@ const DescriptionInfo = ({
         }
     };
 
+    const handleOnkeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        // 한글 입력 중 엔터를 누를 때 이벤트가 두 번 발생하는 것을 방지
+        if (e.nativeEvent.isComposing) {
+            return;
+        }
+
+        // Shift 키 없이 엔터만 눌렀을 때
+        if (e.key === 'Enter' && !e.shiftKey) {
+            // 폼 제출을 막고, 기본 동작인 줄바꿈만 실행되도록 합니다.
+            // 이 이벤트가 <form>으로 전파(bubbling)되는 것을 막습니다.
+            e.stopPropagation();
+        }
+    }
+
     return (
         <div className="rounded-sm">
             <label className="mb-4 block text-sm font-semibold text-gray-900">상품 설명 *</label>
@@ -206,15 +220,15 @@ const DescriptionInfo = ({
                 name="descriptionText"
                 value={formData.description.text}
                 onChange={handleInputChange}
-                // ✨ className 복구
                 className="mb-4 w-full resize-none border border-gray-300 px-4 py-3 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-500 focus:outline-none focus:ring-0 focus:ring-gray-500"
                 placeholder="상품 설명을 입력하세요 (최대 500자)"
                 rows={3}
                 maxLength={500}
+                onKeyDown={handleOnkeyDown}
             />
-            {/* ✨ 주석 처리되었던 추가 상세설명 textarea도 복구 */}
+            {/* ✨ 주석 처리되었던 실측 상세설명 textarea도 복구 */}
             <label className="mb-2 block text-sm font-semibold text-gray-900">
-                추가 상세설명
+                실측 상세설명 *
             </label>
             <textarea
                 name="descriptionDetailText"
@@ -224,6 +238,7 @@ const DescriptionInfo = ({
                 placeholder="추가 상세 설명을 입력하세요 (최대 150자)"
                 rows={2}
                 maxLength={150}
+                onKeyDown={handleOnkeyDown}
             />
 
             <div
