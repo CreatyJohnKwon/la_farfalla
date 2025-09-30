@@ -1,5 +1,5 @@
 import { IDescriptionItem, ProductVariant, AdditionalOption } from "@src/entities/type/products";
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
 
 const productOptionSchema = new mongoose.Schema(
     {
@@ -38,7 +38,12 @@ const descriptionItemSchema = new Schema<IDescriptionItem>(
 
 const productSchema = new mongoose.Schema(
     {
-        // viewIndex: { type: Number, reqired: true },
+        index: { type: Number },
+        visible: {
+            type: Boolean,
+            required: true,
+            default: true, // 새로 생성 시 기본값은 '공개'
+        },
         title: {
             type: new mongoose.Schema(
                 {
@@ -105,7 +110,12 @@ function updateTotalQuantity(doc: any) {
 }
 
 // 훅 1: 새 문서 생성 시 실행
-productSchema.pre("save", function (next) {
+productSchema.pre("save", async function (next) {
+    if (this.isNew) {
+        // this.constructor는 현재 모델(Product)을 가리킵니다.
+        const count = await (this.constructor as Model<any>).countDocuments();
+        this.index = count;
+    }
     updateTotalQuantity(this);
     next();
 });

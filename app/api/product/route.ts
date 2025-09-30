@@ -10,6 +10,7 @@ const GET = async (req: NextRequest) => {
         const productId = req.nextUrl.searchParams.get("productId");
         const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
         const limit = parseInt(req.nextUrl.searchParams.get("limit") || "9", 10);
+        const isAdmin = req.nextUrl.searchParams.get("isAdmin") === "true";
 
         if (productId) {
             if (!isValidObjectId(productId)) {
@@ -33,14 +34,20 @@ const GET = async (req: NextRequest) => {
 
         const skip = (page - 1) * limit;
 
+        const filter: any = {};
+        if (!isAdmin) {
+            // 관리자가 아닌 경우, 공개된 상품만 필터링
+            filter.visible = true;
+        }
+
         // 1. 상품 목록 조회
-        const products = await Product.find()
-            .sort({ createdAt: -1 })
+        const products = await Product.find(filter)
+            .sort({ index: 1 })
             .skip(skip)
             .limit(limit)
             .lean();
 
-        const total = await Product.countDocuments();
+        const total = await Product.countDocuments(filter);
 
         return NextResponse.json({
             data: products,
@@ -184,6 +191,38 @@ const POST = async (req: NextRequest) => {
             { error: "Internal Server Error", details: err.message },
             { status: 500 },
         );
+    }
+};
+
+// 상품 순서 일괄 업데이트
+const PATCH = async (req: NextRequest) => {
+    try {
+        await connectDB();
+        const body = await req.json();
+
+        // 데이터 유효성 검사
+        if (Array.isArray(body)) {
+            const productsOrder: { _id: string; index: number }[] = body;
+            const operations = productsOrder.map(({ _id, index }) => ({
+                updateOne: { filter: { _id }, update: { $set: { index } } },
+            }));
+            await Product.bulkWrite(operations);
+            return NextResponse.json({ success: true, message: "상품 순서가 업데이트되었습니다." });
+        }
+
+        const { productId, visible } = body;
+        if (productId && typeof visible === "boolean") {
+        if (!isValidObjectId(productId)) {
+                return NextResponse.json({ error: "올바른 productId가 필요합니다." }, { status: 400 });
+            }
+            await Product.findByIdAndUpdate(productId, { $set: { visible } });
+            return NextResponse.json({ success: true, message: "공개 상태가 업데이트되었습니다." });
+        }
+
+        return NextResponse.json({ error: "잘못된 요청 형식입니다." }, { status: 400 });
+    } catch (err) {
+        console.error("PATCH Error:", err);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 };
 
@@ -347,4 +386,4 @@ const DELETE = async (req: NextRequest) => {
     }
 };
 
-export { GET, POST, PUT, DELETE };
+export { GET, POST, PATCH, PUT, DELETE };

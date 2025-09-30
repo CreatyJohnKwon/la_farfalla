@@ -21,6 +21,8 @@ interface Product {
     createdAt?: Date;
     averageRating?: number;
     ratingCount?: number;
+    index?: number;
+    visible?: boolean;
 }
 
 interface DescriptionItem {
@@ -105,6 +107,15 @@ interface IDescriptionItem {
     src?: string;
 }
 
+type SortOption =
+    | "none"
+    | "latest"
+    | "oldest"
+    | "name_asc"
+    | "name_desc"
+    | "price_asc"
+    | "price_desc";
+
 export type {
     Product,
     ProductPayload,
@@ -122,5 +133,6 @@ export type {
     InfiniteQueryResult,
     IDescriptionItem,
     DescriptionItem,
-    AdditionalOption
+    AdditionalOption,
+    SortOption
 };

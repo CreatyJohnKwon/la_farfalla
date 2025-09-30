@@ -8,8 +8,6 @@ import { DescriptionItem, Product } from "../../entities/type/products";
 
 const DescriptionImage = ({
     product,
-    visibleImages,
-    setVisibleImages,
     checkContentHeight,
     descriptionRef,
 }: {
@@ -20,19 +18,17 @@ const DescriptionImage = ({
     descriptionRef: RefObject<HTMLDivElement | null>;
     needsToggle: boolean;
 }) => {
-    // ✨ 1. 데이터 처리 로직 변경: useMemo 훅을 새로운 items 구조에 맞게 수정
     const processedDescriptionItems = useMemo(() => {
-        // product.description.images 대신 product.description.items를 사용
         if (!product?.description?.items) return [];
 
         return product.description.items.map((item: DescriptionItem, index: number) => {
             if (item.itemType === 'image') {
                 return {
                     type: 'image',
-                    src: item.src || '', // src가 없을 경우를 대비한 fallback
+                    src: item.src || '',
                     index,
-                    shouldLoad: visibleImages.has(index) || index < 2, // Lazy loading 로직 유지
-                    priority: index === 0, // 첫 번째 이미지만 priority 적용
+                    // 첫 번째 이미지만 priority를 적용하는 로직은 유지
+                    priority: index === 0,
                 };
             } else if (item.itemType === 'break') {
                 return {
@@ -40,9 +36,10 @@ const DescriptionImage = ({
                     index,
                 };
             }
-            return null; // 예외 처리
-        }).filter(Boolean); // null 값 제거
-    }, [product?.description?.items, visibleImages]);
+            return null;
+        }).filter(Boolean);
+        // visibleImages 상태가 필요 없으므로 의존성 배열에서 제거
+    }, [product?.description?.items]);
     
     // 이미지가 하나라도 있는지 확인하는 변수
     const hasImages = processedDescriptionItems.some(item => item?.type === 'image');
@@ -53,7 +50,6 @@ const DescriptionImage = ({
                 ref={descriptionRef}
                 className={`overflow-hidden transition-all duration-500 ease-in-out`}
             >
-                {/* ✨ 2. 조건부 렌더링: item.type에 따라 이미지 또는 줄바꿈 렌더링 */}
                 {hasImages ? (
                     processedDescriptionItems.map((item, index: number) => {
                         if (!item) return null;
@@ -65,17 +61,13 @@ const DescriptionImage = ({
                                     key={`${item.type}_${index}`}
                                     src={item.src}
                                     alt={`product_image_${product._id}_${item.index}`}
-                                    shouldLoad={item.shouldLoad}
-                                    priority={true}
+                                    shouldLoad={true}
+                                    priority={item.priority}
                                     onLoad={() => {
+                                        // 초기 높이 계산 로직은 유지
                                         if (item.index < 3) {
                                             setTimeout(checkContentHeight, 100);
                                         }
-                                    }}
-                                    onVisible={() => {
-                                        setVisibleImages(
-                                            (prev) => new Set([...prev, item.index]),
-                                        );
                                     }}
                                 />
                             );

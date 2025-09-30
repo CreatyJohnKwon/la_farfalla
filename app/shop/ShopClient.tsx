@@ -1,13 +1,15 @@
 "use client"; 
 
+import { useInView } from "react-intersection-observer";
+import { useMemo, useCallback, useState, useEffect } from "react"; 
+
 import CategoryList from "@src/components/product/CategoryList";
 import SkeletonGrid from "@src/components/product/SkeletonGrid";
-import { Product } from "@src/entities/type/products"; 
 import ProductsList from "@src/components/product/ProductsList"; 
+
 import useProduct from "@src/shared/hooks/useProduct"; 
 import SearchButton from "@src/widgets/button/SearchButton"; 
-import { useMemo, useCallback, useState, useEffect } from "react"; 
-import { useInView } from "react-intersection-observer";
+import { Product } from "@src/entities/type/products"; 
 
 const ShopClient = () => { 
     const { 
@@ -20,6 +22,33 @@ const ShopClient = () => {
         hasNextPage,
         isFetchingNextPage,
     } = useProduct(); 
+
+    const [showScrollTopButton, setShowScrollTopButton] = useState<boolean>(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollThreshold = (document.documentElement.scrollHeight - document.documentElement.clientHeight) * 0.5;
+
+            if (window.scrollY > scrollThreshold) {
+                setShowScrollTopButton(true);
+            } else {
+                setShowScrollTopButton(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
 
     const searchableProducts = useMemo(() => {
         if (Array.isArray(filteredProducts)) return filteredProducts;
@@ -80,19 +109,6 @@ const ShopClient = () => {
             }); 
         } 
     }, [productsLoading, filteredProducts, searchFilteredProducts, preloadImages]); 
-
-    useEffect(() => {
-        // const isDesktop = window.innerWidth >= 768;
-
-        // if (isDesktop) {
-        //     const scrollAmountInPixels = window.innerHeight * 0.10;
-
-        //     window.scrollTo({
-        //         top: scrollAmountInPixels,
-        //         behavior: 'auto',
-        //     });
-        // }
-    })
 
     const displayProducts = isSearchMode ? searchFilteredProducts : filteredProducts; 
     const isEmptyResults = isSearchMode && searchQuery && searchFilteredProducts.length === 0; 
@@ -182,6 +198,30 @@ const ShopClient = () => {
                     </div>
                 </div>
             </main>
+
+            {/* 맨 위로 가기 버튼 */}
+            <button
+                onClick={scrollToTop}
+                aria-label="맨 위로 스크롤"
+                className={`fixed bottom-24 hover:bottom-28 right-8 z-50 p-3 pb-5 text-black hover:text-black/50 transition-all duration-300 ${
+                    showScrollTopButton ? "opacity-100 visible" : "opacity-0 invisible"
+                }`}
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                    />
+                </svg>
+            </button>
         </div>
     );
 } 

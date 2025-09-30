@@ -1,7 +1,7 @@
 import { Product, ProductPayload } from "@src/entities/type/products";
 
-const getProductList = async (page = 1, limit = 9) => {
-    const res = await fetch(`/api/product?page=${page}&limit=${limit}`);
+const getProductList = async (page = 1, limit = 9, isAdmin: boolean) => {
+    const res = await fetch(`/api/product?page=${page}&limit=${limit}&isAdmin=${isAdmin}`);
     if (!res.ok) throw new Error("상품 리스트를 불러오는 데 실패했습니다.");
     return await res.json();
 };
@@ -46,6 +46,34 @@ const updateProduct = async (productData: ProductPayload) => {
     return await res.json();
 };
 
+// 상품 순서 업데이트 호출
+const updateProductsOrderIndex = async (products: { _id: string; index: number }[]) => {
+    const res = await fetch(`/api/product`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(products),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "상품 순서 업데이트 실패");
+    }
+
+    return await res.json();
+};
+
+const updateProductVisibility = async ({ productId, visible }: { productId: string; visible: boolean }) => {
+    const res = await fetch(`/api/product`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, visible }),
+    });
+    if (!res.ok) throw new Error("공개 상태 업데이트 실패");
+    return res.json();
+};
+
 const deleteProduct = async (productData: Product) => {
     try {
         const res = await fetch(`/api/product?productId=${productData._id}`, {
@@ -73,5 +101,7 @@ export {
     getProduct,
     postProduct,
     updateProduct,
+    updateProductsOrderIndex,
+    updateProductVisibility,
     deleteProduct,
 };

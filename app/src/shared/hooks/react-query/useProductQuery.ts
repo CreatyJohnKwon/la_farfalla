@@ -5,13 +5,19 @@ import {
     getProductList,
     postProduct,
     updateProduct,
+    updateProductsOrderIndex,
+    updateProductVisibility,
 } from "@src/shared/lib/server/product";
 import { useSetAtom } from "jotai";
 import { loadingAtom, resetProductFormAtom } from "@src/shared/lib/atom";
 import { InfiniteQueryResult, Product, ProductPage } from "@src/entities/type/products";
+import toast from 'react-hot-toast';
+import useUsers from "../useUsers";
+import { adminEmails } from "public/data/common";
 
 // 무한 스크롤 사용
 const useProductListQuery = (limit = 9, initialData?: Product[]) => {
+    const { session } = useUsers();
     return useInfiniteQuery<    
         ProductPage,
         Error,
@@ -21,7 +27,7 @@ const useProductListQuery = (limit = 9, initialData?: Product[]) => {
     >({
         queryKey: ["get-product-list"],
         queryFn: async ({ pageParam = 1 }) => {
-            return await getProductList(pageParam, limit);
+            return await getProductList(pageParam, limit, adminEmails.includes(session?.user.email));
         },
         getNextPageParam: (lastPage, allPages) => lastPage.hasMore ? allPages.length + 1 : undefined,
         initialPageParam: 1,
@@ -103,6 +109,57 @@ const useUpdateProductMutation = () => {
     });
 };
 
+const useUpdateProductsOrderIndexMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (products: { _id: string; index: number }[]) => updateProductsOrderIndex(products),
+        
+        onSuccess: () => {
+            toast.success("상품 순서가 저장되었습니다.");
+            // 목록 쿼리를 무효화하여 최신 순서를 반영합니다.
+            queryClient.invalidateQueries({ queryKey: ["get-product-list"] });
+        },
+        onError: (error) => {
+            toast.error(`순서 저장 중 오류 발생: ${error.message}`);
+        }
+    });
+};
+
+const useUpdateVisibilityMutation = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: updateProductVisibility,
+        onMutate: async (variables) => {
+            await queryClient.cancelQueries({ queryKey: ["get-product-list"] });
+            const previousData = queryClient.getQueryData(["get-product-list"]);
+            
+            // 캐시를 직접 수정하여 UI를 즉시 업데이트
+            queryClient.setQueryData(["get-product-list"], (oldData: any) => {
+                const newPages = oldData.pages.map((page: any) => ({
+                    ...page,
+                    data: page.data.map((p: Product) => 
+                        p._id === variables.productId ? { ...p, visible: variables.visible } : p
+                    ),
+                }));
+                return { ...oldData, pages: newPages };
+            });
+            return { previousData };
+        },
+        onError: (err, variables, context) => {
+            // 실패 시 이전 데이터로 롤백
+            if (context?.previousData) {
+                queryClient.setQueryData(["get-product-list"], context.previousData);
+            }
+            toast.error("상태 변경에 실패했습니다.");
+        },
+        onSettled: () => {
+            // 성공/실패 여부와 관계없이 서버 데이터와 동기화
+            queryClient.invalidateQueries({ queryKey: ["get-product-list"] });
+        },
+    });
+};
+
 const useDeleteProductMutation = () => {
     const queryClient = useQueryClient();
 
@@ -134,4 +191,6 @@ export {
     usePostProductMutation,
     useDeleteProductMutation,
     useUpdateProductMutation,
+    useUpdateVisibilityMutation,
+    useUpdateProductsOrderIndexMutation
 };

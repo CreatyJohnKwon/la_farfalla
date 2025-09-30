@@ -487,7 +487,7 @@ const UpdateProductModal = ({
 
     return (
         <ModalWrap onClose={() => confirm("작성을 취소하시겠습니까?") && onClose()}>
-            <h1 className="mb-8 text-center text-2xl font-bold text-gray-900 w-full md:w-1/2">
+            <h1 className="mb-8 text-center text-2xl font-bold text-gray-900 w-full">
                 {mode === "update" ? "상품 수정" : "상품 등록"}
             </h1>
 

@@ -232,14 +232,12 @@ const DescriptionInfo = ({
                                 maxLength={500}
                             />
                         </div>
-                        <div className="col-span-1 flex flex-col items-start justify-center">
-                            <label className="mb-4 block text-sm font-semibold text-gray-900">상품 설명 미리보기</label>
-                            <div className="mb-6">
-                                <div className="h-full bg-white p-[20px]">
-                                    <p className="text-center font-pretendard text-sm font-[200] xl:text-base whitespace-pre-line w-full md:w-[40vw] lg:w-[33vw] xl:w-[35vw]">
-                                        {formData.description.text || <span className="text-gray-400">상품 설명이 여기에 표시됩니다.</span>}
-                                    </p>
-                                </div>
+                        <div className="col-span-1 flex flex-col items-center justify-center mb-6 w-full">
+                            <label className="mb-4 block text-sm font-semibold text-gray-900 self-start">상품 설명 미리보기</label>
+                            <div className="mx-auto flex h-full w-full items-start transition-all duration-300 ease-in-out md:p-24 md:w-[50vw] lg:w-[47.5vw] c_xl:w-[45.2vw]">
+                                <p className="w-full px-2 text-center font-pretendard text-xs sm:text-sm md:text-base font-[200] whitespace-pre-line">
+                                    {formData.description.text || <span className="text-gray-400">상품 설명이 여기에 표시됩니다.</span>}
+                                </p>
                             </div>
                         </div>
                     </div>
