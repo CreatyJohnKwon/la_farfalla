@@ -82,16 +82,16 @@ const ShopClient = () => {
     }, [productsLoading, filteredProducts, searchFilteredProducts, preloadImages]); 
 
     useEffect(() => {
-        const isDesktop = window.innerWidth >= 768;
+        // const isDesktop = window.innerWidth >= 768;
 
-        if (isDesktop) {
-            const scrollAmountInPixels = window.innerHeight * 0.10;
+        // if (isDesktop) {
+        //     const scrollAmountInPixels = window.innerHeight * 0.10;
 
-            window.scrollTo({
-                top: scrollAmountInPixels,
-                behavior: 'auto',
-            });
-        }
+        //     window.scrollTo({
+        //         top: scrollAmountInPixels,
+        //         behavior: 'auto',
+        //     });
+        // }
     })
 
     const displayProducts = isSearchMode ? searchFilteredProducts : filteredProducts; 
@@ -123,7 +123,7 @@ const ShopClient = () => {
                         </div>
                     </div>
 
-                    <div className="ease-in-out transition-all py-[18vh]">
+                    <div className="ease-in-out transition-all pt-[18vh]">
                         {productsLoading && !isFetchingNextPage ? (
                             <SkeletonGrid count={6} />
                         ) : (
@@ -158,7 +158,7 @@ const ShopClient = () => {
                                     </div>
                                 ) : (
                                     <div>
-                                        <ul className="grid w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 ease-in-out transition-all">
+                                        <ul className="grid w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-24 md:grid-cols-3 ease-in-out transition-all">
                                             {displayProducts.map((item: Product, index: number) => (
                                                 <ProductsList
                                                     key={`${item._id}-${isSearchMode ? "search" : section}-${index}`}

@@ -10,15 +10,15 @@ const ProductSkeleton = () => {
             {/* 상품 정보 텍스트 영역 */}
             <div className="pt-2">
                 {/* 영문 제목 [Title] */}
-                <div className="mx-auto mt-1 h-4 w-3/4 rounded bg-gray-200 sm:h-5"></div>
+                <div className="mx-auto mt-1 h-4 w-1/2 rounded bg-gray-200 sm:h-5"></div>
                 {/* 한글 제목 */}
-                <div className="mx-auto mt-2 h-4 w-1/2 rounded bg-gray-200 sm:h-5"></div>
+                <div className="mx-auto mt-1 h-4 w-1/4 rounded bg-gray-200 sm:h-5"></div>
                 {/* 컬러 정보 */}
-                <div className="mx-auto mt-2 h-3 w-1/4 rounded bg-gray-200 sm:h-4"></div>
+                <div className="mx-auto mt-1 h-3 w-1/5 rounded bg-gray-200 sm:h-4"></div>
             </div>
 
             {/* 가격 정보 텍스트 영역 */}
-            <div className="mt-4">
+            <div className="mt-2">
                 <div className="mx-auto h-4 w-1/3 rounded bg-gray-200 sm:h-5"></div>
             </div>
         </li>
