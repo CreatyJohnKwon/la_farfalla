@@ -6,8 +6,9 @@ import StatusUpdateModal from "@/src/widgets/modal/order/StatusUpdateModal";
 import UserInfoModal from "@/src/widgets/modal/user/UserInfoModal";
 import useOrderList from "@src/shared/hooks/useOrderList";
 import OrderedProductModal from "@/src/widgets/modal/product/OrderedProductModal";
-import { OrderData } from '@src/components/order/interface';
+import { OrderData, OrderItem } from '@src/components/order/interface';
 import { useInView } from "react-intersection-observer";
+import { searchOrders } from "@/src/features/search";
 
 type SortOption = "none" | "name_asc" | "name_desc";
 type StatusFilter = "all" | string; // "all" 또는 실제 상태값
@@ -46,11 +47,12 @@ const Orders = () => {
     // 필터 상태
     const [sortOption, setSortOption] = useState<SortOption>("none");
     const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+    const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
 
-    // Shift 키 범위 선택을 위한 상태
-    const [lastCheckedIndex, setLastCheckedIndex] = useState<number | null>(null);
+    const [lastCheckedIndex, setLastCheckedIndex] = useState<number | null>(
+        null,
+    );
 
-    // 고유한 주문 상태 목록 추출
     const uniqueStatuses = useMemo((): Array<any> => {
         if (!orders) return [];
         const statuses = [
@@ -60,50 +62,59 @@ const Orders = () => {
     }, [orders]);
 
     const { ref, inView } = useInView({
-        threshold: 0, // 요소가 1px이라도 보이면 트리거
-        triggerOnce: false, // 계속 감시
+        threshold: 0,
+        triggerOnce: false,
     });
 
     useEffect(() => {
-        // isLoading(초기 로딩) 중이 아닐 때만 다음 페이지 fetch를 실행해야
-        // 컴포넌트 마운트 시 중복 호출을 방지할 수 있습니다.
         if (inView && hasNextPage && !orderListLoading) {
             fetchNextPage();
         }
     }, [inView, hasNextPage, fetchNextPage, orderListLoading]);
 
-    // 필터링된 주문 목록
+    useEffect(() => {
+        if (inView && hasNextPage && !orderListLoading) {
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, fetchNextPage, orderListLoading]);
+
+    // 검색어 초기화 함수
+    const clearSearch = () => {
+        setSearchQuery("");
+    };
+
     const filteredAndSortedOrders = useMemo(() => {
         if (!orders) return [];
 
-        let result = [...orders];
+        // 1. 검색 적용
+        let result = searchOrders(orders, searchQuery);
 
-        // 상태 필터링
+        // 2. 상태 필터링
         if (statusFilter !== "all") {
             result = result.filter(
-                (order) => order.shippingStatus === statusFilter,
+                (order: OrderData) => order.shippingStatus === statusFilter,
             );
         }
 
-        // 정렬
+        // 3. 정렬 적용
+        const sortedResult = [...result];
         switch (sortOption) {
             case "name_asc":
-                result.sort((a, b) =>
+                sortedResult.sort((a, b) =>
                     a.userNm.localeCompare(b.userNm, "ko-KR"),
                 );
                 break;
             case "name_desc":
-                result.sort((a, b) =>
+                sortedResult.sort((a, b) =>
                     b.userNm.localeCompare(a.userNm, "ko-KR"),
                 );
                 break;
             default:
-                // "none"인 경우 원본 순서 유지
                 break;
         }
 
-        return result;
-    }, [orders, sortOption, statusFilter]);
+        return sortedResult;
+    }, [orders, sortOption, statusFilter, searchQuery]);
 
     // 개별 체크박스 클릭 처리 (Shift 키 범위 선택 포함)
     const handleToggleSingle = useCallback(
@@ -185,7 +196,7 @@ const Orders = () => {
     return (
         <div className="w-full max-w-full p-4 font-pretendard sm:p-6 lg:p-10">
             {/* 헤더 */}
-                       <div className="mb-6 mt-[7vh]">
+            <div className="mb-6 mt-[7vh]">
                 <div className="flex flex-col gap-4">
                     {/* 타이틀과 컨트롤 버튼들 */}
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -232,6 +243,64 @@ const Orders = () => {
 
                         {/* 오른쪽 컨트롤 그룹 */}
                         <div className="flex flex-wrap items-center gap-4">
+                            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                                {/* 검색 입력 */}
+                                <div className="relative flex items-center">
+                                <span className="whitespace-nowrap text-sm text-gray-600 me-2">
+                                    검색:
+                                </span>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            placeholder="이메일, 이름, 전화번호, 주소 검색..."
+                                            value={searchQuery}
+                                            onChange={(e) =>
+                                                setSearchQuery(e.target.value)
+                                            }
+                                            className="h-full w-64 rounded-sm border border-gray-300 bg-white px-3 py-2 pl-10 pr-10 text-sm placeholder-gray-500 hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                        />
+                                        {/* 검색 아이콘 */}
+                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <svg
+                                                className="h-4 w-4 text-gray-400"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                                />
+                                            </svg>
+                                        </div>
+                                        {/* 검색어 초기화 버튼 */}
+                                        {searchQuery && (
+                                            <button
+                                                onClick={clearSearch}
+                                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                                                title="검색어 초기화"
+                                            >
+                                                <svg
+                                                    className="h-4 w-4"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M6 18L18 6M6 6l12 12"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* 필터 파트 */}
                             <div className="flex flex-wrap items-center gap-2">
                                 {/* 정렬 옵션 */}
@@ -556,7 +625,7 @@ const Orders = () => {
                 )}
 
                 {/* 빈 상태 */}
-                {!orderListLoading && filteredAndSortedOrders.length === 0 && (
+                {filteredAndSortedOrders.length === 0 && !orderListLoading && (
                     <div className="py-12 text-center text-gray-500">
                         <span className="mt-2 text-base font-medium text-gray-900">
                             {statusFilter !== "all" || sortOption !== "none"

@@ -38,6 +38,7 @@ const descriptionItemSchema = new Schema<IDescriptionItem>(
 
 const productSchema = new mongoose.Schema(
     {
+        // viewIndex: { type: Number, reqired: true },
         title: {
             type: new mongoose.Schema(
                 {

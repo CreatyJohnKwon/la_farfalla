@@ -38,7 +38,7 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
             <Link href={`/products/${product._id}`} className="block h-full">
                 <div
                     ref={ref as any}
-                    className="relative overflow-hidden transition-all duration-300 md:group-hover:scale-[1.01]"
+                    className="relative overflow-hidden transition-all duration-300"
                 >
                     {/* 향상된 스켈레톤 로딩 */}
                     {(!isLoaded || isLoading) && shouldLoad && (
@@ -59,7 +59,7 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                                 alt={product.title.eg || ""}
                                 width={500}
                                 height={667}
-                                className={`absolute left-0 top-0 h-full w-full object-cover transition-all duration-500 ${
+                                className={`absolute md:group-hover:scale-[1.01] left-0 top-0 h-full w-full object-cover transition-all duration-500 ${
                                     isLoaded ? "opacity-100" : "opacity-0"
                                 }`}
                                 sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"

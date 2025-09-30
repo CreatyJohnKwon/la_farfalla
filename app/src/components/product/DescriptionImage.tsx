@@ -12,7 +12,6 @@ const DescriptionImage = ({
     setVisibleImages,
     checkContentHeight,
     descriptionRef,
-    needsToggle,
 }: {
     product: Product;
     visibleImages: Set<number>;
@@ -67,7 +66,7 @@ const DescriptionImage = ({
                                     src={item.src}
                                     alt={`product_image_${product._id}_${item.index}`}
                                     shouldLoad={item.shouldLoad}
-                                    priority={item.priority}
+                                    priority={true}
                                     onLoad={() => {
                                         if (item.index < 3) {
                                             setTimeout(checkContentHeight, 100);

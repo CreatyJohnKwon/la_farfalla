@@ -117,44 +117,23 @@ const Users = () => {
                             </svg>
                         </button>
                         {/* 검색 및 필터 옵션 */}
-                    <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-                        {/* 검색 입력 */}
-                        <div className="relative flex items-center">
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    placeholder="이메일, 이름, 전화번호, 주소 검색..."
-                                    value={searchQuery}
-                                    onChange={(e) =>
-                                        setSearchQuery(e.target.value)
-                                    }
-                                    className="h-full w-64 rounded-sm border border-gray-300 bg-white px-3 py-2 pl-10 pr-10 text-sm placeholder-gray-500 hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
-                                />
-                                {/* 검색 아이콘 */}
-                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <svg
-                                        className="h-4 w-4 text-gray-400"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                        />
-                                    </svg>
-                                </div>
-                                {/* 검색어 초기화 버튼 */}
-                                {searchQuery && (
-                                    <button
-                                        onClick={clearSearch}
-                                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
-                                        title="검색어 초기화"
-                                    >
+                        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                            {/* 검색 입력 */}
+                            <div className="relative flex items-center">
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        placeholder="이메일, 이름, 전화번호, 주소 검색..."
+                                        value={searchQuery}
+                                        onChange={(e) =>
+                                            setSearchQuery(e.target.value)
+                                        }
+                                        className="h-full w-64 rounded-sm border border-gray-300 bg-white px-3 py-2 pl-10 pr-10 text-sm placeholder-gray-500 hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                    />
+                                    {/* 검색 아이콘 */}
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                         <svg
-                                            className="h-4 w-4"
+                                            className="h-4 w-4 text-gray-400"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -163,34 +142,55 @@ const Users = () => {
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                                 strokeWidth={2}
-                                                d="M6 18L18 6M6 6l12 12"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                                             />
                                         </svg>
-                                    </button>
-                                )}
+                                    </div>
+                                    {/* 검색어 초기화 버튼 */}
+                                    {searchQuery && (
+                                        <button
+                                            onClick={clearSearch}
+                                            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                                            title="검색어 초기화"
+                                        >
+                                            <svg
+                                                className="h-4 w-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M6 18L18 6M6 6l12 12"
+                                                />
+                                            </svg>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* 정렬 옵션 */}
+                            <div className="flex items-center gap-2">
+                                <span className="whitespace-nowrap text-sm text-gray-600">
+                                    정렬:
+                                </span>
+                                <select
+                                    value={sortOption}
+                                    onChange={(e) =>
+                                        setSortOption(e.target.value as SortOption)
+                                    }
+                                    className="h-full rounded-sm border border-gray-300 bg-white px-2 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                >
+                                    <option value="none">기본 순서</option>
+                                    <option value="latest">최근 가입순</option>
+                                    <option value="oldest">오래된 가입순</option>
+                                    <option value="name_asc">이름 ㄱ-ㅎ 순</option>
+                                    <option value="name_desc">이름 ㅎ-ㄱ 순</option>
+                                </select>
                             </div>
                         </div>
-
-                        {/* 정렬 옵션 */}
-                        <div className="flex items-center gap-2">
-                            <span className="whitespace-nowrap text-sm text-gray-600">
-                                정렬:
-                            </span>
-                            <select
-                                value={sortOption}
-                                onChange={(e) =>
-                                    setSortOption(e.target.value as SortOption)
-                                }
-                                className="h-full rounded-sm border border-gray-300 bg-white px-2 py-2 text-sm hover:border-gray-400 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
-                            >
-                                <option value="none">기본 순서</option>
-                                <option value="latest">최근 가입순</option>
-                                <option value="oldest">오래된 가입순</option>
-                                <option value="name_asc">이름 ㄱ-ㅎ 순</option>
-                                <option value="name_desc">이름 ㅎ-ㄱ 순</option>
-                            </select>
-                        </div>
-                    </div>
                     </div>
 
                     <button

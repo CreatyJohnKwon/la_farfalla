@@ -215,31 +215,42 @@ const DescriptionInfo = ({
 
     return (
         <div className="rounded-sm">
-            <label className="mb-4 block text-sm font-semibold text-gray-900">상품 설명 *</label>
-            <textarea
-                name="descriptionText"
-                value={formData.description.text}
-                onChange={handleInputChange}
-                className="mb-4 w-full resize-none border border-gray-300 px-4 py-3 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-500 focus:outline-none focus:ring-0 focus:ring-gray-500"
-                placeholder="상품 설명을 입력하세요 (최대 500자)"
-                rows={5}
-                maxLength={500}
-                onKeyDown={handleOnkeyDown}
-            />
-            {/* ✨ 주석 처리되었던 실측 상세설명 textarea도 복구 */}
-            <label className="mb-2 block text-sm font-semibold text-gray-900">
-                실측 상세설명 *
-            </label>
-            <textarea
-                name="descriptionDetailText"
-                value={formData.description.detail}
-                onChange={handleInputChange}
-                className="mb-6 w-full resize-none border border-gray-300 px-4 py-3 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-500 focus:outline-none focus:ring-0 focus:ring-gray-500"
-                placeholder="추가 상세 설명을 입력하세요 (최대 150자)"
-                rows={5}
-                maxLength={500}
-                onKeyDown={handleOnkeyDown}
-            />
+            <div className="flex flex-col md:flex-row gap-8">
+                {/* 입력 영역 (좌측) */}
+                <div className="w-full flex flex-col">
+                    <div className="flex flex-row">
+                        <div>
+                            <label className="mb-4 block text-sm font-semibold text-gray-900">상품 설명 *</label>
+                            <textarea
+                                name="descriptionText"
+                                value={formData.description.text}
+                                onChange={handleInputChange}
+                                onKeyDown={handleOnkeyDown}
+                                className="w-full resize-none border border-gray-300 px-4 py-3 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-500 focus:outline-none"
+                                placeholder="상품 설명을 입력하세요 (최대 500자)"
+                                rows={8}
+                                maxLength={500}
+                            />
+                        </div>
+
+                    </div>
+                    <div className="flex flex-col mt-6">
+                        <label className="mb-4 block text-sm font-semibold text-gray-900">
+                            실측 상세설명 *
+                        </label>
+                        <textarea
+                            name="descriptionDetailText"
+                            value={formData.description.detail}
+                            onChange={handleInputChange}
+                            onKeyDown={handleOnkeyDown}
+                            className="w-full resize-none border border-gray-300 px-4 py-3 text-sm transition-colors placeholder:text-gray-400 focus:border-gray-500 focus:outline-none"
+                            placeholder="추가 상세 설명을 입력하세요 (최대 500자)"
+                            rows={8}
+                            maxLength={500}
+                        />
+                    </div>
+                </div>
+            </div>
 
             <div
                 // ✨ 파일 드롭을 위한 이벤트 핸들러를 최상위 Drop Zone에 추가

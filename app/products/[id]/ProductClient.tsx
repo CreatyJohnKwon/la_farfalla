@@ -186,7 +186,7 @@ const ProductClient = ({ id }: { id: string }) => {
                                 ref={
                                     descriptionSectionRef as Ref<HTMLDivElement | null>
                                 }
-                                className="h-auto w-full md:w-3/5 mt-20"
+                                className="h-auto w-full md:w-[40vw] mt-20"
                             >
                                 <DescriptionImage
                                     product={product}
