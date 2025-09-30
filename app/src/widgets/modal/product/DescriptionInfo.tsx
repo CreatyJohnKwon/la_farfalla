@@ -214,12 +214,12 @@ const DescriptionInfo = ({
     }
 
     return (
-        <div className="rounded-sm">
-            <div className="flex flex-col md:flex-row gap-8">
+        <div className="rounded-sm w-full">
+            <div className="flex flex-col md:flex-row gap-8 w-full">
                 {/* 입력 영역 (좌측) */}
                 <div className="w-full flex flex-col">
-                    <div className="flex flex-row">
-                        <div>
+                    <div className="grid grid-cols-1 gap-6">
+                        <div className="w-full col-span-1">
                             <label className="mb-4 block text-sm font-semibold text-gray-900">상품 설명 *</label>
                             <textarea
                                 name="descriptionText"
@@ -232,7 +232,16 @@ const DescriptionInfo = ({
                                 maxLength={500}
                             />
                         </div>
-
+                        <div className="col-span-1 flex flex-col items-start justify-center">
+                            <label className="mb-4 block text-sm font-semibold text-gray-900">상품 설명 미리보기</label>
+                            <div className="mb-6">
+                                <div className="h-full bg-white p-[20px]">
+                                    <p className="text-center font-pretendard text-sm font-[200] xl:text-base whitespace-pre-line w-full md:w-[40vw] lg:w-[33vw] xl:w-[35vw]">
+                                        {formData.description.text || <span className="text-gray-400">상품 설명이 여기에 표시됩니다.</span>}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className="flex flex-col mt-6">
                         <label className="mb-4 block text-sm font-semibold text-gray-900">
@@ -257,7 +266,7 @@ const DescriptionInfo = ({
                 onDragOver={handleFileDragOver}
                 onDragLeave={handleFileDragLeave}
                 onDrop={handleFileDrop}
-                className="relative rounded-md bg-white transition-colors"
+                className="relative rounded-md bg-white transition-colors pt-10"
             >
                 {/* ✨ 파일 드래그 시 나타나는 오버레이 UI */}
                 {isFileDragging && (

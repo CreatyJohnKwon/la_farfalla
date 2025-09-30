@@ -123,7 +123,7 @@ const ShopClient = () => {
                         </div>
                     </div>
 
-                    <div className="ease-in-out transition-all pt-[18vh]">
+                    <div className="ease-in-out transition-all pt-[24vh] sm:pt-[18vh]">
                         {productsLoading && !isFetchingNextPage ? (
                             <SkeletonGrid count={6} />
                         ) : (
