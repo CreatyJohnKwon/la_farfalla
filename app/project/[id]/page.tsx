@@ -11,7 +11,7 @@ const ProjectDetailPage = () => {
 
     const { data: project, isLoading, isError, error } = useOneProjectQuery(id);
 
-    if (!project || isError || error) {
+    if (isError || error) {
         return (
             <div className="min-h-screen w-full flex-col flex gap-3 justify-center items-center">
                 <span className="text-sm sm:text-2xl font-amstel">There's no Project</span>
@@ -30,23 +30,23 @@ const ProjectDetailPage = () => {
         )
     }
 
-    return (
-        <main className="mt-28 min-h-screen min-w-screen h-auto w-full">
+    return project && (
+        <main className="mt-12 sm:mt-20 min-h-screen max-w-screen h-auto w-full">
             {project.description.map((item: IDescriptionItem, index: number) => {
                 if (item.itemType === 'image') {
-                return (
-                    <div key={index} className="relative">
-                    <Image
-                        src={item.src!}
-                        alt={`${project.title} image ${index + 1}`}
-                        width={1920}
-                        height={1080}
-                        sizes="100vw"
-                        className="w-full h-auto"
-                        priority
-                    />
-                    </div>
-                );
+                    return (
+                        <div key={index} className="relative h-auto">
+                            <Image
+                                src={item.src!}
+                                alt={`${project.title} image ${index + 1}`}
+                                width={1920}
+                                height={1080}
+                                sizes="100vw"
+                                className="w-full h-auto"
+                                priority
+                            />
+                        </div>
+                    );
                 } else if (item.itemType === 'break') {
                     return <div key={index}><br/></div>;
                 }

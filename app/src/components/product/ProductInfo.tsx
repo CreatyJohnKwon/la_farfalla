@@ -298,7 +298,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 </div>
 
                 {/* Description text */}
-                <span className="w-full px-2 text-center font-pretendard text-sm font-[200] xl:text-base whitespace-pre-line">
+                <span className="w-full px-2 text-center font-pretendard text-xs sm:text-sm md:text-base font-[200] xl:text-base whitespace-pre-line">
                     {product.description.text}
                 </span>
 

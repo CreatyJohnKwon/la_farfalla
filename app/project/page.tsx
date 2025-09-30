@@ -26,9 +26,9 @@ const ProjectsPage = () => {
     }
 
     return (
-        <div>
+        <div className='min-h-screen'>
             {projects.length > 0 ? (
-                <div className="grid min-h-screen h-auto w-[93vw] place-self-center grid-cols-2 md:grid-cols-3 pt-20 md:pt-32 gap-3">
+                <div className="grid h-auto w-[93vw] place-self-center grid-cols-2 md:grid-cols-3 pt-20 md:pt-32 gap-3">
                     {
                         projects.map((project: IProject) => (
                             <ProjectLink

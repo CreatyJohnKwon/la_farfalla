@@ -17,13 +17,17 @@ const ProjectLink = ({
     imageUrl, 
     altText 
 }: ProjectLinkProps) => {
+    console.log(id)
+
     return (
         <Link
             href={`/project/${id}`}
-            className="group relative flex-1 overflow-hidden transition-all duration-500 ease-in-out hover:flex-[2] aspect-[3/4]"
+            // 1. 전체 컨테이너의 종횡비(aspect-[3/4])를 제거했습니다.
+            className="group relative flex overflow-hidden transition-all duration-500 ease-in-out hover:flex-[2] h-auto"
         >
             <div className="flex flex-col w-full h-full bg-transparent">
-                <div className="relative flex-1 overflow-hidden">
+                {/* 2. 이미지를 감싸는 div에 aspect-[4/3]를 추가하고, 불필요한 flex-1을 제거했습니다. */}
+                <div className="relative w-full overflow-hidden aspect-[3/4]">
                     <Image
                         src={imageUrl || DefaultImg}
                         alt={altText}
@@ -34,7 +38,8 @@ const ProjectLink = ({
                     />
                 </div>
 
-                <span className="text-sm md:text-base font-amstel text-black p-3">{title}</span>
+                {/* 제목은 이미지 아래에 자연스럽게 위치합니다. */}
+                <span className="text-xs sm:text-sm md:text-base font-amstel text-black pt-3 pb-3">{title}</span>
             </div>
 
             <div className="hidden md:flex absolute inset-0 bg-black/0 transition-all duration-500 group-hover:bg-black/50"></div>
