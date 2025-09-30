@@ -125,10 +125,10 @@ jobs:
                     docker login -u ${DOCKERHUB_USERNAME} -p ${{ secrets.DOCKERHUB_TOKEN }}
                     
                     echo "🚀 Starting Docker containers with new image..."
-                    cd "$DEPLOY_DIR"
-                    docker-compose down nextjs
-                    docker-compose pull nextjs
-                    docker-compose up -d nextjs
+                    # cd "$DEPLOY_DIR"
+                    # docker-compose down nextjs
+                    # docker-compose pull nextjs
+                    # docker-compose up -d nextjs
                     echo "⏳ Waiting for application to become healthy for 30 seconds..."
                     sleep 30 # 30초 동안 애플리케이션 반영을 기다림
                     
