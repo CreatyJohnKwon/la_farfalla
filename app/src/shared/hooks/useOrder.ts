@@ -217,7 +217,7 @@ const useOrder = () => {
                     case "PG_PROVIDER_ERROR":
                     default:
                         if (portoneResponse?.pgMessage || portoneResponse?.message) {
-                            throw new Error(`${portoneResponse?.pgMessage || portoneResponse?.message}`);
+                            alert(`${portoneResponse?.pgMessage || portoneResponse?.message || "결제가 취소되었습니다."}`);
                         } else {
                             throw new Error(`결제 요청 처리 중 오류가 발생했습니다.\nQ&A 채널로 문의해주세요.`);
                         }
@@ -232,16 +232,16 @@ const useOrder = () => {
     };
 
     // 결제 성공 후의 책임
-    const handlePaymentCompletion = async (portoneResponse: PortOne.PaymentResponse, orderId: string, restoreItems: any) => {
+    const handlePaymentCompletion = async (portoneResponse: PortOne.PaymentResponse, orderId: string, restoreDatas: any) => {
         try {
-            const response = await fetch('/api/order/complete', {
+            const response = await fetch("/api/order/complete", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     orderId: orderId,
                     paymentId: portoneResponse.paymentId,
-                    couponId: couponId,
-                    isSuccess: true,
+                    txId: portoneResponse.txId,
+                    isSuccess: true
                 }),
             });
 
@@ -265,7 +265,7 @@ const useOrder = () => {
                 reason: error.message || "[어드민] 결제 성공이지만 주문 에러 발생"
             }
             await refundPayment(refundData);
-            await restoreItems(restoreItems)
+            await restoreItems(restoreDatas)
             alert(`결제는 성공했으나 주문을 확정하는 데 실패하여 환불처리되었습니다.\n문제가 지속되면 관리자에게 문의해주세요.\n(오류: ${error.message})`);
         }
     };

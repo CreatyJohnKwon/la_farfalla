@@ -29,18 +29,23 @@ const ProductClient = ({ id }: { id: string }) => {
     ); // 처음 2개는 기본으로 보이게
     const [activeTab, setActiveTab] = useState("description");
     const [needsToggle, setNeedsToggle] = useState(false);
+    const [showScrollTopButton, setShowScrollTopButton] = useState<boolean>(false);
+
     const descriptionRef = useRef<HTMLDivElement>(null);
 
     const reviews = reviewsData?.data || [];
     const imgsOnly: string[] = reviewsData?.imagesOnly || [];
 
-    const [showScrollTopButton, setShowScrollTopButton] = useState<boolean>(false);
-
     useEffect(() => {
         const handleScroll = () => {
-            const scrollThreshold = (document.documentElement.scrollHeight - document.documentElement.clientHeight) * 0.5;
+            const { scrollHeight, clientHeight } = document.documentElement;
 
-            if (window.scrollY > scrollThreshold) {
+            const isHeightSufficient = scrollHeight >= clientHeight * 2;
+
+            const scrollThreshold = (scrollHeight - clientHeight) * 0.5;
+            const isScrolledEnough = window.scrollY > scrollThreshold;
+
+            if (isHeightSufficient && isScrolledEnough) {
                 setShowScrollTopButton(true);
             } else {
                 setShowScrollTopButton(false);
@@ -242,11 +247,10 @@ const ProductClient = ({ id }: { id: string }) => {
                 </div>
             </div>
 
-            {/* 맨 위로 가기 버튼 */}
             <button
                 onClick={scrollToTop}
                 aria-label="맨 위로 스크롤"
-                className={`fixed bottom-24 hover:bottom-28 right-8 z-50 md:p-3 md:pb-5 text-black hover:text-black/50 transition-all duration-300 ${
+                className={`fixed bottom-20 focus:bottom-24 md:hover:bottom-24 right-7 z-50 md:p-3 md:mb-4 text-gray-500 hover:text-gray-600 transition-all duration-300 ${
                     showScrollTopButton ? "opacity-100 visible" : "opacity-0 invisible"
                 }`}
             >

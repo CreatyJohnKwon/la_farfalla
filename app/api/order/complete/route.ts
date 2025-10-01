@@ -9,36 +9,67 @@ import { reduceStock } from "@/src/utils/commonAction";
 import { UserCoupon } from "@/src/entities/models/UserCoupon";
 import { Mileage } from "@/src/entities/models/Mileage";
 import User from "@/src/entities/models/User";
+import { PortOnePaymentData } from "@/src/entities/type/order";
 
-// PortOne 결제 검증 함수 (실제 구현 필요)
-async function verifyPortOnePayment(paymentId: string, expectedAmount: number): Promise<boolean> {
-    // 1. PortOne 서버에 API 요청을 보내 paymentId에 해당하는 결제 정보를 가져옵니다.
-    // const response = await fetch(`https://api.portone.io/payments/${paymentId}`, {
-    //   headers: { 'Authorization': `PortOne YOUR_API_KEY` }
-    // });
-    // const paymentData = await response.json();
-    
-    // 2. 실제 결제된 금액(paymentData.amount.total)과 우리 서버에 저장된 주문 금액(expectedAmount)이 일치하는지 확인합니다.
-    // if (paymentData.status === 'PAID' && paymentData.amount.total === expectedAmount) {
-    //     return true;
-    // }
-    // return false;
+const verifyPortOnePayment = async(
+    paymentId: string, 
+    txId: string, 
+    expectedAmount: number
+): Promise<PortOnePaymentData> => {
+    try {
+        const apiKey = process.env.PORTONE_API_SECRET_KEY;
+        if (!apiKey) {
+            throw new Error("포트원 API 키가 설정되지 않았습니다.");
+        }
 
-    // 임시로 항상 성공을 반환
-    // console.log(`결제 검증 시도: ${paymentId}, 기대 금액: ${expectedAmount}`);
-    return true;
+        // 2. 토큰을 이용해 PortOne 서버에 결제 정보 요청
+        const response = await fetch(`https://api.portone.io/payments/${paymentId}`, {
+            headers: { 
+                'Authorization': `Portone ${apiKey}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            // HTTP 상태 코드가 2xx가 아닌 경우
+            throw new Error(`결제 정보 조회에 실패했습니다. (Payment ID: ${paymentId})`);
+        }
+
+        const payment: PortOnePaymentData = await response.json();
+
+        // 3. (⭐️ 중요) txId 검증으로 보안 강화
+        if (payment.transactionId !== txId) {
+            throw new Error(`트랜잭션 ID가 일치하지 않습니다. (위조 시도 의심)`);
+        }
+
+        // 4. 결제 상태 및 금액 검증
+        const status = payment.status;
+        const paidAmount = payment.amount.total;
+
+        if (status !== 'PAID' || paidAmount !== expectedAmount) {
+            throw new Error(`결제 금액 또는 상태가 유효하지 않습니다. [상태: ${status}, 결제액: ${paidAmount}, 기대값: ${expectedAmount}]`);
+        }
+
+        return payment as PortOnePaymentData;
+
+    } catch (error) {
+        console.error("PortOne 결제 검증 중 예외 발생:", error);
+        throw error;
+    }
 }
 
 export async function POST(req: NextRequest) {
     await connectDB();
     const session = await mongoose.startSession();
+    let paymentIdFromBody: string | null = null;
 
     try {
-        const { orderId, paymentId, isSuccess } = await req.json();
+        const { orderId, paymentId, txId, isSuccess } = await req.json();
+        paymentIdFromBody = paymentId;
 
         if (!isSuccess) {
             // 재고 복구 로직 추가 
-            return NextResponse.json({ success: false, message: '결제가 실패했습니다.' });
+            return NextResponse.json({ success: false, message: '결제를 실패했습니다.' });
         }
         
         let finalMessage = "";
@@ -49,10 +80,9 @@ export async function POST(req: NextRequest) {
             if (!order) throw new Error("주문 정보를 찾을 수 없거나 이미 처리된 주문입니다.");
 
             // PortOne 결제 검증 (보안 핵심)
-            const isVerified = await verifyPortOnePayment(paymentId, order.totalPrice);
-            if (!isVerified) {
-                await cancelPayment(paymentId, "결제 검증 오류", order.totalPrice);
-                throw new Error("결제 검증에 실패하여 주문을 취소했습니다.");
+            const verifiedPayment = await verifyPortOnePayment(paymentId, txId, order.totalPrice);
+            if (verifiedPayment.id !== order.paymentId) {
+                throw new Error("결제 번호가 일치하지 않습니다.");
             }
 
             // 재고 차감
@@ -76,7 +106,7 @@ export async function POST(req: NextRequest) {
                     type: "spend" as "spend",
                     amount: usedMileage,
                     description: `상품 구매`,
-                    relatedOrderId: order._id.toString(),
+                    relatedOrderId: `${order._id}`,
                     createdAt: new Date().toISOString(),
                 };
                 await Mileage.create([mileageLog], { session });
@@ -91,7 +121,7 @@ export async function POST(req: NextRequest) {
 
             // 결제 성공 시, 주문 상태 'pending'(주문완료) 로 변경
             order.shippingStatus = "pending";
-            order.paymentId = paymentId;
+            order.paymentId = verifiedPayment.id;
             await order.save({ session });
 
             finalMessage = "주문이 성공적으로 완료되었습니다.";
@@ -136,7 +166,16 @@ export async function POST(req: NextRequest) {
 
     } catch (error: any) {
         console.error("주문 완료 API 오류:", error.message);
-        // TODO: 오류 발생 시 결제 취소 및 재고 롤백 로직 필요
+        if (paymentIdFromBody) {
+            try {
+                await cancelPayment(paymentIdFromBody, "서버 내부 오류로 인한 자동 취소", 0); // 금액은 0으로 보내 전액 취소
+                console.log(`[결제 롤백] 서버 오류로 인해 결제(ID: ${paymentIdFromBody})가 자동으로 취소되었습니다.`);
+            } catch (cancelError: any) {
+                console.error(`[결제 롤백 실패] 자동 취소 중 오류 발생: ${cancelError.message}`);
+                // TODO: 자동 취소 실패 시 관리자에게 즉시 알림(이메일, 슬랙 등)하는 로직 필요
+            }
+        }
+        
         return NextResponse.json(
             { success: false, message: error.message || '주문 완료 처리 중 오류가 발생했습니다.' },
             { status: 500 }

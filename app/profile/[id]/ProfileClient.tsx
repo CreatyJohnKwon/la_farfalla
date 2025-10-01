@@ -7,10 +7,42 @@ import CouponList from "@src/components/coupon/CouponList";
 import MileageList from "@src/components/mileage/MileageList";
 import OrderList from "@src/components/order/OrderList";
 import { redirect } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ApplyCouponCodeButton from "@src/widgets/button/ApplyCouponCodeButton";
 
 const ProfileClient = ({ id }: { id: string }) => {
+    const [showScrollTopButton, setShowScrollTopButton] = useState<boolean>(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const { scrollHeight, clientHeight } = document.documentElement;
+
+            const isHeightSufficient = scrollHeight >= clientHeight * 2;
+
+            const scrollThreshold = (scrollHeight - clientHeight) * 0.5;
+            const isScrolledEnough = window.scrollY > scrollThreshold;
+
+            if (isHeightSufficient && isScrolledEnough) {
+                setShowScrollTopButton(true);
+            } else {
+                setShowScrollTopButton(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
     const { title, children } = useMemo(() => {
         switch (id) {
             case "order":
@@ -49,6 +81,29 @@ const ProfileClient = ({ id }: { id: string }) => {
                     </div>
                 </div>
             </div>
+
+            <button
+                onClick={scrollToTop}
+                aria-label="맨 위로 스크롤"
+                className={`fixed bottom-20 focus:bottom-24 md:hover:bottom-24 right-7 z-50 md:p-3 md:mb-4 text-gray-500 hover:text-gray-600 transition-all duration-300 ${
+                    showScrollTopButton ? "opacity-100 visible" : "opacity-0 invisible"
+                }`}
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                    />
+                </svg>
+            </button>
         </div>
     );
 };

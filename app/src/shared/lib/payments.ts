@@ -150,4 +150,8 @@ const restoreStock = async (items: OrderItem[], session: mongoose.ClientSession)
     }
 }
 
-export { syncPayment, verifyPayment, cancelPayment };
+export { 
+    syncPayment, 
+    verifyPayment, 
+    cancelPayment
+};

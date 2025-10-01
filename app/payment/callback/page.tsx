@@ -43,7 +43,7 @@ const PaymentCallback = () => {
 
             // 에러 없을 시, complete api 소환
             try {
-                const response = await fetch('/api/order/complete', {
+                const response = await fetch("/api/order/complete", {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ orderId, paymentId, isSuccess: true }),

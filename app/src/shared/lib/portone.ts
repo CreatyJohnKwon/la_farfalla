@@ -1,8 +1,8 @@
 import { PortOneClient } from "@portone/server-sdk";
-import { PaymentClient, CancelPaymentError, GetPaymentError } from "@portone/server-sdk/payment";
+import { PaymentClient } from "@portone/server-sdk/payment";
 
 export const portone = PortOneClient({
-    secret: process.env.V2_API_SECRET!,
+  secret: process.env.V2_API_SECRET!,
 });
 
 export const paymentClient = PaymentClient({

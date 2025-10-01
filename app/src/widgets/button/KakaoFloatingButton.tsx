@@ -55,7 +55,7 @@ const KakaoFloatingButton = () => {
 
     return (
         <button
-            className={`group fixed bottom-5 h-6 right-5 flex cursor-pointer select-none flex-row items-center justify-center rounded-[20px] md:rounded-[25px] bg-white/70 transition-all duration-200 shadow-gray-950 shadow-2xl sm:hover:bg-gray-600/50 ${pathname.includes("/home") || cartView === true ? "z-30" : "z-40"} ${visable ? "block" : "hidden"}`}
+            className={`group fixed bottom-4 h-6 right-4 flex cursor-pointer select-none flex-row items-center justify-center rounded-[20px] md:rounded-[25px] bg-white/70 transition-all duration-200 shadow-gray-950 shadow-2xl sm:hover:bg-gray-600/50 ${pathname.includes("/home") || cartView === true ? "z-30" : "z-40"} ${visable ? "block" : "hidden"}`}
             style={{
                 width: `${responsiveValues.BUTTON_SIZE}px`,
                 height: `${responsiveValues.BUTTON_SIZE}px`,
@@ -95,9 +95,9 @@ const KakaoFloatingButton = () => {
             </svg> */}
 
             {/* 상담하기 텍스트 */}
-            <span className={`text-base md:text-xl font-amstel-bold text-black group-hover:text-white`}>Q</span>
-            <span className="text-base md:text-xl font-pretendard-bold text-black group-hover:text-white">&</span>
-            <span className={`text-base md:text-xl font-amstel-bold text-black group-hover:text-white`}>A</span>
+            <span className={`text-base md:text-xl font-amstel-bold text-black md:group-hover:text-white`}>Q</span>
+            <span className="text-base md:text-xl font-pretendard-bold text-black md:group-hover:text-white">&</span>
+            <span className={`text-base md:text-xl font-amstel-bold text-black md:group-hover:text-white`}>A</span>
         </button>
     );
 };

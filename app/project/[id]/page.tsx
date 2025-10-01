@@ -4,12 +4,43 @@ import { IDescriptionItem } from '@/src/entities/type/products';
 import { useOneProjectQuery } from '@/src/shared/hooks/react-query/useProjectQuery';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const ProjectDetailPage = () => {
     const params = useParams();
     const id = params.id as string;
-
+    const [showScrollTopButton, setShowScrollTopButton] = useState<boolean>(false);
     const { data: project, isLoading, isError, error } = useOneProjectQuery(id);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const { scrollHeight, clientHeight } = document.documentElement;
+
+            const isHeightSufficient = scrollHeight >= clientHeight * 2;
+
+            const scrollThreshold = (scrollHeight - clientHeight) * 0.5;
+            const isScrolledEnough = window.scrollY > scrollThreshold;
+
+            if (isHeightSufficient && isScrolledEnough) {
+                setShowScrollTopButton(true);
+            } else {
+                setShowScrollTopButton(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
 
     if (isError || error) {
         return (
@@ -52,6 +83,29 @@ const ProjectDetailPage = () => {
                 }
                 return null;
             })}
+            
+            <button
+                onClick={scrollToTop}
+                aria-label="맨 위로 스크롤"
+                className={`fixed bottom-20 focus:bottom-24 md:hover:bottom-24 right-7 z-50 md:p-3 md:mb-4 text-gray-500 hover:text-gray-600 transition-all duration-300 ${
+                    showScrollTopButton ? "opacity-100 visible" : "opacity-0 invisible"
+                }`}
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                    />
+                </svg>
+            </button>
         </main>
     );
 }

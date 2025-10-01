@@ -51,14 +51,6 @@ export class EmailService {
         ? new Date(orderData.createdAt).toLocaleString("ko-KR")
         : new Date().toLocaleString("ko-KR");
 
-    // // 결제방법 한글 변환
-    // const payMethodMap: Record<OrderData["payMethod"], string> = {
-    //     NAVER_PAY: "네이버페이",
-    //     KAKAO_PAY: "카카오페이",
-    //     CARD: "신용카드",
-    // };
-    // const payMethodText = payMethodMap[orderData.payMethod];
-
     // 배송상태 한글 변환
     const shippingStatusMap: Record<ShippingStatus, string> = {
         pending: "주문 완료",
@@ -79,15 +71,15 @@ export class EmailService {
             (item: OrderItem) => 
               `
                 <tr style="border-bottom: 1px solid #e5e7eb;">
-                  <td style="padding: 12px 16px; color: #ffffff;">
+                  <td style="padding: 12px 16px; color: #000000;">
                     <div style="font-weight: 600; margin-bottom: 4px;">${item.productNm}</div>
-                    ${item.additional ? `<div style="font-size: 13px; color: #ffffff; margin-top: 2px;"><span>추가: ${item.additional}</span></div>`
-                                        :`<div style="font-size: 13px; color: #ffffff; margin-top: 2px;"><p>색상: ${item.color}</p><p>사이즈: ${item.size}</p></div>`}
+                    ${item.additional ? `<div style="font-size: 13px; color: #000000; margin-top: 2px;"><span>추가: ${item.additional}</span></div>`
+                                        :`<div style="font-size: 13px; color: #000000; margin-top: 2px;"><p>색상: ${item.color}</p><p>사이즈: ${item.size}</p></div>`}
                   </td>
-                  <td style="padding: 12px 16px; text-align: center; color: #ffffff; font-weight: 500;">
+                  <td style="padding: 12px 16px; text-align: center; color: #000000; font-weight: 500;">
                     ${item.quantity}개
                   </td>
-                  <td style="padding: 12px 16px; text-align: right; color: #374151;">
+                  <td style="padding: 12px 16px; text-align: right; color: #000000;">
                     ${item.price ? item.price.toLocaleString() + "원" : "-"}
                   </td>
                 </tr>
@@ -98,21 +90,21 @@ export class EmailService {
     let emailTitle = "새로운 주문 알림";
     let headerTitle = "🚨 새로운 주문 접수";
     let headerSubtitle = "즉시 확인이 필요한 주문이 들어왔습니다";
-    let actionText = `새로운 주문이 접수되었습니다.<br><strong style="color: #dc2626;">관리자 페이지에서 즉시 확인하고 처리해주세요.</strong>`;
+    let actionText = `새로운 주문이 접수되었습니다.<br><strong style="color: #000000;">관리자 페이지에서 즉시 확인하고 처리해주세요.</strong>`;
     
     // ✨ '취소/반품/교환' 요청일 경우, 이메일 제목과 내용을 변경합니다.
     if (isRequest) {
         emailTitle = `${shippingStatusText} 알림`;
         headerTitle = `⚠️ ${shippingStatusText} 접수`;
         headerSubtitle = `고객의 ${shippingStatusText}이 접수되었습니다.`;
-        actionText = `${shippingStatusText}이 접수되었습니다.<br><strong style="color: #dc2626;">관리자 페이지에서 즉시 확인하고 처리해주세요.</strong>`;
+        actionText = `${shippingStatusText}이 접수되었습니다.<br><strong style="color: #000000;">관리자 페이지에서 즉시 확인하고 처리해주세요.</strong>`;
     }
 
     // ✨ 2. '취소/반품/교환' 요청 시 고객이 작성한 사유를 표시할 HTML 섹션입니다.
     const descriptionSection = (isRequest && description) ? `
       <div class="section" style="border-color: #f87171; background-color: #fef2f2;">
-          <div class="section-title" style="color: #b91c1c;">📝 요청 상세 사유</div>
-          <p style="font-size: 14px; color: #4b5563; padding: 8px; line-height: 1.7;">
+          <div class="section-title" style="color: #000000;">📝 요청 상세 사유</div>
+          <p style="font-size: 14px; color: #000000; padding: 8px; line-height: 1.7;">
               ${description}
           </p>
       </div>
@@ -130,7 +122,7 @@ export class EmailService {
               body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
                 background-color: #f9fafb;
-                color: #111827;
+                color: #000000;
                 line-height: 1.6;
               }
               .container {
@@ -142,14 +134,14 @@ export class EmailService {
               }
               .header {
                 background-color: #1f2937;
-                color: #fff;
+                color: #000000;
                 padding: 24px 20px;
                 text-align: center;
               }
               .urgent-badge {
                 display: inline-block;
                 background-color: #facc15;
-                color: #78350f;
+                color: #000000;
                 padding: 4px 12px;
                 font-size: 12px;
                 font-weight: 600;
@@ -177,7 +169,7 @@ export class EmailService {
                 font-size: 16px;
                 font-weight: 700;
                 margin-bottom: 16px;
-                color: #111827;
+                color: #000000;
               }
               .info-grid {
                 display: grid;
@@ -191,18 +183,18 @@ export class EmailService {
               }
               .info-label {
                 font-weight: 600;
-                color: #6b7280;
+                color: #000000;
                 font-size: 13px;
                 min-width: 80px;
               }
               .info-value {
                 font-size: 14px;
                 font-weight: 500;
-                color: #111827;
+                color: #000000;
               }
               .highlight {
                 font-weight: 700;
-                color: #dc2626;
+                color: #000000;
               }
               .order-table {
                 width: 100%;
@@ -239,13 +231,13 @@ export class EmailService {
               .total-label {
                 font-size: 14px;
                 font-weight: 600;
-                color: #78350f;
+                color: #000000;
                 margin-bottom: 4px;
               }
               .total-amount {
                 font-size: 20px;
                 font-weight: 700;
-                color: #dc2626;
+                color: #000000;
               }
               .action-section {
                 padding: 20px;
@@ -256,13 +248,13 @@ export class EmailService {
               }
               .action-section p {
                 font-size: 14px;
-                color: #374151;
+                color: #000000;
                 margin: 12px 0;
               }
               .action-button {
                 display: inline-block;
                 background-color: #1f2937;
-                color: #fff;
+                color: #000000;
                 padding: 10px 20px;
                 font-weight: 600;
                 font-size: 14px;
@@ -271,7 +263,7 @@ export class EmailService {
               }
               .footer {
                 background-color: #f3f4f6;
-                color: #6b7280;
+                color: #000000;
                 font-size: 12px;
                 text-align: center;
                 padding: 16px;
@@ -284,12 +276,12 @@ export class EmailService {
                 font-size: 12px;
                 font-weight: 600;
               }
-              .status-pending { background-color: #fef3c7; color: #92400e; }
-              .status-confirm { background-color: #d1fae5; color: #065f46; }
-              .status-ready { background-color: #dbeafe; color: #1e40af; }
-              .status-shipped { background-color: #e0e7ff; color: #3730a3; }
-              .status-delivered { background-color: #dcfce7; color: #166534; }
-              .status-cancel, .status-return, .status-exchange { background-color: #fee2e2; color: #991b1b; }
+              .status-pending { background-color: #fef3c7; color: #000000; }
+              .status-confirm { background-color: #d1fae5; color: #000000; }
+              .status-ready { background-color: #dbeafe; color: #000000; }
+              .status-shipped { background-color: #e0e7ff; color: #000000; }
+              .status-delivered { background-color: #dcfce7; color: #000000; }
+              .status-cancel, .status-return, .status-exchange { background-color: #fee2e2; color: #000000; }
               @media (max-width: 600px) {
                 .container { margin: 10px; }
                 .info-grid { grid-template-columns: 1fr; }
@@ -310,7 +302,6 @@ export class EmailService {
               <div class="content">
                 ${descriptionSection}
 
-                <!-- 주문 기본 정보 -->
                 <div class="section">
                   <div class="section-title">📋 주문 정보</div>
                   <div class="info-grid">
@@ -351,7 +342,6 @@ export class EmailService {
                   </div>
                 </div>
 
-                <!-- 고객 정보 -->
                 <div class="section">
                   <div class="section-title">👤 고객 정보</div>
                   <div class="info-grid">
@@ -366,7 +356,7 @@ export class EmailService {
                     <div class="info-item">
                       <span class="info-label">연락처:</span>
                       <span class="info-value">
-                        <a href="tel:${orderData.phoneNumber}" style="color: #2563eb; text-decoration: none;">
+                        <a href="tel:${orderData.phoneNumber}" style="color: #000000; text-decoration: none;">
                           ${orderData.phoneNumber}
                         </a>
                       </span>
@@ -375,7 +365,6 @@ export class EmailService {
                   </div>
                 </div>
 
-                <!-- 배송 정보 -->
                 <div class="section">
                   <div class="section-title">🚚 배송 정보</div>
                   <div class="info-item">
@@ -387,7 +376,7 @@ export class EmailService {
                           ? `
                   <div class="info-item" style="margin-top: 12px;">
                     <span class="info-label">배송메모:</span>
-                    <span class="info-value" style="font-style: italic; color: #6b7280; background-color: #f9fafb; padding: 8px 12px; border-radius: 6px; margin-left: 0;">
+                    <span class="info-value" style="font-style: italic; color: #000000; background-color: #f9fafb; padding: 8px 12px; border-radius: 6px; margin-left: 0;">
                       "${orderData.deliveryMemo}"
                     </span>
                   </div>
@@ -396,7 +385,6 @@ export class EmailService {
                   }
                 </div>
 
-                <!-- 주문 상품 -->
                 <div class="section">
                   <div class="section-title">🛍️ 주문 상품 (총 ${orderData.items.length}개)</div>
                   <div class="table-container">
@@ -415,16 +403,14 @@ export class EmailService {
                   </div>
                 </div>
 
-                <!-- 총 주문금액 -->
                 <div class="total-section">
                   <div class="total-label">총 주문금액</div>
                   <div class="total-amount">${orderData.totalPrice.toLocaleString()}원</div>
                 </div>
 
-                <!-- 처리 안내 -->
                 <div class="action-section">
-                  <div class="section-title" style="justify-content: center; color: #1e40af;">⚡ 처리 안내</div>
-                  <p style="margin: 12px 0; color: #374151; font-size: 16px; line-height: 1.6;">
+                  <div class="section-title" style="justify-content: center; color: #000000;">⚡ 처리 안내</div>
+                  <p style="margin: 12px 0; color: #000000; font-size: 16px; line-height: 1.6;">
                     ${actionText}
                   </p>
                   <a href="https://lafarfalla.kr/admin/list/orders" 
@@ -486,7 +472,7 @@ export class EmailService {
                   body {
                     background-color: #f9fafb;
                     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
-                    color: #111827;
+                    color: #000000;
                     margin: 0;
                     padding: 0;
                   }
@@ -503,11 +489,11 @@ export class EmailService {
                     font-size: 20px;
                     font-weight: 700;
                     margin-bottom: 12px;
-                    color: #1f2937;
+                    color: #000000;
                   }
                   .subtitle {
                     font-size: 14px;
-                    color: #6b7280;
+                    color: #000000;
                     margin-bottom: 24px;
                   }
                   .code {
@@ -516,14 +502,14 @@ export class EmailService {
                     letter-spacing: 6px;
                     padding: 16px 24px;
                     background-color: #f3f4f6;
-                    color: #2563eb;
+                    color: #000000;
                     border-radius: 8px;
                     display: inline-block;
                     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
                   }
                   .footer {
                     font-size: 12px;
-                    color: #9ca3af;
+                    color: #000000;
                     margin-top: 40px;
                   }
                 </style>
@@ -550,16 +536,16 @@ export class EmailService {
           to: toEmail,
           subject: "[라파팔라] 임시 비밀번호 발급 안내",
           html: `
-              <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px;">
+              <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #000; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px;">
                   <h2 style="color: #000; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px;">비밀번호 찾기 안내</h2>
                   <p>안녕하세요, 고객님.</p>
                   <p>요청하신 임시 비밀번호가 발급되었습니다.</p>
                   <p style="font-size: 1.2em; font-weight: bold; background-color: #f8f8f8; padding: 15px; border-radius: 5px; text-align: center; border: 1px dashed #ccc;">
-                      임시 비밀번호: <span style="color: #d9534f;">${tempPassword}</span>
+                      임시 비밀번호: <span style="color: #000;">${tempPassword}</span>
                   </p>
                   <p>로그인 후, 보안을 위해 즉시 비밀번호를 변경해 주세요. 이 임시 비밀번호는 타인에게 노출되지 않도록 주의 바랍니다.</p>
                   <p>감사합니다.</p>
-                  <div style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #777;">
+                  <div style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #000;">
                       <p>본 메일은 발신 전용입니다. 문의는 채널톡을 이용해 주세요.</p>
                   </div>
               </div>
