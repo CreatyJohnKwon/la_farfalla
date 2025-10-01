@@ -2,7 +2,7 @@ import { Coupon } from "@src/entities/models/Coupon";
 import { connectDB } from "@src/entities/models/db/mongoose";
 import User from "@src/entities/models/User";
 import { UserCoupon } from "@src/entities/models/UserCoupon";
-import { ICouponDocument, UserProfileData } from "@/src/entities/type/common";
+import { UserProfileData } from "@/src/entities/type/common";
 import { getAuthSession } from "@src/shared/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -40,7 +40,9 @@ export async function POST(req: NextRequest) {
         }
 
         // 쿠폰 코드 존재 여부 확인 및 쿠폰 정보 가져오기
-        const coupon = await Coupon.findOne({ code: couponCode });
+        const coupon = await Coupon.findOne({ 
+            code: new RegExp('^' + couponCode.toString().trim() + '$', 'i') 
+        });
 
         if (!coupon) {
             return NextResponse.json(

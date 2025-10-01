@@ -40,8 +40,8 @@ const Order = () => {
         appliedCouponName,
         setAppliedCouponName,
         setCouponId,
-        totalPrice,
         totalMileage,
+        finalTotalPrice,
 
         recipientName,
         setRecipientName,
@@ -64,6 +64,13 @@ const Order = () => {
 
     // ✅ 쿠폰 데이터 추출 및 최적화
     const couponData = useMemo(() => coupons?.data || [], [coupons]);
+
+    // 상품 가격만
+    const priceOnly = () => {
+        return orderDatas.reduce((acc: number, current) => {
+            return acc + (current.discountPrice * current.quantity);
+        }, 0)
+    }
 
     // ✅ 조건 1: 활성화된 쿠폰만 필터링 (isActive === true인 것만)
     const availableCoupons = useMemo(() => {
@@ -333,7 +340,7 @@ const Order = () => {
                                 {orderDatas.map((product, index) => (
                                     // 각 주문 상품 아이템
                                     <div
-                                        className="flex gap-4 py-4 border-b border-gray-100 last:border-b-0"
+                                        className="flex gap-4 border-b py-4 border-gray-100 last:border-b-0"
                                         key={`order_product_${index}`}
                                     >
                                         {/* 상품 이미지 */}
@@ -354,29 +361,22 @@ const Order = () => {
                                                 <p className="font-pretendard text-base font-[400] text-gray-800 leading-tight">
                                                     {product?.title}
                                                 </p>
-                                                <div className="text-sm text-gray-500 mt-1">
+                                            </div>
+                                            <div className="flex items-end justify-between">
+                                                <div className="text-gray-500 flex flex-col text-xs font-pretendard">
                                                     {product?.additional ? (
                                                         <>
-                                                            <span className="font-pretendard">{product?.additional}</span>
-                                                            <span className="mx-1.5">|</span>
-                                                            <span className="font-pretendard">{`${product?.quantity}개`}</span>
+                                                            <span>추가 상품 - {product?.additional}</span>
+                                                            <span>수량 - {`${product?.quantity}개`}</span>
                                                         </>
                                                     ):(
                                                         <>
-                                                            <span className="font-amstel">{product?.size}</span>
-                                                            <span className="mx-1.5">|</span>
-                                                            <span className="font-amstel">{product?.color}</span>
-                                                            <span className="mx-1.5">|</span>
-                                                            <span className="font-pretendard">{`${product?.quantity}개`}</span>
+                                                            <span>사이즈 - {product?.size}</span>
+                                                            <span>색상 - {product?.color}</span>
+                                                            <span>수량 - {`${product?.quantity}개`}</span>
                                                         </>
                                                     )}
                                                 </div>
-                                            </div>
-                                            <div className="flex items-center justify-between mt-2">
-                                                <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
-                                                    배송비 무료
-                                                </span>
-
                                                 <span className="font-amstel text-base font-bold text-gray-900">
                                                     {`KRW ${(product?.discountPrice * product?.quantity).toLocaleString()}`}
                                                 </span>
@@ -471,7 +471,7 @@ const Order = () => {
                                         }
                                         placeholder="주소"
                                         readOnly
-                                        className="mt-4 w-full appearance-none border border-gray-200 bg-white p-3 py-3 pr-8 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-200"
+                                        className="mt-4 w-full appearance-none border border-gray-300 bg-white p-3 text-sm text-gray-700 whitespace-nowrap truncate pe-[20vw] md:pe-0 focus:outline-none focus:ring-2 focus:ring-gray-200"
                                     />
                                     <input
                                         name="postcode"
@@ -741,8 +741,7 @@ const Order = () => {
                                             </div>
                                             <div>
                                                 <p className="font-pretendard font-medium text-green-800">
-                                                    {appliedCouponName} 쿠폰
-                                                    적용됨
+                                                    {appliedCouponName} 쿠폰 적용됨
                                                 </p>
                                                 <p className="text-sm text-green-600">
                                                     {getAppliedCouponInfo()}
@@ -752,7 +751,7 @@ const Order = () => {
                                         <button
                                             type="button"
                                             onClick={handleRemoveCoupon}
-                                            className="ml-4 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-400 transition-colors hover:border-red-300 hover:text-red-500"
+                                            className="ml-4 flex h-10 w-10 flex-shrink-0 items-center justify-center bg-transparent text-gray-600 hover:text-red-500"
                                             aria-label="쿠폰 삭제"
                                         >
                                             <svg
@@ -977,24 +976,36 @@ const Order = () => {
                                     상품가격
                                 </span>
                                 <span className="font-amstel">
-                                    {`KRW ${totalPrice.toLocaleString()}`}
+                                    {`KRW ${priceOnly().toLocaleString()}`}
                                 </span>
                             </div>
                             <div className="mb-2 flex justify-between text-sm">
                                 <span className="font-pretendard">배송비</span>
-                                <span className="font-pretendard">무료</span>
+                                <span className="font-amstel">KRW 3,000</span>
                             </div>
+                            {applyCoupon > 0 ? 
+                                <div className="mb-2 flex justify-between text-sm">
+                                    <span className="font-pretendard">쿠폰</span>
+                                    <span className="font-amstel">- KRW {applyCoupon.toLocaleString()}</span>
+                                </div> : <></>
+                            }
+                            {usedMileage > 0 ? 
+                                <div className="mb-2 flex justify-between text-sm">
+                                    <span className="font-pretendard">마일리지</span>
+                                    <span className="font-amstel">- {usedMileage.toLocaleString()}P</span>
+                                </div> : <></>
+                            }
                             <div className="mt-4 flex justify-between text-lg font-bold">
                                 <span className="font-pretendard-bold">
                                     총 주문금액
                                 </span>
                                 <span className="font-amstel-bold">
-                                    {`KRW ${totalPrice.toLocaleString()}`}
+                                    {`KRW ${finalTotalPrice.toLocaleString()}`}
                                 </span>
                                 <input
                                     type="text"
                                     name="totalPrice"
-                                    value={totalPrice}
+                                    value={finalTotalPrice}
                                     className="hidden"
                                     readOnly
                                 />

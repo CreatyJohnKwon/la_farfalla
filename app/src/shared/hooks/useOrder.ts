@@ -3,7 +3,7 @@ import useUser from "@src/shared/hooks/useUsers";
 import { SelectedItem } from "@/src/entities/type/common";
 import { useAtom } from "jotai";
 import { orderDatasAtom } from "../lib/atom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 import { useGetUserCouponsListQuery } from "@src/shared/hooks/react-query/useBenefitQuery";
 import { earnMileage, spendMileage } from "@src/features/benefit/mileage";
@@ -110,6 +110,12 @@ const useOrder = () => {
         setMileage(user.mileage - usedMileage);
     }, [usedMileage]);
 
+    const finalTotalPrice = useMemo(() => {
+        const discountedPrice = totalPrice;
+        // 최종 금액이 0보다 작아지는 것을 방지
+        return Math.max(0, discountedPrice) + 3000;
+    }, [totalPrice, applyCoupon, usedMileage]);
+
     // SRP (Single-Responsibility-Principle)
     // 결제 요청 전까지의 모든 과정을 책임 진다.
     const handleOrderRequest = async () => {
@@ -124,7 +130,7 @@ const useOrder = () => {
             return;
         }
 
-        if (orderDatas.length === 0 || totalPrice <= 0) {
+        if (orderDatas.length === 0 || finalTotalPrice <= 0) {
             alert("주문 정보를 확인해주세요.");
             setIsSubmitting(false);
             return;
@@ -142,7 +148,7 @@ const useOrder = () => {
                 price: item.originalPrice
             })),
             discountDetails: {
-                couponId,
+                couponId: couponId,
                 mileage: usedMileage > 0 ? usedMileage : 0,
             }
         };
@@ -160,11 +166,8 @@ const useOrder = () => {
         };
 
         // 2-1. 멱등성 키 생성하여 중복 오더 생성 방지
-        let key = idempotencyKey;
-        if (!key) {
-            key = uuidv4();
-            setIdempotencyKey(key);
-        }
+        const key = uuidv4(); 
+        setIdempotencyKey(key);
 
         try {
             const response = await fetch('/api/order/prepare', {
@@ -339,6 +342,7 @@ const useOrder = () => {
         addEarnMileage,
         useSpendMileage,
 
+        finalTotalPrice,
         orderDatas,
         setOrderDatas,
         session,

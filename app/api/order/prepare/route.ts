@@ -18,18 +18,14 @@ export async function POST(req: NextRequest) {
             throw new Error("멱등성 키가 필요합니다.");
         }
 
-        const { items, discountDetails, couponId } = calculationData;
+        const { items, discountDetails } = calculationData;
         const { userId } = baseOrderData;
-        const { mileage } = discountDetails;
+        const { mileage, couponId } = discountDetails;
 
         // 데이터베이스 트랜잭션 시작
         const newOrder = await session.withTransaction(async () => {
-            const existingOrder = await Order.findOne({ paymentId: idempotencyKey }).session(session);
-
-            if (existingOrder) return existingOrder;
-
             // 상품 가격 총합 계산 (DB 기준)
-            let serverCalculatedTotalPrice = 0;
+            let serverCalculatedTotalPrice = 3000; // 배송비 추가(최초 값이 배송비 적용된 값이어야 함)
             for (const item of items) {
                 const product = await Product.findById(item.productId)
                     .select("price discount options additionalOptions")
@@ -71,6 +67,7 @@ export async function POST(req: NextRequest) {
                     .session(session);
 
                 if (!userCoupon) throw new Error("유효하지 않거나 이미 사용된 쿠폰입니다.");
+
                 
                 const coupon = userCoupon.couponId as any; // Populate된 객체 타입 캐스팅
                 if (coupon.minOrderAmount > serverCalculatedTotalPrice) {
@@ -86,7 +83,7 @@ export async function POST(req: NextRequest) {
                     couponDiscount = coupon.discountValue;
                 }
             }
-            
+
             // 최종 결제 금액 계산
             const finalAmount = Math.max(0, serverCalculatedTotalPrice - couponDiscount - mileage);
 
@@ -99,9 +96,17 @@ export async function POST(req: NextRequest) {
                 paymentId: idempotencyKey,
                 discountDetails: { couponId, mileage }
             };
-            const createdOrder = new Order(temporaryOrderData);
-            await createdOrder.save({ session });
-            return createdOrder;
+            
+            const updatedOrCreatedOrder = await Order.findOneAndUpdate(
+                { paymentId: idempotencyKey }, // 검색 조건
+                { $set: temporaryOrderData },  // 업데이트할 내용
+                { 
+                    new: true,                 // 업데이트된 후의 문서를 반환
+                    upsert: true,              // 문서가 없으면 새로 생성
+                    session                   // 트랜잭션 세션 적용
+                }
+            );
+            return updatedOrCreatedOrder;
         });
 
         if (!newOrder) {

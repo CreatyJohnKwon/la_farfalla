@@ -111,7 +111,7 @@ const CouponList = () => {
     }
 
     return validCoupons.length > 0 ? (
-        <ul className="flex w-full flex-col gap-4 overflow-y-scroll pb-5 sm:w-auto">
+        <ul className="flex w-full flex-col gap-4 overflow-auto scrollbar-custom pb-5 sm:w-auto">
             {validCoupons.map((coupon: any) => {
                 // 사용자가 보유한 쿠폰 중에서 현재 쿠폰과 매칭되는 것을 찾기
                 const userCoupon = userCoupons.find(

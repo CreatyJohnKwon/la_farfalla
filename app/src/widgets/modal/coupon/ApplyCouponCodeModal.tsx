@@ -63,7 +63,7 @@ const ApplyCouponCodeModal = ({ onClose }: { onClose: () => void }) => {
                         <input
                             id="coupon-code"
                             type="text"
-                            maxLength={12}
+                            maxLength={40}
                             value={couponCode}
                             onChange={(e) => setCouponCode(e.target.value)}
                             className="w-full px-4 py-3 text-center border-2 text-base uppercase font-pretendard rounded-xs transition-all duration-300 placeholder:text-gray-400 outline-none"

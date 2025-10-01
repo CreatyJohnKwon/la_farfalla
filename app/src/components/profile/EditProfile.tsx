@@ -8,7 +8,6 @@ import {
 } from "@src/shared/hooks/react-query/useUserQuery";
 import { useAddress } from "@src/shared/hooks/useAddress";
 import useUsers from "@src/shared/hooks/useUsers";
-import { useRouter } from "next/navigation";
 import { useMemo, useState, useEffect } from "react";
 
 const EditProfile = () => {
@@ -17,7 +16,6 @@ const EditProfile = () => {
     const updateUser = useUpdateUserMutation();
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const { isOpen, onComplete, openModal, closeModal } = useAddress();
-    const { router } = usePage();
 
     // 폼 제출 형식
     const [form, setForm] = useState({
@@ -201,22 +199,24 @@ const EditProfile = () => {
                 )}
 
                 <div className="relative w-full">
-                    <input
-                        type="text"
-                        name="address"
-                        value={form.address}
-                        onChange={handleChange}
-                        placeholder={"주소"}
-                        readOnly
-                        className="min-h-12 w-full border border-gray-200 bg-white px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none"
-                    />
-                    <input
-                        name="postcode"
-                        value={form.postcode}
-                        onChange={handleChange}
-                        readOnly
-                        className="hidden"
-                    />
+                    <div className="border border-gray-200 bg-white text-gray-700">
+                        <input
+                            type="text"
+                            name="address"
+                            value={form.address}
+                            onChange={handleChange}
+                            placeholder={"주소"}
+                            readOnly
+                            className="min-h-12 w-full placeholder:text-gray-400 overflow-hidden whitespace-nowrap truncate pe-[20vw] px-4 focus:outline-none focus:ring-2 focus:ring-gray-200" 
+                        />
+                        <input
+                            name="postcode"
+                            value={form.postcode}
+                            onChange={handleChange}
+                            readOnly
+                            className="hidden"
+                        />
+                    </div>
                     <button
                         type="button"
                         onClick={() =>
@@ -240,13 +240,13 @@ const EditProfile = () => {
                     value={form.detailAddress}
                     onChange={handleChange}
                     placeholder={"상세주소"}
-                    className="min-h-12 w-full border border-gray-200 bg-white px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                    className="z-10 min-h-12 w-full border border-gray-200 bg-white px-4 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                 />
 
                 <button
                     onClick={handleSubmit}
                     disabled={!canSave}
-                    className={`font-pretendard ease-in-out duration-300 w-full px-5 py-2 text-base text-white transition-colors sm:w-auto sm:place-self-end sm:text-lg font-[300] ${
+                    className={`z-10 font-pretendard ease-in-out duration-300 w-full px-5 py-2 text-base text-white transition-colors sm:w-auto sm:place-self-end sm:text-lg font-[300] ${
                         canSave
                             ? "bg-black hover:bg-black/70"
                             : "cursor-not-allowed bg-gray-400"

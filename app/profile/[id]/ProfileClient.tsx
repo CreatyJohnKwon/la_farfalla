@@ -34,11 +34,16 @@ const ProfileClient = ({ id }: { id: string }) => {
                 <div className="col-span-8 mt-32 flex w-[90vw] flex-col items-start justify-center sm:mt-0 sm:w-[90%]">
                     <ProfileInfo />
 
-                    <div className="mt-5 flex w-full flex-col items-center justify-start gap-5 text-5xl sm:m-0 sm:items-stretch">
+                    <div className="mt-5 flex w-full flex-col items-start justify-start gap-4 text-5xl sm:m-0 sm:items-stretch">
                         {/* 쿠폰 등록 버튼 추가 */}
                         {id === "coupon" 
                             ? <ApplyCouponCodeButton title={title} />
-                            : <span className="font-amstel-thin w-full text-2xl sm:text-3xl text-start">{title}</span>}
+                            : id === "edit" ?
+                                <div className="flex flex-col gap-2">
+                                    <p className="font-amstel-thin w-full text-2xl sm:text-3xl text-start">{title}</p>
+                                    <p className="font-pretendard font-[100] w-full text-xs sm:text-sm text-start text-gray-500">* 주소찾기를 통해 주소 수정이 가능합니다.</p>
+                                </div>
+                                : <span className="font-amstel-thin w-full text-2xl sm:text-3xl text-start">{title}</span>}
                         <span className="h-0 w-full border-b border-gray-200" />
                         {children}
                     </div>
