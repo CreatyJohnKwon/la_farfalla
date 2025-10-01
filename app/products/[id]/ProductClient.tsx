@@ -246,7 +246,7 @@ const ProductClient = ({ id }: { id: string }) => {
             <button
                 onClick={scrollToTop}
                 aria-label="맨 위로 스크롤"
-                className={`fixed bottom-24 hover:bottom-28 right-8 z-50 p-3 pb-5 text-black hover:text-black/50 transition-all duration-300 ${
+                className={`fixed bottom-24 hover:bottom-28 right-8 z-50 md:p-3 md:pb-5 text-black hover:text-black/50 transition-all duration-300 ${
                     showScrollTopButton ? "opacity-100 visible" : "opacity-0 invisible"
                 }`}
             >
