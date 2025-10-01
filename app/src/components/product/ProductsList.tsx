@@ -100,7 +100,7 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                             </p>
                         </div>
                     ) : product.discount === "0" || !product.discount ? (
-                        <span className="font-amstel-thin sm:font-amstel text-sm font-semibold text-gray-900 sm:text-lg">
+                        <span className="font-amstel-thin sm:font-amstel text-sm font-semibold text-black sm:text-lg">
                             {`KRW ${priceResult(product)}`}
                         </span>
                     ) : (
@@ -112,7 +112,7 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                                 <span className="py-1 text-xs font-bold text-red-500 px-1 sm:py-1 sm:text-base">
                                     {`${product.discount}%`}
                                 </span>
-                                <span className="text-xs font-bold text-slate-600 sm:text-base">
+                                <span className="text-sm font-bold text-black sm:text-base">
                                     {`KRW ${priceDiscount(product)}`}
                                 </span>
                             </div>

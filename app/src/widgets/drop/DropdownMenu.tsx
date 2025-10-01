@@ -28,7 +28,7 @@ const DropdownMenu = ({
     const ref = useRef<HTMLDivElement>(null);
 
     const clickClasses = `${open ? "max-h-96 opacity-100 visible" : "max-h-0 opacity-0 invisible"}`;
-    const hoverClasses = "sm:group-hover:max-h-96 group-hover:opacity-100 sm:group-hover:visible sm:max-h-0 sm:opacity-0 sm:invisible";
+    const hoverClasses = "md:group-hover:max-h-96 group-hover:opacity-100 md:group-hover:visible md:max-h-0 md:opacity-0 md:invisible";
 
     useEffect(() => {
         if (triggerType === "click") {
@@ -46,16 +46,16 @@ const DropdownMenu = ({
             className={`z-40 ${triggerType === "hover" ? "group relative" : ""}`}
         >
             <button 
-                className={`font-amstel font-[500] ${pathName === "/home" ? "text-black sm:text-white" : "text-black"}`}
+                className={`font-amstel font-[500] ${pathName === "/home" ? "text-black md:text-white" : "text-black"}`}
                 onClick={() => triggerType === "click" && setOpen(prev => !prev)}
             >
                 {title}
             </button>
             <ul
                 className={`
-                    ms-4 sm:ms-0 text-start mt-2 sm:mt-4 sm:absolute text-sm font-amstel font-[500] whitespace-nowrap ${menuBg}
-                    sm:transition-all sm:duration-300 ease-in-out ${hoverClasses}
-                    ${pathName === "/home" ? "bg-transparent sm:pe-0" : "bg-white/70 sm:pe-10"}
+                    ms-4 md:ms-0 text-start mt-2 md:mt-4 md:absolute text-sm font-amstel font-[500] whitespace-nowrap ${menuBg}
+                    md:transition-all md:duration-300 ease-in-out ${hoverClasses}
+                    ${pathName === "/home" ? "bg-transparent md:pe-0" : "bg-white/70 md:pe-10"}
                     ${triggerType === "click" ? `transition-all duration-300 ease-in-out ${clickClasses}` : ""}
                 `}
             >

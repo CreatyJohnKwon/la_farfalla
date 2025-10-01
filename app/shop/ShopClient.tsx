@@ -119,7 +119,7 @@ const ShopClient = () => {
             <main className="flex w-full flex-col flex-grow">
                 <div className="flex flex-col items-center">
                     <div className="fixed top-0 flex w-full flex-col items-center justify-center pt-16 pb-5 mt-5 md:mt-12 md:flex-row bg-white z-10">
-                        <div className="w-[10vh] md:w-auto md:absolute md:left-0 self-start ms-[3.5vw]">
+                        <div className="w-[10vh] md:w-auto md:absolute md:left-0 self-start ms-[3vw]">
                             <SearchButton
                                 products={searchableProducts}
                                 onSearch={handleRealTimeSearch}
@@ -174,7 +174,7 @@ const ShopClient = () => {
                                     </div>
                                 ) : (
                                     <div>
-                                        <ul className="grid w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-24 md:grid-cols-3 ease-in-out transition-all">
+                                        <ul className="grid w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-24 lg:grid-cols-3 ease-in-out transition-all">
                                             {displayProducts.map((item: Product, index: number) => (
                                                 <ProductsList
                                                     key={`${item._id}-${isSearchMode ? "search" : section}-${index}`}

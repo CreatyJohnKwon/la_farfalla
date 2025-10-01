@@ -26,7 +26,7 @@ const ProjectsPage = () => {
     }
 
     return (
-        <div className='min-h-screen'>
+        <div className="min-h-screen w-full flex flex-col justify-start items-center">
             {projects.length > 0 ? (
                 <div className="grid h-auto w-[93vw] place-self-center grid-cols-2 md:grid-cols-3 pt-20 md:pt-32 gap-3">
                     {
