@@ -2,6 +2,7 @@
 
 import { AddressModalProps } from "@/src/entities/type/common";
 import { useEffect, useRef, useState } from "react";
+import ModalWrap from "../etc/ModalWrap";
 
 declare global {
     interface Window {
@@ -85,29 +86,23 @@ const AddressModal = ({ onComplete, onClose }: AddressModalProps) => {
     }, []);
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            onClick={onClose}
+        <ModalWrap 
+            onClose={onClose} 
+            className="relative h-[75vh] w-[92%] max-w-md overflow-hidden bg-white shadow-md p-0"
         >
+            {isLoading && <SkeletonLoader />}
             <div
-                className="relative h-[75vh] w-[92%] max-w-md overflow-hidden bg-white shadow-md"
-                onClick={(e) => e.stopPropagation()}
+                ref={containerRef}
+                className="h-full w-full overflow-auto"
+                style={{ visibility: isLoading ? "hidden" : "visible" }}
+            />
+            <button
+                onClick={onClose}
+                className="absolute bottom-4 left-1/2 z-20 w-[92%] -translate-x-1/2 bg-black py-2 text-base text-white hover:bg-black/70"
             >
-                {isLoading && <SkeletonLoader />}
-                <div
-                    ref={containerRef}
-                    className="h-full w-full overflow-auto"
-                    style={{ visibility: isLoading ? "hidden" : "visible" }}
-                />
-                {/* ✨ 변경: z-20을 추가하여 스켈레톤 UI보다 위에 오도록 설정 */}
-                <button
-                    onClick={onClose}
-                    className="absolute bottom-4 left-1/2 z-20 w-[92%] -translate-x-1/2 bg-black py-2 text-base text-white hover:bg-black/70"
-                >
-                    닫기
-                </button>
-            </div>
-        </div>
+                닫기
+            </button>
+        </ModalWrap>
     );
 };
 

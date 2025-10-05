@@ -15,6 +15,7 @@ import { specialReviewItem } from "@src/entities/type/products";
 import { OrderData, OrderItem, ShippingStatus } from "@src/components/order/interface";
 import useOrder from "@src/shared/hooks/useOrder";
 import { sendMail } from "@src/shared/lib/server/order";
+import ModalWrap from "../etc/ModalWrap";
 
 // 주문 상세 모달 컴포넌트
 const OrderDetailModal = ({
@@ -331,18 +332,10 @@ const OrderDetailModal = ({
     }
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-            onClick={onClose}
-            style={{ touchAction: "manipulation" }}
-        >
-            <div
-                className="max-h-[85vh] w-[95vw] h-auto overflow-y-auto rounded-md bg-white sm:w-[60vw] xl:w-[40vw]"
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                    WebkitOverflowScrolling: "touch",
-                    overscrollBehavior: "contain",
-                }}
+        <>
+            <ModalWrap
+                onClose={onClose}
+                className="max-h-[85vh] w-[95vw] h-auto overflow-y-auto rounded-md bg-white sm:w-[60vw] xl:w-[40vw] p-0"
             >
                 {/* 헤더 */}
                 <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
@@ -686,8 +679,8 @@ const OrderDetailModal = ({
                         )}
                     </div>
                 </div>
-            </div>
-
+            </ModalWrap>
+            
             {/* 🆕 환불/취소 모달 */}
             <CancelOrderModal
                 isOpen={isRefundModalOpen}
@@ -711,7 +704,7 @@ const OrderDetailModal = ({
                     productItem={productItem}
                 />
             )}
-        </div>
+        </>
     );
 };
 

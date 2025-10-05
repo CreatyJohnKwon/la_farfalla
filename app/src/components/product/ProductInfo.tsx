@@ -6,7 +6,7 @@ import {
     justDiscount,
 } from "@src/features/calculate";
 import ProductDrop from "@src/widgets/drop/ProductDrop";
-import QuantityModal from "@/src/widgets/modal/product/QuantityModal";
+import QuantityItem from "@/src/widgets/modal/product/QuantityItem";
 import { useEffect, useMemo, useState } from "react";
 import useCart from "@src/shared/hooks/useCart";
 import useUser from "@src/shared/hooks/useUsers";
@@ -344,7 +344,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
 
                 {/* 상품 추가 */}
                 {selectedItems.map((item: SelectedItem) => (
-                    <QuantityModal
+                    <QuantityItem
                         id={item.cartItemId}
                         custom="w-full text-xs md:text-sm flex items-center justify-end gap-2 md:gap-4 text-black c_md:gap-6 px-2 md:px-0"
                         key={item.cartItemId}

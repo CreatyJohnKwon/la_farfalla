@@ -2,7 +2,7 @@
 
 import { SelectedItem } from "@/src/entities/type/common";
 
-const QuantityModal = ({
+const QuantityItem = ({
     id,
     custom,
     item,
@@ -73,4 +73,4 @@ const QuantityModal = ({
     );
 };
 
-export default QuantityModal;
+export default QuantityItem;

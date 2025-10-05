@@ -505,7 +505,10 @@ const RegisterClient = () => {
             </form>
 
             {isOpen && (
-                <AddressModal onComplete={onComplete} onClose={closeModal} />
+                <AddressModal 
+                    onComplete={onComplete} 
+                    onClose={closeModal} 
+                />
             )}
             {(isOpenUserAgreeOne || isOpenUserAgreeTwo) && (
                 <AgreementModal 
