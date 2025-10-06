@@ -24,7 +24,7 @@ const AnnouncePopup = ({
 
     return (
         announce.visible && (
-            <div className="relative w-72 min-w-[30vw] overflow-hidden bg-white">
+            <div className="relative w-[90%] sm:w-72 min-w-[30vw] place-self-center overflow-hidden bg-white">
                 {/* 공지 이미지 */}
                 <div className="relative w-full">
                     <Image

@@ -1,6 +1,7 @@
 "use client";
 
 import { ModalProps } from "@/src/entities/type/common";
+import usePage from "@/src/shared/hooks/usePage";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 
@@ -10,6 +11,20 @@ const ModalWrap = ({
     className,
     containerClassName,
 }: ModalProps) => {
+    const { router, pathName } = usePage();
+
+    useEffect(() => {
+        const handlePopState = (event: PopStateEvent) => {
+            onClose();
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, [router]);
+
     useEffect(() => {
         // 키보드를 눌렀을 때 실행될 함수
         const handleKeyDown = (e: KeyboardEvent) => {

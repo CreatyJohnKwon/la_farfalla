@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { getCart } from "@src/shared/lib/server/cart";
 import { SelectedItem } from "@/src/entities/type/common";
 import CartItem from "./CartItem";
+import CartItemSkeleton from "./CartItemSkeleton";
 
 const Cart = () => {
     const [totalQuantity, setTotalQuantity] = useState<number>(0);
@@ -72,14 +73,7 @@ const Cart = () => {
                 </li>
             ));
         } else {
-            return (
-                <li
-                    key={"unknown_datas"}
-                    className="flex h-full w-full items-center justify-center font-pretendard text-sm font-[300] text-gray-500 sm:text-base"
-                >
-                    장바구니가 비었습니다
-                </li>
-            );
+            return <CartItemSkeleton count={5} />
         }
     };
 
@@ -91,7 +85,7 @@ const Cart = () => {
         >
             {/* 장바구니 컨테이너: 이벤트 버블링을 막습니다. */}
             <div
-                className="flex h-[90vh] w-full flex-col overflow-hidden bg-white sm:h-4/5 sm:w-11/12 sm:max-w-2xl sm:rounded-sm"
+                className="flex h-full w-full flex-col overflow-hidden bg-white sm:h-4/5 sm:w-11/12 sm:max-w-2xl sm:rounded-sm"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* 헤더 */}

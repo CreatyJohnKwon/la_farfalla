@@ -7,8 +7,8 @@ import { IAnnounceDTO } from "@src/entities/type/announce";
 import AnnouncePopup from "./AnnouncePopup";
 
 interface AnnounceLayerProps {
-    bannerAnnounce: IAnnounceDTO | null; // 띠 공지는 딱 1개 또는 null
-    popupAnnounces: IAnnounceDTO[]; // 팝업 공지는 여러 개 배열로
+    bannerAnnounce: IAnnounceDTO | null;
+    popupAnnounces: IAnnounceDTO[];
 }
 
 const AnnounceLayer = ({
@@ -22,7 +22,6 @@ const AnnounceLayer = ({
 
     useEffect(() => {
         if (bannerAnnounce) {
-            const key = `announce_hide_${bannerAnnounce._id}`;
             setBannerVisible(bannerAnnounce.visible);
         }
 
@@ -45,16 +44,23 @@ const AnnounceLayer = ({
         handlePopupClose(id);
     };
 
-    // 공지 둘 다 없으면 아무것도 안 띄움
     if (!bannerAnnounce && popupAnnounces.length === 0) return null;
 
     return (
         <>
             {/* 팝업 공지 */}
-            <div className="fixed left-[2vw] top-[10vh] z-50 flex max-w-full space-x-4 overflow-x-auto">
+            <div className="fixed top-[10vh] z-50 w-full grid place-items-center items-start pointer-events-none 
+                           sm:w-auto sm:left-[2vw] sm:flex sm:justify-start sm:space-x-4">
                 {popupAnnounces.map((announce, index) =>
                     popupVisibleMap[announce._id.toString()] ? (
-                        <div key={`${announce._id.toString()}_${index}`}>
+                        <div
+                            key={`${announce._id.toString()}_${index}`}
+                            /*
+                              [수정된 부분]
+                              - sm:flex 를 추가하여 데스크톱에서 flex 컨테이너로 만듭니다.
+                            */
+                            className="col-start-1 row-start-1 pointer-events-auto sm:flex"
+                        >
                             <AnnouncePopup
                                 announce={announce}
                                 onClose={() =>

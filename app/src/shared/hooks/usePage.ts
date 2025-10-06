@@ -3,7 +3,6 @@ import { useState } from "react";
 import useCart from "./useCart";
 import useProduct from "./useProduct";
 import useUsers from "./useUsers";
-import { adminEmails } from "public/data/common";
 import { serviceMenuItems, adminMenuItems } from "@src/utils/dataUtils";
 import { useCategoriesQuery } from "./react-query/useCategoryQuery";
 
