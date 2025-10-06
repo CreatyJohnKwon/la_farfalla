@@ -5,8 +5,8 @@ import { adminMenuItems, serviceMenuItems } from "@src/utils/dataUtils";
 import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "@src/widgets/drop/DropdownMenu";
 import Link from "next/link";
-import { adminEmails } from "public/data/common";
 import { useEffect, useRef, useState } from "react";
+import { adminEmails } from "../../../../public/data/common";
 
 const Sidebar = () => {
     const {

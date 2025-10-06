@@ -49,7 +49,7 @@ const CartItem = ({ item, onClose }: CartItemProps) => {
                     target.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=Error';
                 }}
                 onClick={() => {
-                    router.push(`/products/${item.productId}`);
+                    router.push(`/products/${item.titleEg}/${item.productId}`);
                     onClose();
                 }}
                 priority

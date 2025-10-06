@@ -32,8 +32,5 @@ const categorySchema = new mongoose.Schema(
     },
 );
 
-// slug 필드에 인덱스를 생성하여 검색 성능 향상
-categorySchema.index({ slug: 1 });
-
 export default mongoose.models?.Category ||
     mongoose.model("Category", categorySchema);

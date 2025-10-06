@@ -9,6 +9,7 @@ import useUser from "@src/shared/hooks/useUsers";
 import useOrder from "./useOrder";
 import { Product } from "@src/entities/type/products";
 import { v4 as uuidv4 } from "uuid";
+import { returnProductPath } from "@/src/utils/commonAction";
 
 const useCart = () => {
     const [cartView, setCartView] = useAtom(cartViewAtom);
@@ -50,6 +51,7 @@ const useCart = () => {
         const newItem: SelectedItem = {
             userId: session?.user?.email || "",
             title: product.title.kr,
+            titleEg: product.title.eg,
             cartItemId: uuidv4(),
             image: product.image[0],
             productId: product._id || "",
@@ -68,8 +70,8 @@ const useCart = () => {
         setSelectedColor("");
     };
 
-    const handleRouteProduct = (productId: string | undefined) => {
-        router.push(`/products/${productId}`);
+    const handleRouteProduct = (productNm: string, productId: string | undefined) => {
+        router.push(`products/${returnProductPath(productNm)}/${productId}`);
         setCartView(false);
     };
 

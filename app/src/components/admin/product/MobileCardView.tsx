@@ -4,6 +4,7 @@ import Link from "next/link";
 import DefaultImage from "../../../../../public/images/chill.png";
 import useProduct from "@/src/shared/hooks/useProduct";
 import { Dispatch, SetStateAction } from "react";
+import { returnProductPath } from "@/src/utils/commonAction";
 
 const MobileCardView = ({
     filteredAndSortedProducts,
@@ -33,7 +34,7 @@ const MobileCardView = ({
                         <div className="flex gap-3">
                             {/* 상품 이미지 */}
                             <Link
-                                href={`/products/${product._id}`}
+                                href={`/products/${returnProductPath(product.title.eg)}/${product._id}`}
                             >
                                 <Image
                                     width={300}

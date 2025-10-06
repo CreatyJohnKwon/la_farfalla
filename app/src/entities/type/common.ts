@@ -61,6 +61,7 @@ type SelectedItem = {
     _id?: string;
     image: string;
     title: string;
+    titleEg: string;
     userId: string | null;
     cartItemId: string;
     productId: string;

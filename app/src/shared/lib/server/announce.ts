@@ -1,11 +1,11 @@
 import { CreateAnnounceData, IAnnounceDTO } from "@src/entities/type/announce";
-import { baseUrl } from "public/data/common";
+import { baseUrl } from "../../../../../public/data/common";
 
 // 공지 목록 조회 : ISR 적용
 const getAnnouncesISR = async (): Promise<IAnnounceDTO[]> => {
     // 환경 변수에서 기본 URL을 가져와서 절대 경로를 만듭니다.
     if (!baseUrl) {
-        throw new Error("NEXT_PUBLIC_API_URL 환경 변수가 설정되지 않았습니다. `.env` 를 확인해주세요.");
+        throw new Error("환경 변수가 설정되지 않았습니다. `.env` 를 확인해주세요.");
     }
     
     const response = await fetch(`${baseUrl}/api/admin/announces`, {

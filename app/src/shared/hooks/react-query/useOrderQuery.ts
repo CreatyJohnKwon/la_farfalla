@@ -11,7 +11,6 @@ import { useSetAtom } from "jotai";
 import { resetProductFormAtom } from "../../lib/atom";
 import { AddressUpdateInput } from "@src/entities/type/order";
 import { OrderData, OrderPage, OrderUpdateInput, StockUpdateItem } from "@src/components/order/interface";
-import { adminEmails } from "public/data/common";
 import useUsers from "../useUsers";
 
 const useAllOrderQuery = () => {

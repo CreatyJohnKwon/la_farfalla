@@ -1,9 +1,10 @@
 import { IProject } from "@/src/entities/type/project";
 import { ApiResponse } from "@/src/entities/type/common";
+import { baseUrl } from "../../../../../public/data/common";
 
 // GET: 모든 프로젝트 조회
 const getProjectList = async (): Promise<IProject[]> => {
-    const res = await fetch(`/api/project`);
+    const res = await fetch(`${baseUrl}/api/project`);
     const result: ApiResponse<IProject[]> = await res.json();
 
     if (!result.success) {

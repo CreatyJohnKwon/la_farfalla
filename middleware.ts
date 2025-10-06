@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { adminEmails } from "public/data/common";
+import { adminEmails } from "./public/data/common";
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;

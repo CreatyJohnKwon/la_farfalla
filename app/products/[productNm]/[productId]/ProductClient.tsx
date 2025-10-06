@@ -7,23 +7,17 @@ import { useProductQuery } from "@src/shared/hooks/react-query/useProductQuery";
 import { useIntersectionObserver } from "@src/shared/hooks/useIntersectionObserver";
 import DescriptionImage from "@src/components/product/DescriptionImage";
 import ReviewSystem from "@src/components/review/ReviewSystem";
-import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";
 import { useGetReviewsListQuery } from "@src/shared/hooks/react-query/useReviewQuery";
 import { productTabs } from "@src/utils/dataUtils";
-import { DescriptionItem } from "@src/entities/type/products";
+import { DescriptionItem, Product } from "@src/entities/type/products";
 
-const ProductClient = ({ id }: { id: string }) => {
-    const {
-        data: product,
-        isLoading: productLoading,
-        error,
-    } = useProductQuery(id);
+const ProductClient = ({ productId, product }: { productId: string, product: Product }) => {
     const {
         data: reviewsData,
         isLoading: reviewIsLoading,
         error: reviewError,
         refetch: reviewRefetch,
-    } = useGetReviewsListQuery(id);
+    } = useGetReviewsListQuery(productId);
     const [visibleImages, setVisibleImages] = useState<Set<number>>(
         new Set([0, 1]),
     ); // 처음 2개는 기본으로 보이게
@@ -83,7 +77,7 @@ const ProductClient = ({ id }: { id: string }) => {
 
     // 이미지 프리로드 (상품 로딩 완료 후)
     useEffect(() => {
-        if (product && !productLoading && product.description?.items) {
+        if (product && product.description?.items) {
             // 첫 번째 이미지 즉시 프리로드
             const firstImage = product.description.items[0].src;
             if (firstImage) {
@@ -94,7 +88,7 @@ const ProductClient = ({ id }: { id: string }) => {
             const timer = setTimeout(checkContentHeight, 300);
             return () => clearTimeout(timer);
         }
-    }, [product, productLoading]);
+    }, [product]);
 
     // Description이 보일 때 추가 이미지들 프리로드
     useEffect(() => {
@@ -127,41 +121,6 @@ const ProductClient = ({ id }: { id: string }) => {
         }
     }, [isDescriptionVisible, product?.description?.items]);
 
-    // ID가 없는 경우
-    if (!id) {
-        return (
-            <div className="flex h-screen w-full items-center justify-center">
-                <div className="text-center">
-                    <h2 className="mb-2 text-xl font-pretendard text-red-600">
-                        접근 권한 실패 | 상품 ID 없음
-                    </h2>
-                </div>
-            </div>
-        );
-    }
-
-    // 에러 발생
-    if (error) {
-        return (
-            <div className="flex h-screen w-full font-pretendard items-center justify-center">
-                <div className="text-center">
-                    <h2 className="mb-2 text-xl text-red-600">
-                        에러 발생 | {String(error)}
-                    </h2>
-                    <p className="text-gray-600">{String(error)}</p>
-                    <p className="mt-2 text-sm text-gray-500">
-                        상품 ID: {id}
-                    </p>
-                </div>
-            </div>
-        );
-    }
-
-    // 로딩 중
-    if (productLoading) {
-        return <LoadingSpinner size="md" message="Loading..." />;
-    }
-
     // 상품 데이터가 없는 경우
     if (!product) {
         return (
@@ -170,7 +129,7 @@ const ProductClient = ({ id }: { id: string }) => {
                     <h2 className="mb-2 text-xl text-gray-700">
                         상품 데이터가 없습니다
                     </h2>
-                    <p className="text-gray-600">상품 ID: {id}</p>
+                    <p className="text-gray-600">상품 ID: {productId}</p>
                 </div>
             </div>
         );
@@ -235,7 +194,7 @@ const ProductClient = ({ id }: { id: string }) => {
                     {activeTab === "reviews" && (
                         <div className="w-full">
                             <ReviewSystem
-                                productId={id}
+                                productId={productId}
                                 reviews={reviews}
                                 isLoading={reviewIsLoading}
                                 error={reviewError}

@@ -4,7 +4,7 @@ import { Order } from "@src/entities/models/Order";
 import User from "@src/entities/models/User";
 import { ReviewPermissionResponse } from "@src/entities/type/review";
 import { NextRequest } from "next/server";
-import { adminEmails } from "public/data/common";
+import { adminEmails } from "../../../../public/data/common";
 
 async function checkReviewPermission(
     userId: string,

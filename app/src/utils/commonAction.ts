@@ -72,7 +72,11 @@ const reduceStock = async (items: OrderItem[], session: mongoose.ClientSession) 
     }
 }
 
+const returnProductPath = (productNm: string): string =>
+    productNm.toLowerCase().replace(/ /g, '-');
+
 export {
+    returnProductPath,
     getPostposition,
     reduceStock
 }

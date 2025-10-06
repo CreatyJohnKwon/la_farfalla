@@ -10,8 +10,8 @@ import usePage from "@src/shared/hooks/usePage";
 import DropdownMenu from "../drop/DropdownMenu";
 import useUsers from "@src/shared/hooks/useUsers";
 import Cart from "@/src/widgets/modal/cart/Cart";
-import { adminEmails } from "public/data/common";
 import { adminMenuItems, serviceMenuItems } from "@/src/utils/dataUtils";
+import { adminEmails } from "../../../../public/data/common";
 
 const NavbarClient = () => {
     const {

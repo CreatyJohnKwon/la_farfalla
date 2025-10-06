@@ -8,6 +8,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Product, SortOption } from "@/src/entities/type/products";
 import { Dispatch, SetStateAction } from "react";
 import { useUpdateVisibilityMutation } from "@/src/shared/hooks/react-query/useProductQuery";
+import { returnProductPath } from "@/src/utils/commonAction";
 
 const SortableRow = ({ 
     index, 
@@ -73,7 +74,7 @@ const SortableRow = ({
             {/* 대표 이미지 */}
             <td className="px-4 py-3">
                 <Link
-                    href={`/products/${product._id}`}
+                    href={`/products/${returnProductPath(product.title.eg)}/${product._id}`}
                 >
                     <Image
                         width={500}

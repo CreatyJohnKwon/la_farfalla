@@ -34,7 +34,7 @@ const RootLayout = async ({
     const session = await getAuthSession();
 
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
             <body
                 className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen min-w-screen flex-col antialiased`}
             >

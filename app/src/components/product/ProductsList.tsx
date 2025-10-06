@@ -8,6 +8,7 @@ import { priceResult, priceDiscount } from "@src/features/calculate";
 import { useOptimizedImage } from "@src/shared/hooks/useOptimizedImage";
 import LoadingSpinner from "../../widgets/spinner/LoadingSpinner";
 import { Product } from "../../entities/type/products";
+import { returnProductPath } from "@/src/utils/commonAction";
 
 interface ProductsListProps {
     product: Product;
@@ -15,7 +16,6 @@ interface ProductsListProps {
 }
 
 const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
-    // 최적화된 이미지 훅 사용
     const {
         ref,
         src: optimizedSrc,
@@ -25,7 +25,7 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
     } = useOptimizedImage({
         src: product.image?.[0] || DefaultImage.src,
         fallbackSrc: DefaultImage.src,
-        priority: index < 9, // 처음 4개만 우선순위
+        priority: index < 6,
         quality: index < 9 ? 85 : 75,
         width: 500,
     });
@@ -35,7 +35,10 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
             className="group animate-fade-in pb-10 text-center opacity-0 md:pb-16"
             style={{ animationDelay: `${index * 50}ms` }}
         >
-            <Link href={`/products/${product._id}`} className="block h-full">
+            <Link 
+                href={`/products/${returnProductPath(product.title.eg)}/${product._id}`}
+                className="block h-full"
+            >
                 <div
                     ref={ref as any}
                     className="relative overflow-hidden transition-all duration-300"

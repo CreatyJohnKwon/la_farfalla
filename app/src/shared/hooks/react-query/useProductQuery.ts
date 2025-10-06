@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient, UseQueryOptions } from "@tanstack/react-query";
 import {
     deleteProduct,
     getProduct,
@@ -13,7 +13,9 @@ import { loadingAtom, resetProductFormAtom } from "@src/shared/lib/atom";
 import { InfiniteQueryResult, Product, ProductPage } from "@src/entities/type/products";
 import toast from 'react-hot-toast';
 import useUsers from "../useUsers";
-import { adminEmails } from "public/data/common";
+import { adminEmails } from "../../../../../public/data/common";
+
+type ProductQueryOptions = Omit<UseQueryOptions<Product, Error>, 'queryKey' | 'queryFn'>;
 
 // 무한 스크롤 사용
 const useProductListQuery = (limit = 9, initialData?: Product[]) => {
@@ -40,12 +42,16 @@ const useProductListQuery = (limit = 9, initialData?: Product[]) => {
     });
 };
 
-const useProductQuery = (id: string) => {
+const useProductQuery = (
+    id: string,
+    options?: ProductQueryOptions
+) => {
     return useQuery<Product, Error>({
         queryKey: ["get-product", id],
         queryFn: () => getProduct(id),
-        staleTime: 0, // 항상 refresh
-        retry: false, // 실패시 재시도 OFF
+        staleTime: 0,
+        retry: false,
+        ...options,
     });
 };
 

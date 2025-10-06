@@ -38,7 +38,6 @@ const AnnounceSchema = new Schema<IAnnounce>(
         },
         deletedAt: {
             type: Date,
-            required: true,
             index: { expireAfterSeconds: 0 },
         },
     },
@@ -51,7 +50,7 @@ const AnnounceSchema = new Schema<IAnnounce>(
 // 인덱스 설정
 AnnounceSchema.index({ visible: 1, startAt: 1, deletedAt: 1 });
 AnnounceSchema.index({ isPopup: 1, visible: 1 });
-AnnounceSchema.index({ createAt: -1 });
+AnnounceSchema.index({ createdAt: -1 });
 
 const AnnounceModel: Model<IAnnounce> =
     mongoose.models?.Announce ||

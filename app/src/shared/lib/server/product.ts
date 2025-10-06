@@ -1,4 +1,5 @@
 import { Product, ProductPayload } from "@src/entities/type/products";
+import { baseUrl } from "../../../../../public/data/common";
 
 const getProductList = async (page = 1, limit = 9, isAdmin: boolean) => {
     const res = await fetch(`/api/product?page=${page}&limit=${limit}&isAdmin=${isAdmin}`);
@@ -7,7 +8,7 @@ const getProductList = async (page = 1, limit = 9, isAdmin: boolean) => {
 };
 
 const getProduct = async (id: string) => {
-    const res = await fetch(`/api/product?productId=${id}`);
+    const res = await fetch(`${baseUrl}/api/product?productId=${id}`);
     if (!res.ok) throw new Error("상품 정보 불러오기 실패");
     return await res.json();
 };

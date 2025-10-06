@@ -5,8 +5,8 @@ import { getAuthSession } from "@src/shared/lib/session";
 import User from "@src/entities/models/User";
 import { Review } from "@src/entities/models/Review";
 import { UserProfileData } from "@/src/entities/type/common";
-import { adminEmails } from "public/data/common";
 import Product from "@src/entities/models/Product";
+import { adminEmails } from "../../../public/data/common";
 
 // 🆕 요청자 권한에 따른 이메일 표시 함수
 const getEmailDisplay = (
