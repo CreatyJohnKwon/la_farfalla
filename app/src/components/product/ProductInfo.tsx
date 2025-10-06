@@ -141,7 +141,6 @@ const ProductInfo = ({ product }: { product: Product }) => {
     const handleShare = async () => {
         const shareData = {
             title: product.title.eg,
-            text: product.title.eg,
             url: window.location.href,
         };
 
