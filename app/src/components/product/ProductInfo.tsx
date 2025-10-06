@@ -140,10 +140,9 @@ const ProductInfo = ({ product }: { product: Product }) => {
     // 공유하기 기능
     const handleShare = async () => {
         const shareData = {
-            title: `${product.title.eg}`,
-            text: product.description.text,
-            // url: window.location.href,
-            url: "lafarfalla.kr/products/68d649357cd79c98105c58b6",
+            title: product.title.eg,
+            text: product.title.eg,
+            url: window.location.href,
         };
 
         try {
