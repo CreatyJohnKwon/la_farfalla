@@ -140,9 +140,10 @@ const ProductInfo = ({ product }: { product: Product }) => {
     // 공유하기 기능
     const handleShare = async () => {
         const shareData = {
-            title: `${product.title.kr} - ${product.title.eg}`,
+            title: `${product.title.eg}`,
             text: product.description.text,
-            url: window.location.href,
+            // url: window.location.href,
+            url: "lafarfalla.kr/products/68d649357cd79c98105c58b6",
         };
 
         try {
@@ -152,9 +153,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 setShareStatus("shared");
             } else {
                 // Web Share API를 지원하지 않는 경우 클립보드에 복사
-                await navigator.clipboard.writeText(
-                    `${shareData.title}\n${shareData.text}\n${shareData.url}`,
-                );
+                await navigator.clipboard.writeText(shareData.title);
                 setShareStatus("copied");
             }
 

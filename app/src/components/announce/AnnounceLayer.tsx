@@ -73,7 +73,7 @@ const AnnounceLayer = ({
                                 }
                             />
                         </div>
-                    ) : null,
+                    ) : null
                 )}
             </div>
 
