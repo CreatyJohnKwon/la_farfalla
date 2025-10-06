@@ -140,7 +140,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
     // 공유하기 기능
     const handleShare = async () => {
         const shareData = {
-            title: product.title.eg,
+            title: product.title.eg.toUpperCase(),
             url: window.location.href,
         };
 
