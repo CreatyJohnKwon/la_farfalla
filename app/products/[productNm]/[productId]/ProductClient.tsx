@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, Ref } from "react";
 import ProductInfo from "@src/components/product/ProductInfo";
 import Slider from "@src/components/product/Slider";
-import { useProductQuery } from "@src/shared/hooks/react-query/useProductQuery";
 import { useIntersectionObserver } from "@src/shared/hooks/useIntersectionObserver";
 import DescriptionImage from "@src/components/product/DescriptionImage";
 import ReviewSystem from "@src/components/review/ReviewSystem";
@@ -29,6 +28,12 @@ const ProductClient = ({ productId, product }: { productId: string, product: Pro
 
     const reviews = reviewsData?.data || [];
     const imgsOnly: string[] = reviewsData?.imagesOnly || [];
+
+    useEffect(() => {
+        if (product && product.title && product.title.eg) {
+            document.title = product.title.eg.toUpperCase();
+        }
+    }, [product])
 
     useEffect(() => {
         const handleScroll = () => {

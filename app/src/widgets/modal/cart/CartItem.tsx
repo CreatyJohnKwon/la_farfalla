@@ -56,11 +56,11 @@ const CartItem = ({ item, onClose }: CartItemProps) => {
             />
             <div className="flex-grow">
                 <p className="font-pretendard font-[500] text-sm sm:text-base ps-1.5">{item.title || "상품 이름"}</p>
-                <p className="text-xs text-gray-600 sm:text-sm font-amstel font-[340] ps-1.5">
+                <p className="text-xs text-gray-600 sm:text-sm font-pretendard font-[300] ps-1.5">
                     {item.additional ? `${item.additional}` : `${item.size || "size"} - ${item.color || "color"}`}
                 </p>
                 
-                <div className="flex items-center gap-3 mt-2 text-amstel font-[300]">
+                <div className="flex items-center gap-3 mt-2 font-pretendard font-[300]">
                     <button 
                         onClick={() => handleDecrease(item)}
                         disabled={item.quantity <= 1}
@@ -69,7 +69,7 @@ const CartItem = ({ item, onClose }: CartItemProps) => {
                     >
                         -
                     </button>
-                    <span className="text-sm font-amstel">{item.quantity}</span>
+                    <span className="text-sm font-pretendard">{item.quantity}</span>
                     <button 
                         onClick={() => handleIncrease(item)}
                         className="w-6 h-6 text-gray-600 mb-0.5"

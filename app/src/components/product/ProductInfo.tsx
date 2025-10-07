@@ -142,7 +142,6 @@ const ProductInfo = ({ product }: { product: Product }) => {
     // 공유하기 기능
     const handleShare = async () => {
         const shareData = {
-            text: product.title.eg.toUpperCase(),
             url: window.location.href,
         };
 
@@ -153,7 +152,7 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 setShareStatus("shared");
             } else {
                 // Web Share API를 지원하지 않는 경우 클립보드에 복사
-                await navigator.clipboard.writeText(shareData.text);
+                await navigator.clipboard.writeText(shareData.url);
                 setShareStatus("copied");
             }
 

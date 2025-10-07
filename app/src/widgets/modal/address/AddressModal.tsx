@@ -12,7 +12,7 @@ declare global {
 
 const SkeletonLoader = () => {
     return (
-        <div className="absolute inset-0 z-10 animate-pulse bg-white p-5 pb-20">
+        <div className="absolute inset-0 z-10 animate-pulse bg-white p-5 pb-20 flex sm:hidden">
             <div className="mb-6 h-10 rounded bg-gray-200"></div>
             <div className="space-y-3">
                 <div className="h-8 rounded bg-gray-200"></div>

@@ -11,7 +11,7 @@ const CartItemSkeleton = ({ count = 3 }: CartItemSkeletonProps) => {
             {Array.from({ length: count }).map((_, index) => (
                 <li
                     key={`skeleton-${index}`}
-                    className="flex w-full flex-col items-center justify-center"
+                    className="flex w-full flex-col items-center justify-center sm:hidden"
                 >
                     <div className="relative flex w-full animate-pulse items-center gap-4 border-b p-4 sm:p-5">
                         {/* 이미지 스켈레톤 */}

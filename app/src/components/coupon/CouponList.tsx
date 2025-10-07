@@ -93,7 +93,7 @@ const CouponList = () => {
     // 로딩 중엔 스켈레톤만
     if (isCouponsLoading || isCouponManageLoading) {
         return (
-            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
+            <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto sm:hidden">
                 <SkeletonList />
             </ul>
         );

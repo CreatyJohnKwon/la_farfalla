@@ -43,7 +43,7 @@ const MileageList = () => {
     // 로딩 처리 (첫 페이지 로딩 시)
     if (isUserLoading || isMileageLoading) {
         return (
-            <ul className="flex w-[90vw] flex-col gap-3 overflow-y-auto pb-5 sm:w-auto whitespace-nowrap">
+            <ul className="flex w-[90vw] flex-col gap-3 overflow-y-auto pb-5 sm:w-auto whitespace-nowrap sm:hidden">
                 <SkeletonList />
             </ul>
         );

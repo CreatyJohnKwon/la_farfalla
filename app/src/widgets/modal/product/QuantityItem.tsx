@@ -44,7 +44,7 @@ const QuantityItem = ({
                     −
                 </button>
 
-                <span className="flex h-6 w-8 min-w-0 items-center justify-center font-medium text-gray-900">
+                <span className="flex h-6 w-8 min-w-0 items-center justify-center font-[300] text-gray-900">
                     {item.quantity}
                 </span>
 

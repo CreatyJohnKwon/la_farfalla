@@ -15,7 +15,7 @@ const OrderList = () => {
 
     if (isUserLoading || isOrderListLoading) {
         return (
-            <ul className="flex w-full flex-col gap-4 overflow-y-auto pb-5 sm:w-auto">
+            <ul className="flex w-full flex-col gap-4 overflow-y-auto pb-5 sm:w-auto sm:hidden">
                 <SkeletonList />
             </ul>
         );
