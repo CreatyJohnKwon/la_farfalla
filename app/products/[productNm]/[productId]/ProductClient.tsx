@@ -30,12 +30,6 @@ const ProductClient = ({ productId, product }: { productId: string, product: Pro
     const imgsOnly: string[] = reviewsData?.imagesOnly || [];
 
     useEffect(() => {
-        if (product && product.title && product.title.eg) {
-            document.title = product.title.eg.toUpperCase();
-        }
-    }, [product])
-
-    useEffect(() => {
         const handleScroll = () => {
             const { scrollHeight, clientHeight } = document.documentElement;
 
