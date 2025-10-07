@@ -23,13 +23,14 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
             }`}
             style={{ transitionDelay: `${index * 50}ms` }}
         >
-            <Link 
-                href={`/products/${returnProductPath(product.title.eg)}/${product._id}`}
+            <Link
+                href={`/products/${returnProductPath(product.title.eg)}/${
+                    product._id
+                }`}
                 className="block h-full"
             >
                 <div className="relative overflow-hidden transition-all duration-300">
                     <div className="group relative aspect-[3/4]">
-                        {/* next/image가 자체적으로 placeholder를 처리하므로 별도의 로딩 스피너 컨테이너가 필요 없습니다. */}
                         <Image
                             src={product.image?.[0] || DefaultImage}
                             alt={product.title.eg || ""}
@@ -40,7 +41,6 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                             quality={index < 4 ? 85 : 75}
                             placeholder="blur"
                             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                            // 3. 이미지 로딩이 완료되면 isImageLoaded 상태를 true로 변경
                             onLoad={() => setIsImageLoaded(true)}
                         />
                     </div>
