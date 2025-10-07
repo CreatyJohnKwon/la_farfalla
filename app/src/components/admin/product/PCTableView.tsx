@@ -69,8 +69,6 @@ const PCTableView = ({
         }
     };
 
-    console.log(categoryFilter)
-
     return (
         <div className="hidden overflow-x-auto lg:block">
             <DndContext

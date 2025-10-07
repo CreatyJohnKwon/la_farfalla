@@ -134,11 +134,11 @@ const ShopClient = () => {
                         <div className="flex items-center justify-center pt-6 md:pt-0">
                             {!productsLoading && category ?
                                 <CategoryList category={category} /> :
-                                <ul className="flex h-full animate-pulse flex-row gap-4 font-amstel text-xs sm:gap-5 sm:text-base">
-                                    <li className="h-5 w-16 rounded-md bg-gray-200 sm:h-6"></li>
-                                    <li className="h-5 w-10 rounded-md bg-gray-200 sm:h-6"></li>
-                                    <li className="h-5 w-24 rounded-md bg-gray-200 sm:h-6"></li>
+                                <ul className="flex h-full animate-pulse flex-row gap-4 font-amstel text-xs sm:gap-5 md:hidden ease-in-out transition-all duration-500">
+                                    <li className="h-5 w-8 rounded-md bg-gray-200 sm:h-6"></li>
                                     <li className="h-5 w-20 rounded-md bg-gray-200 sm:h-6"></li>
+                                    <li className="h-5 w-12 rounded-md bg-gray-200 sm:h-6"></li>
+                                    {/* <li className="h-5 w-20 rounded-md bg-gray-200 sm:h-6"></li> */}
                                 </ul>
                             }
                         </div>
@@ -179,7 +179,7 @@ const ShopClient = () => {
                                     </div>
                                 ) : (
                                     <div>
-                                        <ul className="grid w-[93vw] animate-fade-in grid-cols-2 gap-2 sm:gap-24 lg:grid-cols-3 ease-in-out transition-all">
+                                        <ul className="grid w-[93vw] animate-fade-in grid-cols-2 gap-2 md:gap-10 lg:gap-24 md:grid-cols-3 ease-in-out transition-all">
                                             {displayProducts.map((item: Product, index: number) => (
                                                 <ProductsList
                                                     key={`${item._id}-${isSearchMode ? "search" : section}-${index}`}

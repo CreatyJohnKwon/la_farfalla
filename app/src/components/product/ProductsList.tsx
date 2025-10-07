@@ -5,8 +5,6 @@ import Image from "next/image";
 import { memo } from "react";
 import DefaultImage from "../../../../public/images/chill.png";
 import { priceResult, priceDiscount } from "@src/features/calculate";
-import { useOptimizedImage } from "@src/shared/hooks/useOptimizedImage";
-import LoadingSpinner from "../../widgets/spinner/LoadingSpinner";
 import { Product } from "../../entities/type/products";
 import { returnProductPath } from "@/src/utils/commonAction";
 
@@ -16,20 +14,6 @@ interface ProductsListProps {
 }
 
 const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
-    const {
-        ref,
-        src: optimizedSrc,
-        isLoaded,
-        isLoading,
-        shouldLoad,
-    } = useOptimizedImage({
-        src: product.image?.[0] || DefaultImage.src,
-        fallbackSrc: DefaultImage.src,
-        priority: index < 6,
-        quality: index < 9 ? 85 : 75,
-        width: 500,
-    });
-
     return (
         <li
             className="group animate-fade-in pb-10 text-center opacity-0 md:pb-16"
@@ -39,41 +23,21 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                 href={`/products/${returnProductPath(product.title.eg)}/${product._id}`}
                 className="block h-full"
             >
-                <div
-                    ref={ref as any}
-                    className="relative overflow-hidden transition-all duration-300"
-                >
-                    {/* 향상된 스켈레톤 로딩 */}
-                    {(!isLoaded || isLoading) && shouldLoad && (
-                        <div className="absolute left-0 top-0 h-full w-full bg-gray-100">
-                            <LoadingSpinner
-                                fullScreen={true}
-                                size="lg"
-                                message="Loading..."
-                            />
-                        </div>
-                    )}
-
-                    {/* 최적화된 이미지 렌더링 */}
-                    {shouldLoad && (
-                        <div className="group relative aspect-[3/4]">
-                            <Image
-                                src={optimizedSrc}
-                                alt={product.title.eg || ""}
-                                width={500}
-                                height={667}
-                                className={`absolute md:group-hover:scale-[1.01] left-0 top-0 h-full w-full object-cover transition-all duration-500 ${
-                                    isLoaded ? "opacity-100" : "opacity-0"
-                                }`}
-                                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                                priority={index < 2} // 처음 2개만 priority
-                                quality={index < 4 ? 85 : 75}
-                                loading={index < 4 ? "eager" : "lazy"}
-                                placeholder="blur"
-                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                            />
-                        </div>
-                    )}
+                <div className="relative overflow-hidden transition-all duration-300">
+                    <div className="group relative aspect-[3/4]">
+                        {/* next/image가 자체적으로 placeholder를 처리하므로 별도의 로딩 스피너 컨테이너가 필요 없습니다. */}
+                        <Image
+                            src={product.image?.[0] || DefaultImage}
+                            alt={product.title.eg || ""}
+                            fill
+                            className="absolute left-0 top-0 h-full w-full object-cover transition-all duration-500 group-hover:scale-[1.01]"
+                            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                            priority={index === 0}
+                            quality={index < 4 ? 85 : 75} 
+                            placeholder="blur"
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                        />
+                    </div>
 
                     {/* 호버 오버레이 */}
                     <div className="absolute inset-0 bg-black bg-opacity-0 transition-all duration-300 group-hover:bg-opacity-10"></div>
