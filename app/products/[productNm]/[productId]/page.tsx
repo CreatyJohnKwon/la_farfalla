@@ -3,9 +3,10 @@ import ProductClient from "./ProductClient";
 import { Metadata } from "next";
 import DefaultImg from "../../../../public/images/default_logo.png";
 import { Product } from "@/src/entities/type/products";
+import { baseUrl } from "../../../../public/data/common";
 
 export async function generateMetadata({ params }: { params: Promise<{ productNm: string, productId: string }> }): Promise<Metadata> {
-    const { productId } = await params;
+    const { productId, productNm } = await params;
     const product: Product = await getProduct(productId);
 
     if (!product) {
@@ -23,13 +24,8 @@ export async function generateMetadata({ params }: { params: Promise<{ productNm
         openGraph: {
             title: pageTitle,
             description: pageDescription,
-            images: [
-                {
-                    url: imageUrl,
-                    width: 800,
-                    height: 600,
-                },
-            ],
+            url: `${baseUrl}/products/${productNm}/${productId}`,
+            images: [{ url: imageUrl }],
             siteName: 'La farfalla',
         },
     };
