@@ -1,7 +1,7 @@
 import { IAnnounceDTO } from "@src/entities/type/announce";
 import Image from "next/image";
 import { useState } from "react";
-import ImgData from "../../../../public/images/chill.png";
+import ImgData from "../../../../public/images/default_logo.png";
 
 interface AnnouncePopupContentProps {
     announce: IAnnounceDTO;

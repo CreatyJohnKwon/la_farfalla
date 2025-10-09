@@ -1,6 +1,6 @@
 import { useState } from "react"
 import ModalWrap from "../etc/ModalWrap"
-import DefaultImage from "../../../../../public/images/chill.png"
+import DefaultImage from "../../../../../public/images/default_logo.png"
 import { textareaPlaceholder } from "@src/utils/dataUtils"
 import { specialReviewItem } from "@src/entities/type/products"
 import { usePostReviewMutation } from "@src/shared/hooks/react-query/useReviewQuery"

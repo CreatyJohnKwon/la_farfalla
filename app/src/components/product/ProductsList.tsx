@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { memo, useState } from "react";
-import DefaultImage from "../../../../public/images/chill.png";
+import DefaultImage from "../../../../public/images/default_logo.png";
 import { priceResult, priceDiscount } from "@src/features/calculate";
 import { Product } from "../../entities/type/products";
 import { returnProductPath } from "@/src/utils/commonAction";
@@ -41,7 +41,6 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                             quality={index < 4 ? 85 : 75}
                             placeholder="blur"
                             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                            // 3. 이미지 로딩이 완료되면 isImageLoaded 상태를 true로 변경
                             onLoad={() => setIsImageLoaded(true)}
                         />
                     </div>

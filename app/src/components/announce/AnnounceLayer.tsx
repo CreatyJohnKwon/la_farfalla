@@ -55,10 +55,6 @@ const AnnounceLayer = ({
                     popupVisibleMap[announce._id.toString()] ? (
                         <div
                             key={`${announce._id.toString()}_${index}`}
-                            /*
-                              [수정된 부분]
-                              - sm:flex 를 추가하여 데스크톱에서 flex 컨테이너로 만듭니다.
-                            */
                             className="col-start-1 row-start-1 pointer-events-auto sm:flex"
                         >
                             <AnnouncePopup

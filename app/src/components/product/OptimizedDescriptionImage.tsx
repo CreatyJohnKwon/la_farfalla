@@ -1,7 +1,7 @@
 "use client";
 
 import { useOptimizedImage } from "@src/shared/hooks/useOptimizedImage";
-import DefaultImage from "../../../../public/images/chill.png";
+import DefaultImage from "../../../../public/images/default_logo.png";
 import { useIntersectionObserver } from "../../shared/hooks/useIntersectionObserver";
 import Image from "next/image";
 

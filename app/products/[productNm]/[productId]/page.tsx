@@ -1,10 +1,12 @@
 import { getProduct } from "@/src/shared/lib/server/product";
 import ProductClient from "./ProductClient";
 import { Metadata } from "next";
+import DefaultImg from "../../../../public/images/default_logo.png";
+import { Product } from "@/src/entities/type/products";
 
 export async function generateMetadata({ params }: { params: Promise<{ productNm: string, productId: string }> }): Promise<Metadata> {
     const { productId } = await params;
-    const product = await getProduct(productId);
+    const product: Product = await getProduct(productId);
 
     if (!product) {
         return {
@@ -13,8 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ productNm
     }
 
     const pageTitle = product.title.eg.toUpperCase();
-    const pageDescription = `${product.title.kr}에 대한 상세 정보입니다.`;
-    const imageUrl = product.image[0] || '/default-image.jpg';
+    const pageDescription = product.description.text;
+    const imageUrl = product.image[0] || DefaultImg.toString();
 
     return {
         title: pageTitle,
@@ -28,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ productNm
                     height: 600,
                 },
             ],
-            siteName: '내 멋진 쇼핑몰',
+            siteName: 'La farfalla',
         },
     };
 }

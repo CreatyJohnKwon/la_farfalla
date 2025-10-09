@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import DefaultImage from "../../../../../public/images/chill.png";
+import DefaultImage from "../../../../../public/images/default_logo.png";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";

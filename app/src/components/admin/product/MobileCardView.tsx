@@ -1,7 +1,7 @@
 import { Product } from "@/src/entities/type/products";
 import Image from "next/image";
 import Link from "next/link";
-import DefaultImage from "../../../../../public/images/chill.png";
+import DefaultImage from "../../../../../public/images/default_logo.png";
 import useProduct from "@/src/shared/hooks/useProduct";
 import { Dispatch, SetStateAction } from "react";
 import { returnProductPath } from "@/src/utils/commonAction";

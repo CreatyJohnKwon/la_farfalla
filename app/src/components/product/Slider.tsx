@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
-import DefaultImage from "../../../../public/images/chill.png";
+import DefaultImage from "../../../../public/images/default_logo.png";
 import { motion, PanInfo, useAnimation, Transition } from "framer-motion";
 
 const slideAnimation: Transition = {

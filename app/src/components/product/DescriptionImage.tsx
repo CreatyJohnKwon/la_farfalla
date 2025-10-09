@@ -1,6 +1,6 @@
 "use client";
 
-import DefaultImage from "../../../../public/images/chill.png";
+import DefaultImage from "../../../../public/images/default_logo.png";
 import { RefObject, useMemo } from "react";
 import Image from "next/image";
 import OptimizedDescriptionImage from "./OptimizedDescriptionImage";
