@@ -70,7 +70,7 @@ const CancelOrderModal = ({
                     reason
                 }
                 const result = await refundPayment(refundData);
-                console.log("Refund Success:", result.message || "Success");
+                console.warn("Refund Success:", result.message || "Success");
             }
         } catch (error: any) {
             console.error("Request failed:", error.message);

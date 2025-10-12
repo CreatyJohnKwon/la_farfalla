@@ -1,36 +1,114 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { 
+    PutObjectCommand, 
+    CreateMultipartUploadCommand, 
+    UploadPartCommand, 
+    CompleteMultipartUploadCommand,
+    AbortMultipartUploadCommand,
+} from "@aws-sdk/client-s3";
 import { client } from "./r2Client";
 import { v4 as uuidv4 } from "uuid";
+import { MULTIPART_THRESHOLD_BYTES, PART_SIZE_BYTES } from "@/src/utils/dataUtils";
 
-const uploadImageToR2 = async (file: Buffer, originalFileName: string) => {
+const uploadImageToR2 = async (file: Buffer, originalFileName: string): Promise<string> => {
     const bucketName: string = process.env.R2_BUCKET_NAME || "";
-    const fileBuffer: Buffer = file || Buffer.from("");
-    const fileMimeType: string =
-        originalFileName.split(".").pop() || "image/jpeg";
+    const fileBuffer: Buffer = file;
+    const fileSize = fileBuffer.length;
 
+    // 파일 이름 및 메타데이터 설정 (기존 로직 유지)
     const ext = originalFileName.split(".").pop();
     const uuid = uuidv4();
     const now = new Date();
-    const timestamp = `${now.getFullYear()}${(now.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}${now.getDate().toString().padStart(2, "0")}_${now
-        .getHours()
-        .toString()
-        .padStart(2, "0")}${now.getMinutes().toString().padStart(2, "0")}${now
-        .getSeconds()
-        .toString()
-        .padStart(2, "0")}`;
-
+    const timestamp = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, "0")}${now.getDate().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}${now.getMinutes().toString().padStart(2, "0")}${now.getSeconds().toString().padStart(2, "0")}`;
     const fileName = `${timestamp}_${uuid}.${ext}`;
+    const fileMimeType = `image/${ext}` || "image/jpeg"; // 정확한 MIME 타입 사용
+    
+    // --- 파일 크기에 따른 업로드 전략 분기 ---
 
-    const command = new PutObjectCommand({
-        Bucket: bucketName,
-        Key: fileName,
-        Body: fileBuffer,
-        ContentType: fileMimeType,
-    });
+    if (fileSize <= MULTIPART_THRESHOLD_BYTES) {
+        // A. 단일 요청 업로드 (20MB 이하)
+        const command = new PutObjectCommand({
+            Bucket: bucketName,
+            Key: fileName,
+            Body: fileBuffer,
+            ContentType: fileMimeType,
+        });
 
-    await client.send(command);
+        await client.send(command);
+    } else {
+        // B. Multi-Part Upload (20MB 초과 및 413 에러 방지)
+        let uploadId: string | undefined;
+
+        try {
+            // 1. Multi-Part Upload 생성 (UploadId 획득)
+            const createUpload = new CreateMultipartUploadCommand({
+                Bucket: bucketName,
+                Key: fileName,
+                ContentType: fileMimeType,
+            });
+            const response = await client.send(createUpload);
+            uploadId = response.UploadId;
+
+            if (!uploadId) {
+                throw new Error("Failed to get UploadId for Multi-Part Upload.");
+            }
+
+            const parts = [];
+            let partNumber = 1;
+            let currentPosition = 0;
+
+            // 2. 파일 청크 단위로 분할 및 업로드
+            while (currentPosition < fileSize) {
+                const endPosition = Math.min(currentPosition + PART_SIZE_BYTES, fileSize);
+                const chunk = fileBuffer.slice(currentPosition, endPosition);
+
+                const uploadPart = new UploadPartCommand({
+                    Bucket: bucketName,
+                    Key: fileName,
+                    UploadId: uploadId,
+                    PartNumber: partNumber,
+                    Body: chunk,
+                });
+
+                const partResponse = await client.send(uploadPart);
+                
+                // 파트 정보 저장 (CompleteMultipartUploadCommand에 필요)
+                parts.push({
+                    PartNumber: partNumber,
+                    ETag: partResponse.ETag,
+                });
+
+                currentPosition = endPosition;
+                partNumber++;
+            }
+
+            // 3. Multi-Part Upload 완료 요청
+            const completeUpload = new CompleteMultipartUploadCommand({
+                Bucket: bucketName,
+                Key: fileName,
+                UploadId: uploadId,
+                MultipartUpload: {
+                    Parts: parts.sort((a, b) => a.PartNumber - b.PartNumber),
+                },
+            });
+
+            await client.send(completeUpload);
+
+        } catch (error) {
+            console.error("Multi-Part Upload Failed:", error);
+            // 업로드 실패 시 잔여 파트를 정리 (Abort)
+            if (uploadId) {
+                const abortCommand = new AbortMultipartUploadCommand({
+                    Bucket: bucketName,
+                    Key: fileName,
+                    UploadId: uploadId,
+                });
+                await client.send(abortCommand);
+            }
+            throw new Error("R2 Multi-Part upload failed due to network or server error.");
+        }
+    }
+
+    // 최종 이미지 URL 반환
     return (
         `https://pub-29feff62c6da44ea8503e0dc13db4217.r2.dev/${fileName}` || ``
     );

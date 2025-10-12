@@ -9,7 +9,7 @@ import {
     AdditionalOption
 } from "@src/entities/type/products";
 import { useState, useEffect } from "react";
-import { useSetAtom } from "jotai";
+import { useSetAtom, useAtomValue } from "jotai"; // useAtomValue 추가
 import { loadingAtom } from "@src/shared/lib/atom";
 import { uploadImagesToServer } from "@src/shared/lib/uploadToR2";
 import useProduct from "@src/shared/hooks/useProduct";
@@ -34,11 +34,26 @@ interface UpdateProductModalProps {
     mode?: "create" | "update";
 }
 
+// 🚨 로딩 오버레이 컴포넌트 추가
+const LoadingOverlay = () => (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="flex flex-col items-center justify-center p-8 text-white">
+            <p className="font-semibold text-xl">
+                Loading...
+            </p>
+        </div>
+    </div>
+);
+
 const UpdateProductModal = ({
     onClose,
     product,
     mode = "create",
 }: UpdateProductModalProps) => {
+    // 🚨 전역 로딩 상태 가져오기
+    const isLoading = useAtomValue(loadingAtom);
+    const setLoading = useSetAtom(loadingAtom);
+
     // 이미지 상태
     const [hasImageChanges, setHasImageChanges] = useState<boolean>(false);
     const [hasDescriptionImageChanges, setHasDescriptionImageChanges] = useState<boolean>(false);
@@ -54,7 +69,6 @@ const UpdateProductModal = ({
             existingUrls: [],
         },
     );
-    const setLoading = useSetAtom(loadingAtom);
 
     // 사이즈 상태
     const [sizeInput, setSizeInput] = useState<string>("");
@@ -329,103 +343,101 @@ const UpdateProductModal = ({
         e: React.FormEvent<HTMLFormElement>,
     ): Promise<void> => {
         e.preventDefault();
+        
+        const confirmMessage = mode === "update"
+            ? "상품을 업데이트 하시겠습니까?"
+            : "상품을 등록하시겠습니까?";
+
+        if (!validateForm() || !confirm(confirmMessage)) {
+            return;
+        }
+
+        // 🚨 로딩 시작
+        setLoading(true);
 
         try {
-            const confirmMessage = mode === "update"
-                ? "상품을 업데이트 하시겠습니까?"
-                : "상품을 등록하시겠습니까?";
-
-            if (validateForm() && confirm(confirmMessage)) {
-                setLoading(true);
-
-                // --- 1. 대표 이미지 처리 (기존과 동일) ---
-                let uploadedImageUrls: string[] = imageData.existingUrls;
-                if (hasImageChanges && imageData.files.length > 0) {
-                    const newImageUrls = await uploadImagesToServer(imageData.files);
-                    if (newImageUrls) {
-                        uploadedImageUrls = [...imageData.existingUrls, ...newImageUrls];
-                    }
-                } else if (mode === "update" && !hasImageChanges) {
-                    // 수정 모드에서 변경이 없을 경우, 원본 데이터를 유지합니다.
-                    uploadedImageUrls = product?.image || [];
+            // --- 1. 대표 이미지 처리 (기존과 동일) ---
+            let uploadedImageUrls: string[] = imageData.existingUrls;
+            if (hasImageChanges && imageData.files.length > 0) {
+                // 이미지 업로드는 시간이 오래 걸릴 수 있습니다.
+                const newImageUrls = await uploadImagesToServer(imageData.files);
+                if (newImageUrls) {
+                    uploadedImageUrls = [...imageData.existingUrls, ...newImageUrls];
                 }
-
-                // --- ✨ 2. 설명 이미지(items) 처리 로직 수정 ---
-                let finalDescriptionItems: DescriptionItem[] = [];
-
-                if (hasDescriptionImageChanges) {
-                    // ✅ Case 1: 설명 부분에 변경사항이 있는 경우
-                    // 현재 상태(descriptionImageData)를 기준으로 최종 데이터를 재구성합니다.
-
-                    let newImageUrls: string[] = [];
-                    // 새로 추가된 파일이 있다면 먼저 업로드합니다.
-                    if (descriptionImageData.files.length > 0) {
-                        const uploadedUrls = await uploadImagesToServer(descriptionImageData.files);
-                                            
-                        if (uploadedUrls) {
-                            newImageUrls = uploadedUrls;
-                        }
-                    }
-
-                    let newUrlIndex = 0;
-                    // 현재 UI의 순서와 내용을 그대로 반영하는 previews 배열을 기준으로 최종 데이터를 만듭니다.
-                    finalDescriptionItems = descriptionImageData.previews.map(preview => {
-                        if (preview === BREAK_IDENTIFIER) {
-                            return { itemType: 'break' };
-                        }
-
-                        // 기존에 있던 이미지인지 확인 (blob: URL이 아닌 실제 http URL)
-                        const isExisting = descriptionImageData.existingUrls.includes(preview);
-                        if (isExisting) {
-                            return { itemType: 'image', src: preview };
-                        }
-                        
-                        // 기존 이미지가 아니라면, 새로 업로드된 이미지입니다.
-                        // 순서에 맞게 업로드된 실제 URL로 교체합니다.
-                        const finalUrl = newImageUrls[newUrlIndex++] || '';
-                        if (!finalUrl) {
-                            // 업로드된 URL이 없는 경우(오류), 해당 아이템을 누락시킬 수 있습니다.
-                            // 혹은 에러 처리를 할 수 있습니다. 여기서는 null을 반환하여 필터링합니다.
-                            console.warn("Uploaded URL is missing for a new image:", preview);
-                            return null;
-                        }
-                        return { itemType: 'image', src: finalUrl };
-                    }).filter((item): item is DescriptionItem => item !== null); // null 값을 제거하여 안전성 확보
-
-                } else if (mode === "update" && !hasDescriptionImageChanges) {
-                    // ✅ Case 2: 수정 모드이고 설명 부분에 변경사항이 없는 경우
-                    // 원본 product 데이터의 items를 그대로 사용합니다.
-                    finalDescriptionItems = product?.description.items || [];
-                }
-
-                // --- 3. 최종 데이터 조합 (기존과 유사) ---
-                const totalStock = variants.reduce((sum: number, v: ProductVariant) => sum + v.stockQuantity, 0);
-
-                const finalData: Product = {
-                    ...formData,
-                    image: uploadedImageUrls,
-                    description: {
-                        items: finalDescriptionItems,
-                        text: formData.description.text,
-                        detail: formData.description.detail,
-                    },
-                    options: variants,
-                    quantity: totalStock.toString(),
-                    additionalOptions: additionalOptions, 
-                };
-
-                if (mode === "update" && product?._id) {
-                    finalData._id = product._id;
-                }
-
-                if (mode === "update") {
-                    await updateProduct(finalData);
-                } else {
-                    await createProduct(finalData);
-                }
-
-                onClose();
+            } else if (mode === "update" && !hasImageChanges) {
+                uploadedImageUrls = product?.image || [];
             }
+
+            // --- ✨ 2. 설명 이미지(items) 처리 로직 수정 ---
+            let finalDescriptionItems: DescriptionItem[] = [];
+
+            if (hasDescriptionImageChanges) {
+                let newImageUrls: string[] = [];
+                // 새로 추가된 파일이 있다면 먼저 업로드합니다.
+                if (descriptionImageData.files.length > 0) {
+                    // 설명 이미지 업로드도 시간이 오래 걸릴 수 있습니다.
+                    const uploadedUrls = await uploadImagesToServer(descriptionImageData.files);
+                                        
+                    if (uploadedUrls) {
+                        newImageUrls = uploadedUrls;
+                    }
+                }
+
+                let newUrlIndex = 0;
+                // 현재 UI의 순서와 내용을 그대로 반영하는 previews 배열을 기준으로 최종 데이터를 만듭니다.
+                finalDescriptionItems = descriptionImageData.previews.map(preview => {
+                    if (preview === BREAK_IDENTIFIER) {
+                        return { itemType: 'break' };
+                    }
+
+                    // 기존에 있던 이미지인지 확인
+                    const isExisting = descriptionImageData.existingUrls.includes(preview);
+                    if (isExisting) {
+                        return { itemType: 'image', src: preview };
+                    }
+                    
+                    // 새로 업로드된 이미지
+                    const finalUrl = newImageUrls[newUrlIndex++] || '';
+                    if (!finalUrl) {
+                        console.warn("Uploaded URL is missing for a new image:", preview);
+                        return null;
+                    }
+                    return { itemType: 'image', src: finalUrl };
+                }).filter((item): item is DescriptionItem => item !== null); 
+
+            } else if (mode === "update" && !hasDescriptionImageChanges) {
+                // 변경사항이 없으면 원본 product 데이터의 items를 그대로 사용
+                finalDescriptionItems = product?.description.items || [];
+            }
+
+            // --- 3. 최종 데이터 조합 (기존과 유사) ---
+            const totalStock = variants.reduce((sum: number, v: ProductVariant) => sum + v.stockQuantity, 0);
+
+            const finalData: Product = {
+                ...formData,
+                image: uploadedImageUrls,
+                description: {
+                    items: finalDescriptionItems,
+                    text: formData.description.text,
+                    detail: formData.description.detail,
+                },
+                options: variants,
+                quantity: totalStock.toString(),
+                additionalOptions: additionalOptions, 
+            };
+
+            if (mode === "update" && product?._id) {
+                finalData._id = product._id;
+            }
+
+            // 서버 액션 (Mutation) 실행
+            if (mode === "update") {
+                await updateProduct(finalData);
+            } else {
+                await createProduct(finalData);
+            }
+
+            onClose(); // 성공 시 모달 닫기
         } catch (err) {
             console.error(err);
             const errorMessage =
@@ -433,38 +445,34 @@ const UpdateProductModal = ({
                     ? "상품 업데이트 중 오류가 발생했습니다."
                     : "상품 등록 중 오류가 발생했습니다.";
             alert(errorMessage);
+        } finally {
+            // 🚨 성공, 실패 여부와 관계없이 로딩 해제
             setLoading(false);
         }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
-        // 엔터 키가 눌렸을 때만 로직 실행
         if (e.key === 'Enter') {
             const target = e.target as HTMLElement;
-
-            // 포커스된 요소가 'submit' 타입의 버튼인지 확인
             const isSubmitButton = target.tagName === 'BUTTON' && (target as HTMLButtonElement).type === 'submit';
-
-            // 만약 submit 버튼이 아니라면, 기본 동작(폼 제출)을 막습니다.
             if (!isSubmitButton) {
                 e.preventDefault();
             }
-            // submit 버튼이라면, 이 조건문을 건너뛰므로 기본 동작(폼 제출)이 정상적으로 실행됩니다.
         }
     };
 
-    // 로딩 상태
+    // 로딩 상태 (카테고리 데이터 로딩)
     if (categoryLoading) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
                 <div className="bg-white p-8">
-                    <div className="text-center">로딩 중...</div>
+                    <div className="text-center">카테고리 로딩 중...</div>
                 </div>
             </div>
         );
     }
 
-    // 에러 상태
+    // 에러 상태 (카테고리 데이터 에러)
     if (categoryError) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -564,6 +572,7 @@ const UpdateProductModal = ({
                             confirm("작성을 취소하시겠습니까?") && onClose()
                         }
                         className="flex-1 border border-gray-300 py-4 font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+                        disabled={isLoading} // 로딩 중 버튼 비활성화
                     >
                         닫기
                     </button>
@@ -578,18 +587,23 @@ const UpdateProductModal = ({
                                 }
                             }}
                             className="flex-1 border border-gray-600 bg-gray-600 py-4 font-bold text-white transition-colors hover:bg-gray-700"
+                            disabled={isLoading} // 로딩 중 버튼 비활성화
                         >
                             초기화
                         </button>
                     )}
                     <button
                         type="submit"
-                        className="flex-1 bg-gray-900 py-4 font-bold text-white transition-colors hover:bg-gray-800"
+                        className="flex-1 bg-gray-900 py-4 font-bold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+                        disabled={isLoading} // 로딩 중 버튼 비활성화
                     >
                         {mode === "update" ? "상품 수정" : "상품 등록"}
                     </button>
                 </div>
             </form>
+            
+            {/* 🚨 로딩 상태일 때만 오버레이 표시 */}
+            {isLoading && <LoadingOverlay />}
         </ModalWrap>
     );
 };

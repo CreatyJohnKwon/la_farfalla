@@ -17,8 +17,6 @@ const ProjectLink = ({
     imageUrl, 
     altText 
 }: ProjectLinkProps) => {
-    console.log(id)
-
     return (
         <Link
             href={`/project/${id}`}

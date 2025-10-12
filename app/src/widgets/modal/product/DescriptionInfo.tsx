@@ -39,10 +39,6 @@ const DescriptionInfo = ({
     const [dragOverId, setDragOverId] = useState<string | null>(null); // 시각적 도우미
     const [isFileDragging, setIsFileDragging] = useState(false); // 드래그 드롭 첨부 추적
 
-    useEffect(() => {
-        console.log(descriptionImageData)
-    }, [descriptionImageData])
-
     const descriptionItems = useMemo<DescriptionItem[]>(() => {
         const items: DescriptionItem[] = [];
         let fileIndex = 0;

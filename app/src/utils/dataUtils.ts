@@ -65,6 +65,10 @@ const ONE_DAY = 24 * 60 * 60; // 1일 (초 단위)
 // 줄바꿈 식별자 / DescriptionItem 으로 사용
 const BREAK_IDENTIFIER = "---BREAK---";
 
+// 이미지 업로드 크기 관리
+const PART_SIZE_BYTES = 5 * 1024 * 1024; // 5MB (AWS S3/R2 MPU 최소 파트 크기)
+const MULTIPART_THRESHOLD_BYTES = 20 * 1024 * 1024; // 20MB 초과 시 MPU 사용 (50MB 제한보다 안전하게 낮춤)
+
 export {
     getCurrentDateTime,
     getDateTimeAfterHours,
@@ -75,5 +79,8 @@ export {
     productTabs,
     THIRTY_DAYS,
     ONE_DAY,
-    BREAK_IDENTIFIER
+    BREAK_IDENTIFIER,
+
+    PART_SIZE_BYTES,
+    MULTIPART_THRESHOLD_BYTES
 }

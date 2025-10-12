@@ -76,7 +76,6 @@ const useCart = () => {
     };
 
     const handleDeleteProduct = (ids: string | string[] | undefined) => {
-        console.log(ids)
         if (!ids) return;
 
         if (!confirm("삭제하시겠습니까?")) return;
