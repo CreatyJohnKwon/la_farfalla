@@ -1,12 +1,52 @@
-## LA_FARFALLA
-#### 지인이 여는 의류 브랜드 사이트 구현 중입니다~ 
+## LA FARFALLA
+#### La farfalla 의류 브랜드 사이트 구현 중입니다~ 
 #### 개발중에는 오픈소스입니다
-#### 구현 후에 홈쇼핑 많이 애용해주세요~
+#### 구현 후에는 일부 private 으로 돌려질 예정입니다
 
-https://lafarfalla.kr
+##### 홈쇼핑 많이 애용해주세요
 
-프로젝트 : 풀스택 (NextJS)</br>
-CI/CD 파이프라인 .yml : GitHub Actions</br>
-서버 : AWS EC2 프리티어 micro2 </br>
-DB : MongoDB + Cloudflare R2</br>
-SSH : AWS Linux + NginX</br>
+path: [La farfalla](https://lafarfalla.kr)
+
+## Skills
+#### 프로젝트 (Project)
+> Next.js, TypeScript, Tailwind CSS
+> 
+> 모던 풀스택 개발, 타입 안정성 확보 및 신속한 UI 구현
+
+#### 데이터베이스 (DB)
+> MongoDB, Cloudflare R2
+>
+> NoSQL 데이터 관리 및 비용 효율적인 대용량 파일 스토리지
+
+#### 데브옵스 (DevOps)
+> GitHub Actions, Vercel, Docker
+>
+> CI/CD 파이프라인 구축, 자동 배포 및 애플리케이션 컨테이너화
+
+#### 인프라 (Infra)
+> AWS EC2, NginX, DockerHub
+>
+> 클라우드 서버 호스팅, 리버스 프록시 구성 및 Docker 이미지 관리
+
+## ✨ 주 기능 (Core Features)
+- 반응형 웹 디자인:
+> 데스크톱, 태블릿, 모바일 등 모든 디바이스에서 최적화된 화면을 제공합니다.
+
+- 상품 관리:
+> 상품 목록 (Products Listing): 전체 상품을 매력적으로 보여주는 카탈로그 페이지
+>
+> 상품 상세 정보 (Product Details): 상세 이미지, 사이즈, 색상, 가격 등 구매에 필요한 모든 정보를 제공하는 상세 페이지
+> 
+> 카테고리별 상품 분류: 사용자가 원하는 상품을 쉽게 찾을 수 있도록 카테고리별 필터링 기능
+
+- 사용자 인증:
+> 소셜 로그인/회원가입: 간편하게 서비스를 이용할 수 있는 소셜 계정 연동 기능
+> 
+> 마이페이지: 주문 내역 조회, 배송 상태 확인, 회원 정보 수정 기능
+
+- 주문 및 결제:
+> 장바구니 (Shopping Cart): 원하는 상품을 담고 수량을 조절하는 기능
+> 
+> 주문/결제 시스템: 안전하고 간편한 결제 연동 기능 (향후 확장 예정)
+> 
+> 이미지 최적화: Cloudflare R2를 통해 상품 이미지를 빠르고 안정적으로 전송하여 사용자 경험을 향상시킵니다.
