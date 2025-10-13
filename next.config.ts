@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+    api: {
+        bodyParser: {
+            sizeLimit: "50mb", // 원하는 용량으로 설정
+        },
+    },
     reactStrictMode: true, // React Strict Mode 활성화
     images: {
         // 이미지 포맷 사용 : 이미지 랜더링 속도 향상 목적
@@ -12,7 +17,6 @@ const nextConfig: NextConfig = {
         minimumCacheTTL: 60,
         // 이미지 최적화 비활성화 (임시 해결책)
         unoptimized: true,
-
         remotePatterns: [
             {
                 protocol: "https",
