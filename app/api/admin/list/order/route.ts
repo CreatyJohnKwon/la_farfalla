@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ success: true, data: updatedOrder });
     } catch (err) {
-        console.error(err);
+        console.error("order Update error:\n" + err);
         return NextResponse.json(
             { success: false, message: "Update failed" },
             { status: 500 },

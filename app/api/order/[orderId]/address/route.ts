@@ -168,6 +168,8 @@ export async function PATCH(request: NextRequest) {
         );
 
         if (!updatedOrder) {
+            console.error("updatedOrder: no Updated Order\n" + updatedOrder);
+
             return NextResponse.json(
                 {
                     success: false,
