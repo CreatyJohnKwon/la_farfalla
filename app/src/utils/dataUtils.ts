@@ -69,6 +69,10 @@ const BREAK_IDENTIFIER = "---BREAK---";
 const PART_SIZE_BYTES = 5 * 1024 * 1024; // 5MB (AWS S3/R2 MPU 최소 파트 크기)
 const MULTIPART_THRESHOLD_BYTES = 20 * 1024 * 1024; // 20MB 초과 시 MPU 사용 (50MB 제한보다 안전하게 낮춤)
 
+const MAX_FILE_SIZE_MB = 1;      // 파일당 최대 1MB로 제한
+const MAX_WIDTH_PIXEL = 1920;   // 최대 너비 1920px
+const COMPRESSION_QUALITY = 0.8; // 압축 품질 (0.0 to 1.0)
+
 export {
     getCurrentDateTime,
     getDateTimeAfterHours,
@@ -82,5 +86,8 @@ export {
     BREAK_IDENTIFIER,
 
     PART_SIZE_BYTES,
-    MULTIPART_THRESHOLD_BYTES
+    MULTIPART_THRESHOLD_BYTES,
+    MAX_FILE_SIZE_MB,
+    MAX_WIDTH_PIXEL,
+    COMPRESSION_QUALITY
 }

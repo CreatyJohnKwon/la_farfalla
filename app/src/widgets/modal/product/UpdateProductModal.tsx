@@ -11,7 +11,7 @@ import {
 import { useState, useEffect } from "react";
 import { useSetAtom, useAtomValue } from "jotai"; // useAtomValue 추가
 import { loadingAtom } from "@src/shared/lib/atom";
-import { uploadImagesToServer } from "@src/shared/lib/uploadToR2";
+import { compressAndConvertImage, uploadImagesToServer } from "@src/shared/lib/uploadToR2";
 import useProduct from "@src/shared/hooks/useProduct";
 import {
     usePostProductMutation,
@@ -360,7 +360,20 @@ const UpdateProductModal = ({
             let uploadedImageUrls: string[] = imageData.existingUrls;
             if (hasImageChanges && imageData.files.length > 0) {
                 // 이미지 업로드는 시간이 오래 걸릴 수 있습니다.
-                const newImageUrls = await uploadImagesToServer(imageData.files);
+                const compressedMainFiles: File[] = [];
+                for (const file of imageData.files) {
+                    const compressed = await compressAndConvertImage(file);
+                    if (compressed) {
+                        compressedMainFiles.push(compressed);
+                    } else {
+                        // 압축 실패 시, 서버 제한 때문에 업로드 실패할 수 있음을 경고
+                        console.warn(`대표 이미지 압축 실패: ${file.name} - 원본 파일로 시도합니다.`);
+                        compressedMainFiles.push(file); 
+                    }
+                }
+                
+                // 1-2. 압축된 파일 업로드
+                const newImageUrls = await uploadImagesToServer(compressedMainFiles);
                 if (newImageUrls) {
                     uploadedImageUrls = [...imageData.existingUrls, ...newImageUrls];
                 }
@@ -373,10 +386,23 @@ const UpdateProductModal = ({
 
             if (hasDescriptionImageChanges) {
                 let newImageUrls: string[] = [];
-                // 새로 추가된 파일이 있다면 먼저 업로드합니다.
+                
                 if (descriptionImageData.files.length > 0) {
-                    // 설명 이미지 업로드도 시간이 오래 걸릴 수 있습니다.
-                    const uploadedUrls = await uploadImagesToServer(descriptionImageData.files);
+                    
+                    // 🚨 2-1. 설명 이미지 압축 및 변환
+                    const compressedDescFiles: File[] = [];
+                    for (const file of descriptionImageData.files) {
+                        const compressed = await compressAndConvertImage(file);
+                        if (compressed) {
+                            compressedDescFiles.push(compressed);
+                        } else {
+                            console.warn(`설명 이미지 압축 실패: ${file.name} - 원본 파일로 시도합니다.`);
+                            compressedDescFiles.push(file);
+                        }
+                    }
+
+                    // 2-2. 압축된 파일 업로드
+                    const uploadedUrls = await uploadImagesToServer(compressedDescFiles);
                                         
                     if (uploadedUrls) {
                         newImageUrls = uploadedUrls;
