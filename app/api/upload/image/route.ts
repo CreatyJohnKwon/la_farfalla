@@ -1,14 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { uploadImageToR2 } from "@src/shared/lib/uploadToR2";
 
-export const config = {
-    api: {
-        bodyParser: {
-            sizeLimit: '50mb', 
-        },
-    },
-};
-
 export async function POST(req: NextRequest) {
     try {
         const formData = await req.formData();
@@ -22,9 +14,8 @@ export async function POST(req: NextRequest) {
             rawFiles = formData.getAll("file");
         }
 
-        // 유효성 검사: File 타입 체크를 다르게 처리
+        // 유효성 검사: File 타입 체크를 다르게 처리 (현재 로직 유지)
         const files = rawFiles.filter((item): item is File => {
-            // FormData에서 가져온 항목이 파일인지 확인
             return (
                 item instanceof Object &&
                 typeof (item as any).name === "string" &&
