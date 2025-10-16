@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import useOrder from "@src/shared/hooks/useOrder";
 
-import DefaultImage from "../../public/images/default_logo.png";
+import DefaultImage from "../../public/images/white_background.png";
 import { useAddress } from "@src/shared/hooks/useAddress";
 import AddressModal from "@src/widgets/modal/address/AddressModal";
 import LoadingSpinner from "@src/widgets/spinner/LoadingSpinner";

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
-import DefaultImg from "../../../../public/images/default_logo.png";
+import DefaultImg from "../../../../public/images/white_background.png";
 
 interface ProjectLinkProps {
     id: string;

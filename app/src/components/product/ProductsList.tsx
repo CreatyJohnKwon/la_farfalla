@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { memo, useState } from "react";
-import DefaultImage from "../../../../public/images/default_logo.png";
+import DefaultImage from "../../../../public/images/white_background.png";
 import { priceResult, priceDiscount } from "@src/features/calculate";
 import { Product } from "../../entities/type/products";
 import { returnProductPath } from "@/src/utils/commonAction";

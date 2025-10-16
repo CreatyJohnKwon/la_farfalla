@@ -1,7 +1,7 @@
 import { getProduct } from "@/src/shared/lib/server/product";
 import ProductClient from "./ProductClient";
 import { Metadata } from "next";
-import DefaultImg from "../../../../public/images/default_logo.png";
+import DefaultImg from "../../../../public/images/white_background.png";
 import { Product } from "@/src/entities/type/products";
 import { baseUrl } from "../../../../public/data/common";
 

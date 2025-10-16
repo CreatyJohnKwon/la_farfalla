@@ -6,7 +6,7 @@ import {
 import { useUserQuery } from "@src/shared/hooks/react-query/useUserQuery";
 import { CheckCircle, XCircle } from "lucide-react";
 import Image from "next/image";
-import DefaultImage from "../../../../../public/images/default_logo.png";
+import DefaultImage from "../../../../../public/images/white_background.png";
 import { useState } from "react";
 import CancelOrderModal from "./CancelOrderModal";
 import DeliveryChangeModal from "./DeliveryChangeModal";
