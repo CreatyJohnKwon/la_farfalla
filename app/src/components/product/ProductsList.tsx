@@ -2,27 +2,21 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { memo, useState } from "react";
+import { memo } from "react"; 
 import DefaultImage from "../../../../public/images/white_background.png";
 import { priceResult, priceDiscount } from "@src/features/calculate";
 import { Product } from "../../entities/type/products";
 import { returnProductPath } from "@/src/utils/commonAction";
+import { BLUR_DATA_URL } from "@/src/utils/dataUtils";
 
 interface ProductsListProps {
     product: Product;
     index?: number;
 }
 
-const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
-    const [isImageLoaded, setIsImageLoaded] = useState(false);
-
+const ProductsList = memo<ProductsListProps>(({ product }) => {
     return (
-        <li
-            className={`group pb-10 text-center transition-opacity duration-500 md:pb-16 ${
-                isImageLoaded ? "opacity-100" : "opacity-0"
-            }`}
-            style={{ transitionDelay: `${index * 50}ms` }}
-        >
+        <li className={`group pb-10 text-center md:pb-16`}>
             <Link
                 href={`/products/${returnProductPath(product.title.eg)}/${
                     product._id
@@ -35,13 +29,9 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                             src={product.image?.[0] || DefaultImage}
                             alt={product.title.eg || ""}
                             fill
-                            className="absolute left-0 top-0 h-full w-full object-cover transition-all duration-500 group-hover:scale-[1.01]"
-                            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                            priority={index === 0}
-                            quality={index < 4 ? 85 : 75}
                             placeholder="blur"
-                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                            onLoad={() => setIsImageLoaded(true)}
+                            blurDataURL={BLUR_DATA_URL}
+                            className="absolute left-0 top-0 h-full w-full object-cover"
                         />
                     </div>
 

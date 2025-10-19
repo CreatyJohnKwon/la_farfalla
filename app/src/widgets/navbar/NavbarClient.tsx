@@ -89,13 +89,17 @@ const NavbarClient = () => {
                 {/* 왼쪽 메뉴 : Mobile */}
                 <button onClick={() => setOpenSidebar(true)}>
                     <RxHamburgerMenu
+                        aria-label="btn-sidebar-open"
                         className={`ms-1 block text-[25px] z-40 md:hidden`}
                     />
                 </button>
 
                 {/* 가운데 중앙 로고 (절대 위치) */}
                 <div className="font-amstel absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:-translate-y-1 text-base md:text-2xl">
-                    <Link href="/home">LA FARFALLA</Link>
+                    <Link 
+                        aria-label="btn_home"
+                        href="/home" 
+                    >LA FARFALLA</Link>
                 </div>
 
                 <div
@@ -105,12 +109,14 @@ const NavbarClient = () => {
                     <ul className="flex space-x-2 md:hidden">
                         <button onClick={() => setCartView(true)}>
                             <HiOutlineShoppingBag
+                                aria-label="btn-cart-open"
                                 className={`me-3 text-[25px] ${session ? "block" : "hidden"}`}
                             />
                         </button>
 
                         <Link href={session ? "/profile" : "/login"}>
                             <AiOutlineUser
+                                aria-label="btn-profile-or-login"
                                 className={`text-[25px] ${session ? "me-1" : "me-0"}`}
                             />
                         </Link>
@@ -144,6 +150,7 @@ const NavbarClient = () => {
                             ) : (
                                 <li key={`nav_list_${index}`}>
                                     <Link
+                                        aria-label="btn-user-manage"
                                         href={navList.text === "LOGIN" && session ? "/profile" : `/${navList.text.toLowerCase()}`}
                                         className={`${navList.text === "LOGIN" || navList.text === "LOGOUT" ? "pe-0" : "pe-4"} block`}
                                     >

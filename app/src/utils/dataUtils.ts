@@ -73,6 +73,9 @@ const MAX_FILE_SIZE_MB = 1;      // 파일당 최대 1MB로 제한
 const MAX_WIDTH_PIXEL = 1920;   // 최대 너비 1920px
 const COMPRESSION_QUALITY = 0.8; // 압축 품질 (0.0 to 1.0)
 
+// BLUR 애니메이션 URL
+const BLUR_DATA_URL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="; 
+
 export {
     getCurrentDateTime,
     getDateTimeAfterHours,
@@ -89,5 +92,7 @@ export {
     MULTIPART_THRESHOLD_BYTES,
     MAX_FILE_SIZE_MB,
     MAX_WIDTH_PIXEL,
-    COMPRESSION_QUALITY
+    COMPRESSION_QUALITY,
+
+    BLUR_DATA_URL
 }

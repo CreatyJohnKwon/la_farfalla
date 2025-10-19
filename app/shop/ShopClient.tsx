@@ -179,7 +179,7 @@ const ShopClient = () => {
                                     </div>
                                 ) : (
                                     <div>
-                                        <ul className="grid w-[93vw] animate-fade-in grid-cols-2 gap-2 md:gap-10 lg:gap-24 md:grid-cols-3 ease-in-out transition-all">
+                                        <ul className="grid w-[93vw] animate-fade-in grid-cols-2 gap-2 md:gap-10 lg:gap-12 xl:gap-24 md:grid-cols-3 ease-in-out transition-all">
                                             {displayProducts.map((item: Product, index: number) => (
                                                 <ProductsList
                                                     key={`${item._id}-${isSearchMode ? "search" : section}-${index}`}
@@ -207,7 +207,7 @@ const ShopClient = () => {
             <button
                 onClick={scrollToTop}
                 aria-label="맨 위로 스크롤"
-                className={`fixed bottom-20 focus:bottom-24 md:hover:bottom-24 right-7 z-50 md:p-3 md:mb-4 text-gray-500 hover:text-gray-600 transition-all duration-300 ${
+                className={`fixed bottom-20 focus:bottom-24 right-7 z-50 md:p-3 md:mb-4 text-gray-500 hover:text-gray-600 transition-all duration-300 ${
                     showScrollTopButton ? "opacity-100 visible" : "opacity-0 invisible"
                 }`}
             >

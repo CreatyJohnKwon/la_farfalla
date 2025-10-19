@@ -26,8 +26,9 @@ const HomeClient = ({ bannerAnnounce, popupAnnounces }: AnnouncesProps) => {
         <Image
           src={BackgroundImg}
           alt="background"
-          height={1000}
-          width={1000}
+          height={500}
+          width={500}
+          sizes="100vw"
           className="h-full w-full object-cover object-[70%_center] sm:object-top"
           priority
         />

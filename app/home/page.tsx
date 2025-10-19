@@ -4,8 +4,6 @@ import { IAnnounceDTO } from "@src/entities/type/announce";
 import HomeClient from "./HomeClient";
 import { getAnnouncesISR } from "@src/shared/lib/server/announce";
 
-// ISR
-
 const HomePage = async() => {
     const announces: IAnnounceDTO[] = await getAnnouncesISR();
 
