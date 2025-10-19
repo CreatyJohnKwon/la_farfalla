@@ -38,7 +38,6 @@ html {
             "wght" 70,
             "wdth" 500,
             "GRAD" 88;
-        /* letter-spacing: -0.07em; */
         letter-spacing: -0.01em;
     }
 
@@ -60,6 +59,7 @@ html {
 @font-face {
     font-family: "Amstelvar Alpha";
     src: url("//fonts.gstatic.com/ea/amstelvaralpha/v2/AmstelvarAlpha-VF.woff2")
-        format("woff2");
+    format("woff2");
     font-weight: 100 900;
+    font-display: swap;
 }

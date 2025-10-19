@@ -29,6 +29,7 @@ const HomeClient = ({ bannerAnnounce, popupAnnounces }: AnnouncesProps) => {
           height={500}
           width={500}
           sizes="100vw"
+          quality={75}
           className="h-full w-full object-cover object-[70%_center] sm:object-top"
           priority
         />

@@ -30,7 +30,6 @@ const NavbarClient = () => {
     useEffect(() => {
         switch (pathName) { 
             case "/home":
-            case "/introduce":
                 setTextColor("text-white");
                 break;
             default:
@@ -41,11 +40,12 @@ const NavbarClient = () => {
 
     return (
         <nav
-            className={`fixed top-0 z-40 h-auto w-full pt-5 pb-3 md:pb-4 text-base shadow-none ${pathName === "/home" || pathName === "/introduce" ? "bg-transparent" : "bg-white"} ${textColor}`}
+            className={`fixed top-0 z-40 h-auto w-full pt-5 pb-3 md:pb-4 text-base shadow-none 
+                ${pathName === "/home" || pathName === "/introduce" ? "bg-transparent" : "bg-white"} 
+                ${textColor}
+            `}
         >
-            <div
-                className={`max-w-screen-w_max w-[93vw] relative mx-auto flex items-center justify-between md:pt-4 text-xl md:text-base`}
-            >
+            <div className="max-w-screen-w_max w-[93vw] relative mx-auto flex items-center justify-between md:pt-4 text-xl md:text-base">
                 {/* 왼쪽 메뉴 : PC */}
                 <ul className="hidden border-gray-100 md:flex md:space-x-4">
                     <li className="font-amstel block" key={"shop-menu"}>
@@ -76,21 +76,19 @@ const NavbarClient = () => {
                 {/* 왼쪽 메뉴 : Mobile */}
                 <button 
                     onClick={() => setOpenSidebar(true)}
-                    // ✅ 접근성 개선: aria-label 추가
-                    aria-label="전체 메뉴 열기" 
+                    aria-label="sidebar-open-btn-mobile"
                 >
                     <RxHamburgerMenu
                         // aria-label을 부모 버튼에 이동시키고, 아이콘은 hidden으로 설정
                         aria-hidden="true" 
-                        className={`ms-1 block text-[25px] z-40 md:hidden`}
+                        className="ms-1 block text-[24px] z-40 md:hidden -mt-2"
                     />
                 </button>
 
                 {/* 가운데 중앙 로고 (절대 위치) */}
                 <Link 
-                    className="font-amstel absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:-translate-y-1 text-base md:text-2xl"
-                    // ✅ 접근성 개선: Link 텍스트 콘텐츠가 "LA FARFALLA"이므로, aria-label은 제거하거나 더 명확하게 변경
-                    aria-label="LA FARFALLA 홈 페이지로 이동" 
+                    className={`font-amstel absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:-translate-y-1 text-base md:text-2xl`}
+                    aria-label="home-btn-link"
                     href="/home" 
                 >LA FARFALLA</Link>
 
@@ -102,13 +100,12 @@ const NavbarClient = () => {
                         <li> 
                             <button 
                                 onClick={() => setCartView(true)}
-                                // ✅ 접근성 개선: aria-label 추가
-                                aria-label="장바구니 열기"
+                                aria-label="open-cart-button-mobile"
                             >
                                 <HiOutlineShoppingBag
                                     // 아이콘을 시각적 요소로만 처리
                                     aria-hidden="true" 
-                                    className={`me-3 text-[25px] ${session ? "block" : "hidden"}`}
+                                    className={`me-3 text-[24px] ${session ? "block" : "hidden"}`}
                                 />
                             </button>
                         </li>
@@ -117,13 +114,12 @@ const NavbarClient = () => {
                         <li> 
                             <Link 
                                 href={session ? "/profile" : "/login"}
-                                // ✅ 접근성 개선: aria-label 추가 (아이콘만 있으므로 필수)
-                                aria-label={session ? "프로필 페이지로 이동" : "로그인 페이지로 이동"}
+                                aria-label={session ? "profile-page-btn" : "login-page-btn"}
                             >
                                 <AiOutlineUser
                                     // 아이콘을 시각적 요소로만 처리
                                     aria-hidden="true"
-                                    className={`text-[25px] ${session ? "me-1" : "me-0"}`}
+                                    className={`text-[24px] ${session ? "me-1" : "me-0"}`}
                                 />
                             </Link>
                         </li>
@@ -131,7 +127,6 @@ const NavbarClient = () => {
 
                     {/* 오른쪽 메뉴 : PC */}
                     <ul className="hidden md:flex md:space-x-4">
-                        {/* ... (PC 메뉴는 이미 <li>를 사용하고 있으므로 구조는 유지) */}
                         {navStartData.map((navList, index) =>
                             navList.text === "CART" ? (
                                 session && (
@@ -157,7 +152,6 @@ const NavbarClient = () => {
                             ) : (
                                 <li key={`nav_list_${index}`}>
                                     <Link
-                                        // ✅ aria-label 제거 (텍스트 콘텐츠가 있으므로)
                                         href={navList.text === "LOGIN" && session ? "/profile" : `/${navList.text.toLowerCase()}`}
                                         className={`${navList.text === "LOGIN" || navList.text === "LOGOUT" ? "pe-0" : "pe-4"} block`}
                                     >
