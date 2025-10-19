@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import imageUrl from "../../public/images/bg_introduce_250911.jpg"
-import imageUrlMobile from "../../public/images/bg_introduce_250923_mobile.jpeg"
+import imageUrl from "../../public/images/bg_introduce_desktop.webp"
+import imageUrlMobile from "../../public/images/bg_introduce_mobile.webp"
 
 const IntroduceClient = () => {
     return (

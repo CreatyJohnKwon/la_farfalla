@@ -22,29 +22,29 @@ import imageCompression from 'browser-image-compression';
  * 솔루션: 파일 압축하는 함수 구축
  */
 const compressAndConvertImage = async (file: File): Promise<File | null> => {
+    // 이미지가 아니면 그대로 반환
     if (!file.type.startsWith('image')) {
-        return file; // 이미지가 아니면 그대로 반환
+        return file; 
     }
     
-    // 압축 옵션 설정: 용량 및 해상도 제한, JPEG 포맷 강제
     const options = {
         maxSizeMB: MAX_FILE_SIZE_MB,
         maxWidthOrHeight: MAX_WIDTH_PIXEL,
         useWebWorker: true, // 워커 스레드를 사용하여 UI 블로킹 방지
-        fileType: 'image/jpeg', // 모든 이미지를 JPEG로 변환
+        fileType: 'image/webp', // 모든 이미지를 WebP로 변환 (핵심 수정)
         initialQuality: COMPRESSION_QUALITY,
     };
 
     try {
+        // 이미지를 압축 및 WebP Blob으로 변환
         const compressedBlob = await imageCompression(file, options);
         
-        // Blob을 File 객체로 변환하여 반환
-        const newName = file.name.replace(/\.[^/.]+$/, "") + ".jpeg";
-        return new File([compressedBlob], newName, { type: 'image/jpeg' });
+        // ✅ Blob을 File 객체로 변환하고 확장자를 .webp로 변경
+        const newName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+        return new File([compressedBlob], newName, { type: 'image/webp' }); // MIME 타입도 image/webp로 설정
         
     } catch (error) {
         console.error("Image compression failed:", error);
-        // 압축 실패 시, 원본 파일이 너무 크면 여전히 413 에러가 발생할 수 있습니다.
         return null; 
     }
 };

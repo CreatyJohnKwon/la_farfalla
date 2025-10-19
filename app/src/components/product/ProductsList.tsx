@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { memo } from "react"; 
+import { memo, useEffect, useState } from "react"; 
 import DefaultImage from "../../../../public/images/white_background.png";
 import { priceResult, priceDiscount } from "@src/features/calculate";
 import { Product } from "../../entities/type/products";
@@ -14,7 +14,27 @@ interface ProductsListProps {
     index?: number;
 }
 
-const ProductsList = memo<ProductsListProps>(({ product }) => {
+const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768); 
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => {
+            window.removeEventListener('resize', checkMobile);
+        };
+    }, []);
+
+    const desktopQuality = index < 4 ? 80 : 70;
+    const mobileQuality = index < 4 ? 20 : 10;
+
+    const imageQuality = isMobile ? mobileQuality : desktopQuality;
+
     return (
         <li className={`group pb-10 text-center md:pb-16`}>
             <Link
@@ -32,6 +52,9 @@ const ProductsList = memo<ProductsListProps>(({ product }) => {
                             placeholder="blur"
                             blurDataURL={BLUR_DATA_URL}
                             className="absolute left-0 top-0 h-full w-full object-cover"
+                            quality={imageQuality} 
+                            priority={index === 0} 
+                            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                         />
                     </div>
 

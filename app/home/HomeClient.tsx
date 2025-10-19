@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
-import BackgroundImg from "../../public/images/bg_new_250911.jpeg";
+import BackgroundImg from "../../public/images/bg_new_250911.webp";
 import AnnounceLayer from "@src/components/announce/AnnounceLayer";
 import { IAnnounceDTO } from "@src/entities/type/announce";
 
