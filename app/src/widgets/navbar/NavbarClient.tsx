@@ -106,7 +106,7 @@ const NavbarClient = () => {
                     className={`font-amstel ml-auto justify-center bg-transparent md:order-1`}
                 >
                     {/* 오른쪽 메뉴 : Mobile */}
-                    <ul className="flex space-x-2 md:hidden">
+                    <div className="flex space-x-2 md:hidden">
                         <button onClick={() => setCartView(true)}>
                             <HiOutlineShoppingBag
                                 aria-label="btn-cart-open"
@@ -120,7 +120,7 @@ const NavbarClient = () => {
                                 className={`text-[25px] ${session ? "me-1" : "me-0"}`}
                             />
                         </Link>
-                    </ul>
+                    </div>
 
                     {/* 오른쪽 메뉴 : PC */}
                     <ul className="hidden md:flex md:space-x-4">

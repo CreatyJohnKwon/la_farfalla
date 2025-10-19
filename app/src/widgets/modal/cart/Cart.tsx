@@ -72,9 +72,15 @@ const Cart = () => {
                     />
                 </li>
             ));
-        } else {
-            return <CartItemSkeleton count={5} />
+        } else if (cartDatas && cartDatas.length === 0) {
+            return (
+                <div className="text-base font-pretendard text-gray-500 flex items-center justify-center mt-10">
+                    <span>장바구니에 상품을 담아주세요</span>
+                </div>
+            )
         }
+        
+        return <CartItemSkeleton count={5} />
     };
 
     return (
