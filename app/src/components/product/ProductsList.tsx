@@ -30,8 +30,8 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
         };
     }, []);
 
-    const desktopQuality = index < 4 ? 80 : 70;
-    const mobileQuality = index < 4 ? 20 : 10;
+    const desktopQuality = index < 4 ? 8 : 7;
+    const mobileQuality = index < 4 ? 5 : 1;
 
     const imageQuality = isMobile ? mobileQuality : desktopQuality;
 
