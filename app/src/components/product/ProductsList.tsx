@@ -30,8 +30,8 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
         };
     }, []);
 
-    const desktopQuality = index < 4 ? 8 : 7;
-    const mobileQuality = index < 4 ? 5 : 1;
+    const desktopQuality = index < 4 ? 1 : 1;
+    const mobileQuality = index < 4 ? 1 : 1;
 
     const imageQuality = isMobile ? mobileQuality : desktopQuality;
 
@@ -49,8 +49,6 @@ const ProductsList = memo<ProductsListProps>(({ product, index = 0 }) => {
                             src={product.image?.[0] || DefaultImage}
                             alt={product.title.eg || ""}
                             fill
-                            placeholder="blur"
-                            blurDataURL={BLUR_DATA_URL}
                             className="absolute left-0 top-0 h-full w-full object-cover"
                             quality={imageQuality} 
                             priority={index === 0} 

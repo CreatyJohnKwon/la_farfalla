@@ -70,11 +70,12 @@ const ProjectDetailPage = () => {
                             <Image
                                 src={item.src!}
                                 alt={`${project.title} image ${index + 1}`}
-                                width={1920}
-                                height={1080}
+                                width={500}
+                                height={500}
                                 sizes="100vw"
                                 className="w-full h-auto"
                                 priority
+                                quality={75}
                             />
                         </div>
                     );
