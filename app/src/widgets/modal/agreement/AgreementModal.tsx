@@ -11,7 +11,7 @@ const AgreementModal = ({
     return (
         <ModalWrap
             onClose={onClose}
-            className="relative h-[60vh] w-[90vw] overflow-hidden bg-white p-4 text-center shadow-xl md:w-1/3"
+            className="relative h-auto w-[90vw] overflow-hidden bg-white p-4 text-center shadow-xl md:w-1/3"
         >
             {/* 닫기 버튼 */}
             <button

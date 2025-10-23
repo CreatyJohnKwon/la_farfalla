@@ -124,21 +124,21 @@ const ShopClient = () => {
             <main className="flex w-full flex-col flex-grow">
                 <div className="flex flex-col items-center">
                     <div className="fixed top-0 flex w-full flex-col items-center justify-center pt-16 pb-5 mt-5 md:mt-12 md:flex-row bg-white z-10">
-                        <div className="w-[10vh] md:w-auto md:absolute md:left-0 self-start ms-[3vw]">
+                        <div className="w-[10vh] md:w-auto md:absolute md:left-0 self-start ms-[3.5vw]">
                             <SearchButton
                                 products={searchableProducts}
                                 onSearch={handleRealTimeSearch}
                             />
                         </div>
 
-                        <div className="flex items-center justify-center pt-6 md:pt-0">
+                        <div className="flex items-center justify-center pt-6 md:pt-0 w-[93vw] md:w-[40vw] mx-auto">
                             {!productsLoading && category ?
                                 <CategoryList category={category} /> :
                                 <ul className="flex h-full animate-pulse flex-row gap-4 font-amstel text-xs sm:gap-5 md:hidden ease-in-out transition-all duration-500">
                                     <li className="h-5 w-8 rounded-md bg-gray-200 sm:h-6"></li>
                                     <li className="h-5 w-20 rounded-md bg-gray-200 sm:h-6"></li>
+                                    <li className="h-5 w-10 rounded-md bg-gray-200 sm:h-6"></li>
                                     <li className="h-5 w-12 rounded-md bg-gray-200 sm:h-6"></li>
-                                    {/* <li className="h-5 w-20 rounded-md bg-gray-200 sm:h-6"></li> */}
                                 </ul>
                             }
                         </div>

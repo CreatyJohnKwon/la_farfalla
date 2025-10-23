@@ -53,7 +53,7 @@ const MileageList = () => {
     if (isError) {
         return (
             <ul>
-                <li className="font-pretendard-thin mt-16 w-[90vw] sm:w-auto text-center text-base text-black/60">
+                <li className="font-pretendard font-[300] mt-16 w-[90vw] sm:w-auto text-center text-base text-black/60">
                     마일리지 내역 에러 : Error
                 </li>
             </ul>
@@ -64,7 +64,7 @@ const MileageList = () => {
     if (!data || data.pages.every(page => page.length === 0)) {
         return (
             <ul className="flex flex-col gap-4 sm:w-auto">
-                <li className="font-pretendard-thin mt-16 w-[90vw] sm:w-auto text-center text-base text-black/60">
+                <li className="font-pretendard font-[300] mt-16 w-[90vw] sm:w-auto text-center text-base text-black/60">
                     마일리지 내역이 없습니다
                 </li>
             </ul>

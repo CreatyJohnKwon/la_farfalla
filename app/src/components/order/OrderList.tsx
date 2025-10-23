@@ -43,7 +43,7 @@ const OrderList = () => {
 
     return (
         <ul className="flex w-full flex-col gap-4 sm:w-auto">
-            <li className="font-pretendard-thin mt-20 w-full text-center text-base text-black/60">
+            <li className="font-pretendard font-[300] mt-20 w-full text-center text-base text-black/60">
                 주문 내역이 없습니다
             </li>
         </ul>

@@ -269,8 +269,36 @@ const Users = () => {
                                     </td>
                                     <td className="px-4 py-3">
                                         <div className="flex items-center justify-center gap-1">
-                                            <button onClick={() => { setUserData(user); setOpenModal(true); }} className="flex h-11 w-11 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600" title="수정">{/* ... SVG ... */}</button>
-                                            {user.deletedAt && <button onClick={() => { if (confirm("삭제된 유저 정보를\n복구하시겠습니까?")) { handleRestoreUser(user._id); } }} className="flex h-11 w-11 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600" title="복구">{/* ... SVG ... */}</button>}
+                                            {/* ⭐ 수정 버튼 복구 (SVG 아이콘 추가) */}
+                                            <button 
+                                                onClick={() => { 
+                                                    setUserData(user); 
+                                                    setOpenModal(true); 
+                                                }} 
+                                                className="flex h-11 w-11 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600" 
+                                                title="수정"
+                                            >
+                                                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-7-7l4 4m-4-4l-4 4m8-4l1-1a2.828 2.828 0 114 4l-1 1m-4-4l-1 1" />
+                                                </svg>
+                                            </button>
+
+                                            {/* 복구 버튼 (삭제된 유저인 경우에만 표시) */}
+                                            {user.deletedAt && (
+                                                <button 
+                                                    onClick={() => { 
+                                                        if (confirm("삭제된 유저 정보를\n복구하시겠습니까?")) { 
+                                                            handleRestoreUser(user._id); 
+                                                        } 
+                                                    }} 
+                                                    className="flex h-11 w-11 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600" 
+                                                    title="복구"
+                                                >
+                                                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                    </svg>
+                                                </button>
+                                            )}
                                         </div>
                                     </td>
                                 </tr>

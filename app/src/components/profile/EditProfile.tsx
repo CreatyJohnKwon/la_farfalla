@@ -141,7 +141,7 @@ const EditProfile = () => {
 
     if (session && session.user)
         return (
-            <div className="flex w-[90vw] flex-col items-start justify-start gap-6 overflow-y-auto pb-5 font-pretendard text-lg font-[200] sm:w-full">
+            <div className="flex w-[90vw] flex-col items-start justify-start gap-6 overflow-y-auto pb-5 font-pretendard text-base font-[200] sm:w-full">
                 <span className="font-amstel-thin w-full border border-gray-200 bg-white px-4 py-2 text-gray-500 placeholder:text-gray-400 focus:outline-none">
                     {session.user.email}
                 </span>

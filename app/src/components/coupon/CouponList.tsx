@@ -261,7 +261,7 @@ const CouponList = () => {
         </ul>
     ) : (
         <ul className="flex w-[90vw] flex-col gap-4 sm:w-auto">
-            <li className="font-pretendard-thin mt-16 w-full text-center text-base text-black/60">
+            <li className="font-pretendard font-[300] mt-16 w-full text-center text-base text-black/60">
                 사용 가능한 쿠폰이 없습니다
             </li>
         </ul>

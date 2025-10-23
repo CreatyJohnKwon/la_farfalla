@@ -76,6 +76,18 @@ const SearchButton = ({
         [products, onSearch],
     );
 
+    // Mobile: keydown 처리
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); 
+
+            // 원하는 '확인' 동작 (여기서는 키보드 닫기)
+            if (searchInputRef.current) {
+                searchInputRef.current.blur(); // input 포커스를 해제하여 키보드를 닫습니다.
+            }
+        }
+    };
+
     // 검색어 변경 핸들러
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -106,19 +118,22 @@ const SearchButton = ({
                     <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={1.5}
+                        strokeWidth={1.2}
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     />
                 </svg>
 
                 {/* 입력 필드 */}
-                <div className="border-b border-gray-500 md:text-base text-sm bg-transparent text-gray-700 font-pretendard">
+                <div className="border-b border-gray-400 md:text-base text-sm bg-transparent text-gray-800 font-pretendard font-[300]">
                     <input
                         ref={searchInputRef}
-                        type="text"
+                        type="search"
                         value={searchQuery}
                         onChange={handleSearchChange}
-                        className="flex-grow outline-none w-[14vh]"
+                        onKeyDown={handleKeyDown}
+                        className="flex-grow outline-none w-[14vh]
+                                    [&::-webkit-search-cancel-button]:appearance-none 
+                                    [&::-webkit-search-cancel-button]:hidden"
                     />
                 </div>
 
@@ -126,7 +141,7 @@ const SearchButton = ({
                 {searchQuery && (
                     <button
                         onClick={clearSearch}
-                        className="flex-shrink-0 p-1"
+                        className="flex-shrink-0 p-1 ps-0"
                     >
                         <svg
                             width="16"

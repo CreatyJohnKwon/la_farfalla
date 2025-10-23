@@ -42,13 +42,13 @@ const ApplyCouponCodeModal = ({ onClose }: { onClose: () => void }) => {
         >
             <div className="flex flex-col" onClick={(e) => e.stopPropagation()}>
                 {/* 제목 및 닫기 버튼 */}
-                <div className="flex items-center justify-between pb-5 border-b border-gray-200">
-                    <span className="text-xl font-pretendard-bold text-gray-900">
+                <div className="flex items-end justify-between pb-5 border-b border-gray-200">
+                    <span className="text-lg font-pretendard-bold text-gray-900">
                         쿠폰 등록
                     </span>
                     <button
                         onClick={() => handleClose()}
-                        className="text-2xl text-gray-400 transition-colors font-amstel font-[600] hover:text-gray-600 focus:outline-none"
+                        className="text-3xl text-gray-600 transition-colors font-extralight hover:text-black focus:outline-none"
                     >
                         &times;
                     </button>
@@ -57,27 +57,27 @@ const ApplyCouponCodeModal = ({ onClose }: { onClose: () => void }) => {
                 <div className="flex flex-col">
                     {/* 쿠폰 번호 입력 영역 */}
                     <div className="flex flex-col items-center justify-center pt-6">
-                        <label htmlFor="coupon-code" className="text-gray-600 mb-2 font-pretendard text-base">
-                            쿠폰 번호를 입력하세요
-                        </label>
                         <input
                             id="coupon-code"
                             type="text"
                             maxLength={40}
                             value={couponCode}
                             onChange={(e) => setCouponCode(e.target.value)}
-                            className="w-full px-4 py-3 text-center border-2 text-base uppercase font-pretendard rounded-xs transition-all duration-300 placeholder:text-gray-400 outline-none"
-                            placeholder="COUPONCODE12"
+                            onKeyDown={(e) =>
+                                e.key === "Enter" && (e.preventDefault(), confirm("쿠폰을 등록하시겠습니까?") && handleCouponApply())
+                            }
+                            className="w-full px-4 py-3 text-center border text-base uppercase font-pretendard rounded-xs transition-all duration-300 placeholder:text-black outline-none placeholder:text-black/50"
+                            placeholder="쿠폰 번호를 입력하세요"
                             required
                         />
                     </div>
 
                     {/* 버튼 영역 */}
-                    <div className="pt-8">
+                    <div className="pt-4">
                         <button
                             onClick={() => confirm("쿠폰을 등록하시겠습니까?") && handleCouponApply()}
                             type="submit"
-                            className={`w-full px-4 py-3 text-base font-pretendard font-[600] text-white rounded-xs transition-colors focus:outline-none hover:bg-gray-500 ${couponCode.length === 0 ? "bg-gray-500": "bg-gray-900"}`}
+                            className={`w-full py-3 text-base font-pretendard font-[400] text-white transition-colors focus:outline-none hover:bg-gray-500 ${couponCode.length === 0 ? "bg-gray-500": "bg-gray-900"}`}
                             disabled={couponCode.length === 0}
                         >
                             등록하기

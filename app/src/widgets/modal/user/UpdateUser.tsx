@@ -49,6 +49,7 @@ const UpdateUser = ({
     };
 
     const handleDeleteUser = () => {
+        confirm("유저를 삭제하시겠습니까?") &&
         deleteUser.mutate(user._id, {
             onSuccess: () => {
                 refetch();
@@ -75,7 +76,7 @@ const UpdateUser = ({
                         {user.email}
                     </p>
                     <p className="mt-1 font-mono text-xs text-gray-500">
-                        {user._id}
+                        UUID:{user._id}
                     </p>
                 </div>
                 <div>

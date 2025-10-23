@@ -69,7 +69,7 @@ const Sidebar = () => {
                 >
                     <div className="relative flex h-full w-full flex-col items-center justify-center">
                         <button
-                            className="absolute left-4 top-3 mt-0.5 text-2xl font-amstel font-[500] text-black"
+                            className="absolute left-4 top-3 mt-0.5 text-3xl font-amstel text-gray-500"
                             onClick={() => onCloseSidebar()}
                         >
                             &times;

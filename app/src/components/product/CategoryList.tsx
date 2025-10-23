@@ -5,7 +5,7 @@ const CategoryList = ({ category }: { category: Category[]}) => {
     const { setSection, section } = useProduct();
 
     return (
-        <ul className="flex flex-row font-amstel text-xs sm:text-base gap-4 sm:gap-5">
+        <ul className="flex flex-row flex-wrap font-amstel text-xs sm:text-base gap-4 sm:gap-5 uppercase justify-center">
             <li
                 key={"All_section"}
                 onClick={() => setSection("")}

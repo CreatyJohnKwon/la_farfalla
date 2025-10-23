@@ -51,7 +51,7 @@ const UserMileageListModal = ({ userId, onClose }: MileageModalProps) => {
 
         if (!data || data.pages.length === 0 || data.pages[0].length === 0) {
             return (
-                <div className="flex justify-center items-center h-40 text-gray-500">
+                <div className="flex font-pretendard font-[300] justify-center items-center h-40 text-gray-500">
                     마일리지 내역이 없습니다.
                 </div>
             );
@@ -67,7 +67,7 @@ const UserMileageListModal = ({ userId, onClose }: MileageModalProps) => {
                         <div>
                             <p className="font-semibold text-sm">{mileage.description}</p>
                             <p className="text-xs text-gray-500">
-                                {new Date(mileage.createdAt).toLocaleDateString(
+                                {new Date(mileage.createdAt).toLocaleString(
                                     'ko-KR',
                                 )}
                             </p>

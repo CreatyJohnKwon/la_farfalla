@@ -223,10 +223,10 @@ const RegisterClient = () => {
     }
     
     // ◀️ 변경: 유효성 검사 결과를 `errors` 객체의 키 개수로 판단
-    const isValidForm = Object.keys(errors).length === 0 && isSubmitted;
+    // const isValidForm = Object.keys(errors).length === 0 && isSubmitted;
 
     return (
-        <div className="z-30 flex h-screen flex-col items-center justify-start overflow-y-auto py-8 text-center">
+        <div className="z-30 flex h-screen flex-col items-center justify-start py-8 text-center">
             <form
                 className="mt-5 flex w-[90vw] flex-col items-center justify-start gap-4 p-0 py-8 pb-10 sm:w-1/2 sm:gap-6 sm:pt-20"
                 onSubmit={handleSubmit}
@@ -444,35 +444,30 @@ const RegisterClient = () => {
                 <section className="place-self-start bg-transparent font-pretendard">
                     <label className="flex items-start gap-2 text-xs sm:text-sm leading-tight">
                         <input type="checkbox" name="userCertify" required={true} />
-                        <div className="-mt-1">
-                            <button
-                                type="button"
-                                className="text-blue-900 underline hover:text-blue-500"
-                                onClick={() => setIsOpenUserAgreeOne(true)}
-                            >
-                                이용약관
-                            </button>
-                            <span>{",\t"}</span>
-                            <button
-                                type="button"
-                                className="text-blue-900 underline hover:text-blue-500"
-                                onClick={() => setIsOpenUserAgreeTwo(true)}
-                            >
-                                개인정보 수집 및 이용
-                            </button>
-                            에 모두 동의합니다.
-                            <span className="text-red-600">{"\t(필수)"}</span>
-                        </div>
+                        <button
+                            type="button"
+                            className="text-blue-900 underline hover:text-blue-500"
+                            onClick={() => setIsOpenUserAgreeOne(true)}
+                        >
+                            이용약관,
+                        </button>
+                        <button
+                            type="button"
+                            className="text-blue-900 underline hover:text-blue-500"
+                            onClick={() => setIsOpenUserAgreeTwo(true)}
+                        >
+                            개인정보 수집 및 이용
+                        </button>
+                        에 모두 동의합니다.
+                        <span className="text-red-600">{"\t(필수)"}</span>
                     </label>
                 </section>
 
                 <section className="place-self-start bg-transparent font-pretendard">
                     <label className="flex items-start gap-2 text-xs sm:text-sm leading-tight">
                         <input type="checkbox" name="checkAdult" required={true} />
-                        <div className="-mt-1">
-                            만 14세 이상입니다.
-                            <span className="text-red-600">{"\t(필수)"}</span>
-                        </div>
+                        만 14세 이상입니다.
+                        <span className="text-red-600">{"\t(필수)"}</span>
                     </label>
                 </section>
 

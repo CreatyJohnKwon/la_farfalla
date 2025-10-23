@@ -268,11 +268,11 @@ const UpdateCategoryModal = ({ onClose }: { onClose: () => void }) => {
                                 {orderedCategories.map((categoryItem) => (
                                     // ⬇️ div를 Reorder.Item으로 변경합니다 ⬇️
                                     <Reorder.Item key={categoryItem._id} value={categoryItem}>
-                                        <div className={`flex items-center justify-between rounded-sm border p-3 transition-all ${editingCategory?._id === categoryItem._id ? "bg-blue-50 ring-1 ring-indigo-200" : "border-gray-200 bg-white"}`}>
+                                        <div className={`flex items-center justify-between mt-1 border p-3 transition-all ${editingCategory?._id === categoryItem._id ? "bg-blue-50 ring-1 ring-indigo-200" : "border-gray-300 bg-white"}`}>
                                             <div className="flex items-center gap-5">
                                                 {/* ⬇️ 드래그 핸들 아이콘 추가 ⬇️ */}
                                                 <div className="cursor-grab text-gray-400 touch-none">
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.7" strokeLinecap="round" strokeLinejoin="round">
                                                         <circle cx="12" cy="5" r="1"></circle>
                                                         <circle cx="12" cy="12" r="1"></circle>
                                                         <circle cx="12" cy="19" r="1"></circle>

@@ -48,8 +48,8 @@ const UserInfoModal = ({
                     <BoxElement
                         label={"배송 주소"}
                         value={`${orderData?.address}
-        ${orderData?.postcode && `${orderData?.postcode}`}
-        ${orderData?.detailAddress && `, ${orderData?.detailAddress}`}`}
+                            ${orderData?.postcode && `${orderData?.postcode}`}
+                            ${orderData?.detailAddress && `, ${orderData?.detailAddress}`}`}
                     />
                     {orderData?.deliveryMemo && (
                         <BoxElement

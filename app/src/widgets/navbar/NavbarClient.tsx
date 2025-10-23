@@ -81,7 +81,7 @@ const NavbarClient = () => {
                     <RxHamburgerMenu
                         // aria-label을 부모 버튼에 이동시키고, 아이콘은 hidden으로 설정
                         aria-hidden="true" 
-                        className="ms-1 block text-[24px] z-40 md:hidden -mt-2"
+                        className="ms-1 block text-[20px] z-40 md:hidden mb-0"
                     />
                 </button>
 
@@ -95,7 +95,7 @@ const NavbarClient = () => {
                 <div className={`font-amstel ml-auto justify-center bg-transparent md:order-1`}>
                     
                     {/* 오른쪽 메뉴 : Mobile (✅ 목록 구조 및 접근성 수정) */}
-                    <ul className="flex space-x-2 md:hidden">
+                    <ul className="flex space-x-2 md:hidden -mb-0.5">
                         {/* 1. 장바구니 버튼 */}
                         <li> 
                             <button 
@@ -104,8 +104,8 @@ const NavbarClient = () => {
                             >
                                 <HiOutlineShoppingBag
                                     // 아이콘을 시각적 요소로만 처리
-                                    aria-hidden="true" 
-                                    className={`me-3 text-[24px] ${session ? "block" : "hidden"}`}
+                                    aria-hidden="true"
+                                    className={`me-3 text-[20px] ${session ? "block" : "hidden"}`}
                                 />
                             </button>
                         </li>
@@ -119,7 +119,7 @@ const NavbarClient = () => {
                                 <AiOutlineUser
                                     // 아이콘을 시각적 요소로만 처리
                                     aria-hidden="true"
-                                    className={`text-[24px] ${session ? "me-1" : "me-0"}`}
+                                    className={`text-[20px] ${session ? "me-1" : "me-0"}`}
                                 />
                             </Link>
                         </li>
